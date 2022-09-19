@@ -16,12 +16,11 @@ class QuantifiedIngredient
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
     #[ORM\ManyToOne(inversedBy: 'ingredientList')]
     private ?Recipe $recipe = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Ingredient $ingredient = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $quantityValue = null;
@@ -42,6 +41,18 @@ class QuantifiedIngredient
         return $this->id;
     }
 
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     public function getRecipe(): ?Recipe
     {
         return $this->recipeList;
@@ -50,18 +61,6 @@ class QuantifiedIngredient
     public function setRecipe(?Recipe $recipe): self
     {
         $this->recipe = $recipe;
-
-        return $this;
-    }
-
-    public function getIngredient(): ?Ingredient
-    {
-        return $this->ingredient;
-    }
-
-    public function setIngredient(?Ingredient $ingredient): self
-    {
-        $this->ingredient = $ingredient;
 
         return $this;
     }
