@@ -14,36 +14,21 @@ class RecipeFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-
-        $hack = (new Ingredient())->setName('Hackfleisch (gemischt)');
-        $sahne = (new Ingredient())->setName('Schlagsahne');
-        $nudeln = (new Ingredient())->setName('Bandnudeln');
-        $sauce = (new Ingredient())->setName('Tomatensauce');
-        $gouda = (new Ingredient())->setName('Gouda (Stück)');
-        $schmelz = (new Ingredient())->setName('Sahne-Schmelzkäse');
+        $hack = (new QuantifiedIngredient())->setName("Hackfleisch (gemischt)")->setQuantityValue(400)->setQuantityUnit('g');
+        $hackSt = (new QuantifiedIngredient())->setName("Hackfleisch (gemischt)")->setQuantityValue(400)->setQuantityUnit('g');
+        $sahne = (new QuantifiedIngredient())->setName("Schlagsahne")->setQuantityValue(200)->setQuantityUnit('g');
+        $nudeln = (new QuantifiedIngredient())->setName("Bandnudeln")->setQuantityValue(250)->setQuantityUnit('g');
+        $sauce = (new QuantifiedIngredient())->setName("Tomatensauce")->setQuantityValue(1)->setQuantityUnit('Glas');
+        $gouda = (new QuantifiedIngredient())->setName("Gouda (Stück)")->setQuantityValue(225)->setQuantityUnit('g');
+        $schmelz = (new QuantifiedIngredient())->setName("Sahne-Schmelzkäse")->setQuantityValue(100)->setQuantityUnit('g');
 
         $manager->persist($hack);
+        $manager->persist($hackSt);
         $manager->persist($sahne);
         $manager->persist($nudeln);
         $manager->persist($sauce);
         $manager->persist($gouda);
         $manager->persist($schmelz);
-        
-        $qhack = (new QuantifiedIngredient())->setIngredient($hack)->setQuantityValue(400)->setQuantityUnit('g');
-        $qhackSt = (new QuantifiedIngredient())->setIngredient($hack)->setQuantityValue(400)->setQuantityUnit('g');
-        $qsahne = (new QuantifiedIngredient())->setIngredient($sahne)->setQuantityValue(200)->setQuantityUnit('g');
-        $qnudeln = (new QuantifiedIngredient())->setIngredient($nudeln)->setQuantityValue(250)->setQuantityUnit('g');
-        $qsauce = (new QuantifiedIngredient())->setIngredient($sauce)->setQuantityValue(1)->setQuantityUnit('Glas');
-        $qgouda = (new QuantifiedIngredient())->setIngredient($gouda)->setQuantityValue(225)->setQuantityUnit('g');
-        $qschmelz = (new QuantifiedIngredient())->setIngredient($schmelz)->setQuantityValue(100)->setQuantityUnit('g');
-
-        $manager->persist($qhack);
-        $manager->persist($qhackSt);
-        $manager->persist($qsahne);
-        $manager->persist($qnudeln);
-        $manager->persist($qsauce);
-        $manager->persist($qgouda);
-        $manager->persist($qschmelz);
 
         $recipe = (new Recipe())
             ->setTitle('Lasaschne')
@@ -57,16 +42,16 @@ class RecipeFixtures extends Fixture
                 'Nudeln abgießen und in die Auflaufform geben. Gut mit der Tomaten-Hack-Sauce vermischen und Sahnesauce dazu geben. Zuletzt mit Käse bestreuen.',
                 'Im Ofen 20min mit Alufolie und 15min ohne Alufolie backen lassen.',
             ])
-            ->addIngredientList($qhack)
-            ->addIngredientList($qsahne)
-            ->addIngredientList($qnudeln)
-            ->addIngredientList($qsauce)
-            ->addIngredientList($qgouda)
-            ->addIngredientList($qschmelz);
+            ->addIngredientList($hack)
+            ->addIngredientList($sahne)
+            ->addIngredientList($nudeln)
+            ->addIngredientList($sauce)
+            ->addIngredientList($gouda)
+            ->addIngredientList($schmelz);
         
         $manager->persist($recipe);
 
-        $storage = (new Storage())->setName('storage')->addIngredientList($qhackSt);
+        $storage = (new Storage())->setName('storage')->addIngredientList($hackSt);
         $shoppingList = (new Storage())->setName('shoppinglist');
 
         $manager->persist($storage);
