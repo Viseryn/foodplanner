@@ -31,11 +31,6 @@ class Ingredient
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     private ?Storage $storage = null;
 
-    public function __construct()
-    {
-        $this->recipe = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
