@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\QuantifiedIngredientRepository;
+use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: QuantifiedIngredientRepository::class)]
-class QuantifiedIngredient
+#[ORM\Entity(repositoryClass: IngredientRepository::class)]
+class Ingredient
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,7 +19,7 @@ class QuantifiedIngredient
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ingredientList')]
+    #[ORM\ManyToOne(inversedBy: 'ingredients')]
     private ?Recipe $recipe = null;
 
     #[ORM\Column(nullable: true)]
@@ -28,12 +28,12 @@ class QuantifiedIngredient
     #[ORM\Column(length: 16, nullable: true)]
     private ?string $quantityUnit = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ingredientList')]
+    #[ORM\ManyToOne(inversedBy: 'ingredients')]
     private ?Storage $storage = null;
 
     public function __construct()
     {
-        $this->recipeList = new ArrayCollection();
+        $this->recipe = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -55,7 +55,7 @@ class QuantifiedIngredient
 
     public function getRecipe(): ?Recipe
     {
-        return $this->recipeList;
+        return $this->recipe;
     }
 
     public function setRecipe(?Recipe $recipe): self
