@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Instruction index{% endblock %}
+
+{% block main %}
+    <h1>Instruction index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Instruction</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for instruction in instructions %}
+            <tr>
+                <td>{{ instruction.id }}</td>
+                <td>{{ instruction.instruction }}</td>
+                <td>
+                    <a href="{{ path('app_instruction_show', {'id': instruction.id}) }}">show</a>
+                    <a href="{{ path('app_instruction_edit', {'id': instruction.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_instruction_new') }}">Create new</a>
+{% endblock %}

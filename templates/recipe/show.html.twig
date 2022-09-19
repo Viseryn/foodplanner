@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recipe{% endblock %}
+
+{% block main %}
+    <h1>Recipe</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ recipe.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ recipe.title }}</td>
+            </tr>
+            <tr>
+                <th>PortionSize</th>
+                <td>{{ recipe.portionSize }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_recipe_index') }}">back to list</a>
+
+    <a href="{{ path('app_recipe_edit', {'id': recipe.id}) }}">edit</a>
+
+    {{ include('recipe/_delete_form.html.twig') }}
+{% endblock %}
