@@ -22,15 +22,16 @@ class Recipe
     #[ORM\Column]
     private ?int $portionSize = null;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: QuantifiedIngredient::class)]
-    private Collection $ingredientList;
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Ingredient::class)]
+    private Collection $ingredients;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private array $instructionList = [];
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class)]
+    private Collection $instructions;
 
     public function __construct()
     {
-        $this->ingredientList = new ArrayCollection();
+        $this->ingredients = new ArrayCollection();
+        $this->instructions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,43 +64,61 @@ class Recipe
     }
 
     /**
-     * @return Collection<int, QuantifiedIngredient>
+     * @return Collection<int, Ingredient>
      */
-    public function getIngredientList(): Collection
+    public function getIngredients(): Collection
     {
-        return $this->ingredientList;
+        return $this->ingredients;
     }
 
-    public function addIngredientList(QuantifiedIngredient $ingredientList): self
+    public function addIngredients(Ingredient $ingredients): self
     {
-        if (!$this->ingredientList->contains($ingredientList)) {
-            $this->ingredientList->add($ingredientList);
-            $ingredientList->setRecipe($this);
+        if (!$this->ingredients->contains($ingredients)) {
+            $this->ingredients->add($ingredients);
+            $ingredients->setRecipe($this);
         }
 
         return $this;
     }
 
-    public function removeIngredientList(QuantifiedIngredient $ingredientList): self
+    public function removeIngredients(Ingredient $ingredients): self
     {
-        if ($this->ingredientList->removeElement($ingredientList)) {
+        if ($this->ingredients->removeElement($ingredients)) {
             // set the owning side to null (unless already changed)
-            if ($ingredientList->getRecipe() === $this) {
-                $ingredientList->setRecipe(null);
+            if ($ingredients->getRecipe() === $this) {
+                $ingredients->setRecipe(null);
             }
         }
 
         return $this;
     }
 
-    public function getInstructionList(): array
+    /**
+     * @return Collection<int, Instruction>
+     */
+    public function getInstructions(): Collection
     {
-        return $this->instructionList;
+        return $this->instructions;
     }
 
-    public function setInstructionList(?array $instructionList): self
+    public function addInstruction(Instruction $instruction): self
     {
-        $this->instructionList = $instructionList;
+        if (!$this->instructions->contains($instruction)) {
+            $this->instructions->add($instruction);
+            $instruction->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInstruction(Instruction $instruction): self
+    {
+        if ($this->instructions->removeElement($instruction)) {
+            // set the owning side to null (unless already changed)
+            if ($instruction->getRecipe() === $this) {
+                $instruction->setRecipe(null);
+            }
+        }
 
         return $this;
     }

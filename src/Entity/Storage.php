@@ -15,7 +15,7 @@ class Storage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: 'storage', targetEntity: QuantifiedIngredient::class)]
+    #[ORM\OneToMany(mappedBy: 'storage', targetEntity: Ingredient::class)]
     private Collection $ingredientList;
 
     #[ORM\Column(length: 255)]
@@ -32,14 +32,14 @@ class Storage
     }
 
     /**
-     * @return Collection<int, QuantifiedIngredient>
+     * @return Collection<int, Ingredient>
      */
     public function getIngredientList(): Collection
     {
         return $this->ingredientList;
     }
 
-    public function addIngredientList(QuantifiedIngredient $ingredientList): self
+    public function addIngredientList(Ingredient $ingredientList): self
     {
         if (!$this->ingredientList->contains($ingredientList)) {
             $this->ingredientList->add($ingredientList);
@@ -49,7 +49,7 @@ class Storage
         return $this;
     }
 
-    public function removeIngredientList(QuantifiedIngredient $ingredientList): self
+    public function removeIngredientList(Ingredient $ingredientList): self
     {
         if ($this->ingredientList->removeElement($ingredientList)) {
             // set the owning side to null (unless already changed)
