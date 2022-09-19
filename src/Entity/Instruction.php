@@ -48,4 +48,8 @@ class Instruction
 
         return $this;
     }
+
+    public function __toString() {
+        return $this->instruction;
+    }
 }
