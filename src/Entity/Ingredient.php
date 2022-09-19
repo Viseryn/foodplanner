@@ -19,14 +19,14 @@ class Ingredient
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ingredients')]
-    private ?Recipe $recipe = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $quantityValue = null;
 
     #[ORM\Column(length: 16, nullable: true)]
     private ?string $quantityUnit = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ingredients')]
+    private ?Recipe $recipe = null;
 
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     private ?Storage $storage = null;
@@ -53,18 +53,6 @@ class Ingredient
         return $this;
     }
 
-    public function getRecipe(): ?Recipe
-    {
-        return $this->recipe;
-    }
-
-    public function setRecipe(?Recipe $recipe): self
-    {
-        $this->recipe = $recipe;
-
-        return $this;
-    }
-
     public function getQuantityValue(): ?int
     {
         return $this->quantityValue;
@@ -85,6 +73,18 @@ class Ingredient
     public function setQuantityUnit(?string $quantityUnit): self
     {
         $this->quantityUnit = $quantityUnit;
+
+        return $this;
+    }
+
+    public function getRecipe(): ?Recipe
+    {
+        return $this->recipe;
+    }
+
+    public function setRecipe(?Recipe $recipe): self
+    {
+        $this->recipe = $recipe;
 
         return $this;
     }

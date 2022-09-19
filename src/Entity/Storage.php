@@ -39,22 +39,22 @@ class Storage
         return $this->ingredients;
     }
 
-    public function addIngredientList(Ingredient $ingredients): self
+    public function addIngredient(Ingredient $ingredient): self
     {
-        if (!$this->ingredients->contains($ingredients)) {
-            $this->ingredients->add($ingredients);
-            $ingredients->setStorage($this);
+        if (!$this->ingredients->contains($ingredient)) {
+            $this->ingredients->add($ingredient);
+            $ingredient->setStorage($this);
         }
 
         return $this;
     }
 
-    public function removeIngredients(Ingredient $ingredients): self
+    public function removeIngredient(Ingredient $ingredient): self
     {
-        if ($this->ingredients->removeElement($ingredients)) {
+        if ($this->ingredients->removeElement($ingredient)) {
             // set the owning side to null (unless already changed)
-            if ($ingredients->getStorage() === $this) {
-                $ingredients->setStorage(null);
+            if ($ingredient->getStorage() === $this) {
+                $ingredient->setStorage(null);
             }
         }
 
