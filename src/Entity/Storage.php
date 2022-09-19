@@ -16,14 +16,14 @@ class Storage
     private ?int $id = null;
 
     #[ORM\OneToMany(mappedBy: 'storage', targetEntity: Ingredient::class)]
-    private Collection $ingredientList;
+    private Collection $ingredients;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     public function __construct()
     {
-        $this->ingredientList = new ArrayCollection();
+        $this->ingredients = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -34,27 +34,27 @@ class Storage
     /**
      * @return Collection<int, Ingredient>
      */
-    public function getIngredientList(): Collection
+    public function getIngredients(): Collection
     {
-        return $this->ingredientList;
+        return $this->ingredients;
     }
 
-    public function addIngredientList(Ingredient $ingredientList): self
+    public function addIngredientList(Ingredient $ingredients): self
     {
-        if (!$this->ingredientList->contains($ingredientList)) {
-            $this->ingredientList->add($ingredientList);
-            $ingredientList->setStorage($this);
+        if (!$this->ingredients->contains($ingredients)) {
+            $this->ingredients->add($ingredients);
+            $ingredients->setStorage($this);
         }
 
         return $this;
     }
 
-    public function removeIngredientList(Ingredient $ingredientList): self
+    public function removeIngredients(Ingredient $ingredients): self
     {
-        if ($this->ingredientList->removeElement($ingredientList)) {
+        if ($this->ingredients->removeElement($ingredients)) {
             // set the owning side to null (unless already changed)
-            if ($ingredientList->getStorage() === $this) {
-                $ingredientList->setStorage(null);
+            if ($ingredients->getStorage() === $this) {
+                $ingredients->setStorage(null);
             }
         }
 
