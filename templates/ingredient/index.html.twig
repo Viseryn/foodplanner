@@ -12,6 +12,8 @@
                 <th>Name</th>
                 <th>QuantityValue</th>
                 <th>QuantityUnit</th>
+                <th>Recipe</th>
+                <th>Storage</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,6 +24,8 @@
                 <td>{{ ingredient.name }}</td>
                 <td>{{ ingredient.quantityValue }}</td>
                 <td>{{ ingredient.quantityUnit }}</td>
+                <td>{{ ingredient.recipe }}</td>
+                <td>{{ ingredient.storage }}</td>
                 <td>
                     <a href="{{ path('app_ingredient_show', {'id': ingredient.id}) }}">show</a>
                     <a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">edit</a>

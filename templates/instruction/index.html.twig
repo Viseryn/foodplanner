@@ -9,6 +9,7 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Recipe</th>
                 <th>Instruction</th>
                 <th>actions</th>
             </tr>
@@ -17,6 +18,7 @@
         {% for instruction in instructions %}
             <tr>
                 <td>{{ instruction.id }}</td>
+                <td>{{ instruction.recipe }}</td>
                 <td>{{ instruction.instruction }}</td>
                 <td>
                     <a href="{{ path('app_instruction_show', {'id': instruction.id}) }}">show</a>
