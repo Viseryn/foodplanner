@@ -71,22 +71,22 @@ class Recipe
         return $this->ingredients;
     }
 
-    public function addIngredients(Ingredient $ingredients): self
+    public function addIngredient(Ingredient $ingredient): self
     {
-        if (!$this->ingredients->contains($ingredients)) {
-            $this->ingredients->add($ingredients);
-            $ingredients->setRecipe($this);
+        if (!$this->ingredients->contains($ingredient)) {
+            $this->ingredients->add($ingredient);
+            $ingredient->setRecipe($this);
         }
 
         return $this;
     }
 
-    public function removeIngredients(Ingredient $ingredients): self
+    public function removeIngredient(Ingredient $ingredient): self
     {
-        if ($this->ingredients->removeElement($ingredients)) {
+        if ($this->ingredients->removeElement($ingredient)) {
             // set the owning side to null (unless already changed)
-            if ($ingredients->getRecipe() === $this) {
-                $ingredients->setRecipe(null);
+            if ($ingredient->getRecipe() === $this) {
+                $ingredient->setRecipe(null);
             }
         }
 
