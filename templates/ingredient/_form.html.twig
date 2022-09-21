@@ -1,4 +1,22 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {# {{ form_row(form) }} #}
+
+    
+    {# <div class="mb-6">
+        <label for="username" class="text-sm font-semibold block mb-2">Your username</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username ..." class="border rounded-full h-10 px-6 shadow-sm w-full" />
+    </div> #}
+
+    {# {{ form_row(form.name, {
+        row_attr: {'class': 'mb-6'},
+        label_attr: {'class': 'text-sm font-semibold block mb-2'},
+        widget_attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+    }) }} #}
+
+    <div class="flex justify-between items-center">
+        <div></div>
+        <button type="submit" class="transition rounded-full w-32 h-10 px-6 shadow-md bg-violet-600 hover:bg-violet-500 hover:scale-110 font-semibold text-white">
+            {{ button_label|default('Save') }}
+        </button>
+    </div>
 {{ form_end(form) }}
