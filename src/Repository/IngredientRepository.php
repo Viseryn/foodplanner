@@ -39,6 +39,23 @@ class IngredientRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return Ingredient[] Returns an array of Ingredient objects whose Storage is 'storage'
+     */
+    public function findStorageIngredients(): array
+    {
+        $results = $this->createQueryBuilder('i')
+            ->where('i.storage IS NOT NULL')
+            ->orderBy('i.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return array_filter($results, function($ingredient) {
+            return ($ingredient->getStorage()->getName() === 'storage');
+        });
+    }
+
 //    /**
 //     * @return Ingredient[] Returns an array of Ingredient objects
 //     */
