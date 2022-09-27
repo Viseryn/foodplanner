@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Instruction;
-use App\Entity\Recipe;
 use App\Form\InstructionType;
 use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
@@ -15,18 +14,20 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/instruction')]
 class InstructionController extends AbstractController
 {
-    #[Route('/', name: 'app_instruction_index', methods: ['GET'])]
-    public function index(InstructionRepository $instructionRepository): Response
-    {
-        return $this->render('instruction/index.html.twig', [
-            'instructions' => $instructionRepository->findAll(),
-        ]);
-    }
-
-    #[Route('/new/recipe={id}', name: 'app_instruction_new_for_recipe', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    /**
+     * Controller for adding an Instruction to a Recipe.
+     *
+     * @param Request $request
+     * @param integer $recipeId
+     * @param InstructionRepository $instructionRepository
+     * @param RecipeRepository $recipeRepository
+     * @return Response
+     */
+    #[Route('/new', name: 'app_instruction_new', methods: ['GET', 'POST'])]
+    #[Route('/new/recipe={recipeId}', name: 'app_instruction_new_for_recipe', methods: ['GET', 'POST'], requirements: ['recipeId' => '\d+'])]
     public function new(
         Request $request, 
-        int $id = 0, 
+        int $recipeId = 0, 
         InstructionRepository $instructionRepository, 
         RecipeRepository $recipeRepository
     ): Response
@@ -36,7 +37,7 @@ class InstructionController extends AbstractController
 
         // Get recipe from id.
         // If recipe exists, set default value for the recipe form field.
-        $recipe = $recipeRepository->find($id);
+        $recipe = $recipeRepository->find($recipeId);
         $form->get('recipe')->setData($recipe);
 
         $form->handleRequest($request);
@@ -44,7 +45,7 @@ class InstructionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $instructionRepository->add($instruction, true);
 
-            return $this->redirectToRoute('app_recipe_show', ['id' => $id], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_recipe_show', ['id' => $recipe->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('instruction/new.html.twig', [
@@ -54,16 +55,20 @@ class InstructionController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_instruction_show', methods: ['GET'])]
-    public function show(Instruction $instruction): Response
-    {
-        return $this->render('instruction/show.html.twig', [
-            'instruction' => $instruction,
-        ]);
-    }
-
+    /**
+     * Controller for editing an Instruction.
+     *
+     * @param Request $request
+     * @param Instruction $instruction
+     * @param InstructionRepository $instructionRepository
+     * @return Response
+     */
     #[Route('/{id}/edit', name: 'app_instruction_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Instruction $instruction, InstructionRepository $instructionRepository): Response
+    public function edit(
+        Request $request, 
+        Instruction $instruction, 
+        InstructionRepository $instructionRepository,
+    ): Response
     {
         $form = $this->createForm(InstructionType::class, $instruction);
         $form->handleRequest($request);
@@ -71,7 +76,11 @@ class InstructionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $instructionRepository->add($instruction, true);
 
-            return $this->redirectToRoute('app_instruction_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(
+                'app_recipe_show', 
+                ['id' => $instruction->getRecipe()->getId()], 
+                Response::HTTP_SEE_OTHER
+            );
         }
 
         return $this->renderForm('instruction/edit.html.twig', [
@@ -80,13 +89,29 @@ class InstructionController extends AbstractController
         ]);
     }
 
+    /**
+     * Controller for deleting an Instruction.
+     *
+     * @param Request $request
+     * @param Instruction $instruction
+     * @param InstructionRepository $instructionRepository
+     * @return Response
+     */
     #[Route('/{id}', name: 'app_instruction_delete', methods: ['POST'])]
-    public function delete(Request $request, Instruction $instruction, InstructionRepository $instructionRepository): Response
+    public function delete(
+        Request $request, 
+        Instruction $instruction, 
+        InstructionRepository $instructionRepository
+    ): Response
     {
         if ($this->isCsrfTokenValid('delete'.$instruction->getId(), $request->request->get('_token'))) {
             $instructionRepository->remove($instruction, true);
         }
 
-        return $this->redirectToRoute('app_instruction_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute(
+            'app_recipe_show', 
+            ['id' => $instruction->getRecipe()->getId()], 
+            Response::HTTP_SEE_OTHER
+        );
     }
 }
