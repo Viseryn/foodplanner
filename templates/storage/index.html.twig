@@ -21,9 +21,9 @@
                 <tbody>
                 {% for ingredient in ingredients %}
                     <tr>
-                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_show', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.id }}</a></td>
-                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_show', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.name }}</a></td>
-                        <td class="py-4 px-6">{{ ingredient.quantityValue }} {{ ingredient.quantityUnit }}</td>
+                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.id }}</a></td>
+                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.name }}</a></td>
+                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.quantityValue }} {{ ingredient.quantityUnit }}</a></td>
                     </tr>
                 {% else %}
                     <tr>
@@ -38,7 +38,7 @@
 
 <div class="flex">
     <div class="mx-auto p-6 md:mb-10 lg:mb-20 w-full md:w-1/2">
-        <a href="{{ path('app_ingredient_new_for_storage', {'id': 1}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Add new ingredient ...</a>
+        <a href="{{ path('app_ingredient_new_for_storage', {'storageId': 1}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Add new ingredient ...</a>
     </div>
 </div>
 {% endblock %}

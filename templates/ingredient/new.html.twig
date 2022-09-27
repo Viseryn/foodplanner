@@ -16,11 +16,9 @@
 <div class="flex">
     <div class="mx-auto p-6 md:mb-10 lg:mb-20 w-full md:w-1/2">
     {% if storage %}
-        <a href="{{ path('app_storage_index', {'id': storage.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Back to storage</a>
+        <a href="{{ path('app_storage_index') }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Back to storage</a>
     {% elseif recipe %}
         <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Back to recipe</a>
-    {% else %}
-        <a href="{{ path('app_ingredient_index') }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Back to list of ingredients</a>
     {% endif %}
     </div>
 </div>

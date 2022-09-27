@@ -15,24 +15,33 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/ingredient')]
 class IngredientController extends AbstractController
 {
-    #[Route('/', name: 'app_ingredient_index', methods: ['GET'])]
-    public function index(IngredientRepository $ingredientRepository): Response
-    {
-        return $this->render('ingredient/index.html.twig', [
-            'ingredients' => $ingredientRepository->findAll(),
-        ]);
-    }
-
+    /**
+     * Controller for adding a new Ingredient to either a 
+     * Recipe object or a Storage object.
+     * 
+     * (TODO) When selecting both a recipe and a storage in 
+     *        the form or none of the former, an SQL CONSTRAINT 
+     *        error is thrown. Ideally, the form shouldn't 
+     *        allow this in the first place.
+     *
+     * @param Request $request
+     * @param integer $recipeId
+     * @param integer $storageId
+     * @param IngredientRepository $ingredientRepository
+     * @param RecipeRepository $recipeRepository
+     * @param StorageRepository $storageRepository
+     * @return Response
+     */
     #[Route('/new', name: 'app_ingredient_new', methods: ['GET', 'POST'])]
-    #[Route('/new/recipe={recipeId}', name: 'app_ingredient_new_for_recipe', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    #[Route('/new/storage={storageId}', name: 'app_ingredient_new_for_storage', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/new/recipe={recipeId}', name: 'app_ingredient_new_for_recipe', methods: ['GET', 'POST'], requirements: ['recipeId' => '\d+'])]
+    #[Route('/new/storage={storageId}', name: 'app_ingredient_new_for_storage', methods: ['GET', 'POST'], requirements: ['storageId' => '\d+'])]
     public function new(
         Request $request, 
         int $recipeId = 0,
         int $storageId = 0, 
         IngredientRepository $ingredientRepository, 
         RecipeRepository $recipeRepository,
-        StorageRepository $storageRepository
+        StorageRepository $storageRepository,
     ): Response
     {
         $ingredient = new Ingredient();
@@ -53,9 +62,13 @@ class IngredientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredientRepository->add($ingredient, true);
 
-            if($storage)
-                return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
-            elseif($recipe)
+            if($recipe)
+                return $this->redirectToRoute(
+                    'app_recipe_show', 
+                    ['id' => $recipe->getId()], 
+                    Response::HTTP_SEE_OTHER
+                );
+            elseif($storage)
                 return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
             else
                 return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
@@ -69,16 +82,24 @@ class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_ingredient_show', methods: ['GET'])]
-    public function show(Ingredient $ingredient): Response
-    {
-        return $this->render('ingredient/show.html.twig', [
-            'ingredient' => $ingredient,
-        ]);
-    }
-
+    /**
+     * Controller for editing an Ingredient.
+     * 
+     * (TODO) Once an Ingredient is in either a recipe or a
+     *        storage, it shouldn't be able to switch to 
+     *        something else.
+     *
+     * @param Request $request
+     * @param Ingredient $ingredient
+     * @param IngredientRepository $ingredientRepository
+     * @return Response
+     */
     #[Route('/{id}/edit', name: 'app_ingredient_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Ingredient $ingredient, IngredientRepository $ingredientRepository): Response
+    public function edit(
+        Request $request, 
+        Ingredient $ingredient, 
+        IngredientRepository $ingredientRepository,
+    ): Response
     {
         $form = $this->createForm(IngredientType::class, $ingredient);
         $form->handleRequest($request);
@@ -86,7 +107,14 @@ class IngredientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredientRepository->add($ingredient, true);
 
-            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+            if($ingredient->getRecipe())
+                return $this->redirectToRoute(
+                    'app_recipe_show', 
+                    ['id' => $ingredient->getRecipe()->getId()], 
+                    Response::HTTP_SEE_OTHER
+                );
+            elseif($ingredient->getStorage())
+                return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('ingredient/edit.html.twig', [
@@ -95,13 +123,29 @@ class IngredientController extends AbstractController
         ]);
     }
 
+    /**
+     * Controller for deleting an Ingredient.
+     *
+     * @param Request $request
+     * @param Ingredient $ingredient
+     * @param IngredientRepository $ingredientRepository
+     * @return Response
+     */
     #[Route('/{id}', name: 'app_ingredient_delete', methods: ['POST'])]
-    public function delete(Request $request, Ingredient $ingredient, IngredientRepository $ingredientRepository): Response
+    public function delete(
+        Request $request, 
+        Ingredient $ingredient, 
+        IngredientRepository $ingredientRepository
+    ): Response
     {
         if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
             $ingredientRepository->remove($ingredient, true);
         }
 
-        return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute(
+            'app_recipe_show', 
+            ['id' => $ingredient->getRecipe()->getId()], 
+            Response::HTTP_SEE_OTHER
+        );
     }
 }

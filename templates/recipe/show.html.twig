@@ -15,9 +15,11 @@
         <ul class="list-inside list-disc">
         {% for ingredient in recipe.ingredients %}
             <li>
-                {{ ingredient.quantityValue }} 
-                {{ ingredient.quantityUnit }} 
-                {{ ingredient }}
+                <a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">
+                    {{ ingredient.quantityValue }} 
+                    {{ ingredient.quantityUnit }} 
+                    {{ ingredient }}
+                </a>
             </li>
         {% endfor %}
         </ul>
@@ -27,7 +29,11 @@
         </div>
         <ul class="list-inside list-decimal">
         {% for instruction in recipe.instructions %}
-            <li>{{ instruction }}</li>
+            <li>
+                <a href="{{ path('app_instruction_edit', {'id': instruction.id}) }}">
+                    {{ instruction }}
+                </a>
+            </li>
         {% endfor %}
         </ul>
     </div>
@@ -36,7 +42,7 @@
 <div class="flex">
     <div class="mx-auto p-6 md:mb-10 lg:mb-20 w-full md:w-1/2">
         <a href="{{ path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Add ingredient</a> <br />
-        <a href="{{ path('app_instruction_new_for_recipe', {'id': recipe.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Add instruction</a> <br />
+        <a href="{{ path('app_instruction_new_for_recipe', {'recipeId': recipe.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Add instruction</a> <br />
         <a href="{{ path('app_recipe_edit', {'id': recipe.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Edit recipe</a>
         {# {{ include('recipe/_delete_form.html.twig') }} #}
 
