@@ -18,6 +18,7 @@ class Instruction
     private ?string $instruction = null;
 
     #[ORM\ManyToOne(inversedBy: 'instructions')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
 
     public function getId(): ?int
