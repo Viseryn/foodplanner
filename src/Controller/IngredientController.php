@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Ingredient;
 use App\Form\IngredientType;
 use App\Repository\IngredientRepository;
+use App\Repository\RecipeRepository;
+use App\Repository\StorageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,21 +24,48 @@ class IngredientController extends AbstractController
     }
 
     #[Route('/new', name: 'app_ingredient_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, IngredientRepository $ingredientRepository): Response
+    #[Route('/new/recipe={recipeId}', name: 'app_ingredient_new_for_recipe', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/new/storage={storageId}', name: 'app_ingredient_new_for_storage', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function new(
+        Request $request, 
+        int $recipeId = 0,
+        int $storageId = 0, 
+        IngredientRepository $ingredientRepository, 
+        RecipeRepository $recipeRepository,
+        StorageRepository $storageRepository
+    ): Response
     {
         $ingredient = new Ingredient();
         $form = $this->createForm(IngredientType::class, $ingredient);
+
+        // Get recipe from id.
+        // If recipe exists, set default value for the recipe form field.
+        $recipe = $recipeRepository->find($recipeId);
+        $form->get('recipe')->setData($recipe);
+
+        // Get storage from id.
+        // If storage exists, set default value for the storage form field.
+        $storage = $storageRepository->find($storageId);
+        $form->get('storage')->setData($storage);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredientRepository->add($ingredient, true);
 
-            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+            if($storage)
+                return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
+            elseif($recipe)
+                return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
+            else
+                return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('ingredient/new.html.twig', [
             'ingredient' => $ingredient,
             'form' => $form,
+            'storage' => $storage,
+            'recipe' => $recipe,
         ]);
     }
 
