@@ -3,13 +3,55 @@
 {% block title %}Edit Ingredient{% endblock %}
 
 {% block main %}
-    <h1>Edit Ingredient</h1>
+<div class="flex">
+    <div class="rounded-b-3xl md:rounded-3xl shadow-md border border-gray-200  bg-white mx-auto p-6 md:mt-10 lg:mt-20 w-full md:w-1/2">
+        <div class="text-xl font-semibold text-violet-700 mb-6">
+            Edit Ingredient
+        </div>
+        
+        {{ form_start(form) }}
+            {{ form_row(form.name, {
+                row_attr: {'class': 'mb-6'},
+                label_attr: {'class': 'text-sm font-semibold block mb-2'},
+                attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            }) }}
 
-    {{ include('ingredient/_form.html.twig', {'button_label': 'Update'}) }}
+            {{ form_row(form.quantityValue, {
+                row_attr: {'class': 'mb-6'},
+                label_attr: {'class': 'text-sm font-semibold block mb-2'},
+                attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            }) }}
+
+            {{ form_row(form.quantityUnit, {
+                row_attr: {'class': 'mb-6'},
+                label_attr: {'class': 'text-sm font-semibold block mb-2'},
+                attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            }) }}
+            
+            <div class="flex justify-between items-center">
+                <div></div>
+                <button type="submit" class="transition rounded-full w-32 h-10 px-6 shadow-md bg-violet-600 hover:bg-violet-500 hover:scale-110 font-semibold text-white">
+                    Update
+                </button>
+            </div>
+
+            {{ form_row(form._token) }}
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<div class="flex">
+    <div class="mx-auto p-6 md:mb-10 lg:mb-20 w-full md:w-1/2">
+    {% if ingredient.storage %}
+        <a href="{{ path('app_storage_index') }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Back to storage</a>
+    {% elseif ingredient.recipe %}
+        <a href="{{ path('app_recipe_show', {'id': ingredient.recipe.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Back to recipe</a>
+    {% endif %}
 
     <form method="post" action="{{ path('app_ingredient_delete', {'id': ingredient.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ingredient.id) }}">
         <button class="btn">Delete</button>
     </form>
-
+    </div>
+</div>
 {% endblock %}

@@ -112,12 +112,19 @@ class IngredientController extends AbstractController
         IngredientRepository $ingredientRepository,
     ): Response
     {
-        $form = $this->createForm(IngredientType::class, $ingredient);
+        $form = $this->createFormBuilder($ingredient)
+            ->add('name')
+            ->add('quantityValue')
+            ->add('quantityUnit')
+            ->getForm();
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredientRepository->add($ingredient, true);
 
+            // Redirect to corresponding recipe or storage
+            // (TODO) Shopping list
             if($ingredient->getRecipe())
                 return $this->redirectToRoute(
                     'app_recipe_show', 
