@@ -1,7 +1,9 @@
 {# templates/form/tailwind_theme.html.twig #}
-{% use 'form_div_layout.html.twig' %}
+{# {% use 'form_div_layout.html.twig' %} #}
 
-{% block form_row %}
-    {% set attr = {class: 'mb-6'} %}
-    {{ parent() }}
-{% endblock %}
+{# {% block text_row %}
+<div {% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+    <label {% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}>{{ label }}</label>
+    <input {{ block('widget_attributes') }} />
+</div>
+{% endblock %} #}
