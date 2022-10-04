@@ -23,7 +23,7 @@ class PlanController extends AbstractController
 
 
     // #[Route('/new', name: 'app_day_new', methods: ['GET', 'POST'])]
-    public function newDay(Request $request, ...): Response
+    public function newDay(Request $request): Response
     {
         
     }
