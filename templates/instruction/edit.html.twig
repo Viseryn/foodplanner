@@ -10,16 +10,16 @@
         </div>
 
         {{ form_start(form) }}
-            {{ form_row(form.instruction, {
-                row_attr: {'class': 'mb-6'},
-                label_attr: {'class': 'text-sm font-semibold block mb-2'},
-                attr: {'class': 'border rounded-xl px-4 py-2 shadow-sm w-full', 'rows': 6},
-            }) }}
-            
-            <div class="flex justify-between items-center">
-                <div></div>
-                <button type="submit" class="transition rounded-full w-32 h-10 px-6 shadow-md bg-violet-600 hover:bg-violet-500 hover:scale-110 font-semibold text-white">
-                    Update
+            <div class="flex flex-row items-end">
+                {{ form_row(form.instruction, {
+                    row_attr: {'class': 'flex-1 mr-6'},
+                    label_attr: {'class': 'text-sm font-semibold block mb-2'},
+                    attr: {'class': 'border rounded-xl px-4 py-2 shadow-sm w-full', 'rows': 6},
+                }) }}
+
+                <button type="submit" class="text-violet-700 text-xl rounded-full transition duration-500 hover:bg-violet-200 inline-flex justify-center p-2 flex-none">
+                    {# <span class="material-symbols-rounded">send</span> #}
+                    <svg aria-hidden="true" class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
                 </button>
             </div>
 
