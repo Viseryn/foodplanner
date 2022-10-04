@@ -48,10 +48,10 @@
         <a href="{{ path('app_recipe_show', {'id': ingredient.recipe.id}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Back to recipe</a>
     {% endif %}
 
-    <form method="post" action="{{ path('app_ingredient_delete', {'id': ingredient.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ingredient.id) }}">
-        <button class="btn">Delete</button>
-    </form>
+        <form method="post" action="{{ path('app_ingredient_delete', {'id': ingredient.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ingredient.id) }}">
+            <button class="transition duration-700 text-slate-400 hover:text-slate-600">Delete ingredient</button>
+        </form>
     </div>
 </div>
 {% endblock %}

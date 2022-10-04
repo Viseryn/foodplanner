@@ -23,7 +23,6 @@ class InstructionController extends AbstractController
      * @param RecipeRepository $recipeRepository
      * @return Response
      */
-    #[Route('/new', name: 'app_instruction_new', methods: ['GET', 'POST'])]
     #[Route('/new/recipe={recipeId}', name: 'app_instruction_new_for_recipe', methods: ['GET', 'POST'], requirements: ['recipeId' => '\d+'])]
     public function new(
         Request $request, 
@@ -32,20 +31,28 @@ class InstructionController extends AbstractController
         RecipeRepository $recipeRepository
     ): Response
     {
+        // Build form for new Instruction
         $instruction = new Instruction();
-        $form = $this->createForm(InstructionType::class, $instruction);
+        $form = $this->createFormBuilder($instruction)
+            ->add('instruction')
+            ->getForm();
 
-        // Get recipe from id.
-        // If recipe exists, set default value for the recipe form field.
+        // Find recipe by $recipeId and throw Error 404 if it does not exist
         $recipe = $recipeRepository->find($recipeId);
-        $form->get('recipe')->setData($recipe);
-
+        if($recipe === null)
+            throw $this->createNotFoundException('Recipe does not exist.');
+        
+        $instruction->setRecipe($recipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $instructionRepository->add($instruction, true);
 
-            return $this->redirectToRoute('app_recipe_show', ['id' => $recipe->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(
+                'app_recipe_show', 
+                ['id' => $recipe->getId()], 
+                Response::HTTP_SEE_OTHER
+            );
         }
 
         return $this->renderForm('instruction/new.html.twig', [
@@ -70,7 +77,10 @@ class InstructionController extends AbstractController
         InstructionRepository $instructionRepository,
     ): Response
     {
-        $form = $this->createForm(InstructionType::class, $instruction);
+        $form = $this->createFormBuilder($instruction)
+            ->add('instruction')
+            ->getForm();
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
