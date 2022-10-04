@@ -159,11 +159,14 @@ class IngredientController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
             $ingredientRepository->remove($ingredient, true);
         }
-
-        return $this->redirectToRoute(
-            'app_recipe_show', 
-            ['id' => $ingredient->getRecipe()->getId()], 
-            Response::HTTP_SEE_OTHER
-        );
+        
+        if($ingredient->getRecipe())
+            return $this->redirectToRoute(
+                'app_recipe_show', 
+                ['id' => $ingredient->getRecipe()->getId()], 
+                Response::HTTP_SEE_OTHER
+            );
+        elseif($ingredient->getStorage())
+            return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
     }
 }
