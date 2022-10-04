@@ -9,7 +9,34 @@
             Add new ingredient
         </div>
 
-    {{ include('ingredient/_form.html.twig') }}
+        {{ form_start(form) }}
+            {{ form_row(form.name, {
+                row_attr: {'class': 'mb-6'},
+                label_attr: {'class': 'text-sm font-semibold block mb-2'},
+                attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            }) }}
+
+            {{ form_row(form.quantityValue, {
+                row_attr: {'class': 'mb-6'},
+                label_attr: {'class': 'text-sm font-semibold block mb-2'},
+                attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            }) }}
+
+            {{ form_row(form.quantityUnit, {
+                row_attr: {'class': 'mb-6'},
+                label_attr: {'class': 'text-sm font-semibold block mb-2'},
+                attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            }) }}
+            
+            <div class="flex justify-between items-center">
+                <div></div>
+                <button type="submit" class="transition rounded-full w-32 h-10 px-6 shadow-md bg-violet-600 hover:bg-violet-500 hover:scale-110 font-semibold text-white">
+                    Save
+                </button>
+            </div>
+
+            {{ form_row(form._token) }}
+        {{ form_end(form) }}
     </div>
 </div>
 

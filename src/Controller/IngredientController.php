@@ -32,7 +32,6 @@ class IngredientController extends AbstractController
      * @param StorageRepository $storageRepository
      * @return Response
      */
-    #[Route('/new', name: 'app_ingredient_new', methods: ['GET', 'POST'])]
     #[Route('/new/recipe={recipeId}', name: 'app_ingredient_new_for_recipe', methods: ['GET', 'POST'], requirements: ['recipeId' => '\d+'])]
     #[Route('/new/storage={storageId}', name: 'app_ingredient_new_for_storage', methods: ['GET', 'POST'], requirements: ['storageId' => '\d+'])]
     public function new(
@@ -44,36 +43,48 @@ class IngredientController extends AbstractController
         StorageRepository $storageRepository,
     ): Response
     {
+        // Build form for new Ingredient
         $ingredient = new Ingredient();
-        $form = $this->createForm(IngredientType::class, $ingredient);
+        $form = $this->createFormBuilder($ingredient)
+            ->add('name')
+            ->add('quantityValue')
+            ->add('quantityUnit')
+            ->getForm();
 
-        // Get recipe from id.
-        // If recipe exists, set default value for the recipe form field.
+        // Find recipe or storage by $recipeId or $storageId
         $recipe = $recipeRepository->find($recipeId);
-        $form->get('recipe')->setData($recipe);
-
-        // Get storage from id.
-        // If storage exists, set default value for the storage form field.
         $storage = $storageRepository->find($storageId);
-        $form->get('storage')->setData($storage);
 
+        // Throw Error 404 if recipe or storage does not exist
+        if($recipe === null && $storage === null) {
+            if($recipeId > 0) 
+                throw $this->createNotFoundException('Recipe does not exist.');
+            elseif($storageId > 0) 
+                throw $this->createNotFoundException('Storage does not exist.');
+        }
+        
+        // Add recipe or storage to the Ingredient
+        $ingredient->setRecipe($recipe)->setStorage($storage);
+
+        // Handle requests
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredientRepository->add($ingredient, true);
 
-            if($recipe)
+            // Redirect to corresponding recipe or storage
+            // (TODO) Shopping list
+            if($recipe !== null)
                 return $this->redirectToRoute(
                     'app_recipe_show', 
                     ['id' => $recipe->getId()], 
                     Response::HTTP_SEE_OTHER
                 );
-            elseif($storage)
+            elseif($storage !== null)
                 return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
-            else
-                return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        // Render page
         return $this->renderForm('ingredient/new.html.twig', [
             'ingredient' => $ingredient,
             'form' => $form,
