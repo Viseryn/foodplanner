@@ -1,19 +1,15 @@
 {# templates/sidebar/_sidebar.html.twig #}
 
 <ul class="space-y-2">
-    <li>
-        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group" href="{{ path('app_recipe_index') }}">
-            <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">soup_kitchen</span>
-            <span class="ml-3 flex-1">Recipes</span>
-            {{ render(controller(
-                'App\\Controller\\RecipeController::numberOfRecipes'
-            ))}}
-        </a>
-    </li>
-    <li>
-        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group" href="{{ path('app_storage_index') }}">
-            <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">kitchen</span>
-            <span class="ml-3">Pantry</span>
-        </a>
-    </li>
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'soup_kitchen',
+        name: 'Recipes',
+        path: path('app_recipe_index'),
+        badge: render(controller('App\\Controller\\RecipeController::numberOfRecipes')),
+    }) }}
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'kitchen',
+        name: 'Pantry',
+        path: path('app_storage_index'),
+    }) }}
 </ul>

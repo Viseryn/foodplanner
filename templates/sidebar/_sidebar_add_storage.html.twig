@@ -1,10 +1,9 @@
 {# templates/sidebar/_sidebar_add_storage.html.twig #}
 
 <ul class="space-y-2">
-    <li>
-        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group" href="{{ path('app_ingredient_new_for_storage', {'storageId': 1}) }}">
-            <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">add_circle</span>
-            <span class="ml-3">Add new ingredient</span>
-        </a>
-    </li>
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'add_circle',
+        name: 'Add new ingredient',
+        path: path('app_ingredient_new_for_storage', {'storageId': 1}),
+    }) }}
 </ul>

@@ -15,15 +15,12 @@
     {{ include('sidebar/_sidebar_back_to_recipe.html.twig', {recipe: instruction.recipe}) }}
     {{ include('sidebar/_sidebar_space.html.twig') }}
     <ul class="space-y-2">
-        <li>
-            <form method="post" action="{{ path('app_instruction_delete', {'id': instruction.id}) }}" onsubmit="return confirm('Are you sure you want to delete this instruction?');">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ instruction.id) }}">
-                <button class="flex w-full items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group">
-                    <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">delete</span>
-                    <span class="ml-3">Delete instruction</span>
-                </button>
-            </form>
-        </li>
+        {{ include('sidebar/_sidebar_item_form.html.twig', {
+            icon: 'delete',
+            name: 'Delete instruction',
+            path: path('app_instruction_delete', {'id': instruction.id}),
+            id: instruction.id,
+        }) }}
     </ul>
 {% endblock %}
 
