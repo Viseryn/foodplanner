@@ -42,7 +42,7 @@
         <ol class="space-y-2">
             {% for instruction in recipe.instructions %}
                 <li class="flex px-6">
-                    <div class="mr-2">{{ loop.index }}.</div>
+                    <div class="mr-2">{{ loop.index }})</div>
                     <a class="flex-1" href="{{ path('app_instruction_edit', {'id': instruction.id}) }}">{{ instruction }}</a>
                 </li>
             {% else %}
