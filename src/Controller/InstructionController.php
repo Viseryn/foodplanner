@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Instruction;
-use App\Form\InstructionType;
 use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
