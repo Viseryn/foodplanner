@@ -83,4 +83,17 @@ class RecipeController extends AbstractController
 
         return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    /**
+     * Renders the number of recipes for the sidebar.
+     *
+     * @param RecipeRepository $recipeRepository
+     * @return Response
+     */
+    public function numberOfRecipes(RecipeRepository $recipeRepository): Response 
+    {
+        return $this->render('sidebar/_number_of_recipes.html.twig', [
+            'numberOfRecipes' => count($recipeRepository->findAll()),
+        ]);
+    }
 }
