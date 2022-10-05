@@ -16,8 +16,8 @@ class Ingredient
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $quantityValue = null;
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $quantityValue = null;
 
     #[ORM\Column(length: 16, nullable: true)]
     private ?string $quantityUnit = null;
@@ -45,12 +45,12 @@ class Ingredient
         return $this;
     }
 
-    public function getQuantityValue(): ?int
+    public function getQuantityValue(): ?string
     {
         return $this->quantityValue;
     }
 
-    public function setQuantityValue(?int $quantityValue): self
+    public function setQuantityValue(?string $quantityValue): self
     {
         $this->quantityValue = $quantityValue;
 
