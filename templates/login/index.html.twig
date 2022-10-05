@@ -1,8 +1,9 @@
 {# templates/login/index.html.twig #}
 
 {% extends 'base.html.twig' %}
+{% set heading = 'Sign in' %}
 
-{% block title %}Sign in{% endblock %}
+{% block title %}{{ heading }}{% endblock %}
 
 {% block sidebar %}
     {% if error %}
@@ -28,9 +29,8 @@
     </div>
 
 {% else %}
-    <div class="text-2xl font-semibold text-blue-600 mb-10">
-        Sign in to FoodPlanner
-    </div>
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+    
     <form action="{{ path('app_login') }}" method="post" style="width: 350px">
         <div class="mb-6">
             <label for="username" class="text-sm font-semibold block mb-2">Your username</label>

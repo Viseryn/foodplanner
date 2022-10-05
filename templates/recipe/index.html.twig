@@ -1,8 +1,9 @@
 {# templates/recipe/index.html.twig #}
 
 {% extends 'base.html.twig' %}
+{% set heading = 'List of recipes' %}
 
-{% block title %}List of recipes{% endblock %}
+{% block title %}{{ heading }}{% endblock %}
 
 {% block sidebar %}
     {{ include('sidebar/_sidebar_hline.html.twig') }}
@@ -10,9 +11,7 @@
 {% endblock %}
 
 {% block main %}
-    <div class="text-2xl font-semibold text-blue-600 mb-10">
-        List of recipes
-    </div>
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
 
     <div class="overflow-x-auto relative">
         <table class="table-fixed w-full text-left">

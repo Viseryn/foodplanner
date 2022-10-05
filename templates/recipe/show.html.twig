@@ -1,8 +1,9 @@
 {# templates/recipe/show.html.twig #}
 
 {% extends 'base.html.twig' %}
+{% set heading = recipe.title %}
 
-{% block title %}Recipe{% endblock %}
+{% block title %}{{ heading }}{% endblock %}
 
 {% block sidebar %}
     {{ include('sidebar/_sidebar_hline.html.twig') }}
@@ -12,9 +13,7 @@
 {% endblock %}
 
 {% block main %}
-    <div class="text-2xl font-semibold text-blue-600 mb-10">
-        {{ recipe.title }}
-    </div>
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
 
 
     <div class="mb-10">
