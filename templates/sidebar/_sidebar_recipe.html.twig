@@ -1,6 +1,6 @@
 {# templates/sidebar/_sidebar_recipe.html.twig #}
 
-<ul class="pt-4 mt-4 space-y-2 border-t border-gray-200">
+<ul class="space-y-2">
     <div class="p-2 text-base font-semibold">{{ recipe.title }}</div>
     <li>
         <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-150 hover:bg-gray-100 group" href="{{ path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}) }}">

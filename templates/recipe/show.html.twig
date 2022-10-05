@@ -3,7 +3,10 @@
 {% block title %}Recipe{% endblock %}
 
 {% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
     {{ include('sidebar/_sidebar_recipe.html.twig') }}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
 {% endblock %}
 
 {% block main %}
