@@ -17,19 +17,17 @@
         <table class="table-fixed w-full text-left">
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="py-3 px-6 rounded-l-xl w-1/12">#</th>
-                    <th class="py-3 px-6 rounded-r-xl">Recipe</th>
+                    <th class="py-3 px-6 rounded-xl">Recipe</th>
                 </tr>
             </thead>
             <tbody>
             {% for recipe in recipes %}
                 <tr>
-                    <td class="py-4 px-6"><a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="transition duration-700 hover:text-gray-900">{{ recipe.id }}</a></td>
-                    <td class="py-4 px-6"><a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="transition duration-700 hover:text-gray-900">{{ recipe.title }}</a></td>
+                    <td class="py-4 px-6"><a href="{{ path('app_recipe_show', {'id': recipe.id}) }}">{{ recipe.title }}</a></td>
                 </tr>
             {% else %}
                 <tr>
-                    <td class="py-4 px-6" colspan="2">No recipes found.</td>
+                    <td class="py-4 px-6">No recipes found.</td>
                 </tr>
             {% endfor %}
             </tbody>
