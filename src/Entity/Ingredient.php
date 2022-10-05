@@ -45,6 +45,26 @@ class Ingredient
         return $this;
     }
 
+    /**
+     * Returns the quantity value as float.
+     * Checks for specific fractions like "1/2"
+     * and converts them manually.
+     *
+     * @return string|null
+     */
+    public function getQuantityValueAsFloat(): ?string
+    {
+        $returnValue = $this->quantityValue;
+        
+        switch($returnValue) {
+            case '1/2':
+                $returnValue = 0.5;
+                break;
+        }
+        
+        return (float) $returnValue;
+    }
+
     public function getQuantityValue(): ?string
     {
         return $this->quantityValue;
