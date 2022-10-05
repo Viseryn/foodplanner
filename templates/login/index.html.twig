@@ -2,13 +2,23 @@
 
 {% block title %}Sign in{% endblock %}
 
+{% block sidebar %}
+    {% if error %}
+        <div class="flex p-4 mt-10 text-sm text-red-700 bg-red-100 rounded-3xl items-center" role="alert">
+            <span class="material-symbols-rounded flex-shrink-0 inline mr-5">info</span>
+            <div>
+                <span class="font-medium">{{ error.messageKey | trans(error.messageData, 'security') }}</span> <br />
+                Please try again.
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block main %}
-<div class="rounded-b-3xl md:rounded-3xl shadow-md border border-gray-200  bg-white mx-auto p-6 md:my-10 lg:my-20 md:w-96 self-center">
 
 {% if app.user %}
-    <div class="flex p-4 text-sm text-green-700 bg-green-100 rounded-full" role="alert">
-        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3 items-center" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-        <span class="sr-only">Info</span>
+    <div class="flex p-4 text-sm text-green-700 bg-green-100 rounded-3xl items-center" role="alert">
+        <span class="material-symbols-rounded flex-shrink-0 inline mr-5">info</span>
         <div class="flex w-full justify-between">
             <span class="font-medium">You are successfully signed in!</span>
             <a href="{{ path('app_logout') }}">Sign out ...</a>
@@ -16,10 +26,10 @@
     </div>
 
 {% else %}
-    <div class="text-xl font-semibold text-violet-700 mb-6">
+    <div class="text-2xl font-semibold text-blue-600 mb-10">
         Sign in to FoodPlanner
     </div>
-    <form action="{{ path('app_login') }}" method="post">
+    <form action="{{ path('app_login') }}" method="post" style="width: 350px">
         <div class="mb-6">
             <label for="username" class="text-sm font-semibold block mb-2">Your username</label>
             <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username ..." class="border rounded-full h-10 px-6 shadow-sm w-full" />
@@ -34,7 +44,10 @@
     	        <a href="#" class="transition duration-700 text-slate-400 hover:text-slate-600">Forgot your password?</a> <br /> 
                 <a href="{{ path('app_register') }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Sign up for FoodPlanner</a>
             </div>
-            <button type="submit" class="transition rounded-full w-32 h-10 px-6 shadow-md bg-violet-600 hover:bg-violet-500 hover:scale-110 font-semibold text-white">Sign in</button>
+            <button type="submit" class="transition duration-300 rounded-full h-10 pl-4 pr-6 shadow-md bg-blue-600 hover:bg-blue-500 font-semibold text-white text-lg flex items-center">
+                <span class="material-symbols-rounded">login</span>
+                <span class="ml-3">Sign in</span>
+            </button>
         </div>
 
         <input type="hidden" name="_target_path" value="/login" />
@@ -42,51 +55,4 @@
     </form>
 {% endif %}
 
-{% if error %}
-    <div class="flex p-4 mt-6 text-sm text-red-700 bg-red-100 rounded-full" role="alert">
-        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-        <span class="sr-only">Info</span>
-        <div>
-            <span class="font-medium">{{ error.messageKey | trans(error.messageData, 'security') }}</span> Please try again.
-        </div>
-    </div>
-{% endif %}
-
-</div>
 {% endblock %}
-
-{# 
-<div class="max-w-2xl mx-auto">
-	<div class="bg-white shadow-md border border-gray-200 rounded-lg max-w-sm p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-		<form class="space-y-6" action="#">
-			<h3 class="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
-			<div>
-				<label for="email" class="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your email</label>
-				<input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required="">
-            </div>
-
-            <div>
-                <label for="password" class="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your password</label>
-                <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required="">
-            </div>
-
-            <div class="flex items-start">
-                <div class="flex items-start">
-                    <div class="flex items-center h-5">
-                        <input id="remember" aria-describedby="remember" type="checkbox" class="bg-gray-50 border border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required="">
-                    </div>
-                    <div class="text-sm ml-3">
-                        <label for="remember" class="font-medium text-gray-900 dark:text-gray-300">Remember me</label>
-                    </div>
-                </div>
-                <a href="#" class="text-sm text-blue-700 hover:underline ml-auto dark:text-blue-500">Lost Password?</a>
-            </div>
-
-            <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login to your account</button>
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
-                Not registered? <a href="#" class="text-blue-700 hover:underline dark:text-blue-500">Create account</a>
-            </div>
-		</form>
-	</div>
-</div>
-#} 
