@@ -17,17 +17,17 @@ class InstructionController extends AbstractController
      * Controller for adding an Instruction to a Recipe.
      *
      * @param Request $request
-     * @param integer $recipeId
      * @param InstructionRepository $instructionRepository
      * @param RecipeRepository $recipeRepository
+     * @param integer $recipeId
      * @return Response
      */
     #[Route('/new/recipe={recipeId}', name: 'app_instruction_new_for_recipe', methods: ['GET', 'POST'], requirements: ['recipeId' => '\d+'])]
     public function new(
         Request $request, 
-        int $recipeId = 0, 
         InstructionRepository $instructionRepository, 
-        RecipeRepository $recipeRepository
+        RecipeRepository $recipeRepository,
+        int $recipeId = 0, 
     ): Response
     {
         // Build form for new Instruction
@@ -110,7 +110,7 @@ class InstructionController extends AbstractController
     public function delete(
         Request $request, 
         Instruction $instruction, 
-        InstructionRepository $instructionRepository
+        InstructionRepository $instructionRepository,
     ): Response
     {
         if ($this->isCsrfTokenValid('delete'.$instruction->getId(), $request->request->get('_token'))) {
