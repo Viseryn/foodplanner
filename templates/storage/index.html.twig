@@ -1,44 +1,38 @@
-{% extends 'base.html.twig' %}
+{# templates/storage/index.html.twig #}
 
-{% block title %}Storage index{% endblock %}
+{% extends 'base.html.twig' %}
+{% set heading = 'Pantry' %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_add_storage.html.twig') }}
+{% endblock %}
 
 {% block main %}
-<div class="flex">
-    <div class="rounded-b-3xl md:rounded-3xl shadow-md border border-gray-200  bg-white mx-auto p-6 md:mt-10 lg:mt-20 w-full md:w-1/2">
-        <div class="text-xl font-semibold text-violet-700 mb-6">
-            Storage
-        </div>
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-        <div class="overflow-x-auto relative">
-            <table class="table-fixed w-full text-sm text-left text-gray-500">
-                <thead class="text-xs text-gray-700 bg-gray-100">
-                    <tr>
-                        <th class="py-3 px-6 rounded-l-lg w-1/12">#</th>
-                        <th class="py-3 px-6 w-5/12">Ingredient</th>
-                        <th class="py-3 px-6 rounded-r-lg">Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for ingredient in ingredients %}
-                    <tr>
-                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.id }}</a></td>
-                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.name }}</a></td>
-                        <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="transition duration-700 hover:text-gray-900">{{ ingredient.quantityValue }} {{ ingredient.quantityUnit }}</a></td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td class="py-4 px-6" colspan="4">No ingredients found.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="overflow-x-auto relative">
+        <table class="table-fixed w-full text-left">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3 px-6 rounded-l-xl w-6/12">Ingredient</th>
+                    <th class="py-3 px-6 rounded-r-xl">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for ingredient in ingredients %}
+                <tr>
+                    <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">{{ ingredient.name }}</a></td>
+                    <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">{{ ingredient.quantityValue }} {{ ingredient.quantityUnit }}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="py-4 px-6" colspan="3">No ingredients found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
-
-<div class="flex">
-    <div class="mx-auto p-6 md:mb-10 lg:mb-20 w-full md:w-1/2">
-        <a href="{{ path('app_ingredient_new_for_storage', {'storageId': 1}) }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Add new ingredient ...</a>
-    </div>
-</div>
 {% endblock %}
