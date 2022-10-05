@@ -1,19 +1,8 @@
-{#
- # Twig Variables
- #}
+{# templates/base.html.twig #}
 
-{# General variables #}
+{% extends '_vars.html.twig' %}
 
-{# Input Widget #}
-{% set inputClass = 'border rounded-full h-10 px-6 shadow-sm w-full' %}
-{% set inputLabelClass = 'text-sm font-semibold block mb-2' %}
-{% set inputRowClass = 'mb-6' %}
-
-{# Textarea Widget #}
-{% set textareaClass = 'block border border-gray-300 rounded-xl px-4 py-2 shadow-sm w-full' %}
-{% set textareaLabelClass = inputLabelClass %}
-{% set textareaRowClass = inputRowClass %}
-
+{% block html %}
 {# BEGIN HTML #}
 <!DOCTYPE html>
 <html>
@@ -71,3 +60,4 @@
     </body>
 </html>
 {# END HTML #}
+{% endblock %}
