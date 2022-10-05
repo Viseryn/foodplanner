@@ -17,11 +17,6 @@ class IngredientController extends AbstractController
     /**
      * Controller for adding a new Ingredient to either a 
      * Recipe object or a Storage object.
-     * 
-     * (TODO) When selecting both a recipe and a storage in 
-     *        the form or none of the former, an SQL CONSTRAINT 
-     *        error is thrown. Ideally, the form shouldn't 
-     *        allow this in the first place.
      *
      * @param Request $request
      * @param IngredientRepository $ingredientRepository
@@ -87,17 +82,11 @@ class IngredientController extends AbstractController
         return $this->renderForm('ingredient/new.html.twig', [
             'ingredient' => $ingredient,
             'form' => $form,
-            'storage' => $storage,
-            'recipe' => $recipe,
         ]);
     }
 
     /**
      * Controller for editing an Ingredient.
-     * 
-     * (TODO) Once an Ingredient is in either a recipe or a
-     *        storage, it shouldn't be able to switch to 
-     *        something else.
      *
      * @param Request $request
      * @param Ingredient $ingredient
