@@ -22,7 +22,7 @@
     <div class="mb-10">
         <div class="bg-gray-100 font-bold px-6 py-3 mb-3 rounded-xl flex justify-between items-center">
             <span>Ingredients for {% if recipe.portionSize == 1 %}one portion{% else %}{{ recipe.portionSize }} portions{% endif %}</span>
-            <a href="{{ path('app_instruction_new_for_recipe', {'recipeId': recipe.id}) }}" class="material-symbols-rounded transition duration-300 rounded-full hover:text-blue-600 hover:bg-blue-200">add</a>
+            <a href="{{ path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}) }}" class="material-symbols-rounded transition duration-300 rounded-full hover:text-blue-600 hover:bg-blue-200">add</a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2">
             {% for ingredient in recipe.ingredients %}
