@@ -3,28 +3,28 @@
 <ul class="space-y-2">
     <div class="p-2 text-base font-semibold">{{ recipe.title }}</div>
     <li>
-        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-150 hover:bg-gray-100 group" href="{{ path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}) }}">
-            <span class="material-symbols-rounded flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900">bakery_dining</span>
+        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group" href="{{ path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}) }}">
+            <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">bakery_dining</span>
             <span class="ml-3">Add ingredient</span>
         </a>
     </li>
     <li>
-        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-150 hover:bg-gray-100 group" href="{{ path('app_instruction_new_for_recipe', {'recipeId': recipe.id}) }}">
-            <span class="material-symbols-rounded flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900">playlist_add</span>
+        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group" href="{{ path('app_instruction_new_for_recipe', {'recipeId': recipe.id}) }}">
+            <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">playlist_add</span>
             <span class="ml-3">Add instruction</span>
         </a>
     </li>
     <li>
-        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-150 hover:bg-gray-100 group" href="{{ path('app_recipe_edit', {'id': recipe.id}) }}">
-            <span class="material-symbols-rounded flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900">drive_file_rename_outline</span>
+        <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group" href="{{ path('app_recipe_edit', {'id': recipe.id}) }}">
+            <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">drive_file_rename_outline</span>
             <span class="ml-3">Edit recipe</span>
         </a>
     </li>
     <li>
         <form method="post" action="{{ path('app_recipe_delete', {'id': recipe.id}) }}" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
-            <button class="flex w-full items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-150 hover:bg-gray-100 group" href="{{ path('app_recipe_delete', {'id': recipe.id}) }}">
-                <span class="material-symbols-rounded flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900">delete_sweep</span>
+            <button class="flex w-full items-center p-2 text-base font-normal text-gray-900 rounded-xl transition duration-300 hover:bg-gray-100 group" href="{{ path('app_recipe_delete', {'id': recipe.id}) }}">
+                <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">delete_sweep</span>
                 <span class="ml-3">Delete recipe</span>
             </button>
         </form>
