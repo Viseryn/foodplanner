@@ -43,13 +43,10 @@
 
         <div class="flex justify-between items-center">
             <div class="text-sm">
-    	        <a href="#" class="transition duration-700 text-slate-400 hover:text-slate-600">Forgot your password?</a> <br /> 
-                <a href="{{ path('app_register') }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Sign up for FoodPlanner</a>
+    	        <a href="#" class="transition duration-300 text-slate-400 hover:text-slate-600">Forgot your password?</a> <br /> 
+                <a href="{{ path('app_register') }}" class="transition duration-300 text-slate-400 hover:text-slate-600">Sign up for FoodPlanner</a>
             </div>
-            <button type="submit" class="transition duration-300 rounded-full h-10 pl-4 pr-6 shadow-md bg-blue-600 hover:bg-blue-500 font-semibold text-white text-lg flex items-center">
-                <span class="material-symbols-rounded">login</span>
-                <span class="ml-3">Sign in</span>
-            </button>
+            {{ include('component/_submit_button.html.twig', {icon: 'login', label: 'Sign in'}) }}
         </div>
 
         <input type="hidden" name="_target_path" value="/login" />
