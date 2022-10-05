@@ -25,22 +25,22 @@ class IngredientController extends AbstractController
      *        allow this in the first place.
      *
      * @param Request $request
-     * @param integer $recipeId
-     * @param integer $storageId
      * @param IngredientRepository $ingredientRepository
      * @param RecipeRepository $recipeRepository
      * @param StorageRepository $storageRepository
+     * @param integer $recipeId
+     * @param integer $storageId
      * @return Response
      */
     #[Route('/new/recipe={recipeId}', name: 'app_ingredient_new_for_recipe', methods: ['GET', 'POST'], requirements: ['recipeId' => '\d+'])]
     #[Route('/new/storage={storageId}', name: 'app_ingredient_new_for_storage', methods: ['GET', 'POST'], requirements: ['storageId' => '\d+'])]
     public function new(
         Request $request, 
-        int $recipeId = 0,
-        int $storageId = 0, 
         IngredientRepository $ingredientRepository, 
         RecipeRepository $recipeRepository,
         StorageRepository $storageRepository,
+        int $recipeId = 0,
+        int $storageId = 0, 
     ): Response
     {
         // Build form for new Ingredient
@@ -153,7 +153,7 @@ class IngredientController extends AbstractController
     public function delete(
         Request $request, 
         Ingredient $ingredient, 
-        IngredientRepository $ingredientRepository
+        IngredientRepository $ingredientRepository,
     ): Response
     {
         if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
