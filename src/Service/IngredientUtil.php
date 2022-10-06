@@ -28,7 +28,7 @@ class IngredientUtil
         }
 
         // If there is no whitespace, use regex to split
-        preg_match('/(\d+|\d*\.\d+|\d+\/\d+)(\w*)/', $quantity, $quantityData);
+        preg_match('/^(\d+|\d*\.\d+|\d+\/\d+)(\w*)$/', $quantity, $quantityData);
         array_shift($quantityData);
         return $quantityData;
     }
