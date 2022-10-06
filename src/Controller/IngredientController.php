@@ -69,7 +69,7 @@ class IngredientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Split value and unit of quantity and add to Ingredient
             $quantity = $ingredientUtil->quantitySplit($form['quantity']->getData());
-            $ingredient->setQuantityValue($quantity[0])->setQuantityUnit($quantity[1]);
+            $ingredient->setQuantity($quantity);
 
             $ingredientRepository->add($ingredient, true);
 
@@ -113,10 +113,7 @@ class IngredientController extends AbstractController
             ->add('quantity', TextType::class, [
                 'mapped' => false,
                 'required' => false,
-                'data' => $ingredientUtil->quantityFull(
-                    $ingredient->getQuantityValue(), 
-                    $ingredient->getQuantityUnit(),
-                ),
+                'data' => $ingredient->getQuantity(),
             ])
             ->getForm()
         ;
@@ -126,7 +123,7 @@ class IngredientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Split value and unit of quantity and add to Ingredient
             $quantity = $ingredientUtil->quantitySplit($form['quantity']->getData());
-            $ingredient->setQuantityValue($quantity[0])->setQuantityUnit($quantity[1]);
+            $ingredient->setQuantity($quantity);
 
             $ingredientRepository->add($ingredient, true);
 
