@@ -8,6 +8,7 @@ use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,6 +35,7 @@ class IngredientController extends AbstractController
         IngredientRepository $ingredientRepository, 
         RecipeRepository $recipeRepository,
         StorageRepository $storageRepository,
+        IngredientUtil $ingredientUtil,
         int $recipeId = 0,
         int $storageId = 0, 
     ): Response
@@ -42,9 +44,12 @@ class IngredientController extends AbstractController
         $ingredient = new Ingredient();
         $form = $this->createFormBuilder($ingredient)
             ->add('name')
-            ->add('quantityValue')
-            ->add('quantityUnit')
-            ->getForm();
+            ->add('quantity', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->getForm()
+        ;
 
         // Find recipe or storage by $recipeId or $storageId
         $recipe = $recipeRepository->find($recipeId);
@@ -58,13 +63,14 @@ class IngredientController extends AbstractController
                 throw $this->createNotFoundException('Storage does not exist.');
         }
         
-        // Add recipe or storage to the Ingredient
         $ingredient->setRecipe($recipe)->setStorage($storage);
-
-        // Handle requests
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Split value and unit of quantity and add to Ingredient
+            $quantity = $ingredientUtil->quantitySplit($form['quantity']->getData());
+            $ingredient->setQuantityValue($quantity[0])->setQuantityUnit($quantity[1]);
+
             $ingredientRepository->add($ingredient, true);
 
             // Redirect to corresponding recipe or storage
@@ -99,17 +105,29 @@ class IngredientController extends AbstractController
         Request $request, 
         Ingredient $ingredient, 
         IngredientRepository $ingredientRepository,
+        IngredientUtil $ingredientUtil,
     ): Response
     {
         $form = $this->createFormBuilder($ingredient)
             ->add('name')
-            ->add('quantityValue')
-            ->add('quantityUnit')
-            ->getForm();
+            ->add('quantity', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+                'data' => $ingredientUtil->quantityFull(
+                    $ingredient->getQuantityValue(), 
+                    $ingredient->getQuantityUnit(),
+                ),
+            ])
+            ->getForm()
+        ;
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Split value and unit of quantity and add to Ingredient
+            $quantity = $ingredientUtil->quantitySplit($form['quantity']->getData());
+            $ingredient->setQuantityValue($quantity[0])->setQuantityUnit($quantity[1]);
+
             $ingredientRepository->add($ingredient, true);
 
             // Redirect to corresponding recipe or storage
