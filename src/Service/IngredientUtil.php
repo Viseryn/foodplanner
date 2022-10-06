@@ -32,16 +32,4 @@ class IngredientUtil
         array_shift($quantityData);
         return $quantityData;
     }
-
-    /**
-     * Combines value and unit into a single string.
-     *
-     * @param string|null $quantityValue
-     * @param string|null $quantityUnit
-     * @return string|null
-     */
-    public function quantityFull(?string $quantityValue, ?string $quantityUnit): ?string
-    {
-        return $quantityValue . ' ' . $quantityUnit;
-    }
 }
