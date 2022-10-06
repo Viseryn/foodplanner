@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\IngredientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 class Ingredient
@@ -85,6 +86,36 @@ class Ingredient
     public function setQuantityUnit(?string $quantityUnit): self
     {
         $this->quantityUnit = $quantityUnit;
+
+        return $this;
+    }
+
+    /**
+     * Returns combined quantity value and unit.
+     *
+     * @return string|null
+     */
+    public function getQuantity(): ?string
+    {
+        return $this->getQuantityValue() . ' ' . $this->getQuantityUnit();
+    }
+
+    /**
+     * Sets quantityValue and quantityUnit at the same time.
+     * The parameter needs to be an array of the form [?string, ?string].
+     *
+     * @param array $quantity
+     * @return self
+     */
+    public function setQuantity(array $quantity = [null, null]): self 
+    {
+        if(count($quantity) === 2) {
+            $this->setQuantityValue((string) $quantity[0]);
+            $this->setQuantityUnit((string) $quantity[1]);
+        }
+        else {
+            throw new Exception('Parameter for setQuantity() is not an array with two entries.');
+        }
 
         return $this;
     }
