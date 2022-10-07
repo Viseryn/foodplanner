@@ -124,8 +124,8 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Only add/delete instructions if there was a change
-            if($instructionString !== $form['instructions']->getData()) {
+            // Check if ingredients were changed
+            if ($instructionString !== $form['instructions']->getData()) {
                 // Delete old instructions
                 foreach ($instructions as $inst) {
                     $instructionRepository->remove($inst, true);
