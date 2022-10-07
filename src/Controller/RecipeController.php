@@ -63,7 +63,7 @@ class RecipeController extends AbstractController
 
     /**
      * Controller for editing a Recipe, 
-     * including its instructions.
+     * including its Instructions.
      *
      * @param Request $request
      * @param Recipe $recipe
