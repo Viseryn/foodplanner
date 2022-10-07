@@ -97,7 +97,16 @@ class Ingredient
      */
     public function getQuantity(): ?string
     {
-        return $this->getQuantityValue() . ' ' . $this->getQuantityUnit();
+        $str = $this->getQuantityValue();
+
+        if ($str != '' && $this->getQuantityUnit() !== '') {
+            $str .= ' ' . $this->getQuantityUnit();
+        }
+        elseif ($this->getQuantityUnit() !== '') {
+            $str .= $this->getQuantityUnit();
+        }
+        
+        return $str;
     }
 
     /**
