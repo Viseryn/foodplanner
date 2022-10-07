@@ -2,13 +2,13 @@
 
 <ul class="space-y-2">
     {{ include('sidebar/_sidebar_item.html.twig', {
-        icon: 'soup_kitchen',
+        icon: 'restaurant_menu',
         name: 'Recipes',
         path: path('app_recipe_index'),
         badge: render(controller('App\\Controller\\RecipeController::numberOfRecipes')),
     }) }}
     {{ include('sidebar/_sidebar_item.html.twig', {
-        icon: 'kitchen',
+        icon: 'dresser',
         name: 'Pantry',
         path: path('app_storage_index'),
     }) }}
