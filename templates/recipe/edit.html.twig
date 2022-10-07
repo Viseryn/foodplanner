@@ -10,8 +10,6 @@
     {{ include('sidebar/_sidebar_recipe.html.twig') }}
     {{ include('sidebar/_sidebar_hline.html.twig') }}
     {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
-    {{ include('sidebar/_sidebar_space.html.twig') }}
-    {{ include('sidebar/_sidebar_back_to_recipe.html.twig') }}
 {% endblock %}
 
 {% block main %}
@@ -27,7 +25,7 @@
         {{ form_row(form.portionSize, {
             row_attr: {'class': inputRowClass},
             label_attr: {'class': inputLabelClass},
-            attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-24', 'min': 1},
+            attr: {'class': 'border border-gray-300 rounded-full h-10 px-6 shadow-sm w-24', 'min': 1},
         }) }}
 
         {{ form_row(form.image, {
@@ -36,7 +34,21 @@
             attr: {'class': inputClass},
         }) }}
 
-        {{ include('component/_submit_button_right.html.twig', {icon: 'update', label: 'Save recipe'}) }}
+        {{ form_row(form.instructions, {
+            row_attr: {'class': 'mb-2'},
+            label_attr: {'class': textareaLabelClass},
+            attr: {'class': textareaClass, 'rows': 10},
+        }) }}
+
+        <div class="text-xs mb-6">
+            <span class="font-semibold">Hint:</span> 
+            Seperate each step with a new line!
+        </div>
+
+        <div class="flex justify-end items-center">
+            <div class="mr-4">{{ include('component/_link_button_inverse.html.twig', {path: path('app_recipe_show', {'id': recipe.id}), icon: 'redo', label: 'Back'}) }}</div>
+            <div>{{ include('component/_submit_button.html.twig', {icon: 'update', label: 'Save recipe'}) }}</div>
+        </div> 
 
         {{ form_row(form._token) }}
     {{ form_end(form) }}

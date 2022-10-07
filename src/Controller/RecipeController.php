@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Recipe;
 use App\Form\RecipeType;
+use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
+use App\Service\InstructionUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,13 +55,53 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    /**
+     * Controller for editing a Recipe, 
+     * including its instructions.
+     *
+     * @param Request $request
+     * @param Recipe $recipe
+     * @param RecipeRepository $recipeRepository
+     * @param InstructionUtil $instructionUtil
+     * @param InstructionRepository $instructionRepository
+     * @return Response
+     */
     #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Recipe $recipe, RecipeRepository $recipeRepository): Response
+    public function edit(
+        Request $request, 
+        Recipe $recipe, 
+        RecipeRepository $recipeRepository,
+        InstructionUtil $instructionUtil,
+        InstructionRepository $instructionRepository,
+    ): Response
     {
+        // Get all instructions for the recipe
+        $instructions = $recipe->getInstructions();
+        $instructionString = $instructionUtil->instructionString($instructions);
+
+        // Build form
         $form = $this->createForm(RecipeType::class, $recipe);
+        $form->add('instructions', TextareaType::class, [
+            'required' => false,
+            'mapped' => false,
+            'data' => $instructionString,
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Delete old instructions
+            foreach ($instructions as $inst) {
+                $instructionRepository->remove($inst, true);
+            }
+
+            // Split instructions and add to database
+            $newInstructions = $instructionUtil->instructionSplit($form['instructions']->getData());
+            foreach ($newInstructions as $inst) {
+                $inst->setRecipe($recipe);
+                $instructionRepository->add($inst, true);
+            }
+
             $recipeRepository->add($recipe, true);
 
             return $this->redirectToRoute(
