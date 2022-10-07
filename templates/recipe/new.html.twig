@@ -13,7 +13,7 @@
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    {{ form_start(form, {attr: {'style': 'width: 350px'}}) }}
+    {{ form_start(form, {attr: {'style': 'width: ' ~ standardFormWidth}}) }}
         {{ form_row(form.title, {
             row_attr: {'class': inputRowClass},
             label_attr: {'class': inputLabelClass},
