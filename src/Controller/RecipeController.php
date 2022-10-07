@@ -24,14 +24,6 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_recipe_show', methods: ['GET'])]
-    public function show(Recipe $recipe): Response
-    {
-        return $this->render('recipe/show.html.twig', [
-            'recipe' => $recipe,
-        ]);
-    }
-
     #[Route('/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
     public function new(Request $request, RecipeRepository $recipeRepository): Response
     {
@@ -52,6 +44,20 @@ class RecipeController extends AbstractController
         return $this->renderForm('recipe/new.html.twig', [
             'recipe' => $recipe,
             'form' => $form,
+        ]);
+    }
+
+    /**
+     * Controller for showing a Recipe.
+     *
+     * @param Recipe $recipe
+     * @return Response
+     */
+    #[Route('/{id}', name: 'app_recipe_show', methods: ['GET'])]
+    public function show(Recipe $recipe): Response
+    {
+        return $this->render('recipe/show.html.twig', [
+            'recipe' => $recipe,
         ]);
     }
 
