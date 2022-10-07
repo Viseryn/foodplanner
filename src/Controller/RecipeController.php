@@ -74,6 +74,14 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    /**
+     * Controller for deleting a Recipe.
+     *
+     * @param Request $request
+     * @param Recipe $recipe
+     * @param RecipeRepository $recipeRepository
+     * @return Response
+     */
     #[Route('/{id}', name: 'app_recipe_delete', methods: ['POST'])]
     public function delete(Request $request, Recipe $recipe, RecipeRepository $recipeRepository): Response
     {
