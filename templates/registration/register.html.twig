@@ -11,16 +11,16 @@
     {{ form_start(registrationForm, {attr: {'style': 'width: 350px'}}) }}
         {{ form_row(registrationForm.username, {
             label: 'Your username',
-            row_attr: {'class': 'mb-6'},
-            label_attr: {'class': 'text-sm font-semibold block mb-2'},
-            attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
         }) }}
         
         {{ form_row(registrationForm.plainPassword, {
             label: 'Your password',
-            row_attr: {'class': 'mb-6'},
-            label_attr: {'class': 'text-sm font-semibold block mb-2'},
-            attr: {'class': 'border rounded-full h-10 px-6 shadow-sm w-full'},
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
         }) }}
         
         {{ form_row(registrationForm.agreeTerms, {
