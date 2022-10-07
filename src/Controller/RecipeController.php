@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Recipe;
 use App\Form\RecipeType;
+use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
+use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -32,20 +34,24 @@ class RecipeController extends AbstractController
 
     /**
      * Controller for adding a Recipe, 
-     * including its Instructions.
+     * including its Ingredients and Instructions.
      *
      * @param Request $request
      * @param RecipeRepository $recipeRepository
-     * @param InstructionUtil $instructionUtil
+     * @param IngredientRepository $ingredientRepository
      * @param InstructionRepository $instructionRepository
+     * @param IngredientUtil $ingredientUtil
+     * @param InstructionUtil $instructionUtil
      * @return Response
      */
     #[Route('/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request, 
         RecipeRepository $recipeRepository,
-        InstructionUtil $instructionUtil,
+        IngredientRepository $ingredientRepository,
         InstructionRepository $instructionRepository,
+        IngredientUtil $ingredientUtil,
+        InstructionUtil $instructionUtil,
     ): Response
     {
         $recipe = new Recipe();
@@ -54,6 +60,13 @@ class RecipeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $recipeRepository->add($recipe, true);
+
+            // Split ingredients and add to database
+            $ingredients = $ingredientUtil->ingredientSplit($form['ingredients']->getData());
+            foreach ($ingredients as $ing) {
+                $ing->setRecipe($recipe);
+                $ingredientRepository->add($ing, true);
+            }
 
             // Split instructions and add to database
             $instructions = $instructionUtil->instructionSplit($form['instructions']->getData());
@@ -91,13 +104,15 @@ class RecipeController extends AbstractController
 
     /**
      * Controller for editing a Recipe, 
-     * including its Instructions.
-     *
+     * including its Ingredients and Instructions.
+     * 
      * @param Request $request
      * @param Recipe $recipe
      * @param RecipeRepository $recipeRepository
-     * @param InstructionUtil $instructionUtil
+     * @param IngredientRepository $ingredientRepository
      * @param InstructionRepository $instructionRepository
+     * @param IngredientUtil $ingredientUtil
+     * @param InstructionUtil $instructionUtil
      * @return Response
      */
     #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
@@ -105,26 +120,54 @@ class RecipeController extends AbstractController
         Request $request, 
         Recipe $recipe, 
         RecipeRepository $recipeRepository,
-        InstructionUtil $instructionUtil,
+        IngredientRepository $ingredientRepository,
         InstructionRepository $instructionRepository,
+        IngredientUtil $ingredientUtil,
+        InstructionUtil $instructionUtil,
     ): Response
     {
+        // Get all ingredients for the recipe
+        $ingredients = $recipe->getIngredients();
+        $ingredientString = $ingredientUtil->ingredientString($ingredients);
+
         // Get all instructions for the recipe
         $instructions = $recipe->getInstructions();
         $instructionString = $instructionUtil->instructionString($instructions);
 
         // Build form
         $form = $this->createForm(RecipeType::class, $recipe);
-        $form->add('instructions', TextareaType::class, [
-            'required' => false,
-            'mapped' => false,
-            'data' => $instructionString,
-        ]);
+        $form
+            ->add('instructions', TextareaType::class, [
+                'required' => false,
+                'mapped' => false,
+                'data' => $instructionString,
+            ])
+            ->add('ingredients', TextareaType::class, [
+                'required' => false,
+                'mapped' => false,
+                'data' => $ingredientString,
+            ])
+        ;
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Check if ingredients were changed
+            if ($ingredientString !== $form['ingredients']->getData()) {
+                // Delete old ingredients
+                foreach ($ingredients as $ing) {
+                    $ingredientRepository->remove($ing, true);
+                }
+
+                // Split ingredients and add to database
+                $newIngredients = $ingredientUtil->ingredientSplit($form['ingredients']->getData());
+                foreach ($newIngredients as $ing) {
+                    $ing->setRecipe($recipe);
+                    $ingredientRepository->add($ing, true);
+                }
+            }
+
+            // Check if instructions were changed
             if ($instructionString !== $form['instructions']->getData()) {
                 // Delete old instructions
                 foreach ($instructions as $inst) {

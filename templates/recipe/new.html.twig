@@ -33,6 +33,12 @@
             attr: {'class': inputClass},
         }) }}
 
+        {{ form_row(form.ingredients, {
+            row_attr: {'class': textareaRowClass},
+            label_attr: {'class': textareaLabelClass},
+            attr: {'class': textareaClass, 'rows': 10},
+        }) }}
+
         {{ form_row(form.instructions, {
             row_attr: {'class': 'mb-2'},
             label_attr: {'class': textareaLabelClass},
