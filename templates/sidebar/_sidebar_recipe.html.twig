@@ -10,11 +10,6 @@
         path: path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}),
     }) }}
     {{ include('sidebar/_sidebar_item.html.twig', {
-        icon: 'playlist_add',
-        name: 'Add instruction',
-        path: path('app_instruction_new_for_recipe', {'recipeId': recipe.id}),
-    }) }}
-    {{ include('sidebar/_sidebar_item.html.twig', {
         icon: 'drive_file_rename_outline',
         name: 'Edit recipe',
         path: path('app_recipe_edit', {'id': recipe.id}),
