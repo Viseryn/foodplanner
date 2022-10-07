@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Storage;
-use App\Form\StorageType;
 use App\Repository\IngredientRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
