@@ -16,6 +16,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/recipe')]
 class RecipeController extends AbstractController
 {
+    /**
+     * Controller for the list of Recipes.
+     *
+     * @param RecipeRepository $recipeRepository
+     * @return Response
+     */
     #[Route('/', name: 'app_recipe_index', methods: ['GET'])]
     public function index(RecipeRepository $recipeRepository): Response
     {
