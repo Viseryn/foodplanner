@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 class IngredientUtil 
 {
     /**
@@ -20,6 +21,7 @@ class IngredientUtil
 
         // If value and unit are already split by a whitespace, we are done
         $quantityData = explode(' ', $quantity);
+
         if (count($quantityData) > 1) {
             return [
                 (string) $quantityData[0], // The value is the first part
@@ -27,9 +29,16 @@ class IngredientUtil
             ];
         }
 
-        // If there is no whitespace, use regex to split
-        preg_match('/^(\d+|\d*\.\d+|\d+\/\d+)(\w*)$/', $quantity, $quantityData);
+        // If there is no whitespace:
+        // First, split between number and word part
+        preg_match('/^(\d*|\d*\.\d+|\d+\/\d+)(\w*)$/', $quantity, $quantityData);
         array_shift($quantityData);
+
+        // Check if there was a match with both groups
+        if (count($quantityData) < 2) {
+            throw new Exception('The parameter $quantity is of wrong format.');
+        }
+
         return $quantityData;
     }
 }
