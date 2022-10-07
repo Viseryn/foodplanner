@@ -19,33 +19,24 @@
         <img class="rounded-3xl mb-10 shadow-md hover:shadow-xl transition duration-300 hover:scale-105 w-full" src="{{ asset(recipe.image.path) }}" alt="{{ recipe.image.description }}" />
     {% endif %}
 
-    <div class="mb-6">
+    <div class="mb-10">
         <div class="bg-gray-100 font-bold px-6 py-3 mb-3 rounded-xl">
             Ingredients for {% if recipe.portionSize == 1 %}one portion{% else %}{{ recipe.portionSize }} portions{% endif %}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2">
             {% for ingredient in recipe.ingredients %}
-                <a class="px-6 pt-2" href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">
+                <div class="px-6 pt-2">
                     {{ ingredient.quantityValue }} 
                     {{ ingredient.quantityUnit }} 
                     {{ ingredient }}
-                </a>
+                </div>
             {% else %}
                 <div class="px-6 pt-2">No ingredients found.</div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="flex justify-end mb-10">
-        {{ include('component/_button.html.twig', {
-            path: path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}), 
-            icon: 'add', 
-            label: 'Add ingredient',
-            inverse: true,
-        }) }}
-    </div>
-
-    <div class="mb-6">
+    <div class="mb-10">
         <div class="bg-gray-100 font-bold px-6 py-3 mb-5 rounded-xl">
             Instructions
         </div>
