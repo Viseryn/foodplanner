@@ -34,11 +34,11 @@
     <form action="{{ path('app_login') }}" method="post" style="width: 350px">
         <div class="mb-6">
             <label for="username" class="text-sm font-semibold block mb-2">Your username</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username ..." class="border rounded-full h-10 px-6 shadow-sm w-full" />
+            <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username ..." class="{{ inputClass }}" />
         </div>
         <div class="mb-8">
             <label for="password" class="text-sm font-semibold block mb-2">Your password</label>
-            <input type="password" id="password" name="_password" placeholder="••••••••" class="border rounded-full h-10 px-6 shadow-sm w-full" />
+            <input type="password" id="password" name="_password" placeholder="••••••••" class="{{ inputClass }}" />
         </div>
 
         <div class="flex justify-between items-center">
