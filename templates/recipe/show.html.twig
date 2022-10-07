@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="mb-10">
         <div class="bg-gray-100 font-bold px-6 py-3 mb-5 rounded-xl">
             Instructions
         </div>
@@ -51,5 +51,13 @@
                 <div class="px-6">No instructions found.</div>
             {% endfor %}
         </div>
+    </div>
+
+    <div class="flex justify-end">
+        {{ include('component/_link_button_inverse.html.twig', {
+            path: path('app_recipe_edit', {id: recipe.id}), 
+            icon: 'drive_file_rename_outline', 
+            label: 'Edit recipe',
+        }) }}
     </div>
 {% endblock %}
