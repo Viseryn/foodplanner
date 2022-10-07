@@ -1,0 +1,8 @@
+{# templates/component/_button_submit.html.twig #}
+
+<button type="submit" class="{% if inverse is defined and inverse %}{{ btn_submit_inverse }}{% else %}{{ btn_submit }}{% endif %}">
+    {{ include('component/_button_content.html.twig', {
+        icon: icon|default(''),
+        label: label|default(''),
+    }) }}
+</button>
