@@ -24,8 +24,9 @@
 
         {{ form_row(form.portionSize, {
             row_attr: {'class': inputRowClass},
-            label_attr: {'class': inputLabelClass},
-            attr: {'class': 'border border-gray-300 rounded-full h-10 px-6 shadow-sm w-24', 'min': 1},
+            label_attr: {'class': inputLabelClass, 'id': 'portionSizeOutput'},
+            attr: {'class': 'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer', 'oninput': 'getElementById("portionSizeOutput").innerHTML = "Portions: " + this.value', 'value': recipe.portionSize},
+            label: 'Portions: ' ~ recipe.portionSize,
         }) }}
 
         {{ form_row(form.image, {

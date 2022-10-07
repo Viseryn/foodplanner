@@ -7,6 +7,7 @@ use App\Entity\Recipe;
 use App\Repository\FileRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,7 +24,13 @@ class RecipeType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('portionSize')
+            ->add('portionSize', RangeType::class, [
+                'attr' => [
+                    'min' => 1,
+                    'max' => 10,
+                ],
+                'data' => 1,
+            ])
             // Add all File objects that are images.
             // The last two options allow for null as choice.
             ->add('image', EntityType::class, [
