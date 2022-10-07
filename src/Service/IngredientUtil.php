@@ -98,44 +98,51 @@ class IngredientUtil
             preg_match('/^(\d*|\d*\.\d+|\d+\/\d+)(\D+)$/', $ing, $ingData);
             array_shift($ingData);
 
-            $nonValuePart = explode(' ', $ingData[1]);
+            // Check if there is a quantity value
+            if (count($ingData) > 1) {
+                $nonValuePart = explode(' ', $ingData[1]);
 
-            // Remove first element of the non-value part if empty
-            if ($nonValuePart[0] == '') {
-                array_shift($nonValuePart);
-            }
+                // Remove first element of the non-value part if empty
+                if ($nonValuePart[0] == '') {
+                    array_shift($nonValuePart);
+                }
 
-            // Check for unit.
-            // $i is the number of words of the unit;
-            // so first we test one word, then two words, ...
-            for ($i = 1; $i <= count($nonValuePart); $i++) {
-                $unitCandidate = '';
+                // Check for unit.
+                // $i is the number of words of the unit;
+                // so first we test one word, then two words, ...
+                for ($i = 1; $i <= count($nonValuePart); $i++) {
+                    $unitCandidate = '';
 
-                // Define the unit candidate
-                for ($j = 0; $j < $i; $j++) {
-                    $unitCandidate .= $nonValuePart[$j];
-                    if ($j != $i - 1) {
-                        $unitCandidate .= ' ';
+                    // Define the unit candidate
+                    for ($j = 0; $j < $i; $j++) {
+                        $unitCandidate .= $nonValuePart[$j];
+                        if ($j != $i - 1) {
+                            $unitCandidate .= ' ';
+                        }
+                    }
+                    
+                    // Check if unit candidate is allowed unit
+                    if (in_array($unitCandidate, $allowedUnits)) {
+                        $name = implode(' ', array_slice($nonValuePart, $i));
+                        $ingredient
+                            ->setQuantity([$ingData[0], $unitCandidate])
+                            ->setName($name)
+                        ;
                     }
                 }
-                
-                // Check if unit candidate is allowed unit
-                if (in_array($unitCandidate, $allowedUnits)) {
-                    $name = implode(' ', array_slice($nonValuePart, $i));
+
+                // Check if name is still not set.
+                // In this case, the quantity is also not set yet.
+                if ($ingredient->getName() === null) {
                     $ingredient
-                        ->setQuantity([$ingData[0], $unitCandidate])
-                        ->setName($name)
+                        ->setQuantity([$ingData[0], null])
+                        ->setName(implode(' ', $nonValuePart))
                     ;
                 }
             }
-
-            // Check if name is still not set.
-            // In this case, the quantity is also not set yet.
-            if ($ingredient->getName() === null) {
-                $ingredient
-                    ->setQuantity([$ingData[0], null])
-                    ->setName(implode(' ', $nonValuePart))
-                ;
+            // If there is no quantity value, just set name
+            else {
+                $ingredient->setName($ing);
             }
 
             array_push($ingredientArray, $ingredient);
