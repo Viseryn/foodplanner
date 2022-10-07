@@ -56,10 +56,10 @@ class IngredientController extends AbstractController
         $storage = $storageRepository->find($storageId);
 
         // Throw Error 404 if recipe or storage does not exist
-        if($recipe === null && $storage === null) {
-            if($recipeId > 0) 
+        if ($recipe === null && $storage === null) {
+            if ($recipeId > 0) 
                 throw $this->createNotFoundException('Recipe does not exist.');
-            elseif($storageId > 0) 
+            elseif ($storageId > 0) 
                 throw $this->createNotFoundException('Storage does not exist.');
         }
         
@@ -75,13 +75,13 @@ class IngredientController extends AbstractController
 
             // Redirect to corresponding recipe or storage
             // (TODO) Shopping list
-            if($recipe !== null)
+            if ($recipe !== null)
                 return $this->redirectToRoute(
                     'app_recipe_show', 
                     ['id' => $recipe->getId()], 
                     Response::HTTP_SEE_OTHER
                 );
-            elseif($storage !== null)
+            elseif ($storage !== null)
                 return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -129,13 +129,13 @@ class IngredientController extends AbstractController
 
             // Redirect to corresponding recipe or storage
             // (TODO) Shopping list
-            if($ingredient->getRecipe())
+            if ($ingredient->getRecipe())
                 return $this->redirectToRoute(
                     'app_recipe_show', 
                     ['id' => $ingredient->getRecipe()->getId()], 
                     Response::HTTP_SEE_OTHER
                 );
-            elseif($ingredient->getStorage())
+            elseif ($ingredient->getStorage())
                 return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -164,13 +164,13 @@ class IngredientController extends AbstractController
             $ingredientRepository->remove($ingredient, true);
         }
         
-        if($ingredient->getRecipe())
+        if ($ingredient->getRecipe())
             return $this->redirectToRoute(
                 'app_recipe_show', 
                 ['id' => $ingredient->getRecipe()->getId()], 
                 Response::HTTP_SEE_OTHER
             );
-        elseif($ingredient->getStorage())
+        elseif ($ingredient->getStorage())
             return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
     }
 }
