@@ -124,16 +124,19 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Delete old instructions
-            foreach ($instructions as $inst) {
-                $instructionRepository->remove($inst, true);
-            }
+            // Only add/delete instructions if there was a change
+            if($instructionString !== $form['instructions']->getData()) {
+                // Delete old instructions
+                foreach ($instructions as $inst) {
+                    $instructionRepository->remove($inst, true);
+                }
 
-            // Split instructions and add to database
-            $newInstructions = $instructionUtil->instructionSplit($form['instructions']->getData());
-            foreach ($newInstructions as $inst) {
-                $inst->setRecipe($recipe);
-                $instructionRepository->add($inst, true);
+                // Split instructions and add to database
+                $newInstructions = $instructionUtil->instructionSplit($form['instructions']->getData());
+                foreach ($newInstructions as $inst) {
+                    $inst->setRecipe($recipe);
+                    $instructionRepository->add($inst, true);
+                }
             }
 
             $recipeRepository->add($recipe, true);
