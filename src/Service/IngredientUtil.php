@@ -85,6 +85,8 @@ class IngredientUtil
                 'n. B.', 'g', 'kg', 'ml', 'l', 'EL', 'TL', 
                 'Tube', 'Tuben', 'Bund', 'Bünde',
                 'Glas', 'Gläser', 'Packung', 'Packungen',
+                'kl. Glas', 'kleines Glas', 'kl. Gläser', 
+                'kleine Gläser',
                 'Päckchen', 'Pck.', 'Msp.', 'Liter',
                 'Messerspitze', 'Messerspitzen',
                 'Prise', 'Prisen', 'Würfel', 'Stange', 'Stangen',
