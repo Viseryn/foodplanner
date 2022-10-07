@@ -39,6 +39,11 @@ class RecipeType extends AbstractType
                 'required' => false,
                 'empty_data' => '',
             ])
+            // Add a textarea for the ingredients.
+            ->add('ingredients', TextareaType::class, [
+                'required' => false,
+                'mapped' => false,
+            ])
             // Add a textarea for the instructions.
             ->add('instructions', TextareaType::class, [
                 'required' => false,
