@@ -19,10 +19,9 @@
         <img class="rounded-3xl mb-10 shadow-md hover:shadow-xl transition duration-300 hover:scale-105 w-full" src="{{ asset(recipe.image.path) }}" alt="{{ recipe.image.description }}" />
     {% endif %}
 
-    <div class="mb-10">
-        <div class="bg-gray-100 font-bold px-6 py-3 mb-3 rounded-xl flex justify-between items-center">
-            <span>Ingredients for {% if recipe.portionSize == 1 %}one portion{% else %}{{ recipe.portionSize }} portions{% endif %}</span>
-            <a href="{{ path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}) }}" class="material-symbols-rounded transition duration-300 rounded-full hover:text-blue-600 hover:bg-blue-200">add</a>
+    <div class="mb-6">
+        <div class="bg-gray-100 font-bold px-6 py-3 mb-3 rounded-xl">
+            Ingredients for {% if recipe.portionSize == 1 %}one portion{% else %}{{ recipe.portionSize }} portions{% endif %}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2">
             {% for ingredient in recipe.ingredients %}
@@ -37,7 +36,16 @@
         </div>
     </div>
 
-    <div class="mb-10">
+    <div class="flex justify-end mb-10">
+        {{ include('component/_button.html.twig', {
+            path: path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}), 
+            icon: 'add', 
+            label: 'Add ingredient',
+            inverse: true,
+        }) }}
+    </div>
+
+    <div class="mb-6">
         <div class="bg-gray-100 font-bold px-6 py-3 mb-5 rounded-xl">
             Instructions
         </div>

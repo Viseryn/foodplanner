@@ -5,11 +5,6 @@
         <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}">{{ recipe.title }}</a>
     </li>
     {{ include('sidebar/_sidebar_item.html.twig', {
-        icon: 'bakery_dining',
-        name: 'Add ingredient',
-        path: path('app_ingredient_new_for_recipe', {'recipeId': recipe.id}),
-    }) }}
-    {{ include('sidebar/_sidebar_item.html.twig', {
         icon: 'drive_file_rename_outline',
         name: 'Edit recipe',
         path: path('app_recipe_edit', {'id': recipe.id}),
