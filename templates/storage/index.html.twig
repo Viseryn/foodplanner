@@ -35,4 +35,12 @@
             </tbody>
         </table>
     </div>
+
+    <div class="flex justify-end mt-6">
+        {{ include('component/_button.html.twig', {
+            path: path('app_storage_edit_ingredients'),
+            icon: 'fastfood',
+            label: 'Edit ingredients',
+        }) }}
+    </div>
 {% endblock %}
