@@ -30,8 +30,23 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    /**
+     * Controller for adding a Recipe, 
+     * including its Instructions.
+     *
+     * @param Request $request
+     * @param RecipeRepository $recipeRepository
+     * @param InstructionUtil $instructionUtil
+     * @param InstructionRepository $instructionRepository
+     * @return Response
+     */
     #[Route('/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, RecipeRepository $recipeRepository): Response
+    public function new(
+        Request $request, 
+        RecipeRepository $recipeRepository,
+        InstructionUtil $instructionUtil,
+        InstructionRepository $instructionRepository,
+    ): Response
     {
         $recipe = new Recipe();
         $form = $this->createForm(RecipeType::class, $recipe);
@@ -39,6 +54,13 @@ class RecipeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $recipeRepository->add($recipe, true);
+
+            // Split instructions and add to database
+            $instructions = $instructionUtil->instructionSplit($form['instructions']->getData());
+            foreach ($instructions as $inst) {
+                $inst->setRecipe($recipe);
+                $instructionRepository->add($inst, true);
+            }
 
             return $this->redirectToRoute(
                 'app_recipe_show', 
