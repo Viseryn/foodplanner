@@ -20,7 +20,7 @@ class IngredientUtil
 
         // If value and unit are already split by a whitespace, we are done
         $quantityData = explode(' ', $quantity);
-        if(count($quantityData) > 1) {
+        if (count($quantityData) > 1) {
             return [
                 (string) $quantityData[0], // The value is the first part
                 implode(' ', array_slice($quantityData, 1)) // The unit might consist of more than one word
