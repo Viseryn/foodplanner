@@ -34,7 +34,7 @@
             <div class="text-sm">
                 <a href="{{ path('app_login') }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Already signed up? Sign in!</a>
             </div>
-            {{ include('component/_submit_button_inverse.html.twig', {icon: 'login', label: 'Sign up'}) }}
+            {{ include('component/_button_submit.html.twig', {icon: 'login', label: 'Sign up', inverse: true}) }}
         </div>
     {{ form_end(registrationForm) }}
 {% endblock %}

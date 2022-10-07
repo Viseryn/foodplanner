@@ -45,7 +45,12 @@
             attr: {'class': inputClass},
         }) }}
         
-        {{ include('component/_submit_button_right.html.twig', {icon: 'update', label: 'Save ingredient'}) }}
+        <div class="flex justify-end">
+            {{ include('component/_button_submit.html.twig', {
+                icon: 'update',
+                label: 'Save ingredient',
+            }) }}
+        </div>
       
         {{ form_row(form._token) }}
     {{ form_end(form) }}

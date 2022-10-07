@@ -43,7 +43,12 @@
             Seperate each step with a new line!
         </div>
         
-        {{ include('component/_submit_button_right.html.twig', {icon: 'add', label: 'Save recipe'}) }}
+        <div class="flex justify-end">
+            {{ include('component/_button_submit.html.twig', {
+                icon: 'add',
+                label: 'Save recipe',
+            }) }}
+        </div>
 
         {{ form_row(form._token) }}
     {{ form_end(form) }}

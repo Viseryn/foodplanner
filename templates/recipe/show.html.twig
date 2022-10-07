@@ -54,10 +54,11 @@
     </div>
 
     <div class="flex justify-end">
-        {{ include('component/_link_button_inverse.html.twig', {
+        {{ include('component/_button.html.twig', {
             path: path('app_recipe_edit', {id: recipe.id}), 
             icon: 'drive_file_rename_outline', 
             label: 'Edit recipe',
+            inverse: true,
         }) }}
     </div>
 {% endblock %}
