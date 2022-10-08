@@ -27,9 +27,6 @@ class Recipe
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, orphanRemoval: true)]
     private Collection $instructions;
 
-    #[ORM\ManyToOne(inversedBy: 'recipes')]
-    private ?File $image = null;
-
     public function __construct()
     {
         $this->ingredients = new ArrayCollection();
@@ -127,17 +124,5 @@ class Recipe
 
     public function __toString() {
         return $this->title;
-    }
-
-    public function getImage(): ?File
-    {
-        return $this->image;
-    }
-
-    public function setImage(?File $image): self
-    {
-        $this->image = $image;
-
-        return $this;
     }
 }
