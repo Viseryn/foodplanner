@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -26,6 +27,9 @@ class Recipe
 
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, orphanRemoval: true)]
     private Collection $instructions;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $imageFilename = null;
 
     public function __construct()
     {
@@ -124,5 +128,17 @@ class Recipe
 
     public function __toString() {
         return $this->title;
+    }
+
+    public function getImageFilename(): ?string
+    {
+        return $this->imageFilename;
+    }
+
+    public function setImageFilename(?string $imageFilename): self
+    {
+        $this->imageFilename = $imageFilename;
+
+        return $this;
     }
 }
