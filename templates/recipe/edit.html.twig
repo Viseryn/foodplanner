@@ -22,6 +22,11 @@
             attr: {'class': inputClass},
         }) }}
 
+        {{ form_row(form.image, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+        }) }}
+
         {{ form_row(form.portionSize, {
             row_attr: {'class': inputRowClass},
             label_attr: {'class': inputLabelClass, 'id': 'portionSizeOutput'},

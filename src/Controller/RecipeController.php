@@ -7,12 +7,15 @@ use App\Form\RecipeType;
 use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
+use App\Service\FileUploader;
 use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/recipe')]
@@ -52,13 +55,23 @@ class RecipeController extends AbstractController
         InstructionRepository $instructionRepository,
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
+        FileUploader $fileUploader,
     ): Response
     {
         $recipe = new Recipe();
         $form = $this->createForm(RecipeType::class, $recipe);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // TODO: Check extension
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $imageFilename = $fileUploader->upload($imageFile);
+                $recipe->setImageFilename($imageFilename);
+            }
+
             $recipeRepository->add($recipe, true);
 
             // Split ingredients and add to database
@@ -124,6 +137,7 @@ class RecipeController extends AbstractController
         InstructionRepository $instructionRepository,
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
+        FileUploader $fileUploader,
     ): Response
     {
         // Get all ingredients for the recipe
@@ -152,6 +166,15 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // TODO: Delete old image
+            // TODO: Check extension
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $imageFilename = $fileUploader->upload($imageFile);
+                $recipe->setImageFilename($imageFilename);
+            }#
+
             // Check if ingredients were changed
             if ($ingredientString !== $form['ingredients']->getData()) {
                 // Delete old ingredients

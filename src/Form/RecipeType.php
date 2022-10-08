@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Recipe;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,6 +32,11 @@ class RecipeType extends AbstractType
             ->add('instructions', TextareaType::class, [
                 'required' => false,
                 'mapped' => false,
+            ])
+            // Add a filetype field for an image.
+            ->add('image', FileType::class, [
+                'mapped' => false,
+                'required'=> false,
             ])
         ;
     }
