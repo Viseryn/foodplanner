@@ -56,8 +56,7 @@ class RecipeController extends AbstractController
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
         FileUploader $fileUploader,
-    ): Response
-    {
+    ): Response {
         $recipe = new Recipe();
         $form = $this->createForm(RecipeType::class, $recipe);
 
@@ -138,8 +137,7 @@ class RecipeController extends AbstractController
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
         FileUploader $fileUploader,
-    ): Response
-    {
+    ): Response {
         // Get all ingredients for the recipe
         $ingredients = $recipe->getIngredients();
         $ingredientString = $ingredientUtil->ingredientString($ingredients);

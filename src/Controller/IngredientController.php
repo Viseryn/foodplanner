@@ -30,8 +30,7 @@ class IngredientController extends AbstractController
         Ingredient $ingredient, 
         IngredientRepository $ingredientRepository,
         IngredientUtil $ingredientUtil,
-    ): Response
-    {
+    ): Response {
         $form = $this->createFormBuilder($ingredient)
             ->add('name')
             ->add('quantity', TextType::class, [
@@ -53,14 +52,15 @@ class IngredientController extends AbstractController
 
             // Redirect to corresponding recipe or storage
             // (TODO) Shopping list
-            if ($ingredient->getRecipe())
+            if ($ingredient->getRecipe()) {
                 return $this->redirectToRoute(
                     'app_recipe_show', 
                     ['id' => $ingredient->getRecipe()->getId()], 
                     Response::HTTP_SEE_OTHER
                 );
-            elseif ($ingredient->getStorage())
+            } elseif ($ingredient->getStorage()) {
                 return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('ingredient/edit.html.twig', [
@@ -82,19 +82,19 @@ class IngredientController extends AbstractController
         Request $request, 
         Ingredient $ingredient, 
         IngredientRepository $ingredientRepository,
-    ): Response
-    {
+    ): Response {
         if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->request->get('_token'))) {
             $ingredientRepository->remove($ingredient, true);
         }
         
-        if ($ingredient->getRecipe())
+        if ($ingredient->getRecipe()) {
             return $this->redirectToRoute(
                 'app_recipe_show', 
                 ['id' => $ingredient->getRecipe()->getId()], 
                 Response::HTTP_SEE_OTHER
             );
-        elseif ($ingredient->getStorage())
+        } elseif ($ingredient->getStorage()) {
             return $this->redirectToRoute('app_storage_index', [], Response::HTTP_SEE_OTHER);
+        }
     }
 }
