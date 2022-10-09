@@ -25,7 +25,7 @@
         {% if recipe.image is not null %}
             <div class="{{ inputRowClass }}">
                 <div class="{{ inputLabelClass }}">Current image</div>
-                <img class="w-full rounded-3xl shadow-md transition duration-300 hover:shadow-xl hover:scale-105" src="{{ asset(recipe.image.directory ~ recipe.image.filename) }}" />
+                <img class="w-full rounded-3xl shadow-md transition duration-300 hover:shadow-xl hover:scale-105" src="{{ asset(recipe.image) }}" />
             </div>
 
             <div class="{{ inputRowClass }} flex justify-end">

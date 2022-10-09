@@ -16,7 +16,7 @@
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
     {% if recipe.image is not null %}
-        <img class="rounded-3xl mb-10 shadow-md hover:shadow-xl transition duration-300 hover:scale-105 w-full" src="{{ asset(recipe.image.directory ~ recipe.image.filename) }}" alt="{{ recipe }}" />
+        <img class="rounded-3xl mb-10 shadow-md hover:shadow-xl transition duration-300 hover:scale-105 w-full" src="{{ asset(recipe.image) }}" alt="{{ recipe }}" />
     {% endif %}
 
     <div class="mb-10">
