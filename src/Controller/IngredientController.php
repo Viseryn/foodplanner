@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
-use App\Repository\RecipeRepository;
-use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
