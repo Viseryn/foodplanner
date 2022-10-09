@@ -86,4 +86,21 @@ class FileUploader
 
         return pathinfo($filename, PATHINFO_EXTENSION);
     }
+
+    /**
+     * Checks whether a File object or a string 
+     * that contains a filename is an image file.
+     *
+     * @param File|string $file
+     * @return boolean Returns true if $file is an image.
+     */
+    public function isImage(File|string $file): bool
+    {
+        $allowedImageExtensions = ['gif', 'png', 'jpeg', 'jpg', 'webp'];
+
+        return in_array(
+            strtolower($this->getExtension($file)), 
+            $allowedImageExtensions
+        );
+    }
 }
