@@ -1,0 +1,15 @@
+{# templates/sidebar/_sidebar.html.twig #}
+
+<ul class="space-y-2">
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'restaurant_menu',
+        name: 'Recipes',
+        path: path('app_recipe_index'),
+        badge: render(controller('App\\Controller\\RecipeController::numberOfRecipes')),
+    }) }}
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'dresser',
+        name: 'Pantry',
+        path: path('app_storage_index'),
+    }) }}
+</ul>

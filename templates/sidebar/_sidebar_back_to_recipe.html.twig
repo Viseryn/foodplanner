@@ -1,0 +1,9 @@
+{# templates/sidebar/_sidebar_back_to_recipe.html.twig #}
+
+<ul class="space-y-2">
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'redo',
+        name: 'Back to recipe',
+        path: path('app_recipe_show', {'id': recipe.id}),
+    }) }}
+</ul>

@@ -22,11 +22,14 @@ class Recipe
     #[ORM\Column]
     private ?int $portionSize = null;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Ingredient::class)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Ingredient::class, orphanRemoval: true)]
     private Collection $ingredients;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, orphanRemoval: true)]
     private Collection $instructions;
+
+    #[ORM\ManyToOne]
+    private ?File $image = null;
 
     public function __construct()
     {
@@ -125,5 +128,17 @@ class Recipe
 
     public function __toString() {
         return $this->title;
+    }
+
+    public function getImage(): ?File
+    {
+        return $this->image;
+    }
+
+    public function setImage(?File $image): self
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }

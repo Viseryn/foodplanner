@@ -1,0 +1,14 @@
+{# templates/sidebar/_sidebar_item.html.twig #}
+
+<li>
+    <a class="flex items-center p-2 text-base font-normal text-gray-900 rounded-full transition duration-300 hover:bg-gray-100 group" href="{{ path|default('#') }}">
+        <span class="material-symbols-rounded flex-shrink-0 text-gray-500 transition duration-300 group-hover:text-gray-900">{{ icon }}</span>
+        <span class="ml-3 flex-1">{{ name }}</span>
+        
+        {% if badge is defined and badge is not null %}
+            <span class="inline-flex justify-center items-center p-3 ml-3 w-3 h-3 text-sm font-medium text-blue-600 bg-blue-200 rounded-full">
+                {{ badge }}
+            </span>
+        {% endif %}
+    </a>
+</li>

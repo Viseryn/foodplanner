@@ -1,0 +1,44 @@
+{# templates/storage/editIngredients.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% set heading = 'Edit ingredients' %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_edit_storage.html.twig') }}
+{% endblock %}
+
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+
+    {{ form_start(form, {attr: {'style': 'width: ' ~ standardFormWidth}}) }}
+        {{ form_row(form.ingredients, {
+            row_attr: {'class': 'mb-2'},
+            label_attr: {'class': textareaLabelClass},
+            attr: {'class': textareaClass, 'rows': 10},
+        }) }}
+
+        <div class="text-xs mb-6">
+            <span class="font-semibold">Hint:</span> 
+            Seperate each ingredient with a new line!
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            {{ include('component/_button.html.twig', {
+                path: path('app_storage_index'),
+                icon: 'redo',
+                label: 'Back',
+                inverse: true,
+            }) }}
+
+            {{ include('component/_button_submit.html.twig', {
+                icon: 'update',
+                label: 'Save ingredients',
+            }) }}
+        </div>
+
+        {{ form_row(form._token) }}
+    {{ form_end(form) }}
+{% endblock %}

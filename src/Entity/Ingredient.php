@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\IngredientRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 class Ingredient
@@ -19,8 +17,8 @@ class Ingredient
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $quantityValue = null;
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $quantityValue = null;
 
     #[ORM\Column(length: 16, nullable: true)]
     private ?string $quantityUnit = null;
@@ -48,12 +46,32 @@ class Ingredient
         return $this;
     }
 
-    public function getQuantityValue(): ?int
+    /**
+     * Returns the quantity value as float.
+     * Checks for specific fractions like "1/2"
+     * and converts them manually.
+     *
+     * @return string|null
+     */
+    public function getQuantityValueAsFloat(): ?string
+    {
+        $returnValue = $this->quantityValue;
+        
+        switch($returnValue) {
+            case '1/2':
+                $returnValue = 0.5;
+                break;
+        }
+        
+        return (float) $returnValue;
+    }
+
+    public function getQuantityValue(): ?string
     {
         return $this->quantityValue;
     }
 
-    public function setQuantityValue(?int $quantityValue): self
+    public function setQuantityValue(?string $quantityValue): self
     {
         $this->quantityValue = $quantityValue;
 
@@ -68,6 +86,43 @@ class Ingredient
     public function setQuantityUnit(?string $quantityUnit): self
     {
         $this->quantityUnit = $quantityUnit;
+
+        return $this;
+    }
+
+    /**
+     * Returns combined quantity value and unit.
+     *
+     * @return string|null
+     */
+    public function getQuantity(): ?string
+    {
+        $str = $this->getQuantityValue();
+
+        if ($str != '' && $this->getQuantityUnit() !== '') {
+            $str .= ' ' . $this->getQuantityUnit();
+        } elseif ($this->getQuantityUnit() !== '') {
+            $str .= $this->getQuantityUnit();
+        }
+        
+        return $str;
+    }
+
+    /**
+     * Sets quantityValue and quantityUnit at the same time.
+     * The parameter needs to be an array of the form [?string, ?string].
+     *
+     * @param array $quantity
+     * @return self
+     */
+    public function setQuantity(array $quantity = [null, null]): self 
+    {
+        if(count($quantity) === 2) {
+            $this->setQuantityValue((string) $quantity[0]);
+            $this->setQuantityUnit((string) $quantity[1]);
+        } else {
+            throw new Exception('Parameter for setQuantity() is not an array with two entries.');
+        }
 
         return $this;
     }

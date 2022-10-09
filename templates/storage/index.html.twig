@@ -1,0 +1,46 @@
+{# templates/storage/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% set heading = 'Pantry' %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_edit_storage.html.twig') }}
+{% endblock %}
+
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+
+    <div class="overflow-x-auto relative">
+        <table class="table-fixed w-full text-left">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3 px-6 rounded-l-xl w-6/12">Ingredient</th>
+                    <th class="py-3 px-6 rounded-r-xl">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for ingredient in ingredients %}
+                <tr>
+                    <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">{{ ingredient.name }}</a></td>
+                    <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">{{ ingredient.quantityValue }} {{ ingredient.quantityUnit }}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="py-4 px-6" colspan="2">No ingredients found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-end mt-6">
+        {{ include('component/_button.html.twig', {
+            path: path('app_storage_edit_ingredients'),
+            icon: 'fastfood',
+            label: 'Edit ingredients',
+        }) }}
+    </div>
+{% endblock %}

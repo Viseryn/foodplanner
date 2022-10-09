@@ -1,0 +1,26 @@
+{# templates/_vars.html.twig #}
+
+{# General variables #}
+{% set foo = 'bar' %}
+{% set standardFormWidth = '400px' %}
+
+{# Input Widget #}
+{% set inputClass = 'border border-gray-300 rounded-full h-10 px-6 shadow-sm w-full' %}
+{% set inputLabelClass = 'text-sm font-semibold block mb-2' %}
+{% set inputRowClass = 'mb-6' %}
+
+{# Textarea Widget #}
+{% set textareaClass = 'block border border-gray-300 rounded-xl px-4 py-2 shadow-sm w-full' %}
+{% set textareaLabelClass = inputLabelClass %}
+{% set textareaRowClass = inputRowClass %}
+
+{# Button Styles #}
+{% set btn = 'rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 ' %}
+{% set btn_blue = 'text-white bg-blue-500 hover:bg-blue-700 active:bg-blue-800 ' %}
+{% set btn_blue_inverse = 'text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800 ' %}
+{% set btn_submit = btn ~ btn_blue %}
+{% set btn_submit_inverse = btn ~ btn_blue_inverse %}
+
+
+{# Output #}
+{% block html %}{% endblock %}

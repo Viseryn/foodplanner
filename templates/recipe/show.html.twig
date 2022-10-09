@@ -1,0 +1,63 @@
+{# templates/recipe/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% set heading = recipe.title %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_recipe.html.twig') }}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
+{% endblock %}
+
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+
+    {% if recipe.image is not null %}
+        <img class="rounded-3xl mb-10 shadow-md hover:shadow-xl transition duration-300 hover:scale-105 w-full" src="{{ asset(recipe.image) }}" alt="{{ recipe }}" />
+    {% endif %}
+
+    <div class="mb-10">
+        <div class="bg-gray-100 font-bold px-6 py-3 mb-3 rounded-xl">
+            Ingredients for {% if recipe.portionSize == 1 %}one portion{% else %}{{ recipe.portionSize }} portions{% endif %}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2">
+            {% for ingredient in recipe.ingredients %}
+                <div class="px-6 pt-2">
+                    {{ ingredient.quantityValue }} 
+                    {{ ingredient.quantityUnit }} 
+                    {{ ingredient }}
+                </div>
+            {% else %}
+                <div class="px-6 pt-2">No ingredients found.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-10">
+        <div class="bg-gray-100 font-bold px-6 py-3 mb-5 rounded-xl">
+            Instructions
+        </div>
+        <div class="space-y-2">
+            {% for instruction in recipe.instructions %}
+                <div class="flex px-6">
+                    <span class="mr-2">{{ loop.index }}.</span>
+                    {{ instruction }}
+                </div>
+            {% else %}
+                <div class="px-6">No instructions found.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="flex justify-end">
+        {{ include('component/_button.html.twig', {
+            path: path('app_recipe_edit', {id: recipe.id}), 
+            icon: 'drive_file_rename_outline', 
+            label: 'Edit recipe',
+            inverse: true,
+        }) }}
+    </div>
+{% endblock %}

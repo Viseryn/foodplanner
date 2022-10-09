@@ -15,7 +15,7 @@ class Storage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: 'storage', targetEntity: Ingredient::class)]
+    #[ORM\OneToMany(mappedBy: 'storage', targetEntity: Ingredient::class, orphanRemoval: true)]
     private Collection $ingredients;
 
     #[ORM\Column(length: 255)]

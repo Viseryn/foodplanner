@@ -1,0 +1,71 @@
+{# templates/ingredient/edit.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% set heading = 'Edit ingredient' %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {% if ingredient.storage %}
+        {{ include('sidebar/_sidebar_edit_storage.html.twig') }}
+    {% elseif ingredient.recipe %}
+        {{ include('sidebar/_sidebar_recipe.html.twig', {recipe: ingredient.recipe}) }}
+        {{ include('sidebar/_sidebar_hline.html.twig') }}
+        {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
+        {{ include('sidebar/_sidebar_space.html.twig') }}
+    {% endif %}
+    {{ include('sidebar/_sidebar_space.html.twig') }}
+    <ul class="space-y-2">
+        {{ include('sidebar/_sidebar_item_form.html.twig', {
+            icon: 'delete',
+            name: 'Delete ingredient',
+            path: path('app_ingredient_delete', {'id': ingredient.id}),
+            id: ingredient.id,
+            item: ingredient,
+        }) }}
+    </ul>
+{% endblock %}
+
+
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+    
+    {{ form_start(form, {attr: {'style': 'width: 350px'}}) }}
+        {{ form_row(form.quantity, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+
+        {{ form_row(form.name, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+        
+        <div class="flex justify-end space-x-4">
+            {% if ingredient.storage %}
+                {{ include('component/_button.html.twig', {
+                    path: path('app_storage_index'),
+                    icon: 'redo',
+                    label: 'Back',
+                    inverse: true,
+                }) }}
+            {% elseif ingredient.recipe %}
+                {{ include('component/_button.html.twig', {
+                    path: path('app_recipe_show', {id: ingredient.recipe.id}),
+                    icon: 'redo',
+                    label: 'Back',
+                    inverse: true,
+                }) }}
+            {% endif %}
+            {{ include('component/_button_submit.html.twig', {
+                icon: 'update',
+                label: 'Save ingredient',
+            }) }}
+        </div>
+      
+        {{ form_row(form._token) }}
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,45 +1,40 @@
-{% extends 'base.html.twig' %}
+{# templates/registration/register.html.twig #}
 
-{% block title %}Sign up{% endblock %}
+{% extends 'base.html.twig' %}
+{% set heading = 'Sign up to FoodPlanner' %}
+
+{% block title %}{{ heading }}{% endblock %}
 
 {% block main %}
-<div class="rounded-b-3xl md:rounded-3xl shadow-md border border-gray-200  bg-white mx-auto p-6 md:my-10 lg:my-20 md:w-96 self-center">
-    <div class="text-xl font-semibold text-violet-700 mb-6">
-        Sign up to FoodPlanner
-    </div>
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    {{ form_start(registrationForm) }}
-        <div class="mb-6">
-            {{ form_row(registrationForm.username) }}
-        </div>
-        <div class="mb-6">
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
+    {{ form_start(registrationForm, {attr: {'style': 'width: 350px'}}) }}
+        {{ form_row(registrationForm.username, {
+            label: 'Your username',
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
         }) }}
-        </div>
-        <div class="mb-8">
-        {{ form_row(registrationForm.agreeTerms) }}
-        </div>
+        
+        {{ form_row(registrationForm.plainPassword, {
+            label: 'Your password',
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+        
+        {{ form_row(registrationForm.agreeTerms, {
+            label: 'I agree to the Terms of Service and Privacy Policy.',
+            row_attr: {'class': 'flex mb-6 justify-between align-center'},
+            label_attr: {'class': 'text-sm font-semibold mb-2 order-last'},
+            attr: {'class': 'w-5 h-5 text-blue-600 bg-gray-100 rounded-xl border-gray-300'},
+        }) }}
 
         <div class="flex justify-between items-center">
             <div class="text-sm">
                 <a href="{{ path('app_login') }}" class="transition duration-700 text-slate-400 hover:text-slate-600">Already signed up? Sign in!</a>
             </div>
-            <button type="submit" class="transition rounded-full w-32 h-10 px-6 shadow-md bg-violet-600 hover:bg-violet-500 hover:scale-110 font-semibold text-white">Sign up</button>
+            {{ include('component/_button_submit.html.twig', {icon: 'login', label: 'Sign up', inverse: true}) }}
         </div>
     {{ form_end(registrationForm) }}
-
-    {#
-    <form action="{{ path('app_login') }}" method="post">
-        <div class="mb-6">
-            <label for="username" class="text-sm font-semibold block mb-2">Your username</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username ..." class="border rounded-full h-10 px-6 shadow-sm w-full" />
-        </div>
-        <div class="mb-8">
-            <label for="password" class="text-sm font-semibold block mb-2">Your password</label>
-            <input type="password" id="password" name="_password" placeholder="••••••••" class="border rounded-full h-10 px-6 shadow-sm w-full" />
-        </div>
-    </form>
-    #}
-</div>
 {% endblock %}

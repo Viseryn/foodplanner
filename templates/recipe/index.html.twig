@@ -1,0 +1,44 @@
+{# templates/recipe/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% set heading = 'List of recipes' %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
+{% endblock %}
+
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+
+    <div class="overflow-x-auto relative">
+        <table class="table-fixed w-full text-left">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3 px-6 rounded-xl">Recipe</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for recipe in recipes %}
+                <tr>
+                    <td class="py-4 px-6"><a href="{{ path('app_recipe_show', {'id': recipe.id}) }}">{{ recipe.title }}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="py-4 px-6">No recipes found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-end mt-6">
+        {{ include('component/_button.html.twig', {
+            path: path('app_recipe_new'),
+            icon: 'add',
+            label: 'New recipe',
+        }) }}
+    </div>
+{% endblock %}
