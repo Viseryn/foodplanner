@@ -11,6 +11,7 @@ use App\Service\FileUploader;
 use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,7 +65,7 @@ class RecipeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // TODO: Check extension
-            $imageFile = $form->get('image')->getData();
+            $imageFile = $form['image']->getData();
 
             if ($imageFile) {
                 $imageFileObject = $fileUploader->upload($imageFile, '/img/recipe/');
@@ -159,18 +160,27 @@ class RecipeController extends AbstractController
                 'mapped' => false,
                 'data' => $ingredientString,
             ])
+            ->add('image_remove', CheckboxType::class, [
+                'required' => false,
+                'mapped' => false,
+            ])
         ;
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO: Delete old image
-            // TODO: Check extension
-            $imageFile = $form->get('image')->getData();
+            $deleteImage = $form['image_remove']->getData(); // is 1 or true when toggle is on
 
-            if ($imageFile) {
-                $imageFileObject = $fileUploader->upload($imageFile, '/img/recipes/');
-                $recipe->setImage($imageFileObject);
+            if (! $deleteImage) {
+                // TODO: Check extension
+                $imageFile = $form['image']->getData();
+
+                if ($imageFile) {
+                    $imageFileObject = $fileUploader->upload($imageFile, '/img/recipes/');
+                    $recipe->setImage($imageFileObject);
+                }
+            } else {
+                $recipe->setImage(null);
             }
 
             // Check if ingredients were changed
