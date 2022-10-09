@@ -22,6 +22,13 @@
             attr: {'class': inputClass},
         }) }}
 
+        {{ form_row(form.portionSize, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass, 'id': 'portionSizeOutput'},
+            attr: {'class': 'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer', 'oninput': 'getElementById("portionSizeOutput").innerHTML = "Portions: " + this.value', 'value': recipe.portionSize},
+            label: 'Portions: ' ~ recipe.portionSize,
+        }) }}
+
         {% if recipe.image is not null %}
             <div class="{{ inputRowClass }}">
                 <div class="{{ inputLabelClass }}">Current image</div>
@@ -62,13 +69,6 @@
                 }) }}
             </div>
         {% endif %}
-
-        {{ form_row(form.portionSize, {
-            row_attr: {'class': inputRowClass},
-            label_attr: {'class': inputLabelClass, 'id': 'portionSizeOutput'},
-            attr: {'class': 'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer', 'oninput': 'getElementById("portionSizeOutput").innerHTML = "Portions: " + this.value', 'value': recipe.portionSize},
-            label: 'Portions: ' ~ recipe.portionSize,
-        }) }}
 
         {{ form_row(form.ingredients, {
             row_attr: {'class': textareaRowClass},

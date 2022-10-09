@@ -20,6 +20,13 @@
             attr: {'class': inputClass},
         }) }}
 
+        {{ form_row(form.portionSize, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass, 'id': 'portionSizeOutput'},
+            attr: {'class': 'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer', 'oninput': 'getElementById("portionSizeOutput").innerHTML = "Portions: " + this.value'},
+            label: 'Portions: 1',
+        }) }}
+
         <div>
             <div class="{{ inputLabelClass }}">Upload image</div>
         </div>
@@ -35,13 +42,6 @@
                 attr: {'class': 'file-input hidden'},
             }) }}
         </div>
-
-        {{ form_row(form.portionSize, {
-            row_attr: {'class': inputRowClass},
-            label_attr: {'class': inputLabelClass, 'id': 'portionSizeOutput'},
-            attr: {'class': 'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer', 'oninput': 'getElementById("portionSizeOutput").innerHTML = "Portions: " + this.value'},
-            label: 'Portions: 1',
-        }) }}
 
         {{ form_row(form.ingredients, {
             row_attr: {'class': textareaRowClass},
