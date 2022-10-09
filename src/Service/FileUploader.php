@@ -65,9 +65,6 @@ class FileUploader
         return $fileObject;
     }
 
-    // public function exists(string $filename, ?string $dir): bool {}
-    // public function remove(mixed $file): bool {}
-
     /**
      * Returns the extension of a File object 
      * or a string that is a filename (with or 
@@ -103,4 +100,7 @@ class FileUploader
             $allowedImageExtensions
         );
     }
+
+    // public function exists(string $filename, ?string $dir): bool {}
+    // public function remove(mixed $file): bool {}
 }
