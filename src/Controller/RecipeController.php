@@ -67,8 +67,8 @@ class RecipeController extends AbstractController
             $imageFile = $form->get('image')->getData();
 
             if ($imageFile) {
-                $imageFilename = $fileUploader->upload($imageFile);
-                $recipe->setImageFilename($imageFilename);
+                $imageFileObject = $fileUploader->upload($imageFile, '/img/recipe/');
+                $recipe->setImage($imageFileObject);
             }
 
             $recipeRepository->add($recipe, true);
@@ -169,9 +169,9 @@ class RecipeController extends AbstractController
             $imageFile = $form->get('image')->getData();
 
             if ($imageFile) {
-                $imageFilename = $fileUploader->upload($imageFile);
-                $recipe->setImageFilename($imageFilename);
-            }#
+                $imageFileObject = $fileUploader->upload($imageFile, '/img/recipes/');
+                $recipe->setImage($imageFileObject);
+            }
 
             // Check if ingredients were changed
             if ($ingredientString !== $form['ingredients']->getData()) {

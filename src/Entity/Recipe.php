@@ -28,8 +28,8 @@ class Recipe
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, orphanRemoval: true)]
     private Collection $instructions;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $imageFilename = null;
+    #[ORM\ManyToOne]
+    private ?File $image = null;
 
     public function __construct()
     {
@@ -130,14 +130,14 @@ class Recipe
         return $this->title;
     }
 
-    public function getImageFilename(): ?string
+    public function getImage(): ?File
     {
-        return $this->imageFilename;
+        return $this->image;
     }
 
-    public function setImageFilename(?string $imageFilename): self
+    public function setImage(?File $image): self
     {
-        $this->imageFilename = $imageFilename;
+        $this->image = $image;
 
         return $this;
     }
