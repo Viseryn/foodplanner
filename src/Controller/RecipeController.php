@@ -7,16 +7,14 @@ use App\Form\RecipeType;
 use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
-use App\Service\FileUploader;
 use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
+use App\Service\RecipeUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/recipe')]
@@ -52,41 +50,16 @@ class RecipeController extends AbstractController
     public function new(
         Request $request, 
         RecipeRepository $recipeRepository,
-        IngredientRepository $ingredientRepository,
-        InstructionRepository $instructionRepository,
-        IngredientUtil $ingredientUtil,
-        InstructionUtil $instructionUtil,
-        FileUploader $fileUploader,
+        RecipeUtil $recipeUtil,
     ): Response {
         $recipe = new Recipe();
-        $form = $this->createForm(RecipeType::class, $recipe);
 
+        $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO: Check extension
-            $imageFile = $form['image']->getData();
-
-            if ($imageFile) {
-                $imageFileObject = $fileUploader->upload($imageFile, '/img/recipe/');
-                $recipe->setImage($imageFileObject);
-            }
-
             $recipeRepository->add($recipe, true);
-
-            // Split ingredients and add to database
-            $ingredients = $ingredientUtil->ingredientSplit($form['ingredients']->getData());
-            foreach ($ingredients as $ing) {
-                $ing->setRecipe($recipe);
-                $ingredientRepository->add($ing, true);
-            }
-
-            // Split instructions and add to database
-            $instructions = $instructionUtil->instructionSplit($form['instructions']->getData());
-            foreach ($instructions as $inst) {
-                $inst->setRecipe($recipe);
-                $instructionRepository->add($inst, true);
-            }
+            $recipeUtil->update($recipe, $form);
 
             return $this->redirectToRoute(
                 'app_recipe_show', 
@@ -133,32 +106,21 @@ class RecipeController extends AbstractController
         Request $request, 
         Recipe $recipe, 
         RecipeRepository $recipeRepository,
-        IngredientRepository $ingredientRepository,
-        InstructionRepository $instructionRepository,
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
-        FileUploader $fileUploader,
+        RecipeUtil  $recipeUtil,
     ): Response {
-        // Get all ingredients for the recipe
-        $ingredients = $recipe->getIngredients();
-        $ingredientString = $ingredientUtil->ingredientString($ingredients);
-
-        // Get all instructions for the recipe
-        $instructions = $recipe->getInstructions();
-        $instructionString = $instructionUtil->instructionString($instructions);
-
-        // Build form
-        $form = $this->createForm(RecipeType::class, $recipe);
-        $form
-            ->add('instructions', TextareaType::class, [
-                'required' => false,
-                'mapped' => false,
-                'data' => $instructionString,
-            ])
+        $form = $this
+            ->createForm(RecipeType::class, $recipe)
             ->add('ingredients', TextareaType::class, [
                 'required' => false,
                 'mapped' => false,
-                'data' => $ingredientString,
+                'data' => $ingredientUtil->ingredientString($recipe->getIngredients()),
+            ])
+            ->add('instructions', TextareaType::class, [
+                'required' => false,
+                'mapped' => false,
+                'data' => $instructionUtil->instructionString($recipe->getInstructions()),
             ])
             ->add('image_remove', CheckboxType::class, [
                 'required' => false,
@@ -169,50 +131,7 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $deleteImage = $form['image_remove']->getData(); // is 1 or true when toggle is on
-
-            if (! $deleteImage) {
-                // TODO: Check extension
-                $imageFile = $form['image']->getData();
-
-                if ($imageFile) {
-                    $imageFileObject = $fileUploader->upload($imageFile, '/img/recipes/');
-                    $recipe->setImage($imageFileObject);
-                }
-            } else {
-                $recipe->setImage(null);
-            }
-
-            // Check if ingredients were changed
-            if ($ingredientString !== $form['ingredients']->getData()) {
-                // Delete old ingredients
-                foreach ($ingredients as $ing) {
-                    $ingredientRepository->remove($ing, true);
-                }
-
-                // Split ingredients and add to database
-                $newIngredients = $ingredientUtil->ingredientSplit($form['ingredients']->getData());
-                foreach ($newIngredients as $ing) {
-                    $ing->setRecipe($recipe);
-                    $ingredientRepository->add($ing, true);
-                }
-            }
-
-            // Check if instructions were changed
-            if ($instructionString !== $form['instructions']->getData()) {
-                // Delete old instructions
-                foreach ($instructions as $inst) {
-                    $instructionRepository->remove($inst, true);
-                }
-
-                // Split instructions and add to database
-                $newInstructions = $instructionUtil->instructionSplit($form['instructions']->getData());
-                foreach ($newInstructions as $inst) {
-                    $inst->setRecipe($recipe);
-                    $instructionRepository->add($inst, true);
-                }
-            }
-
+            $recipeUtil->update($recipe, $form);
             $recipeRepository->add($recipe, true);
 
             return $this->redirectToRoute(
