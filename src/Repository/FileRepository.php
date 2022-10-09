@@ -39,24 +39,6 @@ class FileRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * Returns all files with an image extension.
-     *
-     * @return File[]
-     */
-    public function findAllImages(): array 
-    {
-        $results = $this->createQueryBuilder('f')
-            ->orderBy('f.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-
-        return array_filter($results, function($file) {
-            return $file->isImage();
-        });
-    }
-
 //    /**
 //     * @return File[] Returns an array of File objects
 //     */

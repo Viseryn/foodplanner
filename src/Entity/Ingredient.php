@@ -101,8 +101,7 @@ class Ingredient
 
         if ($str != '' && $this->getQuantityUnit() !== '') {
             $str .= ' ' . $this->getQuantityUnit();
-        }
-        elseif ($this->getQuantityUnit() !== '') {
+        } elseif ($this->getQuantityUnit() !== '') {
             $str .= $this->getQuantityUnit();
         }
         
@@ -121,8 +120,7 @@ class Ingredient
         if(count($quantity) === 2) {
             $this->setQuantityValue((string) $quantity[0]);
             $this->setQuantityUnit((string) $quantity[1]);
-        }
-        else {
+        } else {
             throw new Exception('Parameter for setQuantity() is not an array with two entries.');
         }
 

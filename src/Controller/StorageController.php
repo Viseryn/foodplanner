@@ -31,8 +31,7 @@ class StorageController extends AbstractController
         StorageRepository $storageRepository,
         IngredientRepository $ingredientRepository,
         IngredientUtil $ingredientUtil,
-    ): Response 
-    {
+    ): Response {
         $storage = $storageRepository->find(1);
 
         $ingredients = $storage->getIngredients();

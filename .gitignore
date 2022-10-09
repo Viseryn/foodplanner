@@ -26,4 +26,5 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 /src/DataFixtures/UserFixtures.php
-/public/img/recipe/
+/public/img/recipes/
+/data/

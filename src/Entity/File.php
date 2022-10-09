@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\FileRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,107 +15,57 @@ class File
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    private ?string $filename = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $path = null;
+    private ?string $directory = null;
 
-    #[ORM\OneToMany(mappedBy: 'image', targetEntity: Recipe::class)]
-    private Collection $recipes;
-
-    #[ORM\Column(length: 64)]
-    private ?string $extension = null;
-
-    public function __construct()
-    {
-        $this->recipes = new ArrayCollection();
-    }
+    #[ORM\Column]
+    private ?bool $public = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDescription(): ?string
+    public function getFilename(): ?string
     {
-        return $this->description;
+        return $this->filename;
     }
 
-    public function setDescription(string $description): self
+    public function setFilename(string $filename): self
     {
-        $this->description = $description;
+        $this->filename = $filename;
 
         return $this;
     }
 
-    public function getPath(): ?string
+    public function getDirectory(): ?string
     {
-        return $this->path;
+        return $this->directory;
     }
 
-    public function setPath(string $path): self
+    public function setDirectory(string $directory): self
     {
-        $this->path = $path;
+        $this->directory = $directory;
 
         return $this;
     }
 
-    public function __toString()
+    public function isPublic(): ?bool
     {
-        return $this->path;
+        return $this->public;
     }
 
-    /**
-     * @return Collection<int, Recipe>
-     */
-    public function getRecipes(): Collection
+    public function setPublic(bool $public): self
     {
-        return $this->recipes;
-    }
-
-    public function addRecipe(Recipe $recipe): self
-    {
-        if (!$this->recipes->contains($recipe)) {
-            $this->recipes->add($recipe);
-            $recipe->setImage($this);
-        }
+        $this->public = $public;
 
         return $this;
     }
 
-    public function removeRecipe(Recipe $recipe): self
+    public function __toString() 
     {
-        if ($this->recipes->removeElement($recipe)) {
-            // set the owning side to null (unless already changed)
-            if ($recipe->getImage() === $this) {
-                $recipe->setImage(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getExtension(): ?string
-    {
-        return $this->extension;
-    }
-
-    public function setExtension(string $extension): self
-    {
-        $this->extension = $extension;
-
-        return $this;
-    }
-
-    /**
-     * Checks whether the File object references an image.
-     * Returns true in this case.
-     *
-     * @return boolean
-     */
-    public function isImage(): bool
-    {
-        $allowedImageExtensions = ['gif', 'png', 'jpeg', 'jpg'];
-        return in_array(strtolower($this->getExtension()), $allowedImageExtensions);
+        return $this->getDirectory() . $this->getFilename();
     }
 }

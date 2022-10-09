@@ -14,7 +14,6 @@
         <title>{% block title %}FoodPlanner{% endblock %}</title>
         
         <!-- Stylesheets -->
-        {# Icons, custom #}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,700,1,0" />
         <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.3/dist/flowbite.min.css" />
         {% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
@@ -57,7 +56,6 @@
 
         <!-- JavaScript -->
         <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
-        {# jQuery, feather, custom #}
         {% block javascripts %}{{ encore_entry_script_tags('app') }}{% endblock %}
     </body>
 </html>

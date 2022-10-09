@@ -2,11 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\File;
 use App\Entity\Recipe;
-use App\Repository\FileRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,12 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RecipeType extends AbstractType
 {
-
-    public function __construct(FileRepository $fileRepository)
-    {
-        $this->fileRepository = $fileRepository;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,14 +23,6 @@ class RecipeType extends AbstractType
                 ],
                 'data' => 1,
             ])
-            // Add all File objects that are images.
-            // The last two options allow for null as choice.
-            ->add('image', EntityType::class, [
-                'class' => File::class,
-                'choices' => $this->fileRepository->findAllImages(),
-                'required' => false,
-                'empty_data' => '',
-            ])
             // Add a textarea for the ingredients.
             ->add('ingredients', TextareaType::class, [
                 'required' => false,
@@ -48,6 +32,11 @@ class RecipeType extends AbstractType
             ->add('instructions', TextareaType::class, [
                 'required' => false,
                 'mapped' => false,
+            ])
+            // Add a filetype field for an image.
+            ->add('image', FileType::class, [
+                'mapped' => false,
+                'required'=> false,
             ])
         ;
     }

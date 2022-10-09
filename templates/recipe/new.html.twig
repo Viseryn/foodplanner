@@ -27,11 +27,21 @@
             label: 'Portions: 1',
         }) }}
 
-        {{ form_row(form.image, {
-            row_attr: {'class': inputRowClass},
-            label_attr: {'class': inputLabelClass},
-            attr: {'class': inputClass},
-        }) }}
+        <div>
+            <div class="{{ inputLabelClass }}">Upload image</div>
+        </div>
+
+        <div class="{{ inputRowClass }} flex">
+            <label for="recipe_image" class="file-label cursor-pointer overflow-hidden {{ btn_submit_inverse }}">
+                {{ include('component/_button_content.html.twig', {
+                    icon: 'photo_size_select_small',
+                    label: 'Choose file',
+                }) }}
+            </label>
+            {{ form_widget(form.image, {
+                attr: {'class': 'file-input hidden'},
+            }) }}
+        </div>
 
         {{ form_row(form.ingredients, {
             row_attr: {'class': textareaRowClass},

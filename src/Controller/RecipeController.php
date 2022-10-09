@@ -7,12 +7,16 @@ use App\Form\RecipeType;
 use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
+use App\Service\FileUploader;
 use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/recipe')]
@@ -52,13 +56,22 @@ class RecipeController extends AbstractController
         InstructionRepository $instructionRepository,
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
-    ): Response
-    {
+        FileUploader $fileUploader,
+    ): Response {
         $recipe = new Recipe();
         $form = $this->createForm(RecipeType::class, $recipe);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // TODO: Check extension
+            $imageFile = $form['image']->getData();
+
+            if ($imageFile) {
+                $imageFileObject = $fileUploader->upload($imageFile, '/img/recipe/');
+                $recipe->setImage($imageFileObject);
+            }
+
             $recipeRepository->add($recipe, true);
 
             // Split ingredients and add to database
@@ -124,8 +137,8 @@ class RecipeController extends AbstractController
         InstructionRepository $instructionRepository,
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
-    ): Response
-    {
+        FileUploader $fileUploader,
+    ): Response {
         // Get all ingredients for the recipe
         $ingredients = $recipe->getIngredients();
         $ingredientString = $ingredientUtil->ingredientString($ingredients);
@@ -147,11 +160,29 @@ class RecipeController extends AbstractController
                 'mapped' => false,
                 'data' => $ingredientString,
             ])
+            ->add('image_remove', CheckboxType::class, [
+                'required' => false,
+                'mapped' => false,
+            ])
         ;
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $deleteImage = $form['image_remove']->getData(); // is 1 or true when toggle is on
+
+            if (! $deleteImage) {
+                // TODO: Check extension
+                $imageFile = $form['image']->getData();
+
+                if ($imageFile) {
+                    $imageFileObject = $fileUploader->upload($imageFile, '/img/recipes/');
+                    $recipe->setImage($imageFileObject);
+                }
+            } else {
+                $recipe->setImage(null);
+            }
+
             // Check if ingredients were changed
             if ($ingredientString !== $form['ingredients']->getData()) {
                 // Delete old ingredients

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -27,7 +28,7 @@ class Recipe
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, orphanRemoval: true)]
     private Collection $instructions;
 
-    #[ORM\ManyToOne(inversedBy: 'recipes')]
+    #[ORM\ManyToOne]
     private ?File $image = null;
 
     public function __construct()
