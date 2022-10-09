@@ -6,3 +6,13 @@ $('.file-input').on('change', function(event) {
         .find('.label-content')
         .html(inputFile.files[0].name);
 });
+
+// Makes the image select button invisible if toggle is active.
+// Used in RecipeController::edit().
+$('#recipe_image_remove').on('change', function() {
+    if (this.checked) {
+        $('.file-label').addClass('invisible');
+    } else {
+        $('.file-label').removeClass('invisible');
+    }
+});
