@@ -67,5 +67,23 @@ class FileUploader
 
     // public function exists(string $filename, ?string $dir): bool {}
     // public function remove(mixed $file): bool {}
-    // public function getExtension(mixed $file): string {}
+
+    /**
+     * Returns the extension of a File object 
+     * or a string that is a filename (with or 
+     * without directory).
+     *
+     * @param File|string $file
+     * @return string|null
+     */
+    public function getExtension(File|string $file): ?string 
+    {
+        if (is_a($file, File::class)) {
+            $filename = $file->getFilename();
+        } else {
+            $filename = $file;
+        } 
+
+        return pathinfo($filename, PATHINFO_EXTENSION);
+    }
 }
