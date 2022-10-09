@@ -1,3 +1,4 @@
+// Changes the button label of a FileType form field to the file's name
 $('.file-input').on('change', function(event) {
     var inputFile = event.currentTarget;
     $(inputFile).parent()
