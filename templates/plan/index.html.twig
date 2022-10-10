@@ -1,20 +1,29 @@
+{# templates/plan/index.html.twig #}
+
 {% extends 'base.html.twig' %}
+{% set heading = 'Weekly Planner' %}
 
-{% block title %}Hello PlanController!{% endblock %}
+{% block title %}{{ heading }}{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_plan.html.twig') }}
+{% endblock %}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/kevinsporbeck/Documents/GitHub/foodplanner/src/Controller/PlanController.php'|file_link(0) }}">src/Controller/PlanController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/kevinsporbeck/Documents/GitHub/foodplanner/templates/plan/index.html.twig'|file_link(0) }}">templates/plan/index.html.twig</a></code></li>
-    </ul>
-</div>
+    {% for day in days %}
+        {% for meal in day.meals %}
+            {{ day }} {{ meal.mealCategory }}: {{ meal.recipe }} <br />
+        {% endfor %}
+    {% endfor %}
+
+    <div class="mt-6 flex justify-end">
+        {{ include('component/_button.html.twig', {
+            path: path('app_plan_new'),
+            icon: 'add',
+            label: 'New meal',
+        }) }}
+    </div>
 {% endblock %}
