@@ -16,11 +16,8 @@ class Day
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 16)]
-    private ?string $name = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $date = null;
+    #[ORM\Column]
+    private ?int $timestamp = null;
 
     #[ORM\OneToMany(mappedBy: 'day', targetEntity: Meal::class, orphanRemoval: true)]
     private Collection $meals;
@@ -35,26 +32,14 @@ class Day
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getTimestamp(): ?int
     {
-        return $this->name;
+        return $this->timestamp;
     }
 
-    public function setName(string $name): self
+    public function setTimestamp(int $timestamp): self
     {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDate(): ?string
-    {
-        return $this->date;
-    }
-
-    public function setDate(string $date): self
-    {
-        $this->date = $date;
+        $this->timestamp = $timestamp;
 
         return $this;
     }
@@ -87,5 +72,11 @@ class Day
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return date('Y-m-d', $this->timestamp);
+        // return $this->timestamp;
     }
 }
