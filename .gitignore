@@ -28,3 +28,4 @@ yarn-error.log
 /src/DataFixtures/UserFixtures.php
 /public/img/recipes/
 /data/
+/migrations
