@@ -9,12 +9,12 @@ class PlanUtil
     /**
      * Returns the timestamp of the given date.
      *
-     * @param string $date
+     * @param string|Day $date
      * @return integer
      */
-    public function dateToTimestamp(string $date): int
+    public function dateToTimestamp(string|Day $date): int
     {
-        return strtotime($date);
+        return strtotime((string) $date);
     }
 
     /**
