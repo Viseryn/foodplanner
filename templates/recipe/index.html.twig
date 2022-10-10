@@ -15,7 +15,7 @@
 
     <div class="grid grid-cols-3 gap-4 mb-10">
         {% for recipe in recipes %}
-            <div class="shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+            <div class="h-40 shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
                 {% if recipe.image is not null %}
                     <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="relative">
                         <div class="absolute bottom-4 px-6 text-white font-semibold text-xl z-10">{{ recipe.title }}</div>
