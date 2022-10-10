@@ -15,7 +15,7 @@ class Meal
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?MealType $mealType = null;
+    private ?MealCategory $mealCategory = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -30,14 +30,14 @@ class Meal
         return $this->id;
     }
 
-    public function getMealType(): ?MealType
+    public function getMealCategory(): ?MealCategory
     {
-        return $this->mealType;
+        return $this->mealCategory;
     }
 
-    public function setMealType(?MealType $mealType): self
+    public function setMealCategory(?MealCategory $mealCategory): self
     {
-        $this->mealType = $mealType;
+        $this->mealCategory = $mealCategory;
 
         return $this;
     }
