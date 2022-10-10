@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\Day;
+
 class PlanUtil
 {
     /**
@@ -48,5 +50,39 @@ class PlanUtil
         return (date('D') != 'Sun') 
             ? $this->dateToTimestamp('next Sunday')
             : $this->dateToTimestamp('today');
+    }
+
+    /**
+     * Returns an array of seven Day objects for the current week.
+     *
+     * @return Day[]
+     */
+    public function currentWeek(): array
+    {
+        $week = [];
+        $start = $this->currentWeekStart();
+
+        for ($i = 0; $i < 7; $i++) {
+            $week[$i] = (new Day())->setTimestamp($start + 86400 * $i);
+        }
+
+        return $week;
+    }
+
+    /**
+     * Returns an array of seven Day objects for the next week.
+     *
+     * @return Day[]
+     */
+    public function nextWeek(): array
+    {
+        $week = [];
+        $start = $this->currentWeekEnd();
+
+        for ($i = 1; $i < 8; $i++) {
+            $week[$i] = (new Day())->setTimestamp($start + 86400 * $i);
+        }
+
+        return $week;
     }
 }
