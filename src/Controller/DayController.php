@@ -57,7 +57,7 @@ class DayController extends AbstractController
             $dayRepository->remove($day, true);
         }
 
-        return $this->redirectToRoute('app_day_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}', name: 'app_day_delete', methods: ['POST'])]
