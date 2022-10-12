@@ -89,7 +89,7 @@ class UserGroup
     public function __toString()
     {
         $str = '';
-        $last = count($this->users - 1); // last index
+        $last = count($this->users) - 1; // last index
 
         foreach ($this->users as $user) {
             $str .= $user->getUsername();
