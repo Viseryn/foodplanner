@@ -25,6 +25,10 @@ class Meal
     #[ORM\JoinColumn(nullable: false)]
     private ?Day $day = null;
 
+    #[ORM\ManyToOne(inversedBy: 'meals')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserGroup $userGroup = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +66,18 @@ class Meal
     public function setDay(?Day $day): self
     {
         $this->day = $day;
+
+        return $this;
+    }
+
+    public function getUserGroup(): ?UserGroup
+    {
+        return $this->userGroup;
+    }
+
+    public function setUserGroup(?UserGroup $userGroup): self
+    {
+        $this->userGroup = $userGroup;
 
         return $this;
     }
