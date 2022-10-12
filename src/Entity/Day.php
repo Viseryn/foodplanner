@@ -79,4 +79,11 @@ class Day
         return date('Y-m-d', $this->timestamp);
         // return $this->timestamp;
     }
+
+    public function getWeekday()
+    {
+        $dt = new Datetime();
+        $dt->setTimestamp($this->timestamp);
+        return $dt->format('l');
+    }
 }
