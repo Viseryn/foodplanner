@@ -15,6 +15,7 @@ class MealType extends AbstractType
             ->add('mealCategory')
             ->add('recipe')
             ->add('day')
+            ->add('userGroup')
         ;
     }
 
