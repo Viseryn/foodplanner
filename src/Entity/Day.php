@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\DayRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -82,7 +83,7 @@ class Day
 
     public function getWeekday()
     {
-        $dt = new Datetime();
+        $dt = new DateTime();
         $dt->setTimestamp($this->timestamp);
         return $dt->format('l');
     }
