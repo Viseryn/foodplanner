@@ -91,13 +91,13 @@ class UserGroup
         $str = '';
 
         foreach ($this->users as $user) {
-            $str .= $user->getUsername();
-            
-            if ($user === $this->users->last()) {
+            if ($user === $this->users->last() && $this->users->count() > 1) {
                 $str .= ' & ';
-            } else {
+            } elseif ($user !== $this->users->first()) {
                 $str .= ', ';
             }
+
+            $str .= $user->getUsername();
         }
 
         return $str;
