@@ -9,3 +9,10 @@ kernel:
 app_logout:
     path: /logout
     methods: GET
+
+homepage:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
+    defaults:
+        path: /recipe
+        permanent: true
