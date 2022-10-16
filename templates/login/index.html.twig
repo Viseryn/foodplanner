@@ -19,7 +19,7 @@
 {% else %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
     
-    <form action="{{ path('app_login') }}" method="post" style="width: 350px">
+    <form action="{{ path('app_login') }}" method="post" style="max-width: 350px">
         <div class="mb-6">
             <label for="username" class="text-sm font-semibold block mb-2">Your username</label>
             <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username ..." class="{{ inputClass }}" />
