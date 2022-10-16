@@ -12,6 +12,8 @@
     }) }}
 {% endblock %}
 
+{% block load_sidebar %}loadSidebar('pantry');{% endblock %}
+
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 

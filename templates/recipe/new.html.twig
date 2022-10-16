@@ -5,6 +5,8 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
+{% block load_sidebar %}loadSidebar('recipes');{% endblock %}
+
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
