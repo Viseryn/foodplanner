@@ -5,21 +5,23 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
+{% block sidebar_action %}
+    {{ include('sidebar/_sidebar_action.html.twig', {
+        path: path('app_recipe_new'),
+        icon: 'add',
+    }) }}
 {% endblock %}
 
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    <div class="grid grid-cols-3 gap-4 mb-10">
+    <div class="grid auto-cols-max gap-4 mb-10">
         {% for recipe in recipes %}
-            <div class="h-40 shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+            <div class="h-40 w-60 shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
                 {% if recipe.image is not null %}
                     <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="relative">
                         <div class="absolute bottom-4 px-6 text-white font-semibold text-xl z-10">{{ recipe.title }}</div>
-                        <img class="rounded-2xl h-40 object-cover brightness-75" src="{{ asset(recipe.image) }}" alt="{{ recipe }}" />
+                        <img class="rounded-2xl h-40 w-60 object-cover brightness-75" src="{{ asset(recipe.image) }}" alt="{{ recipe }}" />
                     </a>
                 {% else %}
                     <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="h-full w-full p-6 font-semibold text-xl z-10 flex items-end">
@@ -28,13 +30,5 @@
                 {% endif %}
             </div>
         {% endfor %}
-    </div>
-
-    <div class="flex justify-end">
-        {{ include('component/_button.html.twig', {
-            path: path('app_recipe_new'),
-            icon: 'add',
-            label: 'New recipe',
-        }) }}
     </div>
 {% endblock %}

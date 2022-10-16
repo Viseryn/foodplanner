@@ -5,9 +5,11 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_edit_storage.html.twig') }}
+{% block sidebar_action %}
+    {{ include('sidebar/_sidebar_action.html.twig', {
+        path: path('app_storage_edit_ingredients'),
+        icon: 'drive_file_rename_outline',
+    }) }}
 {% endblock %}
 
 {% block main %}
@@ -17,15 +19,15 @@
         <table class="table-fixed w-full text-left">
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="py-3 px-6 rounded-l-xl w-6/12">Ingredient</th>
-                    <th class="py-3 px-6 rounded-r-xl">Quantity</th>
+                    <th class="py-3 px-6 rounded-l-xl">Quantity</th>
+                    <th class="py-3 px-6 rounded-r-xl">Ingredient</th>
                 </tr>
             </thead>
             <tbody>
             {% for ingredient in ingredients %}
                 <tr>
-                    <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">{{ ingredient.name }}</a></td>
-                    <td class="py-4 px-6"><a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}">{{ ingredient.quantityValue }} {{ ingredient.quantityUnit }}</a></td>
+                    <td class="py-4 px-6">{{ ingredient.quantityValue }} {{ ingredient.quantityUnit }}</td>
+                    <td class="py-4 px-6">{{ ingredient.name }}</td>
                 </tr>
             {% else %}
                 <tr>
@@ -34,13 +36,5 @@
             {% endfor %}
             </tbody>
         </table>
-    </div>
-
-    <div class="flex justify-end mt-6">
-        {{ include('component/_button.html.twig', {
-            path: path('app_storage_edit_ingredients'),
-            icon: 'fastfood',
-            label: 'Edit ingredients',
-        }) }}
     </div>
 {% endblock %}

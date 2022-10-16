@@ -5,15 +5,10 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
-{% endblock %}
-
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    {{ form_start(form, {attr: {'style': 'width: ' ~ standardFormWidth}}) }}
+    {{ form_start(form, {attr: {'style': 'max-width: ' ~ standardFormWidth}}) }}
         {{ form_row(form.title, {
             row_attr: {'class': inputRowClass},
             label_attr: {'class': inputLabelClass},

@@ -5,6 +5,13 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
+{% block sidebar_action %}
+    {{ include('sidebar/_sidebar_action.html.twig', {
+        path: path('app_plan_new'),
+        icon: 'add',
+    }) }}
+{% endblock %}
+
 {% block sidebar %}
     {{ include('sidebar/_sidebar_hline.html.twig') }}
     {{ include('sidebar/_sidebar_plan.html.twig') }}
@@ -36,18 +43,12 @@
         </div>
     {% endfor %}
 
-    <div class="mt-6 space-x-4 flex justify-end">
+    <div class="flex justify-end mt-6">
         {{ include('component/_button.html.twig', {
             path: path('app_day_delete_all'),
             icon: 'delete_sweep',
             label: 'Delete all days',
             inverse: true,
-        }) }}
-
-        {{ include('component/_button.html.twig', {
-            path: path('app_plan_new'),
-            icon: 'add',
-            label: 'New meal',
         }) }}
     </div>
 {% endblock %}

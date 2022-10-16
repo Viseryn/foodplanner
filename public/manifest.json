@@ -1,0 +1,22 @@
+{
+    "display": "standalone",
+    "start_url": "/recipe",
+    "name": "FoodPlanner",
+    "short_name": "FoodPlanner",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "icons": [
+        {
+            "src": "/img/snom-192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/img/snom-512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any maskable"
+        }
+    ]
+}

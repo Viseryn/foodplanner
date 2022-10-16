@@ -5,18 +5,6 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {% if error %}
-        <div class="flex p-4 mt-10 text-sm text-red-700 bg-red-100 rounded-3xl items-center" role="alert">
-            <span class="material-symbols-rounded flex-shrink-0 inline mr-5">info</span>
-            <div>
-                <span class="font-medium">{{ error.messageKey | trans(error.messageData, 'security') }}</span> <br />
-                Please try again.
-            </div>
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block main %}
 
 {% if app.user %}
@@ -31,7 +19,7 @@
 {% else %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
     
-    <form action="{{ path('app_login') }}" method="post" style="width: 350px">
+    <form action="{{ path('app_login') }}" method="post" style="max-width: 350px">
         <div class="mb-6">
             <label for="username" class="text-sm font-semibold block mb-2">Your username</label>
             <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username ..." class="{{ inputClass }}" />
@@ -52,6 +40,16 @@
         <input type="hidden" name="_target_path" value="/login" />
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
     </form>
+
+    {% if error %}
+        <div class="flex p-4 mt-10 text-sm text-red-700 bg-red-100 rounded-3xl items-center" role="alert">
+            <span class="material-symbols-rounded flex-shrink-0 inline mr-5">info</span>
+            <div>
+                <span class="font-medium">{{ error.messageKey | trans(error.messageData, 'security') }}</span> <br />
+                Please try again.
+            </div>
+        </div>
+    {% endif %}
 {% endif %}
 
 {% endblock %}

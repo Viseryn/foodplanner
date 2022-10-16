@@ -8,7 +8,7 @@
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    {{ form_start(registrationForm, {attr: {'style': 'width: 350px'}}) }}
+    {{ form_start(registrationForm, {attr: {'style': 'max-width: 350px'}}) }}
         {{ form_row(registrationForm.username, {
             label: 'Your username',
             row_attr: {'class': inputRowClass},
