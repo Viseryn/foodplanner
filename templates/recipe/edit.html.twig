@@ -5,11 +5,11 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_recipe.html.twig') }}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
+{% block sidebar_action %}
+    {{ include('sidebar/_sidebar_action.html.twig', {
+        path: path('app_recipe_show', {id: recipe.id}),
+        icon: 'redo',
+    }) }}
 {% endblock %}
 
 {% block main %}
@@ -87,14 +87,7 @@
             Seperate each step with a new line!
         </div>
 
-        <div class="flex justify-end space-x-4">
-            {{ include('component/_button.html.twig', {
-                path: path('app_recipe_show', {id: recipe.id}),
-                icon: 'redo',
-                label: 'Back',
-                inverse: true,
-            }) }}
-
+        <div class="flex justify-end">
             {{ include('component/_button_submit.html.twig', {
                 icon: 'update',
                 label: 'Save recipe',

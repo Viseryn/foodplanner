@@ -5,9 +5,11 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_edit_storage.html.twig') }}
+{% block sidebar_action %}
+    {{ include('sidebar/_sidebar_action.html.twig', {
+        path: path('app_storage_edit_ingredients'),
+        icon: 'drive_file_rename_outline',
+    }) }}
 {% endblock %}
 
 {% block main %}
@@ -34,13 +36,5 @@
             {% endfor %}
             </tbody>
         </table>
-    </div>
-
-    <div class="flex justify-end mt-6">
-        {{ include('component/_button.html.twig', {
-            path: path('app_storage_edit_ingredients'),
-            icon: 'fastfood',
-            label: 'Edit ingredients',
-        }) }}
     </div>
 {% endblock %}

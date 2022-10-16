@@ -5,11 +5,11 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_recipe.html.twig') }}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
+{% block sidebar_action %}
+    {{ include('sidebar/_sidebar_action.html.twig', {
+        path: path('app_recipe_edit', {id: recipe.id}),
+        icon: 'drive_file_rename_outline',
+    }) }}
 {% endblock %}
 
 {% block main %}
@@ -52,12 +52,20 @@
         </div>
     </div>
 
-    <div class="flex justify-end">
+    <div class="flex justify-end space-x-4">
         {{ include('component/_button.html.twig', {
             path: path('app_recipe_edit', {id: recipe.id}), 
             icon: 'drive_file_rename_outline', 
-            label: 'Edit recipe',
+            label: 'Edit',
             inverse: true,
         }) }}
+        <form method="post" action="{{ path('app_recipe_delete', {id: recipe.id}) }}" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recipe.id) }}">
+            {{ include('component/_button_submit.html.twig', {
+                icon: 'delete', 
+                label: 'Delete',
+                inverse: true,
+            }) }}
+        </form>
     </div>
 {% endblock %}

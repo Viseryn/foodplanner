@@ -5,9 +5,11 @@
 
 {% block title %}{{ heading }}{% endblock %}
 
-{% block sidebar %}
-    {{ include('sidebar/_sidebar_hline.html.twig') }}
-    {{ include('sidebar/_sidebar_add_recipe.html.twig') }}
+{% block sidebar_action %}
+    {{ include('sidebar/_sidebar_action.html.twig', {
+        path: path('app_recipe_new'),
+        icon: 'add',
+    }) }}
 {% endblock %}
 
 {% block main %}
@@ -28,13 +30,5 @@
                 {% endif %}
             </div>
         {% endfor %}
-    </div>
-
-    <div class="flex justify-end">
-        {{ include('component/_button.html.twig', {
-            path: path('app_recipe_new'),
-            icon: 'add',
-            label: 'New recipe',
-        }) }}
     </div>
 {% endblock %}
