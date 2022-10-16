@@ -24,7 +24,7 @@
         {% block body %}
             <main>
                 <div class="flex bg-blue-50">
-                    <aside class="z-50 bg-blue-50 w-full fixed bottom-0 h-20
+                    <aside id="sidebar" class="z-50 bg-blue-50 w-full fixed bottom-0 h-20
                         lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center">
                         <div class="pl-7 pr-10 py-3 w-full lg:max-w-fit flex justify-between lg:block lg:px-3 lg:py-7 fixed">
                             {# BEGIN action buttons (hidden on small screens) #}
@@ -69,6 +69,20 @@
         <!-- JavaScript -->
         <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
         {% block javascripts %}{{ encore_entry_script_tags('app') }}{% endblock %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>
+            function loadSidebar(activeView) {
+                // $(".nav-link").removeClass("active");
+
+                // Make sure this is executed after *every*
+                // "active" has been removed and DOM is loaded.
+                setTimeout(() => {
+                    $('#sidebar-' + activeView).addClass('bg-blue-100');
+                }, 0);
+            };
+
+            {% block load_sidebar %}{% endblock %}
+        </script>
     </body>
 </html>
 {# END HTML #}
