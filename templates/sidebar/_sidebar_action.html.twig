@@ -1,0 +1,11 @@
+{# templates/sidebar/_sidebar_action.html.twig #}
+
+<li>
+    <a class="flex items-center p-4 rounded-2xl 
+        text-gray-900 bg-pink-200 
+        transition duration-300 
+        hover:bg-pink-300 active:bg-pink-400 active:scale-90" 
+        href="{{ path|default(path('homepage')) }}">
+        <span class="material-symbols-rounded">{{ icon|default('drive_file_rename_outline') }}</span>
+    </a>
+</li>

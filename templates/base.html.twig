@@ -23,18 +23,36 @@
     <body>
         {% block body %}
             <main>
-                <div class="flex">
-                    <aside class="w-64 pt-16 min-h-screen">
-                        <div class="px-3 pt-7 bg-gray-50 h-full fixed w-64">
+                <div class="flex bg-blue-50">
+                    <aside class="z-50 bg-blue-50 w-full fixed bottom-0 h-20
+                        lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center">
+                        <div class="pl-7 pr-10 py-3 w-full lg:max-w-fit flex justify-between lg:block lg:px-3 lg:py-7 fixed">
+                            {# BEGIN action buttons (hidden on small screens) #}
+                            <ul class="space-y-2 mb-16 hidden lg:block">
+                                <li>
+                                    <a class="flex items-center p-4 text-gray-900 rounded-full transition duration-300 hover:bg-blue-100 active:bg-blue-200 active:scale-90 group" href="#">
+                                        <span class="material-symbols-rounded text-gray-500 transition duration-300 group-hover:text-gray-900">menu</span>
+                                    </a>
+                                </li>
+                                
+                                {% block sidebar_action %}
+                                    <li>
+                                        <a class="flex items-center p-4 rounded-2xl">&nbsp;</a>
+                                    </li>
+                                {% endblock %}
+                            </ul>
+                            {# END action buttons #}
 
-                            {# Sidebar #}
-                            {% block sidebar_top %}
-                                {{ include('sidebar/_sidebar.html.twig')}}
-                            {% endblock %}
-
-                            {# Optional sidebar items #}
+                            {# BEGIN sidebar buttons #}
+                            {{ include('sidebar/_sidebar.html.twig') }}
                             {% block sidebar %}{% endblock %}
-
+                            {# END sidebar buttons #}
+                            
+                            {# BEGIN mobile action button #}
+                            <ul class="lg:hidden">
+                                {{ block('sidebar_action') }}
+                            </ul>
+                            {# END mobile action button #}
                         </div>
                     </aside>
                     <div class="flex-initial px-10 mt-8 py-16 text-gray-700" style="width: 700px">
