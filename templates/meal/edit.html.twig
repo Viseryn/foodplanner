@@ -1,0 +1,62 @@
+{# templates/plan/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% set heading = 'Meal CRUD' %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_plan.html.twig') }}
+{% endblock %}
+
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+
+    {{ form_start(form, {attr: {'style': 'width: ' ~ standardFormWidth}}) }}
+        {{ form_row(form.day, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+
+        {{ form_row(form.mealCategory, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+
+        {{ form_row(form.userGroup, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+
+        {{ form_row(form.recipe, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+        
+        <div class="flex justify-end space-x-4">
+            {{ include('component/_button.html.twig', {
+                path: path('app_meal_index'),
+                icon: 'redo',
+                label: 'Back',
+                inverse: true,
+            }) }}
+
+            {{ include('component/_button_submit.html.twig', {
+                icon: 'update',
+                label: 'Save meal',
+            }) }}
+        </div>
+
+        {{ form_row(form._token) }}
+    {{ form_end(form) }}
+
+    <form method="post" action="{{ path('app_meal_delete', {'id': meal.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ meal.id) }}">
+        <button class="btn">Delete</button>
+    </form>
+{% endblock %}
