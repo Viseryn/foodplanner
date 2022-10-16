@@ -15,7 +15,7 @@ class Meal
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?MealType $mealType = null;
+    private ?MealCategory $mealCategory = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -25,19 +25,23 @@ class Meal
     #[ORM\JoinColumn(nullable: false)]
     private ?Day $day = null;
 
+    #[ORM\ManyToOne(inversedBy: 'meals')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserGroup $userGroup = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMealType(): ?MealType
+    public function getMealCategory(): ?MealCategory
     {
-        return $this->mealType;
+        return $this->mealCategory;
     }
 
-    public function setMealType(?MealType $mealType): self
+    public function setMealCategory(?MealCategory $mealCategory): self
     {
-        $this->mealType = $mealType;
+        $this->mealCategory = $mealCategory;
 
         return $this;
     }
@@ -62,6 +66,18 @@ class Meal
     public function setDay(?Day $day): self
     {
         $this->day = $day;
+
+        return $this;
+    }
+
+    public function getUserGroup(): ?UserGroup
+    {
+        return $this->userGroup;
+    }
+
+    public function setUserGroup(?UserGroup $userGroup): self
+    {
+        $this->userGroup = $userGroup;
 
         return $this;
     }

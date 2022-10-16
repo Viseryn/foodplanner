@@ -8,6 +8,11 @@
         badge: render(controller('App\\Controller\\RecipeController::numberOfRecipes')),
     }) }}
     {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'calendar_month',
+        name: 'Weekly Planner',
+        path: path('app_plan_index'),
+    }) }}
+    {{ include('sidebar/_sidebar_item.html.twig', {
         icon: 'dresser',
         name: 'Pantry',
         path: path('app_storage_index'),

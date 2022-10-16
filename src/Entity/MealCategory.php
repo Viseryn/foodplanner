@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\MealTypeRepository;
+use App\Repository\MealCategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MealTypeRepository::class)]
-class MealType
+#[ORM\Entity(repositoryClass: MealCategoryRepository::class)]
+class MealCategory
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

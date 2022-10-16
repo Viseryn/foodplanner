@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\MealType;
+use App\Entity\MealCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<MealType>
+ * @extends ServiceEntityRepository<MealCategory>
  *
- * @method MealType|null find($id, $lockMode = null, $lockVersion = null)
- * @method MealType|null findOneBy(array $criteria, array $orderBy = null)
- * @method MealType[]    findAll()
- * @method MealType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method MealCategory|null find($id, $lockMode = null, $lockVersion = null)
+ * @method MealCategory|null findOneBy(array $criteria, array $orderBy = null)
+ * @method MealCategory[]    findAll()
+ * @method MealCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MealTypeRepository extends ServiceEntityRepository
+class MealCategoryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MealType::class);
+        parent::__construct($registry, MealCategory::class);
     }
 
-    public function add(MealType $entity, bool $flush = false): void
+    public function add(MealCategory $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class MealTypeRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(MealType $entity, bool $flush = false): void
+    public function remove(MealCategory $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class MealTypeRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return MealType[] Returns an array of MealType objects
+//     * @return MealCategory[] Returns an array of MealCategory objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class MealTypeRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?MealType
+//    public function findOneBySomeField($value): ?MealCategory
 //    {
 //        return $this->createQueryBuilder('m')
 //            ->andWhere('m.exampleField = :val')

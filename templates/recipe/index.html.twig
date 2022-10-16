@@ -13,28 +13,24 @@
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    <div class="overflow-x-auto relative">
-        <table class="table-fixed w-full text-left">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="py-3 px-6 rounded-xl">Recipe</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for recipe in recipes %}
-                <tr>
-                    <td class="py-4 px-6"><a href="{{ path('app_recipe_show', {'id': recipe.id}) }}">{{ recipe.title }}</a></td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td class="py-4 px-6">No recipes found.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="grid grid-cols-3 gap-4 mb-10">
+        {% for recipe in recipes %}
+            <div class="h-40 shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+                {% if recipe.image is not null %}
+                    <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="relative">
+                        <div class="absolute bottom-4 px-6 text-white font-semibold text-xl z-10">{{ recipe.title }}</div>
+                        <img class="rounded-2xl h-40 object-cover brightness-75" src="{{ asset(recipe.image) }}" alt="{{ recipe }}" />
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="h-full w-full p-6 font-semibold text-xl z-10 flex items-end">
+                        <div>{{ recipe.title }}</div>
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
 
-    <div class="flex justify-end mt-6">
+    <div class="flex justify-end">
         {{ include('component/_button.html.twig', {
             path: path('app_recipe_new'),
             icon: 'add',

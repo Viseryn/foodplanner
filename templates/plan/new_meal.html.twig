@@ -1,0 +1,57 @@
+{# templates/plan/new_meal.html.twig #}
+
+{% extends 'base.html.twig' %}
+{% set heading = 'New meal' %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block sidebar %}
+    {{ include('sidebar/_sidebar_hline.html.twig') }}
+    {{ include('sidebar/_sidebar_plan.html.twig') }}
+{% endblock %}
+
+{% block main %}
+    {{ include('component/_heading.html.twig', {heading: heading}) }}
+
+    {{ form_start(form, {attr: {'style': 'width: ' ~ standardFormWidth}}) }}
+        {{ form_row(form.day, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+
+        {{ form_row(form.mealCategory, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+
+        {{ form_row(form.userGroup, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+
+        {{ form_row(form.recipe, {
+            row_attr: {'class': inputRowClass},
+            label_attr: {'class': inputLabelClass},
+            attr: {'class': inputClass},
+        }) }}
+        
+        <div class="flex justify-end space-x-4">
+            {{ include('component/_button.html.twig', {
+                path: path('app_plan_index'),
+                icon: 'redo',
+                label: 'Back',
+                inverse: true,
+            }) }}
+
+            {{ include('component/_button_submit.html.twig', {
+                icon: 'add',
+                label: 'Save meal',
+            }) }}
+        </div>
+
+        {{ form_row(form._token) }}
+    {{ form_end(form) }}
+{% endblock %}
