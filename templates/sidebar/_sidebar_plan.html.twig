@@ -1,0 +1,14 @@
+{# templates/sidebar/_sidebar_plan.html.twig #}
+
+<ul class="space-y-2">
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'settings',
+        name: 'Meal CRUD',
+        path: path('app_meal_index'),
+    }) }}
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        icon: 'settings',
+        name: 'Day CRUD',
+        path: path('app_day_index'),
+    }) }}
+</ul>
