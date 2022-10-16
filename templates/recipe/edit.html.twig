@@ -39,13 +39,13 @@
                 <label for="recipe_image_remove" class="inline-flex relative items-center cursor-pointer">
                     <input type="checkbox" value="" id="recipe_image_remove" name="recipe[image_remove]" class="sr-only peer" />
                     <div class="w-11 h-6 bg-gray-100 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 peer-checked:bg-blue-600"></div>
-                    <span class="ml-3 text-sm text-gray-900">Delete from recipe</span>
+                    <span class="ml-3 text-sm text-gray-900">Remove</span>
                 </label>
 
                 <label for="recipe_image" class="file-label cursor-pointer overflow-clip {{ btn_submit_inverse }}">
                     {{ include('component/_button_content.html.twig', {
                         icon: 'photo_size_select_small',
-                        label: 'Change image',
+                        label: 'Change',
                     }) }}
                 </label>
                 {{ form_widget(form.image, {
