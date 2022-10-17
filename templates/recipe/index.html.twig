@@ -17,7 +17,7 @@
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-10" style="max-width: 1200px">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-10 max-w-[1200px]">
         {% for recipe in recipes %}
             <div class="h-40 w-full shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-95 hover:shadow-lg hover:bg-gray-50">
                 {% if recipe.image is not null %}
