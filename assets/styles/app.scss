@@ -254,3 +254,56 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+/* SweetAlert theme */
+.swal-modal {
+    border-radius: 1.5rem;
+    background-color: $red-50;
+}
+
+.swal-text,
+.swal-title {
+    font-weight: 400;
+    color: $gray-900;
+}
+
+.swal-button {
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: medium;
+    color: $gray-900;
+    
+    &:focus {
+        box-shadow: none;
+    }
+
+    &--danger {
+        background-color: $red-200;
+
+        &:not([disabled]):hover {
+            background-color: $red-300;
+        }
+
+        &:active {
+            background-color: $red-400 !important;
+        }
+    }
+
+    &--cancel {
+        margin-right: 1rem;
+        // border: 0;
+        background-color: transparent;
+        color: $rose-700;
+
+        &:not([disabled]):hover{
+            background-color: $red-100;
+        }
+
+        &:active {
+            background-color: $red-200 !important;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
