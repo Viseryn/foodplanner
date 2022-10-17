@@ -17,6 +17,7 @@ $('#recipe_image_remove').on('change', function() {
     }
 });
 
+// Opens an alert when the submit button of a form with id #delete-form is clicked
 $('#delete-form').children('button[type="submit"]').on('click', function(e) {
     e.preventDefault();
     var form = $(this).parents('form');
