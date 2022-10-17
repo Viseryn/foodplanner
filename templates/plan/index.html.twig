@@ -40,7 +40,19 @@
         </div>
     {% endfor %}
 
-    <div class="flex justify-end mt-6">
+    <div class="flex justify-end space-x-4 mt-6">
+        {{ include('component/_button.html.twig', {
+            path: path('app_meal_index'),
+            icon: 'settings',
+            label: 'Meal CRUD',
+            inverse: true,
+        }) }}
+        {{ include('component/_button.html.twig', {
+            path: path('app_day_index'),
+            icon: 'settings',
+            label: 'Day CRUD',
+            inverse: true,
+        }) }}
         {{ include('component/_button.html.twig', {
             path: path('app_day_delete_all'),
             icon: 'delete_sweep',
