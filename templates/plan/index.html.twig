@@ -18,9 +18,9 @@
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
     {% for day in days %}
-        <div class="text-lg font-semibold text-blue-600 mb-4">
-            {{ day.weekday }}
-        </div>
+        <a class="text-lg font-semibold text-blue-600 mb-4 block" href="{{ path('app_plan_new_day', {dayId: day.id}) }}">
+            {{ day.weekday }}, {{ day.date }}
+        </a>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-10" style="max-width: 1200px">
             {% for meal in day.meals %}
