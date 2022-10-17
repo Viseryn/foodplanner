@@ -271,11 +271,16 @@ body::-webkit-scrollbar {
     font-weight: 600;
     font-size: medium;
     color: $gray-900;
+    transition-duration: 300ms;
     
     &:focus {
         box-shadow: none;
     }
 
+    &:active {
+        transform: scale(.95);
+    }
+    
     &--danger {
         background-color: $red-200;
 
@@ -290,7 +295,6 @@ body::-webkit-scrollbar {
 
     &--cancel {
         margin-right: 1rem;
-        // border: 0;
         background-color: transparent;
         color: $rose-700;
 
@@ -300,10 +304,6 @@ body::-webkit-scrollbar {
 
         &:active {
             background-color: $red-200 !important;
-        }
-
-        &:focus {
-            outline: none;
         }
     }
 }
