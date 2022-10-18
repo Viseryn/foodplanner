@@ -2,14 +2,14 @@
 
 <ul class="flex flex-row space-x-1 lg:flex-col lg:space-x-0 lg:space-y-2">
     {{ include('sidebar/_sidebar_item.html.twig', {
-        name: 'recipes',
-        path: path('app_recipe_index'),
-        icon: 'fastfood',
-    }) }}
-    {{ include('sidebar/_sidebar_item.html.twig', {
         name: 'planner',
         path: path('app_plan_index'),
         icon: 'date_range',
+    }) }}
+    {{ include('sidebar/_sidebar_item.html.twig', {
+        name: 'recipes',
+        path: path('app_recipe_index'),
+        icon: 'fastfood',
     }) }}
     {{ include('sidebar/_sidebar_item.html.twig', {
         name: 'pantry',

@@ -77,11 +77,15 @@ class Day
 
     public function __toString()
     {
-        return date('Y-m-d', $this->timestamp);
-        // return $this->timestamp;
+        return $this->getDate() . ', ' . $this->getWeekday();
     }
 
-    public function getWeekday()
+    public function getDate(string $format = 'd.m.Y'): string
+    {
+        return date($format, $this->timestamp);
+    }
+
+    public function getWeekday(): string
     {
         $dt = new DateTime();
         $dt->setTimestamp($this->timestamp);

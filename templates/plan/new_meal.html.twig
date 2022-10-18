@@ -12,6 +12,8 @@
     }) }}
 {% endblock %}
 
+{% block load_sidebar %}loadSidebar('planner');{% endblock %}
+
 {% block main %}
     {{ include('component/_heading.html.twig', {heading: heading}) }}
 
@@ -31,6 +33,7 @@
         {{ form_row(form.userGroup, {
             row_attr: {'class': inputRowClass},
             label_attr: {'class': inputLabelClass},
+            label: 'Users',
             attr: {'class': inputClass},
         }) }}
 
