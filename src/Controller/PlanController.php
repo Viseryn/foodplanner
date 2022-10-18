@@ -32,7 +32,7 @@ class PlanController extends AbstractController
      * @return Response
      */
     #[Route('/new', name: 'app_plan_new', methods: ['GET', 'POST'])]
-    #[Route('/new/{dayId}', name: 'app_plan_new_day', methods: ['GET', 'POST'], requirements: ['dayId' => '\d+'])]
+    #[Route('/new/{dayId}', name: 'app_plan_new_for_day', methods: ['GET', 'POST'], requirements: ['dayId' => '\d+'])]
     public function new(
         Request $request, 
         MealRepository $mealRepository, 
@@ -41,11 +41,8 @@ class PlanController extends AbstractController
     ): Response {
         $meal = new Meal();
 
-        // Find day by $dayId and throw Error 404 if it does not exist
+        // Find day by $dayId and push to $meal
         $day = $dayRepository->find($dayId);
-        if($day === null)
-            throw $this->createNotFoundException('Day does not exist.');
-        
         $meal->setDay($day);
 
         $form = $this->createForm(MealType::class, $meal);
