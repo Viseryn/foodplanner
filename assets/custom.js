@@ -1,3 +1,7 @@
+
+var $ = require('jquery');
+global.$ = global.jQuery = $;
+
 // Changes the button label of a FileType form field to the file's name
 $('.file-input').on('change', function(event) {
     var inputFile = event.currentTarget;
@@ -34,3 +38,17 @@ $('#delete-form').children('button[type="submit"]').on('click', function(e) {
         if (confirm) form.trigger('submit');
     });
 });
+
+// Load Sidebar
+window.loadSidebar = function(activeView) {
+    // Remove "active" from all other sidebar items
+    $('.sidebar-item').removeClass("bg-blue-100");
+    $('.sidebar-item').children('.material-symbols-rounded').removeClass('text-gray-900').addClass('text-gray-500');
+
+    // Make sure this is executed after *every*
+    // "active" has been removed and DOM is loaded.
+    setTimeout(() => {
+        $('#sidebar-' + activeView).addClass('bg-blue-100');
+        $('#sidebar-' + activeView).children('.material-symbols-rounded').removeClass('text-gray-500').addClass('text-gray-900');
+    }, 0);
+};
