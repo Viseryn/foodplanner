@@ -33,7 +33,7 @@ class DayController extends AbstractController
             $dayRepository->add($day, true);
         }
         
-        return $this->redirectToRoute('app_day_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/new/next', name: 'app_day_new_next', methods: ['GET'])]
@@ -45,7 +45,7 @@ class DayController extends AbstractController
             $dayRepository->add($day, true);
         }
 
-        return $this->redirectToRoute('app_day_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/delete/all', name: 'app_day_delete_all', methods: ['GET'])]
