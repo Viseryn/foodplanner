@@ -1,4 +1,4 @@
-// ./assets/components/Planner.js
+// ./assets/components/Pantry.js
     
 import React, {Component} from 'react';
 import {Route, Switch, Redirect, Link, withRouter} from 'react-router-dom';
@@ -6,10 +6,10 @@ import {Route, Switch, Redirect, Link, withRouter} from 'react-router-dom';
 import Heading from './Heading';
 import Spinner from './Util';
     
-class Planner extends Component {
+export default class Pantry extends Component {
     componentDidMount() {
-        this.props.updateSidebar('planner');
-        // this.props.updateSAB(true, 'add', '/planner/add');
+        this.props.updateSidebar('pantry');
+        this.props.updateSAB();
     }
 
     componentWillUnmount() {
@@ -20,11 +20,9 @@ class Planner extends Component {
     render() {
         return (
             <>
-                <Heading title="Wochenplan" />
+                <Heading title="Vorratsschrank" />
                 <Spinner />
             </>
         )
     }
 }
-    
-export default Planner;

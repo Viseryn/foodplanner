@@ -8,6 +8,8 @@ import Recipe from './Recipe';
 import AddRecipe from './AddRecipe';
 import PageNotFound from './PageNotFound';
 import EditRecipe from "./EditRecipe";
+import Pantry from "./Pantry";
+import ShoppingList from "./ShoppingList";
 
 export default class App extends Component {
     constructor(props) {
@@ -58,6 +60,18 @@ export default class App extends Component {
                             } />
                             <Route path="/planner" element={
                                 <Planner 
+                                    updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
+                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                />
+                            } />
+                            <Route path="/pantry" element={
+                                <Pantry 
+                                    updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
+                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                />
+                            } />
+                            <Route path="/shoppinglist" element={
+                                <ShoppingList 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
                                     updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
                                 />
