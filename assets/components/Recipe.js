@@ -88,7 +88,7 @@ export class Recipe extends Component {
                 {this.state.loading ? (
                     <Spinner />
                 ) : (
-                    <div className="max-w-[800px]">
+                    <div className="max-w-[900px]">
                         <Heading title={this.state.recipe.title} />
 
                         {this.state.recipe.image != null &&
