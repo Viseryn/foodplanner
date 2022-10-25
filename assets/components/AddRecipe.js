@@ -167,7 +167,7 @@ export default class AddRecipe extends Component {
                             label="Zutaten"
                             textareaProps={{
                                 rows: 10, 
-                                placeholder: "z.B.\n\t250 ml Gemüsebrühe\n\t1/2 Tube Tomatenmark\n\t10 g Salz"
+                                placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"
                             }}
                             className=""
                         />
