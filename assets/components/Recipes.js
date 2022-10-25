@@ -115,13 +115,15 @@ export default class Recipes extends Component {
                                 )}
                             </div>
                             
-                            <div className="flex justify-end mt-10">
-                                <Button
-                                    to="/recipe/add"
-                                    icon="add"
-                                    label="Neues Rezept"
-                                    style="transparent"
-                                />
+                            <div className="flex justify-end">
+                                <div className="hidden lg:block lg:mt-10">
+                                    <Button
+                                        to="/recipe/add"
+                                        icon="add"
+                                        label="Neues Rezept"
+                                        style="transparent"
+                                    />
+                                </div>
                             </div>
                         </>
                     )
