@@ -77,7 +77,7 @@ export default class Recipes extends Component {
      */
     render() {
         return (
-            <div className="max-w-[1200px]">
+            <div>
                 <Heading title="Rezepte" />
                 {
                     this.state.loading ? (
