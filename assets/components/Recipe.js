@@ -136,13 +136,15 @@ export class Recipe extends Component {
                             </div>
                         }
 
-                        <div className="flex justify-end pt-6">
-                            <Button 
-                                to={'/recipe/' + this.state.recipe.id + '/edit'}
-                                icon="drive_file_rename_outline"
-                                label="Bearbeiten"
-                                style="transparent"
-                            />
+                        <div className="flex justify-end">
+                            <div className="hidden lg:block lg:pt-6">
+                                <Button 
+                                    to={'/recipe/' + this.state.recipe.id + '/edit'}
+                                    icon="drive_file_rename_outline"
+                                    label="Bearbeiten"
+                                    style="transparent"
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
