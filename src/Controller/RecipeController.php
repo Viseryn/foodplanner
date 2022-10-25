@@ -147,21 +147,17 @@ class RecipeController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $recipeUtil->update($recipe, $form);
             $recipeRepository->add($recipe, true);
 
-            return $this->redirectToRoute(
-                'app_recipe_show', 
-                ['id' => $recipe->getId()], 
-                Response::HTTP_SEE_OTHER
-            );
+            return new JsonResponse([
+                'id' => $recipe->getId()
+            ]);
         }
 
-        return $this->renderForm('recipe/edit.html.twig', [
-            'recipe' => $recipe,
-            'form' => $form,
-        ]);
+        $response = (new Response())->setStatusCode(500);
+        return $response;
     }
 
     /**
