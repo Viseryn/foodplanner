@@ -80,47 +80,11 @@ export class Recipe extends Component {
     }
 
     /**
-     * deleteRecipe
-     * 
-     * When called, opens a SweetAlert. If it is confirmed,
-     * then the Recipe Delete API is called and the user 
-     * gets redirected to the index page. If cancelled, 
-     * nothing happens.
-     * 
-     * @param {int} id 
-     */
-    deleteRecipe(id) {
-        swal({
-            dangerMode: true,
-            icon: 'error',
-            title: 'Für immer löschen?',
-            text: 'Gelöschte Inhalte können nicht wiederhergestellt werden.',
-            buttons: {
-                cancel: 'Abbrechen',
-                confirm: 'Löschen',
-            },
-        }).then((confirm) => {
-            if (confirm) {
-                axios.get('/api/recipe/' + id + '/delete').then(() => {
-                    this.setState({
-                        isDeleted: true
-                    })
-                });
-            }
-        });
-    }
-    
-
-    /**
      * render
      */
     render() {
         return (
             <>
-                {this.state.isDeleted &&
-                    <Navigate to="/recipes" />
-                }
-
                 {this.state.loading ? (
                     <Spinner />
                 ) : (
@@ -172,14 +136,7 @@ export class Recipe extends Component {
                             </div>
                         }
 
-                        <div className="flex justify-end space-x-4 pt-6">
-                            <Button
-                                onClick={() => this.deleteRecipe(this.state.recipe.id)}
-                                icon="delete"
-                                label="Löschen"
-                                style="transparent"
-                                id="delete-button"
-                            />
+                        <div className="flex justify-end pt-6">
                             <Button 
                                 to={'/recipe/' + this.state.recipe.id + '/edit'}
                                 icon="drive_file_rename_outline"
