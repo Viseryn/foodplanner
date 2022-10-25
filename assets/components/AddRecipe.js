@@ -112,7 +112,7 @@ export default class AddRecipe extends Component {
         
         return (
             <>
-                // If the form is submitted, redirect to the new recipe
+                {/* If the form is submitted, redirect to the new recipe */}
                 {this.state.isSubmittedSuccessfully &&
                     <Navigate to={'/recipe/' + this.state.newId} />
                 }
