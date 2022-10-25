@@ -161,7 +161,12 @@ export class EditRecipe extends Component {
     }
 
     /**
+     * handleFilePick
      * 
+     * Changes the label of the upload button to the selected 
+     * picture (or to the default text).
+     * 
+     * @param {*} event
      */
     handleFilePick = (event) => {
         const val = event.target.value;
@@ -171,6 +176,14 @@ export class EditRecipe extends Component {
         });
     }
 
+    /**
+     * handleFileRemove
+     * 
+     * Changes the visibility of the upload button when 
+     * the toggle switch is changed.
+     * 
+     * @param {*} event 
+     */
     handleFileRemove = (event) => {
         this.setState({
             isUploadButtonVisible: !this.state.isUploadButtonVisible
@@ -179,6 +192,13 @@ export class EditRecipe extends Component {
 
     /**
      * handleSubmit
+     * 
+     * Submits the form data to the Recipe Edit API.
+     * Sets the ID response to the states
+     * variables so that the Component can redirect 
+     * there after submitting.
+     * 
+     * @param {*} event
      */
     handleSubmit = (event) => {
         const formData = new FormData(event.target);
