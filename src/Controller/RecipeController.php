@@ -43,6 +43,25 @@ class RecipeController extends AbstractController
     }
 
     /**
+     * Recipe Show API
+     * 
+     * Fetches the Recipe with the given ID 
+     * and responds with a JSON array containing 
+     * the Recipe data.
+     *
+     * @param Recipe $recipe
+     * @return Response
+     */
+    #[Route('/api/recipe/{id}', name: 'app_recipe_show', methods: ['GET'])]
+    public function show(Recipe $recipe): Response
+    {
+        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($recipe, 'json');
+
+        return (new JsonResponse($jsonContent));
+    }
+
+    /**
      * Recipe Add API
      * 
      * Adds a new Recipe to the database when the form 
@@ -80,25 +99,6 @@ class RecipeController extends AbstractController
 
         $response = (new Response())->setStatusCode(500);
         return $response;
-    }
-
-    /**
-     * Recipe Show API
-     * 
-     * Fetches the Recipe with the given ID 
-     * and responds with a JSON array containing 
-     * the Recipe data.
-     *
-     * @param Recipe $recipe
-     * @return Response
-     */
-    #[Route('/api/recipe/{id}', name: 'app_recipe_show', methods: ['GET'])]
-    public function show(Recipe $recipe): Response
-    {
-        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($recipe, 'json');
-
-        return (new JsonResponse($jsonContent));
     }
 
     /**
