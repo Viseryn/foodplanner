@@ -10,33 +10,45 @@ use App\Repository\RecipeRepository;
 use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
 use App\Service\RecipeUtil;
+use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/recipe')]
 class RecipeController extends AbstractController
 {
     /**
-     * Controller for the list of Recipes.
+     * Recipe List API
+     * 
+     * Fetches all Recipes and responds with a JSON
+     * array containing all Recipe data.
      *
      * @param RecipeRepository $recipeRepository
      * @return Response
      */
-    #[Route('/', name: 'app_recipe_index', methods: ['GET'])]
+    #[Route('/api/recipes', name: 'app_recipe_index', methods: ['GET'])]
     public function index(RecipeRepository $recipeRepository): Response
     {
-        return $this->render('recipe/index.html.twig', [
-            'recipes' => $recipeRepository->findAll(),
-        ]);
+        // (TODO) lighter query
+        $recipes = $recipeRepository->findBy([], ['title' => 'ASC']);
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($recipes, 'json');
+
+        return (new JsonResponse($jsonContent));
     }
 
     /**
-     * Controller for adding a Recipe, 
-     * including its Ingredients and Instructions.
+     * Recipe Add API
+     * 
+     * Adds a new Recipe to the database when the form 
+     * in the Request was submitted. Responds with the 
+     * ID of the new Recipe. If no form was submitted, 
+     * responds with an Error 500.
      *
      * @param Request $request
      * @param RecipeRepository $recipeRepository
@@ -46,8 +58,8 @@ class RecipeController extends AbstractController
      * @param InstructionUtil $instructionUtil
      * @return Response
      */
-    #[Route('/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
-    public function new(
+    #[Route('/api/recipe/add', name: 'app_recipe_add', methods: ['GET', 'POST'])]
+    public function add(
         Request $request, 
         RecipeRepository $recipeRepository,
         RecipeUtil $recipeUtil,
@@ -57,40 +69,45 @@ class RecipeController extends AbstractController
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $recipeRepository->add($recipe, true);
             $recipeUtil->update($recipe, $form);
 
-            return $this->redirectToRoute(
-                'app_recipe_show', 
-                ['id' => $recipe->getId()], 
-                Response::HTTP_SEE_OTHER
-            );
+            return new JsonResponse([
+                'id' => $recipe->getId()
+            ]);
         }
 
-        return $this->renderForm('recipe/new.html.twig', [
-            'recipe' => $recipe,
-            'form' => $form,
-        ]);
+        $response = (new Response())->setStatusCode(500);
+        return $response;
     }
 
     /**
-     * Controller for showing a Recipe.
+     * Recipe Show API
+     * 
+     * Fetches the Recipe with the given ID 
+     * and responds with a JSON array containing 
+     * the Recipe data.
      *
      * @param Recipe $recipe
      * @return Response
      */
-    #[Route('/{id}', name: 'app_recipe_show', methods: ['GET'])]
+    #[Route('/api/recipe/{id}', name: 'app_recipe_show', methods: ['GET'])]
     public function show(Recipe $recipe): Response
     {
-        return $this->render('recipe/show.html.twig', [
-            'recipe' => $recipe,
-        ]);
+        $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($recipe, 'json');
+
+        return (new JsonResponse($jsonContent));
     }
 
     /**
-     * Controller for editing a Recipe, 
-     * including its Ingredients and Instructions.
+     * Recipe Edit API
+     * 
+     * Edits an existing Recipe when the form 
+     * in the Request was submitted. Responds with the 
+     * ID of the new Recipe. If no form was submitted, 
+     * responds with an Error 500.
      * 
      * @param Request $request
      * @param Recipe $recipe
@@ -101,7 +118,7 @@ class RecipeController extends AbstractController
      * @param InstructionUtil $instructionUtil
      * @return Response
      */
-    #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
+    #[Route('/api/recipe/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request, 
         Recipe $recipe, 
@@ -148,33 +165,21 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Controller for deleting a Recipe.
+     * Recipe Delete API
+     * 
+     * Deletes the Recipe with the given ID and responds
+     * with an empty Response.
      *
      * @param Request $request
      * @param Recipe $recipe
      * @param RecipeRepository $recipeRepository
      * @return Response
      */
-    #[Route('/{id}', name: 'app_recipe_delete', methods: ['POST'])]
-    public function delete(Request $request, Recipe $recipe, RecipeRepository $recipeRepository): Response
+    #[Route('/api/recipe/{id}/delete', name: 'app_recipe_delete', methods: ['GET'])]
+    public function delete(Recipe $recipe, RecipeRepository $recipeRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$recipe->getId(), $request->request->get('_token'))) {
-            $recipeRepository->remove($recipe, true);
-        }
+        $recipeRepository->remove($recipe, true);
 
-        return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    /**
-     * Renders the number of recipes for the sidebar.
-     *
-     * @param RecipeRepository $recipeRepository
-     * @return Response
-     */
-    public function numberOfRecipes(RecipeRepository $recipeRepository): Response 
-    {
-        return $this->render('sidebar/_number_of_recipes.html.twig', [
-            'numberOfRecipes' => count($recipeRepository->findAll()),
-        ]);
+        return new Response();
     }
 }
