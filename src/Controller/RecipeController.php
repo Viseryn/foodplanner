@@ -30,8 +30,8 @@ class RecipeController extends AbstractController
      * @param RecipeRepository $recipeRepository
      * @return Response
      */
-    #[Route('/api/recipes', name: 'app_recipe_index', methods: ['GET'])]
-    public function index(RecipeRepository $recipeRepository): Response
+    #[Route('/api/recipes', name: 'app_recipe_list', methods: ['GET'])]
+    public function list(RecipeRepository $recipeRepository): Response
     {
         // (TODO) lighter query
         $recipes = $recipeRepository->findBy([], ['title' => 'ASC']);
