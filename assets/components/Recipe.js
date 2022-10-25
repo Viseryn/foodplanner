@@ -111,8 +111,8 @@ export class Recipe extends Component {
                                 <div className="grid grid-cols-1 md:grid-cols-2">
                                     {this.state.recipe.ingredients.map(ingredient =>
                                         <div key={ingredient.id} className="px-6 pt-2">
-                                            {ingredient.quantity_value 
-                                                + ' ' + ingredient.quantity_unit 
+                                            {(ingredient.quantity_value ?? '')
+                                                + ' ' + (ingredient.quantity_unit ?? '')
                                                 + ' ' + ingredient.name}
                                         </div>
                                     )}

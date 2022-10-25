@@ -111,12 +111,12 @@ export class EditRecipe extends Component {
         let l = arr?.length;
 
         arr.map((ingredient, i) => {
-            let q = '' + ingredient?.quantity_value;
+            let q = '' + (ingredient.quantity_value ?? '');
 
             if (q !== '' && ingredient?.quantity_unit !== '') {
-                q += ' ' + ingredient?.quantity_unit;
+                q += ' ' + (ingredient.quantity_unit ?? '');
             } else if (ingredient?.quantity_unit !== '') {
-                q += ingredient?.quantity_unit;
+                q += (ingredient.quantity_unit ?? '');
             }
 
             if (q !== '') {
