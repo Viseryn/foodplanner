@@ -1,18 +1,23 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 function SidebarActionButton(props) {
+    let baseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14';
+    let invisibleStyle = baseStyle + ' text-transparent bg-transparent cursor-default';
+    let visibleStyle = baseStyle + ' text-gray-900 bg-red-200 hover:bg-red-300 active:bg-red-400 active:scale-90';
+
     return (
-        <li>
+        <li className="sidebar-action-button">
             <Link 
-                className="flex items-center p-4 rounded-2xl 
-                    text-gray-900 bg-pink-200 
-                    transition duration-300 
-                    hover:bg-pink-300 active:bg-pink-400 active:scale-90" 
-                to={props.path || '#'}
+                to={props.sidebarActionButton.path}
+                className={props.sidebarActionButton.visible ? visibleStyle : invisibleStyle}
             >
                 <span className="material-symbols-rounded">
-                    {props.icon || 'drive_file_rename_outline'}
+                    {
+                        props.sidebarActionButton.visible 
+                        ? props.sidebarActionButton.icon
+                        : ''
+                    }
                 </span>
             </Link>
         </li>
@@ -20,15 +25,20 @@ function SidebarActionButton(props) {
 }
 
 function SidebarItem(props) {
+    let baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 lg:hover:bg-blue-100 active:bg-blue-200 active:scale-90 group';
+    let activeLinkStyle = baseLinkStyle + ' bg-blue-100';
+
+    let baseSpanStyle = 'material-symbols-rounded transition duration-300 lg:group-hover:text-gray-900';
+    let activeSpanStyle = baseSpanStyle + ' text-gray-900';
+
     return (
         <li>
             <Link 
-                id={'sidebar-' + (props.id || '')}
-                className="sidebar-item flex items-center p-4 rounded-full transition duration-300 lg:hover:bg-blue-100 active:bg-blue-200 active:scale-90 group" 
-                to={'/' + props.id || '#'}
+                className={props.sidebarActiveItem == props.id ? activeLinkStyle : baseLinkStyle}
+                to={'/' + props.id}
             >
-                <span className="material-symbols-rounded text-gray-500 transition duration-300 lg:group-hover:text-gray-900">
-                    {props.icon || ''}
+                <span className={props.sidebarActiveItem == props.id ? activeSpanStyle : baseSpanStyle + ' text-gray-500'}>
+                    {props.icon}
                 </span>
             </Link>
         </li>
@@ -37,11 +47,15 @@ function SidebarItem(props) {
 
 
 export default class Sidebar extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <aside 
-                    id="sidebar" 
-                    className="z-50 bg-blue-50 w-full fixed bottom-0 h-20 lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center"
+                id="sidebar" 
+                className="z-50 bg-blue-50 w-full fixed bottom-0 h-20 lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center"
             >
                 <div className="pl-7 pr-10 py-3 w-full lg:max-w-fit flex justify-between lg:block lg:px-3 lg:py-7 fixed">
                     <ul className="space-y-2 mb-16 hidden lg:block">
@@ -56,36 +70,34 @@ export default class Sidebar extends Component {
                             </Link>
                         </li>
                         
-                        <SidebarActionButton 
-                            path=""
-                            icon=""
-                        />
+                        <SidebarActionButton sidebarActionButton={this.props.sidebarActionButton} />
                     </ul>
 
                     <ul className="flex flex-row space-x-1 lg:flex-col lg:space-x-0 lg:space-y-2">
                         <SidebarItem 
+                            sidebarActiveItem={this.props.sidebarActiveItem}
                             id="planner"
                             icon="date_range"
                         />
                         <SidebarItem 
+                            sidebarActiveItem={this.props.sidebarActiveItem}
                             id="recipes"
                             icon="fastfood"
                         />
                         <SidebarItem 
+                            sidebarActiveItem={this.props.sidebarActiveItem}
                             id="pantry"
                             icon="kitchen"
                         />
                         <SidebarItem 
+                            sidebarActiveItem={this.props.sidebarActiveItem}
                             id="shoppinglist"
                             icon="shopping_cart"
                         />
                     </ul>
-                    
+                        
                     <ul className="lg:hidden">
-                        <SidebarActionButton 
-                            path=""
-                            icon=""
-                        />
+                        <SidebarActionButton sidebarActionButton={this.props.sidebarActionButton} />
                     </ul>
                 </div>
             </aside>
