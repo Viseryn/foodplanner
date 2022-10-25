@@ -36,7 +36,7 @@ export class Recipe extends Component {
      * Loads Recipe on mount and updates sidebar.
      */
     componentDidMount() {
-        const { id } = this.props.params;
+        const { id } = this.props.params; // Get id from route parameters
         this.getRecipe(id);
 
         this.props.updateSidebar('recipes');
