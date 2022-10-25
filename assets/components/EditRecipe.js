@@ -305,7 +305,7 @@ export class EditRecipe extends Component {
                                     <div className="text-sm font-semibold block mb-2">Bild bearbeiten</div>
 
                                     <div className="flex justify-between items-center gap-4 h-12">
-                                        <div className="overflow-hidden">
+                                        <div className="overflow-hidden w-full">
                                             {this.state.isUploadButtonVisible &&
                                                 <>
                                                     <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800">
