@@ -84,7 +84,7 @@ export default class Recipes extends Component {
                         <Spinner />
                     ) : (
                         <>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-10">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-4 mb-10">
                                 {this.state.recipes.map(recipe => 
                                     <div 
                                         key={recipe.id}
