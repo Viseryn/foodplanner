@@ -331,11 +331,20 @@ export class EditRecipe extends Component {
 
                                 <div className="flex items-center">
                                     {this.state.recipe.image != null 
-                                        ? <img 
-                                            className="rounded-3xl max-h-64 w-full object-cover shadow-md transition duration-300" 
-                                            src={this.state.recipe.image.directory + this.state.recipe.image.filename}
-                                            alt={this.state.recipe}
-                                        />
+                                        ? <>
+                                            {this.state.isUploadButtonVisible
+                                                ? <img 
+                                                    className="rounded-3xl max-h-64 w-full object-cover shadow-md transition duration-300" 
+                                                    src={this.state.recipe.image.directory + this.state.recipe.image.filename}
+                                                    alt={this.state.recipe}
+                                                />
+                                                : <img 
+                                                    className="rounded-3xl max-h-64 w-full object-cover shadow-md transition duration-300 opacity-25" 
+                                                    src={this.state.recipe.image.directory + this.state.recipe.image.filename}
+                                                    alt={this.state.recipe}
+                                                />
+                                            }
+                                        </>
                                         : <img 
                                             className="rounded-3xl h-full max-h-64 w-full object-cover shadow-md transition duration-300 opacity-10" 
                                             src="/img/default.jpg"
