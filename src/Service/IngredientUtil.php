@@ -86,7 +86,7 @@ class IngredientUtil
                 'Tube', 'Tuben', 'Bund', 'Bünde',
                 'Glas', 'Gläser', 'Packung', 'Packungen',
                 'kl. Glas', 'kleines Glas', 'kl. Gläser', 
-                'kleine Gläser',
+                'kleine Gläser', 'Becher',
                 'Päckchen', 'Pck.', 'Msp.', 'Liter',
                 'Messerspitze', 'Messerspitzen',
                 'Prise', 'Prisen', 'Würfel', 'Stange', 'Stangen',
