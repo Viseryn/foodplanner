@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import axios from 'axios';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import Spinner from './Util';
 import Heading from './Heading';
