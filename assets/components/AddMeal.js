@@ -50,7 +50,7 @@ export class AddMeal extends Component {
         })
 
         this.props.updateSidebar('planner');
-        this.props.updateSAB(true, 'redo', '/planner');
+        this.props.updateSAB(true, 'redo', '/planner', 'Zurück');
 
         this.getData();
     }
