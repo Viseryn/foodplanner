@@ -31,12 +31,13 @@ export default class App extends Component {
         })
     }
 
-    updateSAB(visible = false, icon = '', path = '#') {
+    updateSAB(visible = false, icon = '', path = '#', label = '') {
         this.setState({
             sidebarActionButton: {
                 visible: visible,
                 icon: icon,
                 path: path,
+                label: label,
             }
         });
     }
@@ -59,55 +60,55 @@ export default class App extends Component {
                             <Route path="/" element={
                                 <Planner 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/planner" element={
                                 <Planner 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/pantry" element={
                                 <Pantry 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/shoppinglist" element={
                                 <ShoppingList 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/recipes" element={
                                 <Recipes 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/recipe/:id" element={
                                 <Recipe 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/recipe/add" element={
                                 <AddRecipe 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/recipe/:id/edit" element={
                                 <EditRecipe 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="*" element={
                                 <PageNotFound 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                         </Routes>
