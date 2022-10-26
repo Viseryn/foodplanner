@@ -225,7 +225,7 @@ function UserGroupRadio() {
                     htmlFor="userGroup_kevin" 
                     className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
                 >
-                    <span className="material-symbols-rounded">face</span>
+                    <span className="material-symbols-rounded">face_6</span>
                     <span className="label-content mr-1 ml-3">Kevin</span>
                 </label>
             </div>
@@ -242,7 +242,7 @@ function UserGroupRadio() {
                     htmlFor="userGroup_all" 
                     className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
                 >
-                    <span className="material-symbols-rounded">supervisor_account</span>
+                    <span className="material-symbols-rounded">groups</span>
                     <span className="label-content mr-1 ml-3">Alle</span>
                 </label>
             </div>
