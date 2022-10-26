@@ -3,13 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Day;
-use App\Form\DayType;
 use App\Repository\DayRepository;
 use App\Service\PlanUtil;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,7 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DayController extends AbstractController
 {
-    #[Route('/api/days', name: 'app_day_list', methods: ['GET'])]
     /**
      * Day List API
      * 
@@ -28,6 +24,7 @@ class DayController extends AbstractController
      * @param DayRepository $dayRepository
      * @return Response
      */
+    #[Route('/api/days', name: 'app_day_list', methods: ['GET'])]
     public function list(DayRepository $dayRepository): Response
     {
         $daysResult = $dayRepository->findBy([], ['timestamp' => 'ASC']);
@@ -61,6 +58,7 @@ class DayController extends AbstractController
             $days[$i] = [
                 'id' => $day->getId(),
                 'weekday' => $day->getWeekday(),
+                'title' => $day->getDate() . ', ' . $day->getWeekday(),
                 'date' => $day->getDate(),
                 'meals' => $meals,
             ];
@@ -74,49 +72,49 @@ class DayController extends AbstractController
         return (new JsonResponse($jsonContent));
     }
 
-    #[Route('/new', name: 'app_day_new', methods: ['GET'])]
-    public function new(PlanUtil $planUtil, DayRepository $dayRepository): Response
-    {
-        $currentWeek = $planUtil->currentWeek();
+    // #[Route('/new', name: 'app_day_new', methods: ['GET'])]
+    // public function new(PlanUtil $planUtil, DayRepository $dayRepository): Response
+    // {
+    //     $currentWeek = $planUtil->currentWeek();
 
-        foreach ($currentWeek as $day) {
-            $dayRepository->add($day, true);
-        }
+    //     foreach ($currentWeek as $day) {
+    //         $dayRepository->add($day, true);
+    //     }
         
-        return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
-    }
+    //     return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
+    // }
 
-    #[Route('/new/next', name: 'app_day_new_next', methods: ['GET'])]
-    public function newNext(PlanUtil $planUtil, DayRepository $dayRepository): Response
-    {
-        $nextWeek = $planUtil->nextWeek();
+    // #[Route('/new/next', name: 'app_day_new_next', methods: ['GET'])]
+    // public function newNext(PlanUtil $planUtil, DayRepository $dayRepository): Response
+    // {
+    //     $nextWeek = $planUtil->nextWeek();
 
-        foreach ($nextWeek as $day) {
-            $dayRepository->add($day, true);
-        }
+    //     foreach ($nextWeek as $day) {
+    //         $dayRepository->add($day, true);
+    //     }
 
-        return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
-    }
+    //     return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
+    // }
 
-    #[Route('/delete/all', name: 'app_day_delete_all', methods: ['GET'])]
-    public function deleteAll(DayRepository $dayRepository): Response
-    {
-        $days = $dayRepository->findAll();
+    // #[Route('/delete/all', name: 'app_day_delete_all', methods: ['GET'])]
+    // public function deleteAll(DayRepository $dayRepository): Response
+    // {
+    //     $days = $dayRepository->findAll();
         
-        foreach ($days as $day) {
-            $dayRepository->remove($day, true);
-        }
+    //     foreach ($days as $day) {
+    //         $dayRepository->remove($day, true);
+    //     }
 
-        return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
-    }
+    //     return $this->redirectToRoute('app_plan_index', [], Response::HTTP_SEE_OTHER);
+    // }
 
-    #[Route('/{id}', name: 'app_day_delete', methods: ['POST'])]
-    public function delete(Request $request, Day $day, DayRepository $dayRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$day->getId(), $request->request->get('_token'))) {
-            $dayRepository->remove($day, true);
-        }
+    // #[Route('/{id}', name: 'app_day_delete', methods: ['POST'])]
+    // public function delete(Request $request, Day $day, DayRepository $dayRepository): Response
+    // {
+    //     if ($this->isCsrfTokenValid('delete'.$day->getId(), $request->request->get('_token'))) {
+    //         $dayRepository->remove($day, true);
+    //     }
 
-        return $this->redirectToRoute('app_day_index', [], Response::HTTP_SEE_OTHER);
-    }
+    //     return $this->redirectToRoute('app_day_index', [], Response::HTTP_SEE_OTHER);
+    // }
 }
