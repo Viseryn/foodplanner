@@ -43,7 +43,7 @@ export default class AddRecipe extends Component {
      */
     componentDidMount() {
         this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'redo', '/recipes/');
+        this.props.updateSAB(true, 'redo', '/recipes/', 'Zurück');
 
         window.scrollTo(0, 0)
     }

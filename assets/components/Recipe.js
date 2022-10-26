@@ -40,7 +40,7 @@ export class Recipe extends Component {
         this.getRecipe(id);
 
         this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'drive_file_rename_outline', '/recipe/' + id + '/edit');
+        this.props.updateSAB(true, 'drive_file_rename_outline', '/recipe/' + id + '/edit', 'Bearbeiten');
     }
 
     /**
