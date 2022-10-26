@@ -57,7 +57,7 @@ export default class Sidebar extends Component {
                 id="sidebar" 
                 className="z-50 bg-blue-50 w-full fixed bottom-0 h-20 lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center"
             >
-                <div className="pl-7 pr-10 py-3 w-full lg:max-w-fit flex justify-between lg:block lg:px-3 lg:py-7 fixed">
+                <div className="pl-3 pr-6 py-3 md:pl-7 md:pr-10 lg:px-3 lg:py-7 w-full lg:max-w-fit flex justify-between lg:block fixed">
                     <ul className="space-y-2 mb-16 hidden lg:block">
                         <li>
                             <Link 
