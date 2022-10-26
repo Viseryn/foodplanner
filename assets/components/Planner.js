@@ -53,9 +53,9 @@ export default class Planner extends Component {
     }
 
     /**
-     * getRecipe
+     * getDays
      * 
-     * Calls the Recipe List API and loads the Recipe
+     * Calls the Days List API and loads the
      * data into the state variable.
      */
     getDays() {
