@@ -85,10 +85,42 @@ class Day
         return date($format, $this->timestamp);
     }
 
-    public function getWeekday(): string
+    /**
+     * getWeekday
+     * 
+     * Returns the weekday given by $this->timestamp.
+     *
+     * @param string $lang This parameter's default value is 'de'. Another possible value is 'en'.
+     * @return string
+     */
+    public function getWeekday(string $lang = 'de'): string
     {
         $dt = new DateTime();
         $dt->setTimestamp($this->timestamp);
-        return $dt->format('l');
+        $wd = $dt->format('l');
+
+        // Weekdays in English and German
+        $weekdayTranslation['en'] = [
+            'Monday' => 'Monday', 
+            'Tuesday' => 'Tuesday', 
+            'Wednesday' => 'Wednesday', 
+            'Thursday' => 'Thursday', 
+            'Friday' => 'Friday', 
+            'Saturday' => 'Saturday', 
+            'Sunday' => 'Sunday'
+        ];
+        
+        $weekdayTranslation['de'] = [
+            'Monday' => 'Montag', 
+            'Tuesday' => 'Dienstag', 
+            'Wednesday' => 'Mittwoch', 
+            'Thursday' => 'Donnerstag', 
+            'Friday' => 'Freitag', 
+            'Saturday' => 'Samstag', 
+            'Sunday' => 'Sonntag'
+        ];
+
+        // Return the weekday in the given language
+        return $weekdayTranslation[$lang][$wd];
     }
 }
