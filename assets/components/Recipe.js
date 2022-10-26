@@ -93,7 +93,7 @@ export class Recipe extends Component {
 
                         {this.state.recipe.image != null &&
                             <img 
-                                className="rounded-3xl h-80 object-cover mb-10 shadow-md hover:shadow-xl transition duration-300 hover:scale-105 w-full" 
+                                className="rounded-3xl h-80 object-cover mb-10 shadow-md hover:shadow-xl transition duration-300 w-full" 
                                 src={this.state.recipe.image.directory + this.state.recipe.image.filename}
                                 alt={this.state.recipe}
                             />
