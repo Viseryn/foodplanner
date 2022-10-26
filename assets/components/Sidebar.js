@@ -151,54 +151,60 @@ export default class Sidebar extends Component {
 
     render() {
         return (
-            <aside 
-                id="sidebar" 
-                className="z-50 bg-blue-50 w-full fixed bottom-0 h-20 lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center"
-            >
-                <div className="pl-3 pr-6 py-3 md:pl-7 md:pr-10 lg:px-3 lg:py-7 w-full lg:max-w-fit flex justify-between lg:block fixed">
-                    <ul className="space-y-2 mb-16 hidden lg:block">
-                        <li>
-                            <Link 
-                                className="flex items-center p-4 text-gray-900 rounded-full transition duration-300 hover:bg-blue-100 active:bg-blue-200 active:scale-90 group"
-                                to="#"
-                            >
-                                <span className="material-symbols-rounded text-gray-500 transition duration-300 group-hover:text-gray-900">
-                                    menu
-                                </span>
-                            </Link>
-                        </li>
-                        
-                        <SidebarActionButton sidebarActionButton={this.props.sidebarActionButton} />
-                    </ul>
+            <>
+                <SidebarExtended
+                    sidebarActiveItem={this.props.sidebarActiveItem}
+                    sidebarActionButton={this.props.sidebarActionButton}
+                />    
+                <aside 
+                    id="sidebar" 
+                    className="z-50 bg-blue-50 w-full fixed bottom-0 h-20 lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center xl:hidden"
+                >
+                    <div className="pl-3 pr-6 py-3 md:pl-7 md:pr-10 lg:px-6 lg:py-7 w-full lg:max-w-fit flex justify-between lg:block fixed">
+                        <ul className="space-y-2 mb-16 hidden lg:block">
+                            <li>
+                                <Link 
+                                    className="flex items-center p-4 text-gray-900 rounded-full transition duration-300 hover:bg-blue-100 active:bg-blue-200 active:scale-90 group"
+                                    to="#"
+                                >
+                                    <span className="material-symbols-rounded text-gray-500 transition duration-300 group-hover:text-gray-900">
+                                        menu
+                                    </span>
+                                </Link>
+                            </li>
+                            
+                            <SidebarActionButton sidebarActionButton={this.props.sidebarActionButton} />
+                        </ul>
 
-                    <ul className="flex flex-row space-x-1 lg:flex-col lg:space-x-0 lg:space-y-2">
-                        <SidebarItem 
-                            sidebarActiveItem={this.props.sidebarActiveItem}
-                            id="planner"
-                            icon="date_range"
-                        />
-                        <SidebarItem 
-                            sidebarActiveItem={this.props.sidebarActiveItem}
-                            id="recipes"
-                            icon="fastfood"
-                        />
-                        <SidebarItem 
-                            sidebarActiveItem={this.props.sidebarActiveItem}
-                            id="pantry"
-                            icon="kitchen"
-                        />
-                        <SidebarItem 
-                            sidebarActiveItem={this.props.sidebarActiveItem}
-                            id="shoppinglist"
-                            icon="shopping_cart"
-                        />
-                    </ul>
-                        
-                    <ul className="lg:hidden">
-                        <SidebarActionButton sidebarActionButton={this.props.sidebarActionButton} />
-                    </ul>
-                </div>
-            </aside>
+                        <ul className="flex flex-row space-x-1 lg:flex-col lg:space-x-0 lg:space-y-2">
+                            <SidebarItem 
+                                sidebarActiveItem={this.props.sidebarActiveItem}
+                                id="planner"
+                                icon="date_range"
+                            />
+                            <SidebarItem 
+                                sidebarActiveItem={this.props.sidebarActiveItem}
+                                id="recipes"
+                                icon="fastfood"
+                            />
+                            <SidebarItem 
+                                sidebarActiveItem={this.props.sidebarActiveItem}
+                                id="pantry"
+                                icon="kitchen"
+                            />
+                            <SidebarItem 
+                                sidebarActiveItem={this.props.sidebarActiveItem}
+                                id="shoppinglist"
+                                icon="shopping_cart"
+                            />
+                        </ul>
+                            
+                        <ul className="lg:hidden">
+                            <SidebarActionButton sidebarActionButton={this.props.sidebarActionButton} />
+                        </ul>
+                    </div>
+                </aside>
+            </>
         );
     }
 }
