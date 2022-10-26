@@ -58,8 +58,6 @@ export default class Recipes extends Component {
      * 
      * Calls the Recipe List API and loads the Recipe
      * data into the state variable.
-     * 
-     * @param {id} id 
      */
     getRecipes() {
         axios.get('/api/recipes').then(
