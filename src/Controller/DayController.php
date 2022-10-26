@@ -6,22 +6,72 @@ use App\Entity\Day;
 use App\Form\DayType;
 use App\Repository\DayRepository;
 use App\Service\PlanUtil;
+use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/day')]
 class DayController extends AbstractController
 {
-    #[Route('/', name: 'app_day_index', methods: ['GET'])]
-    public function index(DayRepository $dayRepository): Response
+    #[Route('/api/days', name: 'app_day_list', methods: ['GET'])]
+    /**
+     * Day List API
+     * 
+     * Fetches all Day objects and responds with a JSON
+     * array containing all the data, including all Meals
+     * that are related to that Day.
+     *
+     * @param DayRepository $dayRepository
+     * @return Response
+     */
+    public function list(DayRepository $dayRepository): Response
     {
-        return $this->render('day/index.html.twig', [
-            'days' => $dayRepository->findAll(),
-        ]);
+        $daysResult = $dayRepository->findAll();
+        $days = [];
+        $i = 0;
+
+        foreach ($daysResult as $day) {
+            // Simplify meals array
+            $meals = [];
+            $j = 0;
+
+            foreach ($day->getMeals() as $meal) {
+                $meals[$j] = [
+                    'id' => $meal->getId(),
+                    'meal_category' => $meal->getMealCategory(),
+                    'recipe' => [
+                        'id' => $meal->getRecipe()->getId(),
+                        'title' => $meal->getRecipe()->getTitle(),
+                        'image' => [
+                            'filename' => $meal->getRecipe()->getImage()?->getFilename(),
+                            'directory' => $meal->getRecipe()->getImage()?->getDirectory(),
+                        ],
+                    ],
+                    'user_group' => (string) $meal->getUserGroup(),
+                ];
+
+                $j++;
+            }
+
+            // Setup days array entry
+            $days[$i] = [
+                'id' => $day->getId(),
+                'weekday' => $day->getWeekday(),
+                'date' => $day->getDate(),
+                'meals' => $meals,
+            ];
+
+            $i++;
+        }
+
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($days, 'json');
+
+        return (new JsonResponse($jsonContent));
     }
 
     #[Route('/new', name: 'app_day_new', methods: ['GET'])]
