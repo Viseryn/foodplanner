@@ -51,7 +51,7 @@ export class EditRecipe extends Component {
         this.getRecipe(id);
 
         this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'redo', '/recipe/' + id);
+        this.props.updateSAB(true, 'redo', '/recipe/' + id, 'Zurück');
 
         window.scrollTo(0, 0);
     }

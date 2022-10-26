@@ -37,7 +37,7 @@ export default class Recipes extends Component {
      */
     componentDidMount() {
         this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'add', '/recipe/add');
+        this.props.updateSAB(true, 'add', '/recipe/add', 'Neues Rezept');
 
         this.getRecipes();
     }
