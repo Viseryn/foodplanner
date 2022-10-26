@@ -306,13 +306,25 @@ export class EditRecipe extends Component {
 
                                     <div className="flex justify-between items-center gap-4 h-12">
                                         <div className="overflow-hidden w-full">
-                                            {this.state.isUploadButtonVisible &&
-                                                <>
-                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800">
+                                            {this.state.isUploadButtonVisible 
+                                                ? <>
+                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-ellipsis rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800">
                                                         <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                                         <span className="label-content mr-2 ml-3">{this.state.filename}</span>
                                                     </label>
                                                     <input 
+                                                        type="file" id="recipe_image" name="recipe[image]" 
+                                                        className="file-input hidden" 
+                                                        onChange={(e) =>this.handleFilePick(e)}
+                                                    />
+                                                </>
+                                                : <>
+                                                    <label htmlFor="recipe_image" className="file-label overflow-ellipsis rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center text-gray-600 bg-gray-100">
+                                                        <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
+                                                        <span className="label-content mr-2 ml-3">Datei auswählen</span>
+                                                    </label>
+                                                    <input 
+                                                        disabled="disabled"
                                                         type="file" id="recipe_image" name="recipe[image]" 
                                                         className="file-input hidden" 
                                                         onChange={(e) =>this.handleFilePick(e)}
@@ -331,24 +343,25 @@ export class EditRecipe extends Component {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center">
+                                <div className="">
+                                    <div className="text-sm font-semibold block mb-2">Aktuelles Bild</div>
                                     {this.state.recipe.image != null 
                                         ? <>
                                             {this.state.isUploadButtonVisible
                                                 ? <img 
-                                                    className="rounded-3xl max-h-64 w-full object-cover shadow-md transition duration-300" 
+                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300" 
                                                     src={this.state.recipe.image.directory + this.state.recipe.image.filename}
                                                     alt={this.state.recipe}
                                                 />
                                                 : <img 
-                                                    className="rounded-3xl max-h-64 w-full object-cover shadow-md transition duration-300 opacity-25" 
+                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-25" 
                                                     src={this.state.recipe.image.directory + this.state.recipe.image.filename}
                                                     alt={this.state.recipe}
                                                 />
                                             }
                                         </>
                                         : <img 
-                                            className="rounded-3xl h-full max-h-64 w-full object-cover shadow-md transition duration-300 opacity-10" 
+                                            className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10" 
                                             src="/img/default.jpg"
                                             alt={this.state.recipe}
                                         />
