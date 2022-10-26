@@ -50,7 +50,11 @@ export default class App extends Component {
                         sidebarActionButton={this.state.sidebarActionButton} 
                     />
 
-                    <div className="px-10 lg:mt-8 py-10 pb-28 lg:pb-10 lg:rounded-tl-3xl bg-white text-gray-700 w-full lg:max-w-[900px] lg:mr-8 lg:mb-8 lg:rounded-tr-3xl lg:rounded-b-3xl">
+                    <div 
+                        className="px-6 py-10 pb-28 lg:my-8 lg:mr-8 lg:pb-10 md:px-10
+                            lg:rounded-3xl bg-white text-gray-700 
+                            w-full lg:max-w-[900px]"
+                    >
                         <Routes>
                             <Route path="/" element={
                                 <Planner 
