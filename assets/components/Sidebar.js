@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 function SidebarActionButton(props) {
     let baseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14';
     let invisibleStyle = baseStyle + ' text-transparent bg-transparent cursor-default';
-    let visibleStyle = baseStyle + ' text-gray-900 bg-red-200 hover:bg-red-300 active:bg-red-400 active:scale-90';
+    let visibleStyle = baseStyle + ' text-gray-900 bg-pink-200 hover:bg-pink-300 active:bg-pink-400 active:scale-90';
 
     return (
         <li className="sidebar-action-button">
