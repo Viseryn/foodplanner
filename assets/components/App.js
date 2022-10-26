@@ -10,6 +10,7 @@ import PageNotFound from './PageNotFound';
 import EditRecipe from "./EditRecipe";
 import Pantry from "./Pantry";
 import ShoppingList from "./ShoppingList";
+import AddMeal from "./AddMeal";
 
 export default class App extends Component {
     constructor(props) {
@@ -64,6 +65,18 @@ export default class App extends Component {
                             } />
                             <Route path="/planner" element={
                                 <Planner 
+                                    updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
+                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                />
+                            } />
+                            <Route path="/planner/add" element={
+                                <AddMeal 
+                                    updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
+                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                />
+                            } />
+                            <Route path="/planner/add/:id" element={
+                                <AddMeal 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
                                     updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
                                 />
