@@ -30,7 +30,7 @@ class DayController extends AbstractController
      */
     public function list(DayRepository $dayRepository): Response
     {
-        $daysResult = $dayRepository->findAll();
+        $daysResult = $dayRepository->findBy([], ['timestamp' => 'ASC']);
         $days = [];
         $i = 0;
 
