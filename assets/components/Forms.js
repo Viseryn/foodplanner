@@ -102,3 +102,37 @@ export function SliderRow({
         </div>
     );
 }
+
+export function SelectWidget({id = 'entity_name', options = [], disabledOption = null, ...selectProps}) {
+    return (
+        <select
+            id={id}
+            name={nameFromId(id)}
+            className={inputWidgetStyle}
+            {...selectProps}
+        >
+            {disabledOption !== null &&
+                <option disabled="disabled">{disabledOption}</option>
+            }
+            {options.map((option, i) => 
+                <option key={i} value={option.id}>{option.title}</option>
+            )}
+        </select>
+    );
+}
+
+export function SelectRow({
+    id = 'entity_name', 
+    options = [],
+    disabledOption = null,
+    labelProps = {}, 
+    selectProps = {}, 
+    ...rowProps
+}) {
+    return (
+        <div className={rowProps.className !== undefined ? rowProps.className : inputRowStyle}>
+            {rowProps.label !== undefined && <InputLabel htmlFor={id} label={rowProps.label} {...labelProps} />}
+            <SelectWidget id={id} options={options} disabledOption={disabledOption} {...selectProps} />
+        </div>
+    );
+}
