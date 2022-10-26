@@ -83,7 +83,7 @@ export default class Planner extends Component {
                     <>
                         {this.state.days.map(day =>
                             <React.Fragment key={day.id}>
-                                <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 mb-4 block">
+                                <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 mb-4 mt-10 block">
                                     {day.weekday}, {day.date}
                                 </Link>
 
@@ -107,7 +107,7 @@ export default class Planner extends Component {
  */
 function Meals({meals = [], dayId = 0, ...props}) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {meals.map(meal =>
                 <div key={meal.id} className="h-40 w-full shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-95 hover:shadow-lg hover:bg-gray-50">
                     {meal.recipe.image.filename != null
