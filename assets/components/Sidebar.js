@@ -49,7 +49,7 @@ function SidebarActionButtonExtended(props) {
 }
 
 function SidebarItem(props) {
-    let baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 lg:hover:bg-blue-100 active:bg-blue-200 active:scale-90 group';
+    let baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-100 active:bg-blue-200 active:scale-90 group';
     let activeLinkStyle = baseLinkStyle + ' bg-blue-100';
 
     let baseSpanStyle = 'material-symbols-rounded transition duration-300 lg:group-hover:text-gray-900';
