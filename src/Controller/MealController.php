@@ -10,42 +10,52 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/meal')]
 class MealController extends AbstractController
 {
-    #[Route('/', name: 'app_meal_index', methods: ['GET'])]
-    public function index(MealRepository $mealRepository): Response
-    {
-        return $this->render('meal/index.html.twig', [
-            'meals' => $mealRepository->findAll(),
-        ]);
-    }
+    /**
+     * Meal Add API
+     * 
+     * Adds a new Meal to the database when the form
+     * in the Request was submitted. Returns an empty 
+     * Response. If no form was submitted, responds 
+     * with an Error 500.
+     *
+     * @param Request $request
+     * @param MealRepository $mealRepository
+     * @return Response
+     */
+    #[Route('/api/meal/add', name: 'app_meal_add', methods: ['GET', 'POST'])]
+    public function add(Request $request, MealRepository $mealRepository): Response {
+        $meal = new Meal();
 
-    #[Route('/{id}/edit', name: 'app_meal_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Meal $meal, MealRepository $mealRepository): Response
-    {
         $form = $this->createForm(MealType::class, $meal);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $mealRepository->add($meal, true);
 
-            return $this->redirectToRoute('app_meal_index', [], Response::HTTP_SEE_OTHER);
+            return new Response();
         }
 
-        return $this->renderForm('meal/edit.html.twig', [
-            'meal' => $meal,
-            'form' => $form,
-        ]);
+        $response = (new Response())->setStatusCode(500);
+        return $response;
     }
 
-    #[Route('/{id}', name: 'app_meal_delete', methods: ['POST'])]
-    public function delete(Request $request, Meal $meal, MealRepository $mealRepository): Response
+    /**
+     * Meal Delete API
+     * 
+     * Deletes the Meal with the given ID and responds
+     * with an empty Response.
+     *
+     * @param Meal $meal
+     * @param MealRepository $mealRepository
+     * @return Response
+     */
+    #[Route('/api/meal/delete/{id}', name: 'app_meal_delete', methods: ['POST'])]
+    public function delete(Meal $meal, MealRepository $mealRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$meal->getId(), $request->request->get('_token'))) {
-            $mealRepository->remove($meal, true);
-        }
+        $mealRepository->remove($meal, true);
 
-        return $this->redirectToRoute('app_meal_index', [], Response::HTTP_SEE_OTHER);
+        return new Response();
     }
 }
