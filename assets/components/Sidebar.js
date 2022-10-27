@@ -1,16 +1,22 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
 
-function SidebarActionButton(props) {
-    let baseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14';
-    let invisibleStyle = baseStyle + ' text-transparent bg-transparent cursor-default';
-    let visibleStyle = baseStyle + ' text-gray-900 bg-pink-200 hover:bg-pink-300 active:bg-pink-400 active:scale-90';
+let SABbaseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14';
+let SABinvisibleStyle = SABbaseStyle + ' text-transparent bg-transparent cursor-default';
+let SABvisibleStyle = SABbaseStyle + ' text-gray-900 bg-pink-300 hover:bg-pink-400 active:bg-pink-500 active:scale-90';
 
+let baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 active:bg-blue-200 active:scale-90 group';
+let activeLinkStyle = baseLinkStyle + ' bg-blue-200';
+
+let baseSpanStyle = 'transition duration-300 text-gray-500 group-hover:text-gray-900';
+let activeSpanStyle = baseSpanStyle + ' text-gray-900';
+
+function SidebarActionButton(props) {
     return (
         <li className="sidebar-action-button">
             <Link 
                 to={props.sidebarActionButton.path}
-                className={props.sidebarActionButton.visible ? visibleStyle : invisibleStyle}
+                className={props.sidebarActionButton.visible ? SABvisibleStyle : SABinvisibleStyle}
             >
                 <span className="material-symbols-rounded">
                     {
@@ -25,15 +31,11 @@ function SidebarActionButton(props) {
 }
 
 function SidebarActionButtonExtended(props) {
-    let baseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14';
-    let invisibleStyle = baseStyle + ' text-transparent bg-transparent cursor-default';
-    let visibleStyle = baseStyle + ' text-gray-900 bg-pink-200 hover:bg-pink-300 active:bg-pink-400 active:scale-90';
-
     return (
         <li className="sidebar-action-button">
             <Link 
                 to={props.sidebarActionButton.path}
-                className={props.sidebarActionButton.visible ? visibleStyle : invisibleStyle}
+                className={props.sidebarActionButton.visible ? SABvisibleStyle : SABinvisibleStyle}
             >
                 <span className="material-symbols-rounded">
                     {
@@ -48,44 +50,36 @@ function SidebarActionButtonExtended(props) {
     );
 }
 
+function SidebarItemIcon(props) {
+    return (
+        <span className={'material-symbols-rounded ' + (props.sidebarActiveItem == props.id ? activeSpanStyle : baseSpanStyle)}>
+            {props.icon}
+        </span>
+    );
+}
+
 function SidebarItem(props) {
-    let baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-100 active:bg-blue-200 active:scale-90 group';
-    let activeLinkStyle = baseLinkStyle + ' bg-blue-100';
-
-    let baseSpanStyle = 'material-symbols-rounded transition duration-300 lg:group-hover:text-gray-900';
-    let activeSpanStyle = baseSpanStyle + ' text-gray-900';
-
     return (
         <li>
             <Link 
                 className={props.sidebarActiveItem == props.id ? activeLinkStyle : baseLinkStyle}
                 to={'/' + props.id}
             >
-                <span className={props.sidebarActiveItem == props.id ? activeSpanStyle : baseSpanStyle + ' text-gray-500'}>
-                    {props.icon}
-                </span>
+                <SidebarItemIcon {...props} />
             </Link>
         </li>
     );
 }
 
 function SidebarItemExtended(props) {
-    let baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-100 active:bg-blue-200 active:scale-90 group';
-    let activeLinkStyle = baseLinkStyle + ' bg-blue-100';
-
-    let baseSpanStyle = 'transition duration-300 group-hover:text-gray-900';
-    let activeSpanStyle = baseSpanStyle + ' text-gray-900';
-
     return (
         <li>
             <Link 
                 className={props.sidebarActiveItem == props.id ? activeLinkStyle : baseLinkStyle}
                 to={'/' + props.id}
             >
-                <span className={'material-symbols-rounded ' + (props.sidebarActiveItem == props.id ? activeSpanStyle : baseSpanStyle + ' text-gray-500')}>
-                    {props.icon}
-                </span>
-                <span className={(props.sidebarActiveItem == props.id ? activeSpanStyle : baseSpanStyle) + ' text-gray-500 ml-4 font-semibold'}>{props.label}</span>
+                <SidebarItemIcon {...props} />
+                <span className={(props.sidebarActiveItem == props.id ? activeSpanStyle : baseSpanStyle) + ' ml-4 font-semibold'}>{props.label}</span>
             </Link>
         </li>
     );
