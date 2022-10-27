@@ -37,7 +37,7 @@ export default class Planner extends Component {
      */
     componentDidMount() {
         this.props.updateSidebar('planner');
-        this.props.updateSAB(true, 'add', '/planner/add');
+        this.props.updateSAB(true, 'add', '/planner/add', 'Neue Mahlzeit');
 
         this.getDays();
     }

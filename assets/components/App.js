@@ -73,13 +73,13 @@ export default class App extends Component {
                             <Route path="/planner/add" element={
                                 <AddMeal 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/planner/add/:id" element={
                                 <AddMeal 
                                     updateSidebar={(activeItem) => this.updateSidebar(activeItem)} 
-                                    updateSAB={(visible, icon, path) => this.updateSAB(visible, icon, path)} 
+                                    updateSAB={(visible, icon, path, label) => this.updateSAB(visible, icon, path, label)} 
                                 />
                             } />
                             <Route path="/pantry" element={

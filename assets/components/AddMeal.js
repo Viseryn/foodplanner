@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Navigate, useParams } from 'react-router-dom';
 
 import Heading from './Heading';
-import { InputLabel, SelectRow } from './Forms';
+import { InputLabel, SelectRow, SelectWidget } from './Forms';
 import Button, { SubmitButton } from './Buttons';
 import Spinner from './Util';
 
@@ -50,7 +50,7 @@ export class AddMeal extends Component {
         })
 
         this.props.updateSidebar('planner');
-        this.props.updateSAB(true, 'redo', '/planner');
+        this.props.updateSAB(true, 'redo', '/planner', 'Zurück');
 
         this.getData();
     }
@@ -126,62 +126,68 @@ export class AddMeal extends Component {
 
                 <Heading title='Mahlzeit hinzufügen' />
 
-                {this.state.loading ? (
-                    <Spinner />
-                ) : (
-                    <form 
-                        className="max-w-[400px] md:max-w-[900px]"
-                        onSubmit={this.handleSubmit}
-                    >
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-0">
-                            <SelectRow
+                <form 
+                    className="max-w-[400px] -md:max-w-[900px]"
+                    onSubmit={this.handleSubmit}
+                >
+                    <div className="mb-6">
+                        <InputLabel id="meal_day" label="Für welchen Tag?" />
+                        {this.state.loading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <SelectWidget
                                 id="meal_day"
-                                label="Für welchen Tag?"
                                 options={this.state.days}
-                                selectProps={{
-                                    defaultValue: this.state.dayId
-                                }}
+                                defaultValue={this.state.dayId}
                             />
+                        )}
+                    </div>
 
-                            <div className="mb-6">
-                                <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
-                                <UserGroupRadio />
+                    <div className="mb-6">
+                        <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
+                        <UserGroupRadio />
+                    </div>
+
+                    <div className="mb-6">
+                        <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
+                        <MealCategoryRadio />
+                    </div>
+
+                    <div className="mb-6">
+                        <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
+                        {this.state.loading ? (
+                            <div role="status" className="max-w-sm animate-pulse">
+                                <div className="h-4 bg-gray-200 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
                             </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-0">
-                            <div className="mb-6">
-                                <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
-                                <MealCategoryRadio />
-                            </div>
-
-                            <SelectRow
+                        ) : (
+                            <SelectWidget
                                 id="meal_recipe"
-                                label="Welches Rezept?"
                                 options={this.state.recipes}
-                                selectProps={{
-                                    required: 'required'
-                                }}
+                                required="required"
+                            />
+                        )}
+                    </div>
+
+                    <div className="flex justify-end gap-4">
+                        <div className="hidden md:block">
+                            <Button
+                                to="/planner"
+                                icon="redo"
+                                label="Zurück"
+                                style="transparent"
                             />
                         </div>
-
-                        <div className="flex justify-end gap-4">
-                            <div className="hidden md:block">
-                                <Button
-                                    to="/planner"
-                                    icon="redo"
-                                    label="Zurück"
-                                    style="transparent"
-                                />
-                            </div>
-                            <SubmitButton 
-                                icon="add" 
-                                label="Speichern" 
-                                elevated={true}
-                            />
-                        </div> 
-                    </form>
-                )}
+                        <SubmitButton 
+                            icon="add" 
+                            label="Speichern" 
+                            elevated={true}
+                        />
+                    </div> 
+                </form>
             </>
         )
     }
