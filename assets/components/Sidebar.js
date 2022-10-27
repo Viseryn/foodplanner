@@ -8,7 +8,7 @@ let SABvisibleStyle = SABbaseStyle + ' text-gray-900 bg-pink-300 hover:bg-pink-4
 let baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 active:bg-blue-200 active:scale-90 group';
 let activeLinkStyle = baseLinkStyle + ' bg-blue-200';
 
-let baseSpanStyle = 'transition duration-300 text-gray-500 group-hover:text-gray-900';
+let baseSpanStyle = 'transition duration-300 text-gray-600 group-hover:text-gray-900';
 let activeSpanStyle = baseSpanStyle + ' text-gray-900';
 
 function SidebarActionButton(props) {
