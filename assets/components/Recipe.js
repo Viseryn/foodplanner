@@ -137,7 +137,7 @@ export class Recipe extends Component {
                         }
 
                         <div className="flex justify-end">
-                            <div className="hidden lg:block lg:pt-6">
+                            <div className="hidden md:block md:pt-6">
                                 <Button 
                                     to={'/recipe/' + this.state.recipe.id + '/edit'}
                                     icon="drive_file_rename_outline"

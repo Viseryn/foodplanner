@@ -183,7 +183,7 @@ export default class AddRecipe extends Component {
                     </div>
 
                     <div className="flex justify-end gap-4">
-                        <div className="hidden lg:block">
+                        <div className="hidden md:block">
                             <Button
                                 to="/recipes"
                                 icon="redo"

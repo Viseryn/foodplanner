@@ -393,7 +393,7 @@ export class EditRecipe extends Component {
                             </div>
 
                             <div className="flex justify-end gap-4">
-                                <div className="hidden lg:block">
+                                <div className="hidden md:block">
                                     <Button
                                         to={'/recipe/' + this.state.recipe.id}
                                         icon="redo"

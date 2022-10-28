@@ -114,7 +114,7 @@ export default class Recipes extends Component {
                             </div>
                             
                             <div className="flex justify-end">
-                                <div className="hidden lg:block lg:mt-10">
+                                <div className="hidden md:block md:mt-10">
                                     <Button
                                         to="/recipe/add"
                                         icon="add"
