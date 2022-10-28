@@ -24,6 +24,7 @@ export default class Planner extends Component {
      */
     constructor(props) {
         super(props);
+
         this.state = {
             days: [], 
             loading: true, 
