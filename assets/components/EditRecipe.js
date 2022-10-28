@@ -308,9 +308,9 @@ export class EditRecipe extends Component {
                                         <div className="overflow-hidden w-full">
                                             {this.state.isUploadButtonVisible 
                                                 ? <>
-                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-ellipsis rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800">
+                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800">
                                                         <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                                        <span className="label-content mr-2 ml-3">{this.state.filename}</span>
+                                                        <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">{this.state.filename}</span>
                                                     </label>
                                                     <input 
                                                         type="file" id="recipe_image" name="recipe[image]" 
@@ -319,9 +319,9 @@ export class EditRecipe extends Component {
                                                     />
                                                 </>
                                                 : <>
-                                                    <label htmlFor="recipe_image" className="file-label overflow-ellipsis rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center text-gray-600 bg-gray-100">
+                                                    <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 bg-gray-100">
                                                         <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                                        <span className="label-content mr-2 ml-3">Datei auswählen</span>
+                                                        <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">Datei auswählen</span>
                                                     </label>
                                                     <input 
                                                         disabled="disabled"
