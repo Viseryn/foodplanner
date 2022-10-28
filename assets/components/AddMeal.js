@@ -104,10 +104,15 @@ export class AddMeal extends Component {
         const formData = new FormData(event.target);
         event.preventDefault();
 
+        this.setState({
+            loading: false,
+        });
+
         axios.post('/api/meal/add', formData).then(
             response => {
                 this.setState({
                     isSubmittedSuccessfully: true,
+                    loading: false,
                 }
             );
         });
