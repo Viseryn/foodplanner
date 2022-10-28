@@ -51,7 +51,7 @@ class MealController extends AbstractController
      * @param MealRepository $mealRepository
      * @return Response
      */
-    #[Route('/api/meal/delete/{id}', name: 'app_meal_delete', methods: ['POST'])]
+    #[Route('/api/meal/{id}/delete', name: 'app_meal_delete', methods: ['GET'])]
     public function delete(Meal $meal, MealRepository $mealRepository): Response
     {
         $mealRepository->remove($meal, true);
