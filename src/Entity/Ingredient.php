@@ -134,7 +134,11 @@ class Ingredient
 
     public function setRecipe(?Recipe $recipe): self
     {
-        $this->recipe = $recipe;
+        if ($this->storage == null) {
+            $this->recipe = $recipe;
+        } else {
+            throw new Exception('Cannot set recipe if storage is already set.');
+        }
 
         return $this;
     }
@@ -146,7 +150,11 @@ class Ingredient
 
     public function setStorage(?Storage $storage): self
     {
-        $this->storage = $storage;
+        if ($this->recipe == null) {
+            $this->storage = $storage;
+        } else {
+            throw new Exception('Cannot set storage if recipe is already set.');
+        }
 
         return $this;
     }
