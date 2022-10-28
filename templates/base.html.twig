@@ -20,7 +20,7 @@
         {% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
     </head>
 
-    <body>
+    <body class="overscroll-none">
         {% block body %}
             <main>
                 <div class="flex bg-blue-50">
@@ -76,6 +76,7 @@
                 // "active" has been removed and DOM is loaded.
                 setTimeout(() => {
                     $('#sidebar-' + activeView).addClass('bg-blue-100');
+                    $('#sidebar-' + activeView).children('.material-symbols-rounded').removeClass('text-gray-500').addClass('text-gray-900');
                 }, 0);
             };
 

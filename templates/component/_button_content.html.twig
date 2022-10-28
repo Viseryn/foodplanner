@@ -1,9 +1,0 @@
-{# templates/component/_button_content.html.twig #}
-
-{% if icon is defined and icon != '' %}
-    <span class="label-icon material-symbols-rounded">{{ icon }}</span>
-{% endif %} 
-
-{% if label is defined and label != '' %}
-    <span class="label-content mr-2{% if icon != '' %} ml-3{% else %} ml-2{% endif %}">{{ label }}</span>
-{% endif %}

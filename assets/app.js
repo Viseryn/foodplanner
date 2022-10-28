@@ -1,22 +1,24 @@
 /*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
+ * app.js
  */
 
-// any CSS you import will output into a single css file (app.css in this case)
+// Load custom JavaScripts
+import './custom';
+
+// Import CSS
 import './styles/app.scss';
 
-// start the Stimulus application
+// Start the Stimulus application
 import './bootstrap';
 
-// sweetalert
+// Import SweetAlert
 import swal from 'sweetalert';
 
-// loads the jquery package from node_modules
-var $ = require('jquery');
-global.$ = global.jQuery = $;
+// Import React
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './components/App';
 
-// load custom js
-require('./custom');
+// Render app
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
