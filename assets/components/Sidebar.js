@@ -147,10 +147,12 @@ export default function Sidebar(props) {
             />    
             <aside 
                 id="sidebar" 
-                className="z-50 bg-blue-50 w-full fixed bottom-0 h-20 lg:w-24 lg:min-h-screen lg:static lg:flex lg:justify-center xl:hidden"
+                className="shrink-0 z-50 bg-blue-50 w-full fixed bottom-0 h-20 
+                    md:w-24 md:min-w-24 md:min-h-screen md:static md:flex md:justify-center xl:hidden"
             >
-                <div className="pl-3 pr-6 py-3 md:pl-7 md:pr-10 lg:px-6 lg:py-7 w-full lg:max-w-fit flex justify-between lg:block fixed">
-                    <ul className="space-y-2 mb-16 hidden lg:block">
+                {/* <div className="pl-3 pr-6 py-3 md:pl-7 md:pr-10 md:px-6 md:py-7 w-full md:max-w-fit flex justify-between md:block fixed"> */}
+                <div className="pl-4 pr-6 py-3 md:px-6 md:py-7 w-full md:max-w-fit flex justify-between md:block fixed">
+                    <ul className="space-y-2 mb-16 hidden md:block">
                         <li>
                             <Link 
                                 className="flex items-center p-4 text-gray-900 rounded-full transition duration-300 hover:bg-blue-100 active:bg-blue-200 active:scale-90 group"
@@ -165,7 +167,7 @@ export default function Sidebar(props) {
                         <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
                     </ul>
 
-                    <ul className="flex flex-row space-x-1 lg:flex-col lg:space-x-0 lg:space-y-2">
+                    <ul className="flex flex-row space-x-1 md:flex-col md:space-x-0 md:space-y-2">
                         <SidebarItem 
                             sidebarActiveItem={props.sidebarActiveItem}
                             id="planner"
@@ -188,7 +190,7 @@ export default function Sidebar(props) {
                         />
                     </ul>
                         
-                    <ul className="lg:hidden">
+                    <ul className="md:hidden">
                         <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
                     </ul>
                 </div>

@@ -53,9 +53,9 @@ export default class App extends Component {
                     />
 
                     <div 
-                        className="px-6 py-10 pb-28 lg:my-8 lg:mr-8 lg:pb-10 md:px-10
-                            lg:rounded-3xl bg-white text-gray-700 
-                            w-full lg:max-w-[900px]"
+                        className="px-6 py-10 pb-28 md:my-8 md:mr-8 md:pb-10 md:px-10
+                            md:rounded-3xl bg-white text-gray-700 
+                            w-full md:max-w-[900px]"
                     >
                         <Routes>
                             <Route path="/" element={
