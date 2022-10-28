@@ -191,7 +191,7 @@ class Meals extends Component {
                             <span 
                                 onClick={() => this.deleteMeal(meal.id)}
                                 className="cursor-pointer transition duration-300 group-hover:block material-symbols-rounded text-white absolute top-2 right-2
-                                hover:bg-gray-400/75 p-1 rounded-full"
+                                hover:bg-gray-600/40 p-1 rounded-full"
                             >
                                 close
                             </span>
