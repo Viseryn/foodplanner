@@ -22,6 +22,7 @@ export default class App extends Component {
                 visible: false,
                 icon: '',
                 path: '#',
+                label: '',
             }
         };
     }
