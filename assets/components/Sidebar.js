@@ -17,6 +17,7 @@ function SidebarActionButton(props) {
             <Link 
                 to={props.sidebarActionButton.path}
                 className={props.sidebarActionButton.visible ? SABvisibleStyle : SABinvisibleStyle}
+                onClick={props.sidebarActionButton.onClickHandler}
             >
                 <span className="material-symbols-rounded">
                     {
@@ -36,6 +37,7 @@ function SidebarActionButtonExtended(props) {
             <Link 
                 to={props.sidebarActionButton.path}
                 className={props.sidebarActionButton.visible ? SABvisibleStyle : SABinvisibleStyle}
+                onClick={props.sidebarActionButton.onClickHandler}
             >
                 <span className="material-symbols-rounded">
                     {
