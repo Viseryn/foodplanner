@@ -40,7 +40,7 @@ export default class Planner extends Component {
         this.props.updateSidebar('planner');
         this.props.updateSAB(true, 'add', '/planner/add', 'Neue Mahlzeit');
 
-        this.getDays();
+        this.updateDays();
     }
 
     /**
@@ -59,7 +59,7 @@ export default class Planner extends Component {
      * Calls the Days List API and loads the
      * data into the state variable.
      */
-    getDays() {
+    getDays = () => {
         axios.get('/api/days').then(
             days => {
                 this.setState({ 
@@ -68,7 +68,18 @@ export default class Planner extends Component {
                 })
             }
         );
-    }
+    };
+
+    /**
+     * updateDays
+     * 
+     * Calls the Update Days API, which removes all 
+     * unnecessary Days (past days and days further away
+     * than ten), and calls getDays() after.
+     */
+    updateDays = () => {
+        axios.get('/api/day/update').then(this.getDays);
+    };
     
     /**
      * render
