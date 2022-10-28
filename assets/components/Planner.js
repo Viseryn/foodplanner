@@ -12,7 +12,9 @@ import Spinner from './Util';
 /**
  * Planner
  * 
- * 
+ * A Component for showing a list of all Meals.
+ * Collects the data from the Day List API
+ * in the /src/Controller/DayController.php.
  */
 export default class Planner extends Component {
     /**
