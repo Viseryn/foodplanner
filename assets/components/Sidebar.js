@@ -71,18 +71,18 @@ function SidebarActionButton(props) {
     return (
         <li className="sidebar-action-button">
             <Link 
-                to={props.sidebarActionButton.path}
-                className={props.sidebarActionButton.visible ? SABvisibleStyle : SABinvisibleStyle}
-                onClick={props.sidebarActionButton.onClickHandler}
+                to={props.sidebarActionButton?.path}
+                className={props.sidebarActionButton?.visible ? SABvisibleStyle : SABinvisibleStyle}
+                onClick={props.sidebarActionButton?.onClickHandler}
             >
                 <span className="material-symbols-rounded">
                     {
-                        props.sidebarActionButton.visible 
-                        ? props.sidebarActionButton.icon
+                        props.sidebarActionButton?.visible 
+                        ? props.sidebarActionButton?.icon
                         : ''
                     }
                 </span>
-                <div className="hidden xl:block w-full ml-4 font-semibold">{props.sidebarActionButton.label}</div>
+                <div className="hidden xl:block w-full ml-4 font-semibold">{props.sidebarActionButton?.label}</div>
             </Link>
         </li>
     );
