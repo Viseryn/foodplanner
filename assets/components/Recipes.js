@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom';
 import Spinner from './Util';
 import Heading from './Heading';
 import Button from './Buttons';
+import InputRow, { InputWidget } from './Forms';
 
 /**
  * Recipes
@@ -20,6 +21,7 @@ import Button from './Buttons';
 export default function Recipes(props) {
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setLoading] = useState(true);
+    const [searchValue, setSearchValue] = useState('');
 
     useEffect(() => {
         // Load Sidebar
@@ -41,11 +43,29 @@ export default function Recipes(props) {
             });
     }, []);
     
+    // Search for user input in recipe list
+    const recipesFiltered = recipes.filter(recipe => {
+        if (searchValue === '') {
+            return recipe;
+        } else {
+            return recipe.title.toLowerCase().includes(searchValue.toLowerCase());
+        }
+    });
+    
     // Render
     return (
         <>
             <Heading title="Rezepte" />
 
+            <div className="mb-10 w-64">
+                <InputWidget 
+                    placeholder='Suche ...'
+                    value={searchValue}
+                    onChange={e => {
+                        setSearchValue(e.target.value);
+                    }} 
+                />
+            </div>
 
             {isLoading 
                 ? <Spinner />
