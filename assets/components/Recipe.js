@@ -81,6 +81,12 @@ function Recipe(props) {
                     <Ingredients portionSize={recipe.portion_size} ingredients={recipe.ingredients} />
                     <Instructions instructions={recipe.instructions} />
 
+                    {recipe.image === undefined && recipe.ingredients.length === 0 && recipe.instructions.length === 0 &&
+                        <div className="text-gray-400">
+                            Hier gibt es noch nichts zu sehen.
+                        </div>
+                    }
+
                     <div className="flex justify-end">
                         <div className="hidden md:block md:pt-6">
                             <Button 
