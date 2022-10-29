@@ -100,7 +100,7 @@ export class AddMeal extends Component {
         event.preventDefault();
 
         this.setState({
-            loading: false,
+            loading: true, // Works, but shows skeleton instead of spinner
         });
 
         axios.post('/api/meal/add', formData).then(
