@@ -1,28 +1,23 @@
-// ./assets/components/ShoppingList.js
-    
-import React, {Component} from 'react';
-import {Route, Switch, Redirect, Link, withRouter} from 'react-router-dom';
+/**********************************
+ * ./assets/components/AddMeal.js *
+ **********************************/
+
+import React, { useEffect } from 'react';
+import { Route, Switch, Redirect, Link, withRouter } from 'react-router-dom';
 
 import Heading from './Heading';
 import Spinner from './Util';
-    
-export default class ShoppingList extends Component {
-    componentDidMount() {
-        this.props.updateSidebar('shoppinglist');
-        this.props.updateSAB();
-    }
 
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-    
-    render() {
-        return (
-            <>
-                <Heading title="Einkaufsliste" />
-                <Spinner />
-            </>
-        )
-    }
+export default function ShoppingList(props) {
+    useEffect(() => {
+        props.updateSidebar('shoppinglist');
+        props.updateSAB(false);
+    }, []);
+
+    return (
+        <>
+            <Heading title="Einkaufsliste" />
+            <Spinner />
+        </>
+    );
 }
