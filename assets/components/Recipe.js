@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import Spinner from './Util';
 import Heading from './Heading';
 import Button from './Buttons';
 import SkeletonText from './SkeletonText';
@@ -51,7 +50,7 @@ function Recipe(props) {
 
     // Render
     return (
-        <div className="max-w-[900px]">
+        <>
             {isLoading 
                 ? <div className="animate-pulse mb-10">
                     <div className="h-9 bg-gray-200 rounded-full w-1/2"></div>
@@ -99,7 +98,7 @@ function Recipe(props) {
                     </div>
                 </>
             }
-        </div>
+        </>
     );
 }
 
