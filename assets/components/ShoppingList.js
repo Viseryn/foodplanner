@@ -3,7 +3,6 @@
  ***************************************/
 
 import React, { useEffect } from 'react';
-import { Route, Switch, Redirect, Link, withRouter } from 'react-router-dom';
 
 import Heading from './Heading';
 import Spinner from './Util';
