@@ -9,6 +9,7 @@ import axios from 'axios';
 import Spinner from './Util';
 import Heading from './Heading';
 import Button from './Buttons';
+import SkeletonText from './SkeletonText';
 
 /**
  * Recipe
@@ -50,13 +51,17 @@ function Recipe(props) {
 
     // Render
     return (
-        <>
-            {isLoading ? (
-                <Spinner />
-            ) : (
-                <div className="max-w-[900px]">
-                    <Heading title={recipe.title} />
+        <div className="max-w-[900px]">
+            {isLoading 
+                ? <div className="animate-pulse mb-10">
+                    <div className="h-9 bg-gray-200 rounded-full w-1/2"></div>
+                </div>
+                : <Heading title={recipe.title} />
+            }
 
+            {isLoading
+                ? <img className="animate-pulse rounded-3xl h-80 w-full mb-10 object-cover" src='/img/default.jpg' />
+                : <>
                     {recipe.image != null &&
                         <img 
                             className="rounded-3xl h-80 object-cover mb-10 shadow-md hover:shadow-xl transition duration-300 w-full" 
@@ -64,7 +69,15 @@ function Recipe(props) {
                             alt={recipe}
                         />
                     }
+                </>
+            }
 
+            {isLoading
+                ? <>
+                    <div className="bg-gray-100 h-12 font-bold px-6 py-3 mb-6 rounded-xl"></div>
+                    <SkeletonText />
+                </>
+                : <>
                     <Ingredients portionSize={recipe.portion_size} ingredients={recipe.ingredients} />
                     <Instructions instructions={recipe.instructions} />
 
@@ -78,9 +91,9 @@ function Recipe(props) {
                             />
                         </div>
                     </div>
-                </div>
-            )}
-        </>
+                </>
+            }
+        </div>
     );
 }
 
