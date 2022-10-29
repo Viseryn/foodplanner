@@ -2,7 +2,6 @@
  * ./assets/components/Pantry.js *
  *********************************/
     
-import {Route, Switch, Redirect, Link, withRouter} from 'react-router-dom';
 import React, { useEffect } from 'react';
 
 import Heading from './Heading';
