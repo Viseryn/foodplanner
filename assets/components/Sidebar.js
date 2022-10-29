@@ -3,28 +3,17 @@ import { Link } from 'react-router-dom';
 
 export default function Sidebar(props) {
     return (
-        <>
-            <aside 
-                id="sidebar-extended" 
-                className="hidden z-50 bg-blue-50 w-64 min-h-screen static xl:flex justify-start"
-            >
-                <SidebarContent isExtended={true} {...props} />    
-            </aside>
-
-            <aside 
-                id="sidebar-retracted" 
-                className="shrink-0 z-50 bg-blue-50 w-full fixed bottom-0 h-20 
-                    md:w-24 md:min-w-24 md:min-h-screen md:static md:flex md:justify-center xl:hidden"
-            >
-                <SidebarContent isExtended={false} {...props} />
-            </aside>
-        </>
+        <aside className="z-50 bg-blue-50 shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
+            <div className="pl-4 pr-6 py-3 w-full fixed flex justify-between md:px-6 md:py-7 md:max-w-fit md:block xl:w-64 xl:max-w-none">
+                <SidebarContent {...props} />
+            </div>
+        </aside>
     );
 }
 
 function SidebarContent(props) {
     return (
-        <div className="pl-4 pr-6 py-3 w-full fixed flex justify-between md:px-6 md:py-7 md:max-w-fit md:block xl:w-64 xl:max-w-none">
+        <>
             <ul className="space-y-2 mb-16 hidden md:block">
                 <li className="xl:w-min">
                     <Link 
@@ -37,36 +26,29 @@ function SidebarContent(props) {
                     </Link>
                 </li>
                 
-                <SidebarActionButton 
-                    isExtended={props.isExtended} 
-                    sidebarActionButton={props.sidebarActionButton} 
-                />
+                <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
             </ul>
 
             <ul className="flex flex-row space-x-1 md:flex-col md:space-x-0 md:space-y-2">
                 <SidebarItem 
-                    isExtended={props.isExtended} 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="planner"
                     icon="date_range"
                     label="Wochenplan"
                 />
                 <SidebarItem 
-                    isExtended={props.isExtended} 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="recipes"
                     icon="fastfood"
                     label="Rezepte"
                 />
                 <SidebarItem 
-                    isExtended={props.isExtended} 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="pantry"
                     icon="kitchen"
                     label="Vorratskammer"
                 />
                 <SidebarItem 
-                    isExtended={props.isExtended} 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="shoppinglist"
                     icon="shopping_cart"
@@ -74,12 +56,10 @@ function SidebarContent(props) {
                 />
             </ul>
                 
-            {!props.isExtended &&
-                <ul className="md:hidden">
-                    <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
-                </ul>
-            }
-        </div>
+            <ul className="md:hidden">
+                <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
+            </ul>
+        </>
     );
 }
 
@@ -102,9 +82,7 @@ function SidebarActionButton(props) {
                         : ''
                     }
                 </span>
-                {props.isExtended &&
-                    <div className="w-full ml-4 font-semibold">{props.sidebarActionButton.label}</div>
-                }
+                <div className="hidden xl:block w-full ml-4 font-semibold">{props.sidebarActionButton.label}</div>
             </Link>
         </li>
     );
@@ -124,9 +102,7 @@ function SidebarItem(props) {
             <Link to={'/' + props.id} className={linkStyle}>
                 <div className={labelStyle}>
                     <span className="material-symbols-rounded">{props.icon}</span>
-                    {props.isExtended &&
-                        <span className="ml-4 font-semibold">{props.label}</span>
-                    }
+                    <span className="hidden xl:block ml-4 font-semibold">{props.label}</span>
                 </div>
             </Link>
         </li>
