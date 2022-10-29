@@ -1,6 +1,6 @@
-/**********************************
- * ./assets/components/AddMeal.js *
- **********************************/
+/***************************************
+ * ./assets/components/ShoppingList.js *
+ ***************************************/
 
 import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, Link, withRouter } from 'react-router-dom';
