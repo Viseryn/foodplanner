@@ -42,8 +42,13 @@ export default class AddRecipe extends Component {
      * Scrolls to the top on load.
      */
     componentDidMount() {
-        this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'redo', '/recipes/', 'Zurück');
+        this.props.setSidebarActiveItem('recipes');
+        this.props.setSidebarActionButton({
+            visible: true, 
+            icon: 'redo', 
+            path: '/recipes', 
+            label: 'Zurück',
+        });
 
         window.scrollTo(0, 0)
     }

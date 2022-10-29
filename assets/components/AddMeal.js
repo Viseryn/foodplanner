@@ -49,8 +49,13 @@ export class AddMeal extends Component {
             dayId: id
         })
 
-        this.props.updateSidebar('planner');
-        this.props.updateSAB(true, 'redo', '/planner', 'Zurück');
+        this.props.setSidebarActiveItem('planner');
+        this.props.setSidebarActionButton({
+            visible: true, 
+            icon: 'redo', 
+            path: '/planner', 
+            label: 'Zurück',
+        });
 
         this.getData();
     }

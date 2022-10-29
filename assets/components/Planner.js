@@ -39,8 +39,13 @@ export default class Planner extends Component {
      * Updates the sidebar on load and loads days.
      */
     componentDidMount() {
-        this.props.updateSidebar('planner');
-        this.props.updateSAB(true, 'add', '/planner/add', 'Neue Mahlzeit');
+        this.props.setSidebarActiveItem('planner');
+        this.props.setSidebarActionButton({
+            visible: true, 
+            icon: 'add', 
+            path: '/planner/add', 
+            label: 'Neue Mahlzeit',
+        });
 
         this.updateDays();
     }

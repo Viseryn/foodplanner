@@ -36,8 +36,13 @@ export default class Recipes extends Component {
      * Loads Recipes on mount and updates sidebar.
      */
     componentDidMount() {
-        this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'add', '/recipe/add', 'Neues Rezept');
+        this.props.setSidebarActiveItem('recipes');
+        this.props.setSidebarActionButton({
+            visible: true, 
+            icon: 'add', 
+            path: '/recipe/add', 
+            label: 'Neues Rezept',
+        });
 
         this.getRecipes();
     }

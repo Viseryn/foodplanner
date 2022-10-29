@@ -10,8 +10,10 @@ import Spinner from './Util';
 
 export default function ShoppingList(props) {
     useEffect(() => {
-        props.updateSidebar('shoppinglist');
-        props.updateSAB(false);
+        props.setSidebarActiveItem('shoppinglist');
+        props.setSidebarActionButton({
+            visible: false, 
+        });
     }, []);
 
     return (

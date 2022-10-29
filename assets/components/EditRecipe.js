@@ -50,8 +50,13 @@ export class EditRecipe extends Component {
         const { id } = this.props.params;
         this.getRecipe(id);
 
-        this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'redo', '/recipe/' + id, 'Zurück');
+        this.props.setSidebarActiveItem('recipes');
+        this.props.setSidebarActionButton({
+            visible: true, 
+            icon: 'redo', 
+            path: '/recipe/' + id, 
+            label: 'Zurück',
+        });
 
         window.scrollTo(0, 0);
     }

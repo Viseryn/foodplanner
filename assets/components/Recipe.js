@@ -39,20 +39,15 @@ export class Recipe extends Component {
         const { id } = this.props.params; // Get id from route parameters
         this.getRecipe(id);
 
-        this.props.updateSidebar('recipes');
-        this.props.updateSAB(true, 'drive_file_rename_outline', '/recipe/' + id + '/edit', 'Bearbeiten');
+        this.props.setSidebarActiveItem('recipes');
+        this.props.setSidebarActionButton({
+            visible: true, 
+            icon: 'drive_file_rename_outline', 
+            path: '/recipe/' + id + '/edit', 
+            label: 'Bearbeiten',
+        });
     }
-
-    /**
-     * componentWillUnmount
-     * 
-     * Updates sidebar on unload.
-     */
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-
+    
     /**
      * getRecipe
      * 
