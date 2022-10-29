@@ -49,16 +49,6 @@ export default class AddRecipe extends Component {
     }
 
     /**
-     * componentWillUnmount
-     * 
-     * Updates sidebar on unload.
-     */
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-
-    /**
      * handleFilePick
      * 
      * Changes the label of the upload button to the selected 

@@ -42,17 +42,6 @@ export default class Recipes extends Component {
         this.getRecipes();
     }
 
-
-    /**
-     * componentWillUnmount
-     * 
-     * Updates sidebar on unload.
-     */
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-
     /**
      * getRecipe
      * 

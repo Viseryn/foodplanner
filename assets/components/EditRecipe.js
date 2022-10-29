@@ -57,16 +57,6 @@ export class EditRecipe extends Component {
     }
 
     /**
-     * componentWillUnmount
-     * 
-     * Updates sidebar on unload.
-     */
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-
-    /**
      * getRecipe
      * 
      * Calls the Recipe Show API and loads the Recipe

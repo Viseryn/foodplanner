@@ -46,16 +46,6 @@ export default class Planner extends Component {
     }
 
     /**
-     * componentWillUnmount
-     * 
-     * Updates the sidebar on unload.
-     */
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-
-    /**
      * getDays
      * 
      * Calls the Days List API and loads the

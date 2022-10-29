@@ -56,16 +56,6 @@ export class AddMeal extends Component {
     }
 
     /**
-     * componentWillUnmount
-     * 
-     * Updates sidebar on unload.
-     */
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-
-    /**
      * getData
      * 
      * Calls the Recipe List API and Day List API

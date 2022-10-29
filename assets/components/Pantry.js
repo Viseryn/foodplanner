@@ -12,11 +12,6 @@ export default class Pantry extends Component {
         this.props.updateSAB();
     }
 
-    componentWillUnmount() {
-        this.props.updateSidebar();
-        this.props.updateSAB();
-    }
-    
     render() {
         return (
             <>
