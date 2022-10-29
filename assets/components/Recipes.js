@@ -78,31 +78,20 @@ export default class Recipes extends Component {
                         <>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
                                 {this.state.recipes.map(recipe => 
-                                    <div 
-                                        key={recipe.id}
-                                        className="h-40 w-full shadow-md rounded-2xl border border-gray-200 transition duration-300 hover:scale-95 hover:shadow-lg hover:bg-gray-50"
-                                    >
-                                        {recipe.image != null 
-                                            ? <Link 
-                                                to={'/recipe/' + recipe.id} 
-                                                className="relative"
-                                            >
-                                                <div className="absolute bottom-4 px-6 text-white font-semibold text-xl z-10">
-                                                    {recipe.title}
-                                                </div>
+                                    <div key={recipe.id} className="h-40 w-full shadow-md rounded-2xl transition duration-300 hover:shadow-2xl">
+                                        <div className="relative group">
+                                            <Link to={'/recipe/' + recipe.id}>
                                                 <img 
-                                                    className="rounded-2xl h-40 w-full object-cover brightness-75" 
-                                                    src={recipe.image.directory + recipe.image.filename} 
-                                                    alt={recipe.title} 
+                                                    className="rounded-2xl h-40 w-full object-cover brightness-[.7]" 
+                                                    src={recipe.image?.filename != null 
+                                                        ? recipe.image?.directory + recipe.image?.filename
+                                                        : '/img/default.jpg'
+                                                    } 
+                                                    alt={recipe.title}
                                                 />
+                                                <div className="absolute w-full bottom-4 px-6 text-white font-semibold text-xl">{recipe.title}</div>
                                             </Link>
-                                            : <Link 
-                                                to={'/recipe/' + recipe.id} 
-                                                className="h-full w-full p-6 font-semibold text-xl z-10 flex items-end"
-                                            >
-                                                <div>{recipe.title}</div>
-                                            </Link>
-                                        }
+                                        </div>
                                     </div>
                                 )}
                             </div>
