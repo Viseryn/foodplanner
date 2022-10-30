@@ -252,7 +252,7 @@ export class EditRecipe extends Component {
         }
 
         return (
-            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white md:rounded-3xl md:max-w-[900px]">
+            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
                 {this.state.isSubmittedSuccessfully &&
                     <Navigate to={'/recipe/' + this.state.newId} />
                 }
@@ -303,7 +303,7 @@ export class EditRecipe extends Component {
                                         <div className="overflow-hidden w-full">
                                             {this.state.isUploadButtonVisible 
                                                 ? <>
-                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800">
+                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#232325] hover:bg-blue-200 dark:hover:bg-[#232325]/[.6] active:bg-blue-300 active:text-blue-800">
                                                         <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                                         <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">{this.state.filename}</span>
                                                     </label>
@@ -314,7 +314,7 @@ export class EditRecipe extends Component {
                                                     />
                                                 </>
                                                 : <>
-                                                    <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 bg-gray-100">
+                                                    <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-[#232325]">
                                                         <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                                         <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">Datei auswählen</span>
                                                     </label>
@@ -331,8 +331,8 @@ export class EditRecipe extends Component {
                                         {this.state.recipe.image != null &&
                                             <label htmlFor="recipe_image_remove" className="inline-flex relative items-center cursor-pointer">
                                                 <input type="checkbox" value="" id="recipe_image_remove" name="recipe[image_remove]" className="sr-only peer" onChange={(e) => this.handleFileRemove(e)} />
-                                                <div className="w-11 h-6 bg-gray-100 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 peer-checked:bg-blue-600"></div>
-                                                <span className="ml-3 text-sm text-gray-500 font-semibold">Entfernen</span>
+                                                <div className="w-11 h-6 bg-gray-100 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                                <span className="ml-3 text-sm text-gray-500 dark:text-gray-200 font-semibold">Entfernen</span>
                                             </label>
                                         }
                                     </div>
@@ -356,7 +356,7 @@ export class EditRecipe extends Component {
                                             }
                                         </>
                                         : <img 
-                                            className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10" 
+                                            className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10 dark:opacity-100 dark:brightness-50" 
                                             src="/img/default.jpg"
                                             alt={this.state.recipe}
                                         />

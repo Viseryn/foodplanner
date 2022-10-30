@@ -89,10 +89,10 @@ export default function Recipes(props) {
                 )
             }>
                 {/* Search bar */}
-                <div className="mb-4 rounded-full bg-white h-16 flex items-center pl-6 pr-4">
+                <div className="mb-4 rounded-full bg-white dark:bg-[#121212] h-16 flex items-center pl-6 pr-4">
                     <span className="material-symbols-rounded mr-2 cursor-default">search</span>
                     <input 
-                        className="w-full border-transparent focus:border-transparent focus:ring-0"
+                        className="dark:bg-[#121212] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
                         placeholder='Suche nach Rezepten ...'
                         id='search'
                         name='search'
@@ -104,7 +104,7 @@ export default function Recipes(props) {
                     />
                     {searchValue !== '' &&
                         <span 
-                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 p-2 rounded-full"
+                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#3b3b3b] p-2 rounded-full"
                             onClick={() => setSearchValue('')}
                         >close</span>
                     }
@@ -116,21 +116,21 @@ export default function Recipes(props) {
                         'grid grid-cols-1 gap-2 animate-pulse ' 
                         + (!isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
                     }>
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
                     </div>
                     : <>
                         {recipesFiltered.length === 0 &&
@@ -175,7 +175,7 @@ export default function Recipes(props) {
 
             {/* Second column is always shown when a Recipe is chosen. */}
             {isTwoColumns && 
-                <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white md:rounded-3xl md:max-w-[900px]">
+                <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
                     {/* Pass a function setTwoColumns to the Recipe, so that it 
                         can deactive the two-column mode. Resets the SAB afterwards. */}
                     <Recipe 

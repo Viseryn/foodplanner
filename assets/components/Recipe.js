@@ -54,7 +54,7 @@ export default function Recipe(props) {
         <>
             {isLoading 
                 ? <div className="animate-pulse mb-10">
-                    <div className="h-9 bg-gray-200 rounded-full w-1/2"></div>
+                    <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2"></div>
                 </div>
                 : <div className="flex justify-between items-start">
                     <Heading title={recipe.title} />
@@ -62,7 +62,7 @@ export default function Recipe(props) {
                     
                     {/* Button for resetting two-column mode */}
                     <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 p-2 rounded-full"
+                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
                         onClick={() => { props.setTwoColumns(); }}
                     >
                         close
@@ -86,7 +86,9 @@ export default function Recipe(props) {
 
             {isLoading
                 ? <>
-                    <div className="bg-gray-100 h-12 font-bold px-6 py-3 mb-6 rounded-xl"></div>
+                    <div className="flex bg-gray-100 dark:bg-[#232325] h-12 font-bold px-6 py-3 mb-6 rounded-xl">
+                        <div className="animate-pulse self-center bg-gray-300 dark:bg-gray-700 w-48 h-2.5 rounded-full"></div>
+                    </div>
                     <SkeletonText />
                 </>
                 : <>
@@ -125,7 +127,7 @@ function Ingredients(props) {
         <>
             {props.ingredients.length > 0 &&
                 <div className="mb-10">
-                    <div className="bg-gray-100 font-bold px-6 py-3 mb-3 rounded-xl">
+                    <div className="bg-gray-100 dark:bg-[#232325] font-bold px-6 py-3 mb-3 rounded-xl">
                         Zutaten für 
                         {props.portionSize == 1 
                             ? ' eine Portion'
@@ -157,7 +159,7 @@ function Instructions(props) {
         <>
             {props.instructions.length > 0 &&
                 <div className="mb-10">
-                    <div className="bg-gray-100 font-bold px-6 py-3 mb-5 rounded-xl">
+                    <div className="bg-gray-100 dark:bg-[#232325] font-bold px-6 py-3 mb-5 rounded-xl">
                         Zubereitung
                     </div>
                     <div className="space-y-2">

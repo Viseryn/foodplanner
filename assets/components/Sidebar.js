@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function Sidebar(props) {
     return (
-        <aside className="z-50 bg-blue-50 shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
+        <aside className="z-50 bg-blue-50 dark:bg-[#1D252C] shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
             <div className="pl-4 pr-6 py-3 w-full fixed flex justify-between md:px-6 md:py-7 md:max-w-fit md:block xl:w-64 xl:max-w-none">
                 <SidebarContent {...props} />
             </div>
@@ -66,7 +66,7 @@ function SidebarContent(props) {
 function SidebarActionButton(props) {
     let SABbaseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14 w-14 xl:w-auto';
     let SABinvisibleStyle = SABbaseStyle + ' text-transparent bg-transparent cursor-default';
-    let SABvisibleStyle = SABbaseStyle + ' text-gray-900 bg-pink-300 hover:bg-pink-400 active:bg-pink-500 active:scale-90';
+    let SABvisibleStyle = SABbaseStyle + ' text-gray-900 dark:text-gray-300 bg-pink-300 dark:bg-pink-800 hover:bg-pink-400 dark:hover:bg-pink-600 active:bg-pink-500 active:scale-90';
 
     return (
         <li className="sidebar-action-button">
@@ -89,12 +89,12 @@ function SidebarActionButton(props) {
 }
 
 function SidebarItem(props) {
-    const baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 active:bg-blue-200 active:scale-90 group';
-    const activeLinkStyle = baseLinkStyle + ' bg-blue-200';
+    const baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group';
+    const activeLinkStyle = baseLinkStyle + ' bg-blue-200 dark:bg-[#1f3953]';
     const linkStyle = props.sidebarActiveItem == props.id ? activeLinkStyle : baseLinkStyle;
 
-    const baseLabelStyle = 'transition duration-300 text-gray-600 group-hover:text-gray-900 flex items-center';
-    const activeLabelStyle = baseLabelStyle + ' text-gray-900';
+    const baseLabelStyle = 'transition duration-300 text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-200 flex items-center';
+    const activeLabelStyle = baseLabelStyle + ' text-gray-900 dark:text-gray-200';
     const labelStyle = props.sidebarActiveItem == props.id ? activeLabelStyle : baseLabelStyle;
 
     return (

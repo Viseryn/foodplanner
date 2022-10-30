@@ -106,7 +106,7 @@ export default class AddRecipe extends Component {
         }
         
         return (
-            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white md:rounded-3xl md:max-w-[900px]">
+            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
                 {/* If the form is submitted, redirect to the new recipe */}
                 {this.state.isSubmittedSuccessfully &&
                     <Navigate to={'/recipe/' + this.state.newId} />
@@ -144,7 +144,7 @@ export default class AddRecipe extends Component {
 
                         <div>
                             <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
-                            <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-200 active:bg-blue-300 active:text-blue-800">
+                            <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#232325] hover:bg-blue-200 dark:hover:bg-[#232325]/[.6] active:bg-blue-300 active:text-blue-800">
                                 <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                 <span className="label-content mr-2 ml-3">{this.state.filename}</span>
                             </label>

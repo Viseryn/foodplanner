@@ -8,8 +8,8 @@ import React, { Component } from "react";
 
 let inputRowStyle    = 'mb-6';
 let inputLabelStyle  = 'text-sm font-semibold block mb-2';
-let inputWidgetStyle = 'border border-gray-300 rounded-full h-10 px-6 shadow-sm w-full transition duration-300 focus:border-blue-600';
-let textareaWidgetStyle = 'block border border-gray-300 rounded-xl px-4 py-2 shadow-sm w-full transition duration-300 focus:border-blue-600';
+let inputWidgetStyle = 'dark:placeholder-gray-400 dark:bg-[#121212] border border-gray-300 dark:border-none rounded-full h-10 px-6 shadow-sm w-full transition duration-300 focus:border-blue-600';
+let textareaWidgetStyle = 'dark:placeholder-gray-400 dark:bg-[#121212] block border border-gray-300 dark:border-none rounded-xl px-4 py-2 shadow-sm w-full transition duration-300 focus:border-blue-600';
 
 
 function nameFromId(id) {
