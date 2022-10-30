@@ -25,6 +25,9 @@ export default function Recipe(props) {
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Scroll to top
+        window.scrollTo(0, 0);
+
         // Load sidebar
         props.setSidebarActiveItem('recipes');
         props.setSidebarActionButton({
