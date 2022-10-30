@@ -83,7 +83,7 @@ export default class Planner extends Component {
      */
     render() {
         return (
-            <>
+            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#1D252C] md:rounded-3xl md:max-w-[900px]">
                 <Heading title="Wochenplan" />
 
                 {this.state.loading ? (
@@ -92,7 +92,7 @@ export default class Planner extends Component {
                     <>
                         {this.state.days.map(day =>
                             <React.Fragment key={day.id}>
-                                <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 mb-4 mt-10 block">
+                                <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-4 mt-10 block">
                                     {day.weekday}, {day.date}
                                 </Link>
 
@@ -101,7 +101,7 @@ export default class Planner extends Component {
                         )}
                     </>
                 )}
-            </>
+            </div>
         )
     }
 }

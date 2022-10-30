@@ -3,10 +3,9 @@
  *********************************/
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Spinner from './Util';
 import Heading from './Heading';
 import Button from './Buttons';
 import SkeletonText from './SkeletonText';
@@ -17,46 +16,62 @@ import SkeletonText from './SkeletonText';
  * A component for showing a Recipe.
  * Collects the data from the Recipe Show API 
  * in /src/Controller/RecipeController.php.
+ * 
+ * This component is used in the Recipes component
+ * and may not be used as standalone.
  */
-function Recipe(props) {
-    const { id } = props.params; 
+export default function Recipe(props) {
     const [recipe, setRecipe] = useState([]);
     const [isLoading, setLoading] = useState(true);
 
-    // Load Sidebar
     useEffect(() => {
+        // Scroll to top
+        window.scrollTo(0, 0);
+
+        // Load sidebar
         props.setSidebarActiveItem('recipes');
         props.setSidebarActionButton({
             visible: true, 
             icon: 'drive_file_rename_outline', 
-            path: '/recipe/' + id + '/edit', 
+            path: '/recipe/' + props.id + '/edit', 
             label: 'Bearbeiten',
         });
+
+        // Call the Recipe Show API and load the Recipe
+        // data into the state variable. Redirect to an 
+        // Error 404 page if the Recipe does not exist.
+        axios
+            .get('/api/recipe/' + props.id)
+            .then(response => {
+                setRecipe(JSON.parse(response.data));
+                setLoading(false);
+            })
+            .catch(error => {
+                console.log(error);
+                window.location = "/error/404";
+            });
     }, []);
-
-
-    // Call the Recipe Show API and load the Recipe
-    // data into the state variable. Redirect to an 
-    // Error 404 page if the Recipe does not exist.
-    axios
-        .get('/api/recipe/' + id)
-        .then(response => {
-            setRecipe(JSON.parse(response.data));
-            setLoading(false);
-        })
-        .catch(error => {
-            console.log(error);
-            window.location = "/error/404";
-        });
 
     // Render
     return (
-        <div className="max-w-[900px]">
+        <>
             {isLoading 
                 ? <div className="animate-pulse mb-10">
-                    <div className="h-9 bg-gray-200 rounded-full w-1/2"></div>
+                    <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2"></div>
                 </div>
-                : <Heading title={recipe.title} />
+                : <div className="flex justify-between items-start">
+                    <Heading title={recipe.title} />
+                    <Link to="/recipes">
+                    
+                    {/* Button for resetting two-column mode */}
+                    <span 
+                        className="hidden lg:block material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                        onClick={() => { props.setTwoColumns(); }}
+                    >
+                        close
+                    </span>
+                    </Link>
+                </div>
             }
 
             {isLoading
@@ -74,7 +89,9 @@ function Recipe(props) {
 
             {isLoading
                 ? <>
-                    <div className="bg-gray-100 h-12 font-bold px-6 py-3 mb-6 rounded-xl"></div>
+                    <div className="flex bg-gray-100 dark:bg-[#232325] h-12 font-bold px-6 py-3 mb-6 rounded-xl">
+                        <div className="animate-pulse self-center bg-gray-300 dark:bg-gray-700 w-48 h-2.5 rounded-full"></div>
+                    </div>
                     <SkeletonText />
                 </>
                 : <>
@@ -88,7 +105,7 @@ function Recipe(props) {
                     }
 
                     <div className="flex justify-end">
-                        <div className="hidden md:block md:pt-6">
+                        <div className="hidden md:block">
                             <Button 
                                 to={'/recipe/' + recipe.id + '/edit'}
                                 icon="drive_file_rename_outline"
@@ -99,7 +116,7 @@ function Recipe(props) {
                     </div>
                 </>
             }
-        </div>
+        </>
     );
 }
 
@@ -113,7 +130,7 @@ function Ingredients(props) {
         <>
             {props.ingredients.length > 0 &&
                 <div className="mb-10">
-                    <div className="bg-gray-100 font-bold px-6 py-3 mb-3 rounded-xl">
+                    <div className="bg-gray-100 dark:bg-[#232325] font-bold px-6 py-3 mb-3 rounded-xl">
                         Zutaten für 
                         {props.portionSize == 1 
                             ? ' eine Portion'
@@ -145,7 +162,7 @@ function Instructions(props) {
         <>
             {props.instructions.length > 0 &&
                 <div className="mb-10">
-                    <div className="bg-gray-100 font-bold px-6 py-3 mb-5 rounded-xl">
+                    <div className="bg-gray-100 dark:bg-[#232325] font-bold px-6 py-3 mb-5 rounded-xl">
                         Zubereitung
                     </div>
                     <div className="space-y-2">
@@ -161,14 +178,3 @@ function Instructions(props) {
         </>
     )
 }
-
-/**
- * When the component <Recipe /> is called, 
- * all params become usable as props.
- */
-export default (props) => (
-    <Recipe
-        {...props}
-        params={useParams()}
-    />
-);

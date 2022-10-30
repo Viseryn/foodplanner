@@ -118,7 +118,7 @@ export class AddMeal extends Component {
      */
     render() {
         return (
-            <>
+            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:w-fit md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl -md:max-w-[900px]">
                 {/* If the form is submitted, redirect to the weekly planner */}
                 {this.state.isSubmittedSuccessfully &&
                     <Navigate to={'/planner'} />
@@ -134,8 +134,8 @@ export class AddMeal extends Component {
                         <InputLabel id="meal_day" label="Für welchen Tag?" />
                         {this.state.loading ? (
                             <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-gray-200 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
                             </div>
                         ) : (
                             <SelectWidget
@@ -160,8 +160,8 @@ export class AddMeal extends Component {
                         <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
                         {this.state.loading ? (
                             <div role="status" className="max-w-sm animate-pulse">
-                                <div className="h-4 bg-gray-200 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
                             </div>
                         ) : (
                             <SelectWidget
@@ -188,7 +188,7 @@ export class AddMeal extends Component {
                         />
                     </div> 
                 </form>
-            </>
+            </div>
         )
     }
 }
@@ -199,6 +199,7 @@ export class AddMeal extends Component {
  * Renders a horizontal list of radio buttons with the different user groups.
  * 
  * TODO: Currently this is static. Make this dependent on the actual user groups in the database.
+ * TODO: Dark Mode
  */
 function UserGroupRadio() {
     return (
@@ -263,6 +264,7 @@ function UserGroupRadio() {
  * Renders a horizontal list of radio buttons with the different meal categories.
  * 
  * TODO: Currently this is static. Make this dependent on the actual meal categories in the database.
+ * TODO: Dark Mode
  */
 function MealCategoryRadio() {
     return (
