@@ -111,8 +111,27 @@ export default function Recipes(props) {
                 </div>
 
                 {/* Recipe List */}
-                {isLoading 
-                    ? <Spinner /> // TODO: Skeleton
+                {isLoading
+                    ? <div className={
+                        'grid grid-cols-1 gap-2 animate-pulse ' 
+                        + (!isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
+                    }>
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75" />
+                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400" />
+                    </div>
                     : <>
                         {recipesFiltered.length === 0 &&
                             <div className="rounded-3xl w-full p-6 text-sm text-red-700 bg-red-100">
