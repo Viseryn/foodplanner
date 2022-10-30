@@ -40,6 +40,7 @@ export default function Recipes(props) {
     useEffect(() => {
         if (location.pathname === '/recipes') {
             setTwoColumns(false);
+            resetSAB();
         }
     }, [location]);
 
