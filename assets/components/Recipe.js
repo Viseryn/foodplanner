@@ -65,7 +65,7 @@ export default function Recipe(props) {
                     
                     {/* Button for resetting two-column mode */}
                     <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                        className="hidden lg:block material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
                         onClick={() => { props.setTwoColumns(); }}
                     >
                         close
