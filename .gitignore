@@ -25,7 +25,6 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-/src/DataFixtures/UserFixtures.php
 /public/img/recipes/
 /data/
 /migrations
