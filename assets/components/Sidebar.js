@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * Break points for the sidebar:
+ * size < md: Sidebar is on the bottom.
+ * md <= size < xl: Sidebar is on the side, but retracted.
+ * xl <= size: Sidebar is on the side and extended.
+ */
+
 export default function Sidebar(props) {
     return (
         <aside className="z-50 bg-blue-50 shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
@@ -42,7 +49,7 @@ function SidebarContent(props) {
                     icon="fastfood"
                     label="Rezepte"
                 />
-                <SidebarItem 
+                {/* <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="pantry"
                     icon="kitchen"
@@ -53,7 +60,7 @@ function SidebarContent(props) {
                     id="shoppinglist"
                     icon="shopping_cart"
                     label="Einkaufsliste"
-                />
+                /> */}
             </ul>
                 
             <ul className="md:hidden">
