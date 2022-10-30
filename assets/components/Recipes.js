@@ -147,7 +147,7 @@ export default function Recipes(props) {
                             + (!isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
                         }>
                             {recipesFiltered.map(recipe => 
-                                <div key={recipe.id} className="h-36 w-full shadow-md rounded-2xl transition duration-300 hover:shadow-2xl">
+                                <div key={recipe.id} className="h-36 w-full shadow-md rounded-2xl transition duration-300">
                                     <div className="relative group cursor-pointer" onClick={() => {
                                         setTwoColumns(true);
                                         setRecipeId(recipe.id);
