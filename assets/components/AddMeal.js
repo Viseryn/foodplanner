@@ -118,7 +118,7 @@ export class AddMeal extends Component {
      */
     render() {
         return (
-            <>
+            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:w-fit md:min-h-fit bg-white md:rounded-3xl -md:max-w-[900px]">
                 {/* If the form is submitted, redirect to the weekly planner */}
                 {this.state.isSubmittedSuccessfully &&
                     <Navigate to={'/planner'} />
@@ -188,7 +188,7 @@ export class AddMeal extends Component {
                         />
                     </div> 
                 </form>
-            </>
+            </div>
         )
     }
 }
