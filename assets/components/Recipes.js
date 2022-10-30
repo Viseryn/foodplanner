@@ -2,14 +2,12 @@
  * ./assets/components/Recipes.js *
  **********************************/
 
-import React, {Component, useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 import Spinner from './Util';
-import Heading from './Heading';
-import Button from './Buttons';
-import InputRow, { InputWidget } from './Forms';
+import Recipe from './Recipe';
 
 /**
  * Recipes
@@ -19,20 +17,41 @@ import InputRow, { InputWidget } from './Forms';
  * in the /src/Controller/RecipeController.php.
  */
 export default function Recipes(props) {
+    const { id } = useParams();
+    const location = useLocation();
+
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [searchValue, setSearchValue] = useState('');
+    const [isTwoColumns, setTwoColumns] = useState(id > 0);
+    const [recipeId, setRecipeId] = useState(id);
+
+    // A function for resetting the standard SAB for this page
+    const resetSAB = () => {
+        props.setSidebarActionButton({
+            visible: true, 
+            icon:'add', 
+            path: '/recipe/add',
+            label: 'Neues Rezept',
+        }); 
+    };
+ 
+    // When route changes to /recipes, close currently opened recipe
+    useEffect(() => {
+        if (location.pathname === '/recipes') {
+            setTwoColumns(false);
+        }
+    }, [location]);
 
     useEffect(() => {
         // Load Sidebar
         props.setSidebarActiveItem('recipes');
-        props.setSidebarActionButton({
-            visible: true, 
-            icon: 'add', 
-            path: '/recipe/add', 
-            label: 'Neues Rezept',
-        });
-        
+
+        // Only load SAB if no Recipe is chosen
+        if (! recipeId > 0) { 
+            resetSAB();
+        }
+
         // Call the Recipe List API and load the Recipe
         // data into the state variable.
         axios
@@ -51,65 +70,106 @@ export default function Recipes(props) {
             return recipe.title.toLowerCase().includes(searchValue.toLowerCase());
         }
     });
+
+    const setSidebarProps = {
+        'setSidebarActiveItem': props.setSidebarActiveItem, 
+        'setSidebarActionButton': props.setSidebarActionButton,
+    };
     
     // Render
     return (
         <>
-            <Heading title="Rezepte" />
+            {/* The first column is always shown when no Recipe is chosen.
+                If a Recipe is chosen, it is only shown on lg-screens or larger. */}
+            <div className={
+                'mx-6 md:ml-0 pb-24 md:pb-0 my-6 w-full '
+                + (isTwoColumns
+                    ? 'hidden lg:block max-w-[400px]'
+                    : 'max-w-[900px]'
+                )
+            }>
+                {/* Search bar */}
+                <div className="mb-4 rounded-full bg-white h-16 flex items-center pl-6 pr-4">
+                    <span className="material-symbols-rounded mr-2 cursor-default">search</span>
+                    <input 
+                        className="w-full border-transparent focus:border-transparent focus:ring-0"
+                        placeholder='Suche nach Rezepten ...'
+                        id='search'
+                        name='search'
+                        type='text'
+                        value={searchValue}
+                        onChange={e => {
+                            setSearchValue(e.target.value);
+                        }} 
+                    />
+                    {searchValue !== '' &&
+                        <span 
+                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 p-2 rounded-full"
+                            onClick={() => setSearchValue('')}
+                        >close</span>
+                    }
+                </div>
 
-            <div className="mb-10 w-64">
-                <InputWidget 
-                    placeholder='Suche ...'
-                    value={searchValue}
-                    onChange={e => {
-                        setSearchValue(e.target.value);
-                    }} 
-                />
+                {/* Recipe List */}
+                {isLoading 
+                    ? <Spinner /> // TODO: Skeleton
+                    : <>
+                        {recipesFiltered.length === 0 &&
+                            <div className="rounded-3xl w-full p-6 text-sm text-red-700 bg-red-100">
+                                <div className="flex space-x-4 items-center">
+                                    <span className="material-symbols-rounded">info</span>
+                                    <div className="font-bold">Keine Rezepte gefunden.</div>
+                                </div>
+                            </div>
+                        }
+
+                        <div className={
+                            'grid grid-cols-1 gap-2 ' 
+                            + (!isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
+                        }>
+                            {recipesFiltered.map(recipe => 
+                                <div key={recipe.id} className="h-36 w-full shadow-md rounded-2xl transition duration-300 hover:shadow-2xl">
+                                    <div className="relative group cursor-pointer" onClick={() => {
+                                        setTwoColumns(true);
+                                        setRecipeId(recipe.id);
+                                    }}>
+                                        <Link to={'/recipe/' + recipe.id}>
+                                            <img 
+                                                className="rounded-2xl h-36 w-full object-cover brightness-[.7]" 
+                                                src={recipe.image?.filename != null 
+                                                    ? recipe.image?.directory + recipe.image?.filename
+                                                    : '/img/default.jpg'
+                                                } 
+                                                alt={recipe.title}
+                                            />
+                                            <div className="absolute w-full bottom-4 px-6 text-white font-semibold text-xl">
+                                                {recipe.title}
+                                            </div>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                }
             </div>
 
-            {isLoading 
-                ? <Spinner />
-                : <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-                        {recipesFiltered.map(recipe => 
-                            <RecipeCard key={recipe.id} recipe={recipe} />
-                        )}
-                    </div>
-                    
-                    <div className="flex justify-end">
-                        <div className="hidden md:block md:mt-10">
-                            <Button
-                                to="/recipe/add"
-                                icon="add"
-                                label="Neues Rezept"
-                                style="transparent"
-                            />
-                        </div>
-                    </div>
-                </>
+            {/* Second column is always shown when a Recipe is chosen. */}
+            {isTwoColumns && 
+                <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white md:rounded-3xl md:max-w-[900px]">
+                    {/* Pass a function setTwoColumns to the Recipe, so that it 
+                        can deactive the two-column mode. Resets the SAB afterwards. */}
+                    <Recipe 
+                        key={recipeId}
+                        id={recipeId} 
+                        setTwoColumns={() => {
+                            setTwoColumns(false);
+                            resetSAB();
+                        }} 
+                        {...setSidebarProps} 
+                    />
+                </div>
             }
         </>
-    );
-}
-
-function RecipeCard(props) {
-    return (
-        <div key={props.recipe.id} className="h-40 w-full shadow-md rounded-2xl transition duration-300 hover:shadow-2xl">
-            <div className="relative group">
-                <Link to={'/recipe/' + props.recipe.id}>
-                    <img 
-                        className="rounded-2xl h-40 w-full object-cover brightness-[.7]" 
-                        src={props.recipe.image?.filename != null 
-                            ? props.recipe.image?.directory + props.recipe.image?.filename
-                            : '/img/default.jpg'
-                        } 
-                        alt={props.recipe.title}
-                    />
-                    <div className="absolute w-full bottom-4 px-6 text-white font-semibold text-xl">
-                        {props.recipe.title}
-                    </div>
-                </Link>
-            </div>
-        </div>
     );
 }
