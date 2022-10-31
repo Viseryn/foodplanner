@@ -18,11 +18,33 @@ export default function Sidebar(props) {
                 'z-50 fixed h-full w-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-64 flex justify-between px-6 py-7">
-                    <ul className="space-y-2 mb-16 hidden md:block">
+                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-64 px-6 py-7">
+                    <ul className="mb-2 block">
                         <SidebarDrawerButton
                             isDrawerVisible={isDrawerVisible}
                             setDrawerVisible={setDrawerVisible} 
+                            icon="close"
+                        />
+                    </ul>
+
+                    <ul className="flex flex-col space-y-2">
+                        <SidebarItem 
+                            id="login"
+                            icon="login"
+                            label="Einloggen"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                        <SidebarItem 
+                            id="logout"
+                            icon="logout"
+                            label="Ausloggen"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                        <SidebarItem 
+                            id="register"
+                            icon="person_add"
+                            label="Registrieren"
+                            isDrawerVisible={isDrawerVisible}
                         />
                     </ul>
                 </div>
@@ -102,7 +124,7 @@ function SidebarDrawerButton(props) {
                 onClick={() => props.setDrawerVisible(!props.isDrawerVisible)}
             >
                 <span className="material-symbols-rounded transition duration-300 text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-200">
-                    menu
+                    {props.icon || 'menu'}
                 </span>
             </Link>
         </li>
@@ -148,7 +170,10 @@ function SidebarItem(props) {
             <Link to={'/' + props.id} className={linkStyle}>
                 <div className={labelStyle}>
                     <span className="material-symbols-rounded">{props.icon}</span>
-                    <span className="hidden xl:block ml-4 font-semibold">{props.label}</span>
+                    <span className={
+                        'xl:block ml-4 font-semibold'
+                        + (props.isDrawerVisible ? ' block' : ' hidden')
+                    }>{props.label}</span>
                 </div>
             </Link>
         </li>
