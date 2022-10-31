@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
 import Recipe from './Recipe';
+import Notification from './Notification';
 
 /**
  * Recipes
@@ -127,12 +128,7 @@ export default function Recipes(props) {
                     ? <RecipeListSkeleton isTwoColumns={isTwoColumns} />
                     : <>
                         {recipesFiltered.length === 0 &&
-                            <div className="rounded-3xl w-full p-6 text-sm text-red-700 bg-red-100">
-                                <div className="flex space-x-4 items-center">
-                                    <span className="material-symbols-rounded">info</span>
-                                    <div className="font-bold">Keine Rezepte gefunden.</div>
-                                </div>
-                            </div>
+                            <Notification color="red">Keine Rezepte gefunden.</Notification>
                         }
 
                         <div className={

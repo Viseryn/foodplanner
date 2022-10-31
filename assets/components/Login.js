@@ -75,20 +75,18 @@ export default function Login(props) {
 
             {response?.error &&
                 <div className="mb-10">
-                    <Notification
-                        title="Login fehlgeschlagen!"
-                        message={'Fehlercode: ' + response?.error}
+                    <Notification 
                         color="red"
-                    />
+                        message={'Fehlercode: ' + response?.error}
+                    >Login fehlgeschlagen!</Notification>
                 </div>
             }
 
             {user?.username !== undefined &&
                 <Notification
-                    title="Erfolgreich eingeloggt!"
-                    message={'Willkommen, ' + user?.username + '.'}
                     color="green"
-                />
+                    message={'Willkommen, ' + user?.username + '.'}
+                >Erfolgreich eingeloggt!</Notification>
             }
 
             {user?.username === undefined && !isLoading &&
