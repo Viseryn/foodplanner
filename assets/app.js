@@ -1,5 +1,8 @@
-/*
+/**
  * app.js
+ * 
+ * @author Kevin Sporbeck
+ * @version v0.2.1
  */
 
 // Load custom JavaScripts
