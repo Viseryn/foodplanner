@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 /**
  * Break points for the sidebar:
@@ -11,10 +12,27 @@ import { Link, useLocation } from 'react-router-dom';
 export default function Sidebar(props) {
     const location = useLocation();
     const [isDrawerVisible, setDrawerVisible] = useState(false);
+    const [user, setUser] = useState([]);
+
+    /**
+     * getUser
+     * 
+     * Calls the User API, which responds with an 
+     * array containing the username and user roles
+     * (if authenticated), or an empty array elsewise.
+     */
+     const getUser = () => {
+        axios
+            .get('/api/user')
+            .then(response => {
+                setUser(JSON.parse(response.data));
+            });
+    }
  
-    // When route changes, close drawer
+    // When route changes, close drawer and load user data
     useEffect(() => {
         setDrawerVisible(false);
+        getUser();
     }, [location]);
 
     return (
@@ -25,7 +43,7 @@ export default function Sidebar(props) {
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
                 <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-64 px-6 py-7">
-                    <ul className="mb-2 block">
+                    <ul className="mb-2 block w-fit">
                         <SidebarDrawerButton
                             isDrawerVisible={isDrawerVisible}
                             setDrawerVisible={setDrawerVisible} 
@@ -35,23 +53,28 @@ export default function Sidebar(props) {
 
                     <ul className="flex flex-col space-y-2">
                         <SidebarItem 
-                            id="login"
-                            icon="login"
-                            label="Einloggen"
-                            isDrawerVisible={isDrawerVisible}
-                        />
-                        <SidebarItem 
-                            id="logout"
-                            icon="logout"
-                            label="Ausloggen"
-                            isDrawerVisible={isDrawerVisible}
-                        />
-                        <SidebarItem 
                             id="register"
                             icon="person_add"
                             label="Registrieren"
                             isDrawerVisible={isDrawerVisible}
                         />
+                        {user?.username === undefined 
+                            ? <SidebarItem 
+                                id="login"
+                                icon="login"
+                                label="Einloggen"
+                                isDrawerVisible={isDrawerVisible}
+                            />
+                            : <>
+                                <SidebarItem 
+                                    id="logout"
+                                    icon="logout"
+                                    label="Ausloggen"
+                                    isDrawerVisible={isDrawerVisible}
+                                />
+                                <li className="text-center">Willkommen, {user?.username}!</li>
+                            </>
+                        }
                     </ul>
                 </div>
             </aside>
