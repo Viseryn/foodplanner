@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 /**
  * Break points for the sidebar:
@@ -9,7 +9,13 @@ import { Link } from 'react-router-dom';
  */
 
 export default function Sidebar(props) {
+    const location = useLocation();
     const [isDrawerVisible, setDrawerVisible] = useState(false);
+ 
+    // When route changes, close drawer
+    useEffect(() => {
+        setDrawerVisible(false);
+    }, [location]);
 
     return (
         <>
@@ -118,15 +124,14 @@ function SidebarContent(props) {
 function SidebarDrawerButton(props) {
     return (
         <li className="xl:w-min">
-            <Link 
-                className="flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group"
-                to="#"
+            <div 
+                className="flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group cursor-pointer"
                 onClick={() => props.setDrawerVisible(!props.isDrawerVisible)}
             >
                 <span className="material-symbols-rounded transition duration-300 text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-200">
                     {props.icon || 'menu'}
                 </span>
-            </Link>
+            </div>
         </li>
     );
 }
