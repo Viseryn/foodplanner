@@ -11,6 +11,7 @@ import Pantry from "./Pantry";
 import ShoppingList from "./ShoppingList";
 import AddMeal from "./AddMeal";
 import Login from "./Login";
+import Logout from "./Logout";
 
 export default function App() {
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
@@ -44,6 +45,7 @@ export default function App() {
                     <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} />} />
                     <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} />} />
                     <Route path="/login"            element={<Login         {...setSidebarProps} />} />
+                    <Route path="/logout"           element={<Logout        {...setSidebarProps} />} />
                     <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
                 </Routes>
             </div>
