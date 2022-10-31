@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    #[Route('/{reactRouting}', name: 'default', requirements: ['reactRouting' => '(?!api|logout).+'], defaults: ['reactRouting' => null])]
+    #[Route('/{reactRouting}', name: 'default', requirements: ['reactRouting' => '(?!api).+'], defaults: ['reactRouting' => null])]
     public function index(): Response
     {
         return $this->render('default/index.html.twig', [
