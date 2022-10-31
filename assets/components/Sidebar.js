@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 /**
  * Break points for the sidebar:
@@ -9,7 +9,13 @@ import { Link } from 'react-router-dom';
  */
 
 export default function Sidebar(props) {
+    const location = useLocation();
     const [isDrawerVisible, setDrawerVisible] = useState(false);
+ 
+    // When route changes, close drawer
+    useEffect(() => {
+        setDrawerVisible(false);
+    }, [location]);
 
     return (
         <>
@@ -18,11 +24,33 @@ export default function Sidebar(props) {
                 'z-50 fixed h-full w-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-64 flex justify-between px-6 py-7">
-                    <ul className="space-y-2 mb-16 hidden md:block">
+                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-64 px-6 py-7">
+                    <ul className="mb-2 block">
                         <SidebarDrawerButton
                             isDrawerVisible={isDrawerVisible}
                             setDrawerVisible={setDrawerVisible} 
+                            icon="close"
+                        />
+                    </ul>
+
+                    <ul className="flex flex-col space-y-2">
+                        <SidebarItem 
+                            id="login"
+                            icon="login"
+                            label="Einloggen"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                        <SidebarItem 
+                            id="logout"
+                            icon="logout"
+                            label="Ausloggen"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                        <SidebarItem 
+                            id="register"
+                            icon="person_add"
+                            label="Registrieren"
+                            isDrawerVisible={isDrawerVisible}
                         />
                     </ul>
                 </div>
@@ -96,15 +124,14 @@ function SidebarContent(props) {
 function SidebarDrawerButton(props) {
     return (
         <li className="xl:w-min">
-            <Link 
-                className="flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group"
-                to="#"
+            <div 
+                className="flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group cursor-pointer"
                 onClick={() => props.setDrawerVisible(!props.isDrawerVisible)}
             >
                 <span className="material-symbols-rounded transition duration-300 text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-200">
-                    menu
+                    {props.icon || 'menu'}
                 </span>
-            </Link>
+            </div>
         </li>
     );
 }
@@ -148,7 +175,10 @@ function SidebarItem(props) {
             <Link to={'/' + props.id} className={linkStyle}>
                 <div className={labelStyle}>
                     <span className="material-symbols-rounded">{props.icon}</span>
-                    <span className="hidden xl:block ml-4 font-semibold">{props.label}</span>
+                    <span className={
+                        'xl:block ml-4 font-semibold'
+                        + (props.isDrawerVisible ? ' block' : ' hidden')
+                    }>{props.label}</span>
                 </div>
             </Link>
         </li>
