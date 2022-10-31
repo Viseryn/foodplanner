@@ -89,7 +89,7 @@ export default function Recipe(props) {
 
             {isLoading
                 ? <>
-                    <div className="flex bg-gray-100 dark:bg-[#232325] h-12 font-bold px-6 py-3 mb-6 rounded-xl">
+                    <div className="flex bg-gray-100 dark:bg-[#1D252C] shadow-md h-12 font-bold px-6 py-3 mb-6 rounded-xl">
                         <div className="animate-pulse self-center bg-gray-300 dark:bg-gray-700 w-48 h-2.5 rounded-full"></div>
                     </div>
                     <SkeletonText />
@@ -130,7 +130,7 @@ function Ingredients(props) {
         <>
             {props.ingredients.length > 0 &&
                 <div className="mb-10">
-                    <div className="bg-gray-100 dark:bg-[#232325] font-bold px-6 py-3 mb-3 rounded-xl">
+                    <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-3 rounded-xl">
                         Zutaten für 
                         {props.portionSize == 1 
                             ? ' eine Portion'
@@ -162,7 +162,7 @@ function Instructions(props) {
         <>
             {props.instructions.length > 0 &&
                 <div className="mb-10">
-                    <div className="bg-gray-100 dark:bg-[#232325] font-bold px-6 py-3 mb-5 rounded-xl">
+                    <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-5 rounded-xl">
                         Zubereitung
                     </div>
                     <div className="space-y-2">
