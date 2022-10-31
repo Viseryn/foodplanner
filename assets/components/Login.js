@@ -9,8 +9,6 @@ import Spinner from './Util';
 
 /**
  * Login
- * 
- * 
  */
 export default function Login(props) {
     // State variables

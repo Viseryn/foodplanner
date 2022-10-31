@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
-import Spinner from './Util';
 import Recipe from './Recipe';
 
 /**
@@ -17,16 +16,22 @@ import Recipe from './Recipe';
  * in the /src/Controller/RecipeController.php.
  */
 export default function Recipes(props) {
+    // ID parameter and current location
     const { id } = useParams();
     const location = useLocation();
 
+    // State variables
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [searchValue, setSearchValue] = useState('');
     const [isTwoColumns, setTwoColumns] = useState(id > 0);
     const [recipeId, setRecipeId] = useState(id);
 
-    // A function for resetting the standard SAB for this page
+    /**
+     * resetSAB
+     * 
+     * A function for resetting the standard SAB for this page.
+     */
     const resetSAB = () => {
         props.setSidebarActionButton({
             visible: true, 
@@ -44,6 +49,7 @@ export default function Recipes(props) {
         }
     }, [location]);
 
+    // On render, do the following:
     useEffect(() => {
         // Load Sidebar
         props.setSidebarActiveItem('recipes');
@@ -68,16 +74,21 @@ export default function Recipes(props) {
         if (searchValue === '') {
             return recipe;
         } else {
+            // Return true if recipe includes the search input value.
+            // Put both to lowercase, so the searchValue is not case-sensitive.
             return recipe.title.toLowerCase().includes(searchValue.toLowerCase());
         }
     });
 
+    // Sidebar props. Needed for the Recipe component.
     const setSidebarProps = {
         'setSidebarActiveItem': props.setSidebarActiveItem, 
         'setSidebarActionButton': props.setSidebarActionButton,
     };
     
-    // Render
+    /**
+     * Render
+     */
     return (
         <>
             {/* The first column is always shown when no Recipe is chosen.
@@ -113,26 +124,7 @@ export default function Recipes(props) {
 
                 {/* Recipe List */}
                 {isLoading
-                    ? <div className={
-                        'grid grid-cols-1 gap-2 animate-pulse ' 
-                        + (!isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
-                    }>
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
-                        <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
-                    </div>
+                    ? <RecipeListSkeleton isTwoColumns={isTwoColumns} />
                     : <>
                         {recipesFiltered.length === 0 &&
                             <div className="rounded-3xl w-full p-6 text-sm text-red-700 bg-red-100">
@@ -191,5 +183,33 @@ export default function Recipes(props) {
                 </div>
             }
         </>
+    );
+}
+
+/**
+ * RecipeListSkeleton
+ */
+function RecipeListSkeleton(props) {
+    return (
+        <div className={
+            'grid grid-cols-1 gap-2 animate-pulse ' 
+            + (!props.isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
+        }>
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/50 dark:bg-gray-700/50" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400/75 dark:bg-gray-800/75" />
+            <div className="rounded-2xl h-36 w-full object-cover bg-gray-400 dark:bg-gray-700" />
+        </div>
     );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {Route, Routes, BrowserRouter} from 'react-router-dom';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 import Planner from './Planner';
@@ -14,6 +14,7 @@ import Login from "./Login";
 import Logout from "./Logout";
 
 export default function App() {
+    // Sidebar state variables
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
     const [sidebarActionButton, setSidebarActionButton] = useState({
         visible: false,
@@ -31,7 +32,10 @@ export default function App() {
     return (
         <BrowserRouter>
             <div className="flex items-start bg-blue-50 dark:bg-[#1D252C] min-h-screen text-gray-700 dark:text-gray-100">
-                <Sidebar sidebarActiveItem={sidebarActiveItem} sidebarActionButton={sidebarActionButton} />
+                <Sidebar 
+                    sidebarActiveItem={sidebarActiveItem} 
+                    sidebarActionButton={sidebarActionButton}
+                />
 
                 <Routes>
                     <Route path="/"                 element={<Planner       {...setSidebarProps} />} />
