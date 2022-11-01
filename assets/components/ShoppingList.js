@@ -114,21 +114,37 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * Handler for double click on item
+     * handleItemClick
+     * 
+     * Handler for click events on list items.
+     * Differentiates single and double clicks.
+     * On a single click, it toggles the checked status of an item.
+     * On a double click, it toggles the editable status of an item.
      */
-    const handleItemClick = (event, id) => {
-        switch (event.detail) {
-            case 2: {
-                console.log('2 clicks');
-                break;
-            }
-            default: {
-                console.log('1 click');
-                handleCheckboxChange(id);
-                break;
-            }
+    const handleItemClick = (event, id, editable = false) => {
+        if (event.detail === 2) {
+            // Double click action
+            handleItemEdit(id);
+
+            // When a double click is registered, the 
+            // actions for a single click should be prevented.
+            preventSingleClick = true;
+
+            // After a certain delay, allow registering single clicks again.
+            setTimeout(() => preventSingleClick = false, 200);
+        } else {
+            // Only do the single click action if after a short 
+            // delay no double click was registered. Also, do not 
+            // do the single click action if the item is editable.
+            setTimeout(() => {
+                if (!preventSingleClick && !editable) {
+                    handleCheckboxChange(id);
+                }
+            }, 200);
         }
     };
+
+    let preventSingleClick = false;
 
     /**
      * Load sidebar and shopping list
