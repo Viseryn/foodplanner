@@ -52,12 +52,6 @@ export default function Sidebar(props) {
                     </ul>
 
                     <ul className="flex flex-col space-y-2">
-                        <SidebarItem 
-                            id="register"
-                            icon="person_add"
-                            label="Registrieren"
-                            isDrawerVisible={isDrawerVisible}
-                        />
                         {user?.username === undefined 
                             ? <SidebarItem 
                                 id="login"
@@ -67,14 +61,25 @@ export default function Sidebar(props) {
                             />
                             : <>
                                 <SidebarItem 
+                                    id="login"
+                                    icon="account_circle"
+                                    label={'Willkommen, ' + user?.username + '!'}
+                                    isDrawerVisible={isDrawerVisible}
+                                />
+                                <SidebarItem 
                                     id="logout"
                                     icon="logout"
                                     label="Ausloggen"
                                     isDrawerVisible={isDrawerVisible}
                                 />
-                                <li className="text-center">Willkommen, {user?.username}!</li>
                             </>
                         }
+                        <SidebarItem 
+                            id="register"
+                            icon="person_add"
+                            label="Registrieren"
+                            isDrawerVisible={isDrawerVisible}
+                        />
                     </ul>
                 </div>
             </aside>
@@ -123,12 +128,12 @@ function SidebarContent(props) {
                     icon="fastfood"
                     label="Rezepte"
                 />
-                <SidebarItem 
+                {/* <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="pantry"
                     icon="kitchen"
                     label="Vorratskammer"
-                />
+                /> */}
                 <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="shoppinglist"
