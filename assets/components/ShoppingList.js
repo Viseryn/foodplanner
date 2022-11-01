@@ -11,6 +11,16 @@ import Button from './Buttons';
 
 /**
  * ShoppingList
+ * 
+ * A component for showing a shopping list.
+ * Contains an input widget for adding new 
+ * items to the list, as well as a delete button 
+ * to remove all checked items.
+ * 
+ * The list is kept synchronized with the 
+ * database. An Ingredient object is considered
+ * part of the shopping list if it has 
+ * storageId = 2, and if it has no recipeId.
  */
 export default function ShoppingList(props) {
     // State variables
@@ -27,7 +37,11 @@ export default function ShoppingList(props) {
     }, []);
 
     /**
-     * Get shopping list ingredients from API
+     * getShoppingList
+     * 
+     * Calls the ShoppingList API. Adds additional 
+     * properties to each item and passes the list 
+     * of item to the state variable.
      */ 
     const getShoppingList = () => {
         axios
@@ -37,7 +51,7 @@ export default function ShoppingList(props) {
 
                 // Add more fields to shopping list
                 itemsData.forEach(item => {
-                    item.checked = false;
+                    item.checked = false;                               // TODO: This should be a database field!
                 });
 
                 // Add list to state
@@ -64,7 +78,10 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * Handler for checkbox changes
+     * handleCheckboxChange
+     * 
+     * Toggle the checked status of the given item.
+     * Makes the selected item non-editable.
      */ 
     const handleCheckboxChange = (id) => {
         // Create a new list of items
@@ -91,7 +108,10 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * Handler for delete button
+     * handleDeleteButtonClicked
+     * 
+     * A handler for onClick events of the delete button.
+     * When clicked, filters out all items that are checked.
      */
     const handleDeleteButtonClicked = () => {
         const newList = items.filter(item => {
@@ -118,7 +138,9 @@ export default function ShoppingList(props) {
         }
     };
 
-    // Render
+    /**
+     * Render
+     */
     return (
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             <Heading>Einkaufsliste</Heading>
