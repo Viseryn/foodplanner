@@ -28,14 +28,6 @@ export default function ShoppingList(props) {
     const [isLoading, setLoading] = useState(true);
     const [inputValue, setInputValue] = useState('');
 
-    // Load sidebar and shopping list
-    useEffect(() => {
-        props.setSidebarActiveItem('shoppinglist');
-        props.setSidebarActionButton();
-
-        getShoppingList();
-    }, []);
-
     /**
      * getShoppingList
      * 
@@ -137,6 +129,24 @@ export default function ShoppingList(props) {
             }
         }
     };
+
+    /**
+     * Load sidebar and shopping list
+     */ 
+    useEffect(() => {
+        props.setSidebarActiveItem('shoppinglist');
+        props.setSidebarActionButton();
+
+        getShoppingList();
+    }, []);
+
+    /**
+     * Update shopping list items from state to database
+     * TODO: API call
+     */
+    useEffect(() => {
+        console.log('Items changed');
+    }, [items]);
 
     /**
      * Render
