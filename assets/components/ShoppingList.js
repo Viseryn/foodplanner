@@ -53,7 +53,49 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * Handler for "enter" presses
+     * updateItem
+     * 
+     * Updates one item with the given ID in the items state variable.
+     * The properties that should be changed, as well as their values,
+     * can be passed as an optional parameter.
+     * 
+     * @param {int} id The ID of the item that should be changed.
+     * @param {Object} props The properties that should be changed and their values.
+     */
+    const updateItem = (id, props = {}) => {
+        // Create a new list of items
+        let newList = [...items];
+
+        // Find index of the item that will be changed
+        const itemIndex = findItemById(id);
+
+        // Change properties of selected item
+        Object.keys(props).forEach(key => {
+            newList[itemIndex][key] = props[key];
+        });
+
+        // Set new item list to the state variable
+        setItems(newList);
+    }
+
+    /**
+     * findItemById
+     * 
+     * @param {int} id 
+     * @return Returns the index of the item with the given ID in the items state variable or -1 if item does not exist.
+     */
+    const findItemById = (id) => {
+        let returnVal = -1;
+
+        items.forEach((item, index) => {
+            if (item.id === id) {
+                returnVal = index;
+            } 
+        });
+
+        return returnVal;
+    };
+
      */ 
     const handleKeyDown = (event) => {
         if (event.key === 'Enter' && inputValue !== '') {
