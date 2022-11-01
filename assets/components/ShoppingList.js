@@ -172,6 +172,25 @@ export default function ShoppingList(props) {
     let preventSingleClick = false;
 
     /**
+     * handleItemEdit
+     * 
+     * 
+     */
+    const handleItemEdit = (id) => {
+        // Make all items non-editable
+        items.forEach(item => {
+            updateItem(item.id, {
+                'editable': false,
+            });
+        })
+
+        // Make the selected item editable
+        updateItem(id, {
+            'editable': true,
+        });
+    };
+
+    /**
      * Load sidebar and shopping list
      */ 
     useEffect(() => {
