@@ -61,11 +61,61 @@ export default function ShoppingList(props) {
             setItems([...items, newItem]);
             setInputValue('');
         }
-    }
+    };
 
-    //
-    const handleCheckboxChange = () => {
+    /**
+     * Handler for checkbox changes
+     */ 
+    const handleCheckboxChange = (id) => {
+        // Create a new list of items
+        let newList = [];
 
+        // Note that the item id does not have to coincide 
+        // with the index of the item in the list.
+        // Therefore we need to count during the forEach.
+        let i = 0;
+
+        items.forEach(item => {
+            newList.push(item);
+
+            // Change the checked state of the selected item
+            if (item.id === id) {
+                newList[i].checked = !item.checked;
+            }
+
+            i++;
+        });
+
+        // Set new item list to the state variable
+        setItems(newList);
+    };
+
+    /**
+     * Handler for delete button
+     */
+    const handleDeleteButtonClicked = () => {
+        const newList = items.filter(item => {
+            return !item.checked;
+        })
+
+        setItems(newList);
+    };
+
+    /**
+     * Handler for double click on item
+     */
+    const handleItemClick = (event, id) => {
+        switch (event.detail) {
+            case 2: {
+                console.log('2 clicks');
+                break;
+            }
+            default: {
+                console.log('1 click');
+                handleCheckboxChange(id);
+                break;
+            }
+        }
     };
 
     // Render
@@ -102,11 +152,20 @@ export default function ShoppingList(props) {
                                     id={item.id} 
                                     type="checkbox" 
                                     className="w-4 h-4 text-blue-600 bg-gray-100 rounded-full border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 peer"
-                                    onClick={() => handleCheckboxChange} 
+                                    onChange={() => handleCheckboxChange(item.id)} 
+                                    checked={item.checked}
                                 />
-                                <label htmlFor={item.id} className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow peer-checked:line-through peer-checked:text-gray-400">
+                                <div 
+                                    className={
+                                        'transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none' 
+                                        + (item.checked ? ' line-through text-gray-400' : '')
+                                    }
+                                    onClick={event => {
+                                        handleItemClick(event, item.id)
+                                    }}
+                                >
                                     {item.name}
-                                </label>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -115,6 +174,7 @@ export default function ShoppingList(props) {
                         <Button
                             label="Alle gestrichenen Zutaten löschen"
                             style="transparent"
+                            onClick={handleDeleteButtonClicked}
                         />
                     </div>
                 </>
