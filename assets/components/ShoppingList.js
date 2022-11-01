@@ -240,11 +240,17 @@ export default function ShoppingList(props) {
                                         'transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none' 
                                         + (item.checked ? ' line-through text-gray-400' : '')
                                     }
-                                    onClick={event => {
-                                        handleItemClick(event, item.id)
-                                    }}
+                                    onClick={event => handleItemClick(event, item.id, item.editable)}
                                 >
-                                    {item.name}
+                                    {item.editable ? (
+                                        <input 
+                                            className="bg-transparent"
+                                            value={item.name}
+                                            onChange={event => handleItemNameChange(event, item.id)}
+                                        />
+                                    ) : (
+                                        item.name
+                                    )}
                                 </div>
                             </div>
                         )}
