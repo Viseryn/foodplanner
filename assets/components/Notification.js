@@ -4,7 +4,7 @@ export default function Notification(props) {
     let notificationStyle = 'p-6 space-x-4 text-sm rounded-3xl w-full';
 
     if (props.color !== undefined) {
-        notificationStyle += ' text-' + props.color + '-700 dark:text-' + props.color + '-100 bg-' + props.color + '-200 dark:bg-' + props.color + '-900';
+        notificationStyle += ' text-' + props.color + '-700 dark:text-gray-200 bg-' + props.color + '-200 dark:bg-' + props.color + '-900';
     } else {
         notificationStyle += ' text-gray-900 dark:text-gray-100 bg-gray-200 dark:bg-gray-900';
     }
@@ -16,7 +16,7 @@ export default function Notification(props) {
                     {props.icon || 'info'}
                 </span>
                 <div>
-                    <div className="font-bold">{props.children}</div>
+                    <div className="font-semibold">{props.children}</div>
 
                     {props?.message !== undefined &&
                         <div className="mt-2">
