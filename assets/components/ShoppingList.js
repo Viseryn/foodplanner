@@ -123,23 +123,11 @@ export default function ShoppingList(props) {
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             <Heading>Einkaufsliste</Heading>
             
-            <div className="mb-10 rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] shadow-md h-16 flex items-center pl-6 pr-4">
-                <span className="material-symbols-rounded mr-2 cursor-default">add</span>
-                <input 
-                    className="dark:bg-[#1D252C] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
-                    placeholder="Tippe eine neue Zutat ein ..."
-                    type="text"
-                    value={inputValue}
-                    onChange={e => {setInputValue(e.target.value)}} 
-                    onKeyDown={handleKeyDown}
-                />
-                {inputValue !== '' &&
-                    <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#29353f] p-2 rounded-full"
-                        onClick={() => setInputValue('')}
-                    >close</span>
-                }
-            </div>
+            <AddItemInputWidget
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                handleNewItemKeyDown={handleNewItemKeyDown}
+            />
 
             {isLoading ? (
                 <Spinner />
@@ -179,6 +167,43 @@ export default function ShoppingList(props) {
                     </div>
                 </>
             )}
+        </div>
+    );
+}
+
+/**
+ * AddItemInputWidget
+ * 
+ * An input widget component for adding a new item 
+ * to the shopping list. The input value is always 
+ * monitored in the state variable inputValue. When 
+ * the inputValue is non-empty, shows a little cross 
+ * icon in the right to delete the current input.
+ * When the enter key is pressed, calls the 
+ * handleNewItemKeyDown function.
+ */
+function AddItemInputWidget(props) {
+    return (
+        <div className="mb-10 rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] shadow-md h-16 flex items-center pl-6 pr-4">
+            <span className="material-symbols-rounded mr-2 cursor-default">add</span>
+
+            <input 
+                className="dark:bg-[#1D252C] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
+                placeholder="Tippe eine neue Zutat ein ..."
+                type="text"
+                value={props.inputValue}
+                onChange={e => {props.setInputValue(e.target.value)}} 
+                onKeyDown={props.handleNewItemKeyDown}
+            />
+
+            {props.inputValue !== '' &&
+                <span 
+                    className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#29353f] p-2 rounded-full"
+                    onClick={() => props.setInputValue('')}
+                >
+                    close
+                </span>
+            }
         </div>
     );
 }
