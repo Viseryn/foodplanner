@@ -96,14 +96,21 @@ export default function ShoppingList(props) {
         return returnVal;
     };
 
+    /**
+     * handleNewItemKeyDown
+     * 
+     * Handler for "enter" presses when the AddItemInputWidget
+     * component is focused. Adds the input value as a new item 
+     * and clears the input field.
      */ 
-    const handleKeyDown = (event) => {
+    const handleNewItemKeyDown = (event) => {
         if (event.key === 'Enter' && inputValue !== '') {
             const newItem = {
                 id: items.length,
                 name: inputValue,
-                position: 0,
+                position: 0,                                        // TODO: Determine position
                 checked: false,
+                editable: false,
             };
 
             setItems([...items, newItem]);
