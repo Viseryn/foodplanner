@@ -33,7 +33,15 @@ export default function ShoppingList(props) {
         axios
             .get('/api/shoppinglist')
             .then(response => {
-                setItems(JSON.parse(response.data));
+                let itemsData = JSON.parse(response.data)
+
+                // Add more fields to shopping list
+                itemsData.forEach(item => {
+                    item.checked = false;
+                });
+
+                // Add list to state
+                setItems(itemsData);
                 setLoading(false);
             });
     };
