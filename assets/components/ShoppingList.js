@@ -26,7 +26,9 @@ export default function ShoppingList(props) {
         getShoppingList();
     }, []);
 
-    // Get shopping list ingredients
+    /**
+     * Get shopping list ingredients from API
+     */ 
     const getShoppingList = () => {
         axios
             .get('/api/shoppinglist')
@@ -36,7 +38,9 @@ export default function ShoppingList(props) {
             });
     };
 
-    //
+    /**
+     * Handler for "enter" presses
+     */ 
     const handleKeyDown = (event) => {
         if (event.key === 'Enter' && inputValue !== '') {
             const newItem = {
