@@ -128,12 +128,12 @@ function SidebarContent(props) {
                     icon="fastfood"
                     label="Rezepte"
                 />
-                {/* <SidebarItem 
+                <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="pantry"
                     icon="kitchen"
                     label="Vorratskammer"
-                /> */}
+                />
                 <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="shoppinglist"
