@@ -118,27 +118,10 @@ export default function ShoppingList(props) {
      * Makes the selected item non-editable.
      */ 
     const handleCheckboxChange = (id) => {
-        // Create a new list of items
-        let newList = [];
-
-        // Note that the item id does not have to coincide 
-        // with the index of the item in the list.
-        // Therefore we need to count during the forEach.
-        let i = 0;
-
-        items.forEach(item => {
-            newList.push(item);
-
-            // Change the checked state of the selected item
-            if (item.id === id) {
-                newList[i].checked = !item.checked;
-            }
-
-            i++;
+        updateItem(id, {
+            'checked': !items[findItemById(id)].checked,
+            'editable': false,
         });
-
-        // Set new item list to the state variable
-        setItems(newList);
     };
 
     /**
