@@ -2,23 +2,111 @@
  * ./assets/components/ShoppingList.js *
  ***************************************/
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import Heading from './Heading';
 import Spinner from './Util';
+import Button from './Buttons';
 
+/**
+ * ShoppingList
+ */
 export default function ShoppingList(props) {
+    // State variables
+    const [isLoading, setLoading] = useState(true);
+    const [items, setItems] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+
+    // Load sidebar and shopping list
     useEffect(() => {
         props.setSidebarActiveItem('shoppinglist');
-        props.setSidebarActionButton({
-            visible: false, 
-        });
+        props.setSidebarActionButton();
+
+        getShoppingList();
     }, []);
 
+    // Get shopping list ingredients
+    const getShoppingList = () => {
+        axios
+            .get('/api/shoppinglist')
+            .then(response => {
+                setItems(JSON.parse(response.data));
+                setLoading(false);
+            });
+    };
+
+    //
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter' && inputValue !== '') {
+            const newItem = {
+                id: items.length,
+                name: inputValue,
+                position: 0,
+                checked: false,
+            };
+
+            setItems([...items, newItem]);
+            setInputValue('');
+        }
+    }
+
+    //
+    const handleCheckboxChange = () => {
+
+    };
+
+    // Render
     return (
-        <>
-            <Heading title="Einkaufsliste" />
-            <Spinner />
-        </>
+        <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
+            <Heading>Einkaufsliste</Heading>
+            
+            <div className="mb-10 rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] shadow-md h-16 flex items-center pl-6 pr-4">
+                <span className="material-symbols-rounded mr-2 cursor-default">add</span>
+                <input 
+                    className="dark:bg-[#1D252C] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
+                    placeholder="Tippe eine neue Zutat ein ..."
+                    type="text"
+                    value={inputValue}
+                    onChange={e => {setInputValue(e.target.value)}} 
+                    onKeyDown={handleKeyDown}
+                />
+                {inputValue !== '' &&
+                    <span 
+                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#29353f] p-2 rounded-full"
+                        onClick={() => setInputValue('')}
+                    >close</span>
+                }
+            </div>
+
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <>
+                    <div className="space-y-2">
+                        {items.map(item => 
+                            <div key={item.id} className="flex items-center w-full h-10 rounded-full px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
+                                <input 
+                                    id={item.id} 
+                                    type="checkbox" 
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 rounded-full border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 peer"
+                                    onClick={() => handleCheckboxChange} 
+                                />
+                                <label htmlFor={item.id} className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow peer-checked:line-through peer-checked:text-gray-400">
+                                    {item.name}
+                                </label>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex justify-end mt-10">
+                        <Button
+                            label="Alle gestrichenen Zutaten löschen"
+                            style="transparent"
+                        />
+                    </div>
+                </>
+            )}
+        </div>
     );
 }
