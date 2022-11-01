@@ -24,8 +24,8 @@ import Button from './Buttons';
  */
 export default function ShoppingList(props) {
     // State variables
-    const [isLoading, setLoading] = useState(true);
     const [items, setItems] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [inputValue, setInputValue] = useState('');
 
     // Load sidebar and shopping list
