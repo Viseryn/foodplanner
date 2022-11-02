@@ -125,7 +125,7 @@ export default function ShoppingList(props) {
             const newItem = {
                 id: items.length, // TODO : MIGHT NOT BE UNIQUE!
                 name: inputValue,
-                position: 0,                                        // TODO: Determine position
+                position: (items.length > 0 ? items[items.length - 1].position + 1 : 1),
                 checked: false,
                 editable: false,
             };
