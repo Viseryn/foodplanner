@@ -41,11 +41,13 @@ export default function ShoppingList(props) {
             .then(response => {
                 let itemsData = JSON.parse(response.data)
 
-                // Add quantity to name field.
-                // The Update API will split everything again.
                 itemsData.forEach(item => {
-                    let quantity = item.quantity_value + ' ' + item.quantity_unit;
-                    item.name = (quantity !== ' ' ? quantity + ' ' : '') + item.name;
+                    // Save original name of each item
+                    item.originalName = item.name;
+
+                    // Add quantity to name field
+                    // The Update API will split everything again
+                    item.name = generateDisplayName(item.quantity_value, item.quantity_unit, item.originalName);
                 });
 
                 // Order list by position
@@ -111,6 +113,31 @@ export default function ShoppingList(props) {
         });
 
         return returnVal;
+    };
+
+    /**
+     * generateDisplayName
+     * 
+     * Generates the displayed name of a shopping list item,
+     * which includes the quantity of the ingredient.
+     * 
+     * @param {string} quantity_value
+     * @param {string} quantity_unit
+     * @param {string} originalName
+     * @return Returns the display name of an item.
+     */
+    const generateDisplayName = (quantity_value, quantity_unit, originalName) => {
+        let quantity = quantity_value;
+
+        if (quantity && quantity_unit) {
+            quantity += ' ' + quantity_unit;
+        } else if (quantity_unit) {
+            quantity += quantity_unit;
+        }
+
+        const displayName = (quantity ? quantity + ' ' : '') + originalName;
+
+        return displayName;
     };
 
     /**
