@@ -112,7 +112,7 @@ class ShoppingListController extends AbstractController
             $newIngredients[$i]
                 ->setStorage($storage)
                 ->setChecked(false)
-                ->setPosition($highestPosition + $i)
+                ->setPosition($highestPosition + 1 + $i)
             ;
 
             $i++;
