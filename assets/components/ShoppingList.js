@@ -233,6 +233,52 @@ export default function ShoppingList(props) {
     };
 
     /**
+     * handlePositionDown
+     * 
+     * Swaps the position of the selected item 
+     * with the next item (if existent).
+     */
+    const handlePositionDown = (id) => {
+        const index = findItemById(id);
+
+        if (items.length !== index + 1) {
+            let newItems = [...items];
+            const oldPosition = newItems[index].position;
+            const newPosition = newItems[index + 1].position;
+
+            newItems[index].position = newPosition;
+            newItems[index + 1].position = oldPosition;
+
+            [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
+
+            setItems(newItems);
+        }
+    };
+
+    /**
+     * handlePositionUp
+     * 
+     * Swaps the position of the selected item 
+     * with the previous item (if existent).
+     */
+    const handlePositionUp = (id) => {
+        const index = findItemById(id);
+
+        if (index !== 0) {
+            let newItems = [...items];
+            const oldPosition = newItems[index].position;
+            const newPosition = newItems[index - 1].position;
+
+            newItems[index].position = newPosition;
+            newItems[index - 1].position = oldPosition;
+
+            [newItems[index], newItems[index - 1]] = [newItems[index - 1], newItems[index]];
+
+            setItems(newItems);
+        }
+    };
+
+    /**
      * Load sidebar and shopping list
      */ 
     useEffect(() => {
@@ -304,27 +350,31 @@ export default function ShoppingList(props) {
                                     onChange={() => handleCheckboxChange(item.id)} 
                                     checked={item.checked}
                                 />
-                                <div 
-                                    className={
-                                        'transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none' 
-                                        + (item.checked ? ' line-through text-gray-400' : '')
-                                    }
-                                    onClick={event => handleItemClick(event, item.id, item.editable)}
-                                >
-                                    {item.editable ? (
-                                        <input 
-                                            className="bg-transparent"
-                                            defaultValue={item.name}
-                                            onBlur={event => handleItemNameChange(event, item.id)}
-                                            onKeyDown={event => { 
-                                                if (event.key === 'Enter') {
-                                                    handleItemNameChange(event, item.id);
-                                                }
-                                            }}
-                                        />
-                                    ) : (
-                                        item.name
-                                    )}
+                                <div className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none flex justify-between items-center group">
+                                    <div 
+                                        className={'grow' + (item.checked ? ' line-through text-gray-400' : '')} 
+                                        onClick={event => handleItemClick(event, item.id, item.editable)}
+                                    >
+                                        {item.editable ? (
+                                            <input 
+                                                className="bg-transparent"
+                                                defaultValue={item.name}
+                                                onBlur={event => handleItemNameChange(event, item.id)}
+                                                onKeyDown={event => { 
+                                                    if (event.key === 'Enter') {
+                                                        handleItemNameChange(event, item.id);
+                                                    }
+                                                }}
+                                            />
+                                        ) : (
+                                            item.name
+                                        )}
+                                    </div>
+
+                                    <div className="flex items-center">
+                                        <span className="material-symbols-rounded" onClick={() => handlePositionUp(item.id)}>expand_less</span>
+                                        <span className="material-symbols-rounded" onClick={() => handlePositionDown(item.id)}>expand_more</span>
+                                    </div>
                                 </div>
                             </div>
                         )}
