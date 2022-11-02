@@ -47,6 +47,21 @@ export default function ShoppingList(props) {
                     item.name = item.quantity_value + item.quantity_unit + ' ' + item.name;
                 });
 
+                // Order list by position
+                const compareItems = (a, b) => {
+                    if (a.position < b.position) {
+                        return -1;
+                    }
+
+                    if (a.position > b.position) {
+                        return 1;
+                    }
+
+                    return 0;
+                }
+
+                itemsData.sort(compareItems);
+
                 // Add list to state
                 setItems(itemsData);
                 setLoading(false);
