@@ -39,7 +39,7 @@ export default function ShoppingList(props) {
         axios
             .get('/api/shoppinglist')
             .then(response => {
-                let itemsData = JSON.parse(response.data)
+                let itemsData = JSON.parse(response.data);
 
                 itemsData.forEach(item => {
                     // Save original name of each item
