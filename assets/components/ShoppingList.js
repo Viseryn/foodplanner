@@ -42,9 +42,9 @@ export default function ShoppingList(props) {
                 let itemsData = JSON.parse(response.data)
 
                 // Add more fields to shopping list
-                itemsData.forEach(item => {
-                    item.checked = false;                               // TODO: This should be a database field!
-                });
+                // itemsData.forEach(item => {
+                //     item.checked = false;
+                // });
 
                 // Add list to state
                 setItems(itemsData);
@@ -181,7 +181,8 @@ export default function ShoppingList(props) {
     /**
      * handleItemEdit
      * 
-     * 
+     * Makes the selected item editable and 
+     * all the others non-editable.
      */
     const handleItemEdit = (id) => {
         // Make all items non-editable
@@ -198,6 +199,22 @@ export default function ShoppingList(props) {
     };
 
     /**
+     * handleItemNameChange
+     * 
+     * Changes the name of an item and makes 
+     * it non-editable. Is called after enter 
+     * presses and focus lost.
+     */
+    const handleItemNameChange = (event, id) => {
+        if (event.target.value !== '') {
+            updateItem(id, {
+                name: event.target.value,
+                editable: false,
+            })
+        }
+    };
+
+    /**
      * Load sidebar and shopping list
      */ 
     useEffect(() => {
@@ -210,9 +227,13 @@ export default function ShoppingList(props) {
     /**
      * Update shopping list items from state to database
      * TODO: API call
+     *       In theory, only need to push to database, not pull.
+     *       Maybe this should be done in time intervals and not on every update.
      */
     useEffect(() => {
         console.log('Items changed');
+
+        axios.post('/api/shoppinglist/update', items);
     }, [items]);
 
     /**
@@ -252,8 +273,13 @@ export default function ShoppingList(props) {
                                     {item.editable ? (
                                         <input 
                                             className="bg-transparent"
-                                            value={item.name}
-                                            onChange={event => handleItemNameChange(event, item.id)}
+                                            defaultValue={item.name}
+                                            onBlur={event => handleItemNameChange(event, item.id)}
+                                            onKeyDown={event => { 
+                                                if (event.key === 'Enter') {
+                                                    handleItemNameChange(event, item.id);
+                                                }
+                                            }}
                                         />
                                     ) : (
                                         item.name
