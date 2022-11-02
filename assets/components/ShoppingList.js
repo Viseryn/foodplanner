@@ -241,7 +241,17 @@ export default function ShoppingList(props) {
      */
     return (
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
-            <Heading>Einkaufsliste</Heading>
+            <div className="flex justify-between items-start">
+                <Heading>Einkaufsliste</Heading>
+
+                    <span 
+                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                        onClick={handleDeleteButtonClicked}
+                    >
+                        delete_sweep
+                    </span>
+
+            </div>
             
             <AddItemInputWidget
                 inputValue={inputValue}
@@ -287,14 +297,6 @@ export default function ShoppingList(props) {
                                 </div>
                             </div>
                         )}
-                    </div>
-
-                    <div className="flex justify-end mt-10">
-                        <Button
-                            label="Alle gestrichenen Zutaten löschen"
-                            style="transparent"
-                            onClick={handleDeleteButtonClicked}
-                        />
                     </div>
                 </>
             )}
