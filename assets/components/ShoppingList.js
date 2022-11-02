@@ -141,6 +141,50 @@ export default function ShoppingList(props) {
     };
 
     /**
+     * handleCombine
+     * 
+     * Handler for combining items on the list with the same name.
+     */
+    const handleCombine = () => {
+        let list = [...items];  // Working copy of item list
+        let appearedItems = []; // A list of "representative" items that all other duplicates are being added to
+        let appearedNames = []; // The names of the representative items
+
+        list.forEach(item => {
+            if (!appearedNames.includes(item.originalName)) {
+                // If item has not been saved as unique 
+                // representative, save it now.
+                appearedNames.push(item.originalName);
+                appearedItems.push(item);
+            } else {
+                // If item is a duplicate, find the representative
+                const index = appearedNames.indexOf(item.originalName);
+                let origItem = appearedItems[index];
+
+                if (origItem.quantity_unit === item.quantity_unit 
+                    && !origItem.checked && !item.checked) {
+                    // If the representative has the same unit 
+                    // and both are not checked, add them up.
+                    origItem.quantity_value = +origItem.quantity_value + +item.quantity_value;
+                } else {
+                    // If either item is checked or units do not match, 
+                    // add the "duplicate" to the representative list.
+                    appearedNames.push(item.originalName);
+                    appearedItems.push(item);
+                }
+            }
+        });
+
+        // In the list of representative items, generate the display names.
+        appearedItems.forEach(item => {
+            item.name = generateDisplayName(item.quantity_value, item.quantity_unit, item.originalName);
+        });
+
+        // Update the state variable
+        setItems(appearedItems);
+    };
+
+    /**
      * handleNewItemKeyDown
      * 
      * Handler for "enter" presses when the AddItemInputWidget
