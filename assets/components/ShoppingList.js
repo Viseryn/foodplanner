@@ -44,7 +44,8 @@ export default function ShoppingList(props) {
                 // Add quantity to name field.
                 // The Update API will split everything again.
                 itemsData.forEach(item => {
-                    item.name = item.quantity_value + item.quantity_unit + ' ' + item.name;
+                    let quantity = item.quantity_value + ' ' + item.quantity_unit;
+                    item.name = (quantity !== ' ' ? quantity + ' ' : '') + item.name;
                 });
 
                 // Order list by position
