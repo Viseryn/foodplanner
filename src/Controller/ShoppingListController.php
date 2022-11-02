@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\IngredientRepository;
+use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
 use JMS\Serializer\SerializerBuilder;
@@ -64,6 +65,56 @@ class ShoppingListController extends AbstractController
         
         foreach($oldIngredients as $ingredient) {
             $ingredientRepository->remove($ingredient, true);
+        }
+
+        // Add new shopping list ingredients to the database
+        foreach($newIngredients as $ingredient) {
+            $ingredientRepository->add($ingredient, true);
+        }
+
+        // Empty Response
+        return new Response();
+    }
+
+    #[Route('/api/shoppinglist/add', name: 'app_shoppinglist_add', methods: ['GET', 'POST'])]
+    public function add(
+        Request $request, 
+        RecipeRepository $recipeRepository,
+        StorageRepository $storageRepository, 
+        IngredientRepository $ingredientRepository, 
+        IngredientUtil $ingredientUtil
+    ): Response {
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+        
+        // Collect all ingredients and combine to a string
+        $ingredients = '';
+
+        foreach ($requestContent as $recipeData) {
+            $recipe = $recipeRepository->find($recipeData->id);
+            $ingredients .= $ingredientUtil->ingredientString($recipe->getIngredients());
+            $ingredients .= "\n";
+        }
+
+        // Transform data into Ingredient objects
+        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
+
+        // Check highest position
+        $oldIngredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'DESC']);
+        $highestPosition = $oldIngredients[0]->getPosition();
+
+        // Add position and checked to Ingredient objects
+        $i = 0;
+        $storage = $storageRepository->find(2);
+
+        foreach ($newIngredients as $ingredient) {
+            $newIngredients[$i]
+                ->setStorage($storage)
+                ->setChecked(false)
+                ->setPosition($highestPosition + $i)
+            ;
+
+            $i++;
         }
 
         // Add new shopping list ingredients to the database
