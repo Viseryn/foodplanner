@@ -2,7 +2,7 @@
  * app.js
  * 
  * @author Kevin Sporbeck
- * @version v0.2.1
+ * @version v0.3
  */
 
 // Load custom JavaScripts
