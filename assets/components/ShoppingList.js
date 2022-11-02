@@ -123,7 +123,7 @@ export default function ShoppingList(props) {
     const handleNewItemKeyDown = (event) => {
         if (event.key === 'Enter' && inputValue !== '') {
             const newItem = {
-                id: items.length,
+                id: items.length, // TODO : MIGHT NOT BE UNIQUE!
                 name: inputValue,
                 position: 0,                                        // TODO: Determine position
                 checked: false,
