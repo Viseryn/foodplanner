@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
@@ -124,5 +125,38 @@ class ShoppingListController extends AbstractController
 
         // Empty Response
         return new Response();
+    }
+
+    #[Route('/api/shoppinglist/ingredient', name: 'app_shoppinglist_ingredient', methods: ['GET', 'POST'])]
+    public function ingredient(
+        Request $request, 
+        RecipeRepository $recipeRepository,
+        StorageRepository $storageRepository, 
+        IngredientRepository $ingredientRepository, 
+        IngredientUtil $ingredientUtil
+    ): Response {
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+
+        // Transform data into Ingredient object
+        $newIngredient = $ingredientUtil->ingredientSplit($requestContent->name)[0];
+
+        // Check highest position
+        $oldIngredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'DESC']);
+        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
+
+        // Add position and checked to Ingredient object
+        $storage = $storageRepository->find(2);
+        $newIngredient
+            ->setStorage($storage)
+            ->setChecked(false)
+            ->setPosition($highestPosition + 1)
+        ;
+
+        // Add new shopping list ingredient to the database
+        $ingredientRepository->add($newIngredient, true);
+
+        // Empty Response
+        return new Response($newIngredient);
     }
 }
