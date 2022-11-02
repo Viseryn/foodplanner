@@ -32,6 +32,9 @@ class Ingredient
     #[ORM\Column]
     private ?int $position = null;
 
+    #[ORM\Column]
+    private ?bool $checked = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -174,6 +177,18 @@ class Ingredient
     public function setPosition(int $position): self
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    public function isChecked(): ?bool
+    {
+        return $this->checked;
+    }
+
+    public function setChecked(bool $checked): self
+    {
+        $this->checked = $checked;
 
         return $this;
     }
