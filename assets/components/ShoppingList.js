@@ -150,15 +150,16 @@ export default function ShoppingList(props) {
     const handleNewItemKeyDown = (event) => {
         if (event.key === 'Enter' && inputValue !== '') {
             const newItem = {
-                id: items.length, // TODO : MIGHT NOT BE UNIQUE!
                 name: inputValue,
-                position: (items.length > 0 ? items[items.length - 1].position + 1 : 1),
-                checked: false,
-                editable: false,
             };
 
-            setItems([...items, newItem]);
-            setInputValue('');
+            // Send new item to database and reload list
+            axios
+                .post('/api/shoppinglist/ingredient', newItem)
+                .then(response => {
+                    getShoppingList();
+                    setInputValue('');
+                });
         }
     };
 
