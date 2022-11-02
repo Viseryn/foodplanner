@@ -2,7 +2,7 @@
  * ./assets/components/ShoppingList.js *
  ***************************************/
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import Heading from './Heading';
@@ -41,10 +41,11 @@ export default function ShoppingList(props) {
             .then(response => {
                 let itemsData = JSON.parse(response.data)
 
-                // Add more fields to shopping list
-                // itemsData.forEach(item => {
-                //     item.checked = false;
-                // });
+                // Add quantity to name field.
+                // The Update API will split everything again.
+                itemsData.forEach(item => {
+                    item.name = item.quantity_value + item.quantity_unit + ' ' + item.name;
+                });
 
                 // Add list to state
                 setItems(itemsData);
@@ -195,6 +196,7 @@ export default function ShoppingList(props) {
         // Make the selected item editable
         updateItem(id, {
             'editable': true,
+            'checked': false,
         });
     };
 
@@ -226,15 +228,19 @@ export default function ShoppingList(props) {
 
     /**
      * Update shopping list items from state to database
-     * TODO: API call
-     *       In theory, only need to push to database, not pull.
-     *       Maybe this should be done in time intervals and not on every update.
      */
     useEffect(() => {
-        console.log('Items changed');
+        // Do not make an AJAX request on the first time (items init)
+        if (init.current) {
+            init.current = false;
+            return;
+        }
 
-        axios.post('/api/shoppinglist/update', items);
+        // Send items data to API
+        axios.post('/api/shoppinglist/update', JSON.stringify(items));
     }, [items]);
+
+    let init = useRef(true);
 
     /**
      * Render
