@@ -111,7 +111,7 @@ export default function Recipe(props) {
                     <Instructions instructions={recipe.instructions} />
 
                     {recipe.image === undefined && recipe.ingredients.length === 0 && recipe.instructions.length === 0 &&
-                        <div className="text-gray-400">
+                        <div className="text-gray-400 mb-10">
                             Hier gibt es noch nichts zu sehen.
                         </div>
                     }
