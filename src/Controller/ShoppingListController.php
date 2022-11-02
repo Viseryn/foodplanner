@@ -86,7 +86,7 @@ class ShoppingListController extends AbstractController
     ): Response {
         // Decode request data
         $requestContent = json_decode($request->getContent());
-        
+
         // Collect all ingredients and combine to a string
         $ingredients = '';
 
@@ -101,7 +101,7 @@ class ShoppingListController extends AbstractController
 
         // Check highest position
         $oldIngredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'DESC']);
-        $highestPosition = $oldIngredients[0]->getPosition();
+        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
 
         // Add position and checked to Ingredient objects
         $i = 0;
