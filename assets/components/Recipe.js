@@ -23,6 +23,7 @@ import SkeletonText from './SkeletonText';
 export default function Recipe(props) {
     const [recipe, setRecipe] = useState([]);
     const [isLoading, setLoading] = useState(true);
+    const [showButton, setShowButton] = useState(true);
 
     useEffect(() => {
         // Scroll to top
@@ -51,6 +52,17 @@ export default function Recipe(props) {
                 window.location = "/error/404";
             });
     }, []);
+
+    /**
+     * handleAddShoppingList
+     */
+    const handleAddShoppingList = () => {
+        const recipes = [recipe];
+
+        axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
+
+        setShowButton(false);
+    };
 
     // Render
     return (
@@ -104,7 +116,7 @@ export default function Recipe(props) {
                         </div>
                     }
 
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-4">
                         <div className="hidden md:block">
                             <Button 
                                 to={'/recipe/' + recipe.id + '/edit'}
@@ -113,6 +125,20 @@ export default function Recipe(props) {
                                 style="transparent"
                             />
                         </div>
+                        {showButton ? (
+                            <Button 
+                                to="#"
+                                label="Zur Einkaufsliste hinzufügen"
+                                icon="add_shopping_cart"
+                                onClick={handleAddShoppingList}
+                            />
+                        ) : (
+                            <Button 
+                                to="#"
+                                label="Erledigt!"
+                                icon="done"
+                            />
+                        )}
                     </div>
                 </>
             }

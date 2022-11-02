@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 
 import Heading from './Heading';
 import Spinner from './Util';
+import Button from './Buttons';
 
 /**
  * Planner
@@ -30,6 +31,7 @@ export default class Planner extends Component {
         this.state = {
             days: [], 
             loading: true, 
+            showButton: true,
         };
     }
 
@@ -77,6 +79,26 @@ export default class Planner extends Component {
     updateDays = () => {
         axios.get('/api/day/update').then(this.getDays);
     };
+
+    /**
+     * handleAddShoppingList
+     */
+    handleAddShoppingList = () => {
+        // Collect all recipes
+        let recipes = [];
+
+        this.state.days.forEach(day => {
+            day.meals.forEach(meal => {
+                recipes.push(meal.recipe);
+            });
+        });
+
+        axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
+
+        this.setState({
+            showButton: false
+        });
+    };
     
     /**
      * render
@@ -99,6 +121,23 @@ export default class Planner extends Component {
                                 <Meals meals={day.meals} dayId={day.id} />
                             </React.Fragment>
                         )}
+
+                        <div className="flex justify-end mt-10">
+                            {this.state.showButton ? (
+                                <Button 
+                                    to="#"
+                                    label="Alles zur Einkaufsliste hinzufügen"
+                                    icon="add_shopping_cart"
+                                    onClick={this.handleAddShoppingList}
+                                />
+                            ) : (
+                                <Button 
+                                    to="#"
+                                    label="Erledigt!"
+                                    icon="done"
+                                />
+                            )}
+                        </div>
                     </>
                 )}
             </div>
