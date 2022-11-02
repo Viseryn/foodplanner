@@ -29,6 +29,12 @@ class Ingredient
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     private ?Storage $storage = null;
 
+    #[ORM\Column]
+    private ?int $position = null;
+
+    #[ORM\Column]
+    private ?bool $checked = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -161,5 +167,29 @@ class Ingredient
 
     public function __toString() {
         return $this->name;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): self
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function isChecked(): ?bool
+    {
+        return $this->checked;
+    }
+
+    public function setChecked(bool $checked): self
+    {
+        $this->checked = $checked;
+
+        return $this;
     }
 }
