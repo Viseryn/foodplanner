@@ -279,6 +279,29 @@ export default function ShoppingList(props) {
     };
 
     /**
+     * handleDeleteAll
+     * 
+     * Deletes all items on the list after confirming
+     * a SweetAlert.
+     */
+    const handleDeleteAll = () => {
+        swal({
+            dangerMode: true,
+            icon: 'error',
+            title: 'Für immer löschen?',
+            text: 'Gelöschte Inhalte können nicht wiederhergestellt werden.',
+            buttons: {
+                cancel: 'Abbrechen',
+                confirm: 'Löschen',
+            },
+        }).then((confirm) => {
+            if (confirm) {
+                setItems([]);
+            }
+        });
+    }
+
+    /**
      * Load sidebar and shopping list
      */ 
     useEffect(() => {
@@ -386,6 +409,18 @@ export default function ShoppingList(props) {
                             </div>
                         )}
                     </div>
+
+                    {items.length > 0 &&
+                        <div className="flex justify-end mt-6">
+                            <Button
+                                to="#"
+                                label="Alles löschen"
+                                icon="delete_forever"
+                                style="transparent"
+                                onClick={handleDeleteAll}
+                            />
+                        </div>
+                    }
                 </>
             )}
         </div>
