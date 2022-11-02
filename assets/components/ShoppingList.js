@@ -360,7 +360,7 @@ export default function ShoppingList(props) {
         swal({
             dangerMode: true,
             icon: 'error',
-            title: 'Für immer löschen?',
+            title: 'Alle Einträge löschen?',
             text: 'Gelöschte Inhalte können nicht wiederhergestellt werden.',
             buttons: {
                 cancel: 'Abbrechen',
@@ -415,6 +415,13 @@ export default function ShoppingList(props) {
 
                 {/* Delete and update buttons */}
                 <div>
+                    <span 
+                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                        onClick={handleDeleteAll}
+                    >
+                        delete_forever
+                    </span>
+
                     <span 
                         className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
                         onClick={handleDeleteButtonClicked}
@@ -486,10 +493,10 @@ export default function ShoppingList(props) {
                         <div className="flex justify-end mt-6">
                             <Button
                                 to="#"
-                                label="Alles löschen"
-                                icon="delete_forever"
-                                style="transparent"
-                                onClick={handleDeleteAll}
+                                label="Zusammenfassen"
+                                icon="low_priority"
+                                onClick={handleCombine}
+                                elevated={true}
                             />
                         </div>
                     }
