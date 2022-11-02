@@ -263,7 +263,7 @@ export default function ShoppingList(props) {
                         className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
                         onClick={getShoppingList}
                     >
-                        update
+                        sync
                     </span>
                 </div>
             </div>
