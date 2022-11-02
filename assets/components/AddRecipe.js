@@ -144,7 +144,7 @@ export default class AddRecipe extends Component {
 
                         <div>
                             <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
-                            <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#232325] hover:bg-blue-200 dark:hover:bg-[#232325]/[.6] active:bg-blue-300 active:text-blue-800">
+                            <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-200 dark:hover:bg-[#1D252C]/[.6] active:bg-blue-300 active:text-blue-800">
                                 <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                 <span className="label-content mr-2 ml-3">{this.state.filename}</span>
                             </label>

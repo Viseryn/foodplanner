@@ -303,7 +303,7 @@ export class EditRecipe extends Component {
                                         <div className="overflow-hidden w-full">
                                             {this.state.isUploadButtonVisible 
                                                 ? <>
-                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#232325] hover:bg-blue-200 dark:hover:bg-[#232325]/[.6] active:bg-blue-300 active:text-blue-800">
+                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-200 dark:hover:bg-[#1D252C]/[.6] active:bg-blue-300 active:text-blue-800">
                                                         <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                                         <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">{this.state.filename}</span>
                                                     </label>
@@ -314,7 +314,7 @@ export class EditRecipe extends Component {
                                                     />
                                                 </>
                                                 : <>
-                                                    <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-[#232325]">
+                                                    <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-[#1D252C]">
                                                         <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                                         <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">Datei auswählen</span>
                                                     </label>
