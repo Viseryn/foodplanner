@@ -32,6 +32,7 @@ export class AddMeal extends Component {
         this.state = {
             isSubmittedSuccessfully: false,
             loading: true,
+            loadingSubmit: false,
             recipes: [],
             days: [],
             dayId: 0,
@@ -100,7 +101,7 @@ export class AddMeal extends Component {
         event.preventDefault();
 
         this.setState({
-            loading: true, // Works, but shows skeleton instead of spinner
+            loadingSubmit: true, 
         });
 
         axios.post('/api/meal/add', formData).then(
@@ -125,6 +126,10 @@ export class AddMeal extends Component {
                 }
 
                 <Heading title='Mahlzeit hinzufügen' />
+                {this.state.loadingSubmit ? (
+                    <Spinner />
+                ) : (
+                    <>
 
                 <form 
                     className="max-w-[400px] -md:max-w-[900px]"
@@ -188,6 +193,8 @@ export class AddMeal extends Component {
                         />
                     </div> 
                 </form>
+                    </>
+                )}
             </div>
         )
     }
