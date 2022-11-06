@@ -215,17 +215,27 @@ function SidebarItem(props) {
     const activeLabelStyle = baseLabelStyle + ' text-gray-900 dark:text-gray-200';
     const labelStyle = props.sidebarActiveItem == props.id ? activeLabelStyle : baseLabelStyle;
 
+    const SidebarItemContent = (
+        <div className={labelStyle}>
+            <span className="material-symbols-rounded">{props.icon}</span>
+            <span className={
+                'xl:block ml-4 font-semibold'
+                + (props.isDrawerVisible ? ' block' : ' hidden')
+            }>{props.label}</span>
+        </div>
+    );
+
     return (
         <li>
-            <Link to={'/' + props.id} className={linkStyle}>
-                <div className={labelStyle}>
-                    <span className="material-symbols-rounded">{props.icon}</span>
-                    <span className={
-                        'xl:block ml-4 font-semibold'
-                        + (props.isDrawerVisible ? ' block' : ' hidden')
-                    }>{props.label}</span>
-                </div>
-            </Link>
+            {props.path ? (
+                <a href={props.path} className={linkStyle}>
+                    {SidebarItemContent}
+                </a>
+            ) : (
+                <Link to={'/' + props.id} className={linkStyle}>
+                    {SidebarItemContent}
+                </Link>
+            )}
         </li>
     );
 }
