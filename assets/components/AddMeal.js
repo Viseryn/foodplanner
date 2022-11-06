@@ -119,7 +119,7 @@ export class AddMeal extends Component {
      */
     render() {
         return (
-            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:w-fit md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl -md:max-w-[900px]">
+            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
                 {/* If the form is submitted, redirect to the weekly planner */}
                 {this.state.isSubmittedSuccessfully &&
                     <Navigate to={'/planner'} />
@@ -131,68 +131,68 @@ export class AddMeal extends Component {
                 ) : (
                     <>
 
-                <form 
-                    className="max-w-[400px] -md:max-w-[900px]"
-                    onSubmit={this.handleSubmit}
-                >
-                    <div className="mb-6">
-                        <InputLabel id="meal_day" label="Für welchen Tag?" />
-                        {this.state.loading ? (
-                            <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                        <form 
+                            className="max-w-[450px]"
+                            onSubmit={this.handleSubmit}
+                        >
+                            <div className="mb-6">
+                                <InputLabel id="meal_day" label="Für welchen Tag?" />
+                                {this.state.loading ? (
+                                    <div role="status" className="animate-pulse">
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                                    </div>
+                                ) : (
+                                    <SelectWidget
+                                        id="meal_day"
+                                        options={this.state.days}
+                                        defaultValue={this.state.dayId}
+                                    />
+                                )}
                             </div>
-                        ) : (
-                            <SelectWidget
-                                id="meal_day"
-                                options={this.state.days}
-                                defaultValue={this.state.dayId}
-                            />
-                        )}
-                    </div>
 
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
-                        <UserGroupRadio />
-                    </div>
-
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
-                        <MealCategoryRadio />
-                    </div>
-
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
-                        {this.state.loading ? (
-                            <div role="status" className="max-w-sm animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            <div className="mb-6">
+                                <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
+                                <UserGroupRadio />
                             </div>
-                        ) : (
-                            <SelectWidget
-                                id="meal_recipe"
-                                options={this.state.recipes}
-                                required="required"
-                            />
-                        )}
-                    </div>
 
-                    <div className="flex justify-end gap-4">
-                        <div className="hidden md:block">
-                            <Button
-                                to="/planner"
-                                icon="redo"
-                                label="Zurück"
-                                style="transparent"
-                            />
-                        </div>
-                        <SubmitButton 
-                            icon="add" 
-                            label="Speichern" 
-                            elevated={true}
-                        />
-                    </div> 
-                </form>
+                            <div className="mb-6">
+                                <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
+                                <MealCategoryRadio />
+                            </div>
+
+                            <div className="mb-6">
+                                <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
+                                {this.state.loading ? (
+                                    <div role="status" className="max-w-sm animate-pulse">
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                                    </div>
+                                ) : (
+                                    <SelectWidget
+                                        id="meal_recipe"
+                                        options={this.state.recipes}
+                                        required="required"
+                                    />
+                                )}
+                            </div>
+
+                            <div className="flex justify-end gap-4">
+                                <div className="hidden md:block">
+                                    <Button
+                                        to="/planner"
+                                        icon="redo"
+                                        label="Zurück"
+                                        style="transparent"
+                                    />
+                                </div>
+                                <SubmitButton 
+                                    icon="add" 
+                                    label="Speichern" 
+                                    elevated={true}
+                                />
+                            </div> 
+                        </form>
                     </>
                 )}
             </div>
