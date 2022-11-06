@@ -42,7 +42,7 @@ export default function Sidebar(props) {
                 'z-50 fixed h-full w-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-64 px-6 py-7">
+                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-80 px-6 py-7">
                     <ul className="mb-2 block w-fit">
                         <SidebarDrawerButton
                             isDrawerVisible={isDrawerVisible}
