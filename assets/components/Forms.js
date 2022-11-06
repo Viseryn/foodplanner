@@ -136,3 +136,33 @@ export function SelectRow({
         </div>
     );
 }
+
+
+/**
+ * TODO: Dark mode
+ */
+export function RadioRow({name = '', options = [], ...props}) {
+    return (
+        <div className="flex flex-wrap justify-between gap-2">
+            {options.map(option => 
+                <div className="grow" key={option.id}>
+                    <input 
+                        id={option.id}
+                        type="radio" 
+                        name={name} 
+                        defaultValue={option.value}
+                        className="peer hidden" 
+                        defaultChecked={option.checked}
+                    />
+                    <label 
+                        htmlFor={option.id}
+                        className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
+                    >
+                        <span className="material-symbols-rounded">{option.icon}</span>
+                        <span className="label-content mr-1 ml-3">{option.label}</span>
+                    </label>
+                </div>
+            )}
+        </div>
+    );
+}

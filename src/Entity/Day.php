@@ -21,6 +21,7 @@ class Day
     private ?int $timestamp = null;
 
     #[ORM\OneToMany(mappedBy: 'day', targetEntity: Meal::class, orphanRemoval: true)]
+    #[ORM\OrderBy(['mealCategory' => 'ASC'])]
     private Collection $meals;
 
     public function __construct()

@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Navigate, useParams } from 'react-router-dom';
 
 import Heading from './Heading';
-import { InputLabel, SelectRow, SelectWidget } from './Forms';
+import { InputLabel, RadioRow, SelectWidget } from './Forms';
 import Button, { SubmitButton } from './Buttons';
 import Spinner from './Util';
 
@@ -32,6 +32,7 @@ export class AddMeal extends Component {
         this.state = {
             isSubmittedSuccessfully: false,
             loading: true,
+            loadingSubmit: false,
             recipes: [],
             days: [],
             dayId: 0,
@@ -100,7 +101,7 @@ export class AddMeal extends Component {
         event.preventDefault();
 
         this.setState({
-            loading: true, // Works, but shows skeleton instead of spinner
+            loadingSubmit: true, 
         });
 
         axios.post('/api/meal/add', formData).then(
@@ -118,76 +119,82 @@ export class AddMeal extends Component {
      */
     render() {
         return (
-            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:w-fit md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl -md:max-w-[900px]">
+            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
                 {/* If the form is submitted, redirect to the weekly planner */}
                 {this.state.isSubmittedSuccessfully &&
                     <Navigate to={'/planner'} />
                 }
 
                 <Heading title='Mahlzeit hinzufügen' />
+                {this.state.loadingSubmit ? (
+                    <Spinner />
+                ) : (
+                    <>
 
-                <form 
-                    className="max-w-[400px] -md:max-w-[900px]"
-                    onSubmit={this.handleSubmit}
-                >
-                    <div className="mb-6">
-                        <InputLabel id="meal_day" label="Für welchen Tag?" />
-                        {this.state.loading ? (
-                            <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                        <form 
+                            className="max-w-[450px]"
+                            onSubmit={this.handleSubmit}
+                        >
+                            <div className="mb-6">
+                                <InputLabel id="meal_day" label="Für welchen Tag?" />
+                                {this.state.loading ? (
+                                    <div role="status" className="animate-pulse">
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                                    </div>
+                                ) : (
+                                    <SelectWidget
+                                        id="meal_day"
+                                        options={this.state.days}
+                                        defaultValue={this.state.dayId}
+                                    />
+                                )}
                             </div>
-                        ) : (
-                            <SelectWidget
-                                id="meal_day"
-                                options={this.state.days}
-                                defaultValue={this.state.dayId}
-                            />
-                        )}
-                    </div>
 
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
-                        <UserGroupRadio />
-                    </div>
-
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
-                        <MealCategoryRadio />
-                    </div>
-
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
-                        {this.state.loading ? (
-                            <div role="status" className="max-w-sm animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            <div className="mb-6">
+                                <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
+                                <UserGroupRadio />
                             </div>
-                        ) : (
-                            <SelectWidget
-                                id="meal_recipe"
-                                options={this.state.recipes}
-                                required="required"
-                            />
-                        )}
-                    </div>
 
-                    <div className="flex justify-end gap-4">
-                        <div className="hidden md:block">
-                            <Button
-                                to="/planner"
-                                icon="redo"
-                                label="Zurück"
-                                style="transparent"
-                            />
-                        </div>
-                        <SubmitButton 
-                            icon="add" 
-                            label="Speichern" 
-                            elevated={true}
-                        />
-                    </div> 
-                </form>
+                            <div className="mb-6">
+                                <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
+                                <MealCategoryRadio />
+                            </div>
+
+                            <div className="mb-6">
+                                <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
+                                {this.state.loading ? (
+                                    <div role="status" className="max-w-sm animate-pulse">
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                                    </div>
+                                ) : (
+                                    <SelectWidget
+                                        id="meal_recipe"
+                                        options={this.state.recipes}
+                                        required="required"
+                                    />
+                                )}
+                            </div>
+
+                            <div className="flex justify-end gap-4">
+                                <div className="hidden md:block">
+                                    <Button
+                                        to="/planner"
+                                        icon="redo"
+                                        label="Zurück"
+                                        style="transparent"
+                                    />
+                                </div>
+                                <SubmitButton 
+                                    icon="add" 
+                                    label="Speichern" 
+                                    elevated={true}
+                                />
+                            </div> 
+                        </form>
+                    </>
+                )}
             </div>
         )
     }
@@ -199,61 +206,30 @@ export class AddMeal extends Component {
  * Renders a horizontal list of radio buttons with the different user groups.
  * 
  * TODO: Currently this is static. Make this dependent on the actual user groups in the database.
- * TODO: Dark Mode
  */
 function UserGroupRadio() {
     return (
-        <div className="flex flex-wrap justify-between gap-2">
-            <div className="grow">
-                <input 
-                    id="userGroup_benedikt" 
-                    type="radio" 
-                    name="meal[userGroup]" 
-                    defaultValue="3" 
-                    className="peer hidden" 
-                />
-                <label 
-                    htmlFor="userGroup_benedikt" 
-                    className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
-                >
-                    <span className="material-symbols-rounded">face</span>
-                    <span className="label-content mr-1 ml-3">Benedikt</span>
-                </label>
-            </div>
-            <div className="grow">
-                <input 
-                    id="userGroup_kevin" 
-                    type="radio" 
-                    name="meal[userGroup]" 
-                    defaultValue="2" 
-                    className="peer hidden" 
-                />
-                <label 
-                    htmlFor="userGroup_kevin" 
-                    className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
-                >
-                    <span className="material-symbols-rounded">face_6</span>
-                    <span className="label-content mr-1 ml-3">Kevin</span>
-                </label>
-            </div>
-            <div className="grow">
-                <input 
-                    id="userGroup_all" 
-                    type="radio" 
-                    name="meal[userGroup]" 
-                    defaultValue="1" 
-                    className="peer hidden"
-                    defaultChecked="checked" 
-                />
-                <label 
-                    htmlFor="userGroup_all" 
-                    className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
-                >
-                    <span className="material-symbols-rounded">groups</span>
-                    <span className="label-content mr-1 ml-3">Alle</span>
-                </label>
-            </div>
-        </div>
+        <RadioRow name="meal[userGroup]" options={[
+            {
+                id: 'userGroup_benedikt',
+                value: 3,
+                icon: 'face',
+                label: 'Benedikt',
+            },
+            {
+                id: 'userGroup_kevin',
+                value: 2,
+                icon: 'face_6',
+                label: 'Kevin',
+            },
+            {
+                id: 'userGroup_all',
+                value: 1,
+                icon: 'groups',
+                label: 'Alle',
+                checked: 'checked',
+            },
+        ]} />
     );
 }
 
@@ -264,61 +240,30 @@ function UserGroupRadio() {
  * Renders a horizontal list of radio buttons with the different meal categories.
  * 
  * TODO: Currently this is static. Make this dependent on the actual meal categories in the database.
- * TODO: Dark Mode
  */
 function MealCategoryRadio() {
     return (
-        <div className="flex flex-wrap justify-between gap-2">
-            <div className="grow">
-                <input 
-                    id="mealCategory_breakfast" 
-                    type="radio" 
-                    name="meal[mealCategory]" 
-                    defaultValue="3" 
-                    className="peer hidden" 
-                />
-                <label 
-                    htmlFor="mealCategory_breakfast" 
-                    className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
-                >
-                    <span className="material-symbols-rounded">bakery_dining</span>
-                    <span className="label-content mr-1 ml-3">Morgens</span>
-                </label>
-            </div>
-            <div className="grow">
-                <input 
-                    id="mealCategory_lunch" 
-                    type="radio" 
-                    name="meal[mealCategory]" 
-                    defaultValue="1" 
-                    className="peer hidden" 
-                    defaultChecked="checked" 
-                />
-                <label 
-                    htmlFor="mealCategory_lunch" 
-                    className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
-                >
-                    <span className="material-symbols-rounded">fastfood</span>
-                    <span className="label-content mr-1 ml-3">Mittags</span>
-                </label>
-            </div>
-            <div className="grow">
-                <input 
-                    id="mealCategory_dinner" 
-                    type="radio" 
-                    name="meal[mealCategory]" 
-                    defaultValue="2" 
-                    className="peer hidden" 
-                />
-                <label 
-                    htmlFor="mealCategory_dinner" 
-                    className="file-label cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
-                >
-                    <span className="material-symbols-rounded">ramen_dining</span>
-                    <span className="label-content mr-1 ml-3">Abends</span>
-                </label>
-            </div>
-        </div>
+        <RadioRow name="meal[mealCategory]" options={[
+            {
+                id: 'mealCategory_breakfast',
+                value: 1,
+                icon: 'bakery_dining',
+                label: 'Morgens',
+            },
+            {
+                id: 'mealCategory_lunch',
+                value: 2,
+                icon: 'fastfood',
+                label: 'Mittags',
+                checked: 'checked',
+            },
+            {
+                id: 'mealCategory_dinner',
+                value: 3,
+                icon: 'ramen_dining',
+                label: 'Abends',
+            },
+        ]} />
     );
 }
 
