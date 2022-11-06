@@ -81,6 +81,23 @@ export default function Sidebar(props) {
                             isDrawerVisible={isDrawerVisible}
                         />
                     </ul>
+                    <hr className="my-4" />
+                    <ul className="flex flex-col space-y-2">
+                        <SidebarItem 
+                            path="https://github.com/Viseryn/foodplanner"
+                            id="github"
+                            icon="developer_mode"
+                            label="GitHub"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                        <SidebarItem 
+                            path="https://yusel.net/blog"
+                            id="blog"
+                            icon="web"
+                            label="Blog"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                    </ul>
                 </div>
             </aside>
             <div className={
