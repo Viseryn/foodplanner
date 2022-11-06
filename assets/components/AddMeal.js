@@ -274,7 +274,7 @@ function MealCategoryRadio() {
                     id="mealCategory_breakfast" 
                     type="radio" 
                     name="meal[mealCategory]" 
-                    defaultValue="3" 
+                    defaultValue="1" 
                     className="peer hidden" 
                 />
                 <label 
@@ -290,7 +290,7 @@ function MealCategoryRadio() {
                     id="mealCategory_lunch" 
                     type="radio" 
                     name="meal[mealCategory]" 
-                    defaultValue="1" 
+                    defaultValue="2" 
                     className="peer hidden" 
                     defaultChecked="checked" 
                 />
@@ -307,7 +307,7 @@ function MealCategoryRadio() {
                     id="mealCategory_dinner" 
                     type="radio" 
                     name="meal[mealCategory]" 
-                    defaultValue="2" 
+                    defaultValue="3" 
                     className="peer hidden" 
                 />
                 <label 
