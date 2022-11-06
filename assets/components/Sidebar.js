@@ -42,7 +42,7 @@ export default function Sidebar(props) {
                 'z-50 fixed h-full w-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-64 px-6 py-7">
+                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-80 px-6 py-7">
                     <ul className="mb-2 block w-fit">
                         <SidebarDrawerButton
                             isDrawerVisible={isDrawerVisible}
@@ -78,6 +78,23 @@ export default function Sidebar(props) {
                             id="register"
                             icon="person_add"
                             label="Registrieren"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                    </ul>
+                    <hr className="my-4" />
+                    <ul className="flex flex-col space-y-2">
+                        <SidebarItem 
+                            path="https://github.com/Viseryn/foodplanner"
+                            id="github"
+                            icon="developer_mode"
+                            label="GitHub"
+                            isDrawerVisible={isDrawerVisible}
+                        />
+                        <SidebarItem 
+                            path="https://yusel.net/blog"
+                            id="blog"
+                            icon="web"
+                            label="Blog"
                             isDrawerVisible={isDrawerVisible}
                         />
                     </ul>
@@ -198,17 +215,27 @@ function SidebarItem(props) {
     const activeLabelStyle = baseLabelStyle + ' text-gray-900 dark:text-gray-200';
     const labelStyle = props.sidebarActiveItem == props.id ? activeLabelStyle : baseLabelStyle;
 
+    const SidebarItemContent = (
+        <div className={labelStyle}>
+            <span className="material-symbols-rounded">{props.icon}</span>
+            <span className={
+                'xl:block ml-4 font-semibold'
+                + (props.isDrawerVisible ? ' block' : ' hidden')
+            }>{props.label}</span>
+        </div>
+    );
+
     return (
         <li>
-            <Link to={'/' + props.id} className={linkStyle}>
-                <div className={labelStyle}>
-                    <span className="material-symbols-rounded">{props.icon}</span>
-                    <span className={
-                        'xl:block ml-4 font-semibold'
-                        + (props.isDrawerVisible ? ' block' : ' hidden')
-                    }>{props.label}</span>
-                </div>
-            </Link>
+            {props.path ? (
+                <a href={props.path} className={linkStyle}>
+                    {SidebarItemContent}
+                </a>
+            ) : (
+                <Link to={'/' + props.id} className={linkStyle}>
+                    {SidebarItemContent}
+                </Link>
+            )}
         </li>
     );
 }
