@@ -45,8 +45,8 @@ export default function App() {
                     <Route path="/pantry"           element={<Pantry        {...setSidebarProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps} />} />
                     <Route path="/recipes"          element={<Recipes       {...setSidebarProps} />} />
-                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} />} />
                     <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} />} />
+                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} />} />
                     <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} />} />
                     <Route path="/login"            element={<Login         {...setSidebarProps} />} />
                     <Route path="/logout"           element={<Logout        {...setSidebarProps} />} />
