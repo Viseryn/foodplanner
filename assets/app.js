@@ -5,9 +5,6 @@
  * @version v0.3.2
  */
 
-// Load custom JavaScripts
-import './custom';
-
 // Import CSS
 import './styles/app.scss';
 
