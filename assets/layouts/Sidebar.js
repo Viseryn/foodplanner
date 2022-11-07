@@ -1,15 +1,41 @@
+/*******************************
+ * ./assets/layouts/Sidebar.js *
+ *******************************/
+
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 /**
+ * Sidebar
+ * 
+ * A layout component that renders the sidebar.
+ * 
  * Break points for the sidebar:
- * size < md: Sidebar is on the bottom.
- * md <= size < xl: Sidebar is on the side, but retracted.
- * xl <= size: Sidebar is on the side and extended.
+ * < md: Sidebar is on the bottom.
+ * < xl: Sidebar is on the side, but retracted.
+ * > xl: Sidebar is on the side and extended.
+ * 
+ * @component
+ * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
+ * @property {Object} sidebarActionButton An object that contains the sidebar action button configuration.
+ * 
+ * @example
+ * <Sidebar
+ *     sidebarActiveItem="recipes"
+ *     sidebarActionButton={{
+ *         visible: false,
+ *         icon: '',
+ *         path: '#',
+ *         label: '',
+ *         onClickHandler: () => {},
+ *     }}
+ * />
  */
-
 export default function Sidebar(props) {
+    /**
+     * State variables
+     */
     const location = useLocation();
     const [isDrawerVisible, setDrawerVisible] = useState(false);
     const [user, setUser] = useState([]);
@@ -26,15 +52,21 @@ export default function Sidebar(props) {
             .get('/api/user')
             .then(response => {
                 setUser(JSON.parse(response.data));
-            });
+            })
+        ;
     }
  
-    // When route changes, close drawer and load user data
+    /**
+     * Close drawer and load user data when route changes.
+     */
     useEffect(() => {
         setDrawerVisible(false);
         getUser();
     }, [location]);
 
+    /** 
+     * Render
+     */
     return (
         <>
             {/* SidebarDrawer */}
@@ -128,6 +160,23 @@ export default function Sidebar(props) {
     );
 }
 
+/**
+ * SidebarContent
+ * 
+ * A component that renders the content of the main sidebar.
+ * Responsively switches between a flex-row on small screens 
+ * and a flex-col on larger screens. Contains SidebarDrawerButtons,
+ * SidebarItems and a SidebarActionButton.
+ * 
+ * @component
+ * @property {function} setDrawerVisible A setter function of the property isDrawerVisible.
+ * @property {boolean} isDrawerVisible Whether or not the sidebar drawer is visible now.
+ * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
+ * @property {Object} sidebarActionButton An object that contains the sidebar action button configuration.
+ * 
+ * @example 
+ * <SidebarContent isDrawerVisible={isDrawerVisible} setDrawerVisible={setDrawerVisible} {...props} />
+ */
 function SidebarContent(props) {
     return (
         <>
@@ -179,6 +228,25 @@ function SidebarContent(props) {
     );
 }
 
+/**
+ * SidebarDrawerButton
+ * 
+ * A component that renders a menu button that toggles the sidebar drawer.
+ * 
+ * @component
+ * @property {string} className Additional css classes for the <li> element.
+ * @property {function} setDrawerVisible A setter function of the property isDrawerVisible.
+ * @property {boolean} isDrawerVisible Whether or not the sidebar drawer is visible now.
+ * @property {string} icon The icon of the menu button. Default is 'menu'.
+ * 
+ * @example 
+ * <SidebarDrawerButton
+ *     isDrawerVisible={isDrawerVisible}
+ *     setDrawerVisible={setDrawerVisible} 
+ *     icon="close"
+ *     className="md:hidden"
+ * />
+ */
 function SidebarDrawerButton(props) {
     return (
         <li className={'xl:w-min ' + props?.className}>
@@ -194,6 +262,21 @@ function SidebarDrawerButton(props) {
     );
 }
 
+/**
+ * SidebarActionButton
+ * 
+ * A component that renders the sidebar action button (SAB). 
+ * 
+ * @component
+ * @property {string} path The path where the SAB should link to.
+ * @property {boolean} visible Whether the SAB is visible or not. Default is false.
+ * @property {?function} onClickHandler An optional onClickHandler for the SAB.
+ * @property {string} icon The icon of the SAB.
+ * @property {string} label The label of the SAB.
+ * 
+ * @example 
+ * <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
+ */
 function SidebarActionButton(props) {
     let SABbaseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14 w-14 xl:w-auto';
     let SABinvisibleStyle = SABbaseStyle + ' text-transparent bg-transparent cursor-default';
@@ -219,6 +302,28 @@ function SidebarActionButton(props) {
     );
 }
 
+/**
+ * SidebarItem
+ * 
+ * A component that renders a single sidebar item, i.e. 
+ * a <li> element that contains an icon and a label.
+ * 
+ * @component
+ * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
+ * @property {boolean} isDrawerVisible Whether the drawer is open or not. If yes, the label is always shown.
+ * @property {?string} path An external URL. 
+ * @property {string} id The id of the component this sidebar item should link to. Default is '/'. Will be overriden if path is set.
+ * @property {string} icon The icon of the sidebar item. 
+ * @property {string} label The label of the sidebar item.
+ * 
+ * @example
+ * <SidebarItem
+ *     sidebarActiveItem={props.sidebarActiveItem}
+ *     id="planner"
+ *     icon="date_range"
+ *     label="Wochenplan"
+ * />
+ */
 function SidebarItem(props) {
     const baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group';
     const activeLinkStyle = baseLinkStyle + ' bg-blue-200 dark:bg-[#1f3953]';

@@ -1,3 +1,7 @@
+/***************************
+ * ./assets/layouts/App.js *
+ ***************************/
+
 import React, { useState } from "react";
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 
@@ -18,9 +22,21 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
 
 /**
  * App
+ * 
+ * Main component of the application. Handles the routing
+ * and provides state functions for the sidebar, e.g. setting 
+ * the active sidebar item and updating the sidebar action button.
+ * 
+ * Renders a flex container consisting of two columns; 
+ * the sidebar, rendered by the Sidebar component, and 
+ * the content, which is handled by the BrowserRouter.
+ * 
+ * @component
  */
 export default function App() {
-    // Sidebar state variables
+    /**
+     * Sidebar state variables
+     */
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
     const [sidebarActionButton, setSidebarActionButton] = useState({
         visible: false,
@@ -30,11 +46,18 @@ export default function App() {
         onClickHandler: () => {},
     }); 
 
+    /**
+     * Sidebar setters will be passed as props to subcomponents, so 
+     * that each subcomponent can alter the sidebar state variables.
+     */
     const setSidebarProps = {
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
     };
 
+    /** 
+     * Render
+     */
     return (
         <BrowserRouter>
             <div className="flex items-start bg-blue-50 dark:bg-[#1D252C] min-h-screen text-gray-700 dark:text-gray-100">
