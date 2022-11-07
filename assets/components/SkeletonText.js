@@ -1,10 +1,19 @@
-import React from "react";
+/***************************************
+ * ./assets/components/SkeletonText.js *
+ ***************************************/
+
+import React from 'react';
 
 /**
  * SkeletonText
  * 
  * A component that renders a text skeleton, 
  * e.g. for loading screens.
+ * 
+ * @component
+ * 
+ * @example
+ * <SkeletonText />
  */
 export default function SkeletonText() {
     return (
