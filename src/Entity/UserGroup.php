@@ -18,13 +18,12 @@ class UserGroup
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'userGroups')]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'userGroup', targetEntity: Meal::class)]
-    private Collection $meals;
+    #[ORM\Column(length: 64)]
+    private ?string $name = null;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->meals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,50 +55,20 @@ class UserGroup
         return $this;
     }
 
-    /**
-     * @return Collection<int, Meal>
-     */
-    public function getMeals(): Collection
+    public function getName(): ?string
     {
-        return $this->meals;
+        return $this->name;
     }
 
-    public function addMeal(Meal $meal): self
+    public function setName(string $name): self
     {
-        if (!$this->meals->contains($meal)) {
-            $this->meals->add($meal);
-            $meal->setUserGroup($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMeal(Meal $meal): self
-    {
-        if ($this->meals->removeElement($meal)) {
-            // set the owning side to null (unless already changed)
-            if ($meal->getUserGroup() === $this) {
-                $meal->setUserGroup(null);
-            }
-        }
+        $this->name = $name;
 
         return $this;
     }
 
     public function __toString()
     {
-        $str = '';
-
-        foreach ($this->users as $user) {
-            if ($user === $this->users->last() && $this->users->count() > 1) {
-                $str .= ' & ';
-            } elseif ($user !== $this->users->first()) {
-                $str .= ', ';
-            }
-
-            $str .= $user->getUsername();
-        }
-
-        return $str;
+        return $this->getName();
     }
 }
