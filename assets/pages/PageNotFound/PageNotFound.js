@@ -1,7 +1,7 @@
 /***********************************************
  * ./assets/pages/PageNotFound/PageNotFound.js *
  ***********************************************/
-    
+
 import React, { useEffect } from 'react';
 import Notification from '../../components/Notification';
 
@@ -15,11 +15,17 @@ import Notification from '../../components/Notification';
  * @property {function} setSidebarActionButton
  */
 export default function PageNotFound(props) {
+    /**
+     * Load sidebar
+     */
     useEffect(() => {
         props.setSidebarActiveItem();
         props.setSidebarActionButton();
     }, []);
 
+    /** 
+     * Render
+     */
     return (
         <div className="mx-6 mt-6 md:ml-0 w-full md:rounded-3xl md:max-w-[450px]">
             <Notification

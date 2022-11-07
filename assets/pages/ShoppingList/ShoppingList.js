@@ -1,13 +1,13 @@
-/***************************************
- * ./assets/components/ShoppingList.js *
- ***************************************/
+/***********************************************
+ * ./assets/pages/ShoppingList/ShoppingList.js *
+ ***********************************************/
 
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
+import Button from '../../components/Buttons';
 import Heading from '../../components/Heading';
 import Spinner from '../../components/Spinner';
-import Button from '../../components/Buttons';
 
 /**
  * ShoppingList
@@ -21,9 +21,15 @@ import Button from '../../components/Buttons';
  * database. An Ingredient object is considered
  * part of the shopping list if it has 
  * storageId = 2, and if it has no recipeId.
+ * 
+ * @component
+ * @property {function} setSidebarActiveItem
+ * @property {function} setSidebarActionButton
  */
 export default function ShoppingList(props) {
-    // State variables
+    /**
+     * State variables
+     */
     const [items, setItems] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [inputValue, setInputValue] = useState('');
@@ -47,19 +53,17 @@ export default function ShoppingList(props) {
 
                     // Add quantity to name field
                     // The Update API will split everything again
-                    item.name = generateDisplayName(item.quantity_value, item.quantity_unit, item.originalName);
+                    item.name = generateDisplayName(
+                        item.quantity_value, 
+                        item.quantity_unit, 
+                        item.originalName
+                    );
                 });
 
                 // Order list by position
                 const compareItems = (a, b) => {
-                    if (a.position < b.position) {
-                        return -1;
-                    }
-
-                    if (a.position > b.position) {
-                        return 1;
-                    }
-
+                    if (a.position < b.position) return -1;
+                    if (a.position > b.position) return 1;
                     return 0;
                 }
 
@@ -68,7 +72,8 @@ export default function ShoppingList(props) {
                 // Add list to state
                 setItems(itemsData);
                 setLoading(false);
-            });
+            })
+        ;
     };
 
     /**
@@ -190,6 +195,8 @@ export default function ShoppingList(props) {
      * Handler for "enter" presses when the AddItemInputWidget
      * component is focused. Adds the input value as a new item 
      * and clears the input field.
+     * 
+     * @param {*} event
      */ 
     const handleNewItemKeyDown = (event) => {
         if (event.key === 'Enter' && inputValue !== '') {
@@ -203,7 +210,8 @@ export default function ShoppingList(props) {
                 .then(response => {
                     getShoppingList();
                     setInputValue('');
-                });
+                })
+            ;
         }
     };
 
@@ -212,6 +220,8 @@ export default function ShoppingList(props) {
      * 
      * Toggle the checked status of the given item.
      * Makes the selected item non-editable.
+     * 
+     * @param {number} id The id of the given item.
      */ 
     const handleCheckboxChange = (id) => {
         updateItem(id, {
@@ -241,6 +251,10 @@ export default function ShoppingList(props) {
      * Differentiates single and double clicks.
      * On a single click, it toggles the checked status of an item.
      * On a double click, it toggles the editable status of an item.
+     * 
+     * @param {*} event
+     * @param {number} id The id of the given item.
+     * @param {boolean} editable Whether the item is editable.
      */
     const handleItemClick = (event, id, editable = false) => {
         if (event.detail === 2) {
@@ -272,6 +286,8 @@ export default function ShoppingList(props) {
      * 
      * Makes the selected item editable and 
      * all the others non-editable.
+     * 
+     * @param {number} id The id of the given item.
      */
     const handleItemEdit = (id) => {
         // Make all items non-editable
@@ -294,6 +310,9 @@ export default function ShoppingList(props) {
      * Changes the name of an item and makes 
      * it non-editable. Is called after enter 
      * presses and focus lost.
+     * 
+     * @param {*} event
+     * @param {number} id The id of the given item.
      */
     const handleItemNameChange = (event, id) => {
         if (event.target.value !== '') {
@@ -309,6 +328,8 @@ export default function ShoppingList(props) {
      * 
      * Swaps the position of the selected item 
      * with the next item (if existent).
+     * 
+     * @param {number} id The id of the given item.
      */
     const handlePositionDown = (id) => {
         const index = findItemById(id);
@@ -332,6 +353,8 @@ export default function ShoppingList(props) {
      * 
      * Swaps the position of the selected item 
      * with the previous item (if existent).
+     * 
+     * @param {number} id The id of the given item.
      */
     const handlePositionUp = (id) => {
         const index = findItemById(id);
@@ -394,7 +417,6 @@ export default function ShoppingList(props) {
             }
 
             first.current = false;
-
             return;
         }
 
@@ -516,6 +538,20 @@ export default function ShoppingList(props) {
  * icon in the right to delete the current input.
  * When the enter key is pressed, calls the 
  * handleNewItemKeyDown function.
+ * 
+ * @component
+ * @property {arr} items The state array of shopping list items.
+ * @property {string} inputValue The state variable that contains the input value.
+ * @property {function} setInputValue The setter method of inputValue.
+ * @property {function} handleNewItemKeyDown A function that handles enter key presses.
+ * 
+ * @example
+ * <AddItemInputWidget
+ *     items={items}
+ *     inputValue={inputValue}
+ *     setInputValue={setInputValue}
+ *     handleNewItemKeyDown={handleNewItemKeyDown}
+ * />
  */
 function AddItemInputWidget(props) {
     return (
