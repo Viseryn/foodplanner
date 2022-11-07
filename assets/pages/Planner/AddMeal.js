@@ -1,14 +1,14 @@
-/**********************************
- * ./assets/components/AddMeal.js *
- **********************************/
+/*************************************
+ * ./assets/pages/Planner/AddMeal.js *
+ *************************************/
 
 import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
+import Button, { SubmitButton } from '../../components/Buttons';
 import Heading from '../../components/Heading';
 import { InputLabel, RadioRow, SelectWidget } from '../../components/Forms';
-import Button, { SubmitButton } from '../../components/Buttons';
 import Spinner from '../../components/Spinner';
 
 /**
@@ -18,9 +18,15 @@ import Spinner from '../../components/Spinner';
  * Shows a form which can be submitted 
  * to the Meal Add API in the 
  * /src/Controller/MealController.php.
+ * 
+ * @component
+ * @property {function} setSidebarActiveItem
+ * @property {function} setSidebarActionButton
  */
 export default function AddMeal(props) {
-    // State variables
+    /**
+     * State variables
+     */
     const { id } = useParams();
     const [isLoading, setLoading] = useState(true);
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
@@ -74,7 +80,7 @@ export default function AddMeal(props) {
     };
 
     /**
-     * Load sidebar and data.
+     * Load sidebar and data
      */
     useEffect(() => {
         props.setSidebarActiveItem('planner');

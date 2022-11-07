@@ -1,14 +1,14 @@
-/**********************************
- * ./assets/components/Planner.js *
- **********************************/
+/*************************************
+ * ./assets/pages/Planner/Planner.js *
+ *************************************/
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import Button from '../../components/Buttons';
 import Heading from '../../components/Heading';
 import Spinner from '../../components/Spinner';
-import Button from '../../components/Buttons';
 
 /**
  * Planner
@@ -16,9 +16,15 @@ import Button from '../../components/Buttons';
  * A Component for showing a list of all Meals.
  * Collects the data from the Day List API
  * in the /src/Controller/DayController.php.
+ * 
+ * @component
+ * @property {function} setSidebarActiveItem
+ * @property {function} setSidebarActionButton
  */
 export default function Planner(props) {
-    // State variables
+    /**
+     * State variables
+     */
     const [isLoading, setLoading] = useState(true);
     const [isShoppingListButtonVisible, setShoppingListButtonVisible] = useState(true);
     const [days, setDays] = useState([]);
@@ -106,7 +112,7 @@ export default function Planner(props) {
     };
 
     /**
-     * Loads sidebar and updates days.
+     * Load sidebar and updates days
      */
     useEffect(() => {
         props.setSidebarActiveItem('planner');
