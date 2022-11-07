@@ -1,5 +1,11 @@
 import React from "react";
 
+/**
+ * SkeletonText
+ * 
+ * A component that renders a text skeleton, 
+ * e.g. for loading screens.
+ */
 export default function SkeletonText() {
     return (
         <div role="status" className="space-y-2.5 animate-pulse max-w-lg">
