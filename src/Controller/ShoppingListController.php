@@ -16,6 +16,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ShoppingListController extends AbstractController
 {
+    /**
+     * ShoppingList API
+     *
+     * @param IngredientRepository $ingredientRepository
+     * @return Response
+     */
     #[Route('/api/shoppinglist', name: 'app_shoppinglist', methods: ['GET'])]
     public function index(IngredientRepository $ingredientRepository): Response
     {
@@ -77,6 +83,16 @@ class ShoppingListController extends AbstractController
         return new Response();
     }
 
+    /**
+     * ShoppingList Add API
+     *
+     * @param Request $request
+     * @param RecipeRepository $recipeRepository
+     * @param StorageRepository $storageRepository
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @return Response
+     */
     #[Route('/api/shoppinglist/add', name: 'app_shoppinglist_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
@@ -127,6 +143,16 @@ class ShoppingListController extends AbstractController
         return new Response();
     }
 
+    /**
+     * ShoppingList Add Ingredients API
+     *
+     * @param Request $request
+     * @param RecipeRepository $recipeRepository
+     * @param StorageRepository $storageRepository
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @return Response
+     */
     #[Route('/api/shoppinglist/ingredient', name: 'app_shoppinglist_ingredient', methods: ['GET', 'POST'])]
     public function ingredient(
         Request $request, 

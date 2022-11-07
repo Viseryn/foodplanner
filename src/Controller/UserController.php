@@ -10,6 +10,11 @@ use JMS\Serializer\SerializerBuilder;
 
 class UserController extends AbstractController
 {
+    /**
+     * User API
+     *
+     * @return Response
+     */
     #[Route('/api/user', name: 'app_user')]
     public function index(): Response
     {
