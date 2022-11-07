@@ -3,8 +3,6 @@
     "start_url": "/",
     "name": "FoodPlanner",
     "short_name": "FoodPlanner",
-    "background_color": "#ffffff",
-    "theme_color": "#ffffff",
     "orientation": "portrait",
     "icons": [
         {
