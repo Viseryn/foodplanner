@@ -4,8 +4,8 @@
     
 import React, { useEffect } from 'react';
 
-import Heading from './Heading';
-import Spinner from './Util';
+import Heading from '../../components/Heading';
+import Spinner from '../../components/Spinner';
 
 export default function Pantry(props) {
     useEffect(() => {

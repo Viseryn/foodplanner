@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Heading from './Heading';
-import Button from './Buttons';
-import SkeletonText from './SkeletonText';
+import Heading from '../../components/Heading';
+import Button from '../../components/Buttons';
+import SkeletonText from '../../components/SkeletonText';
 
 /**
  * Recipe

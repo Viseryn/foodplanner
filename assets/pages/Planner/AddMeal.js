@@ -6,10 +6,10 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import Heading from './Heading';
-import { InputLabel, RadioRow, SelectWidget } from './Forms';
-import Button, { SubmitButton } from './Buttons';
-import Spinner from './Util';
+import Heading from '../../components/Heading';
+import { InputLabel, RadioRow, SelectWidget } from '../../components/Forms';
+import Button, { SubmitButton } from '../../components/Buttons';
+import Spinner from '../../components/Spinner';
 
 /**
  * AddMeal

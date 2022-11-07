@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 
-import Sidebar from './Sidebar';
-import Planner from './Planner';
-import Recipes from './Recipes';
-import AddRecipe from './AddRecipe';
-import PageNotFound from './PageNotFound';
-import EditRecipe from "./EditRecipe";
-import Pantry from "./Pantry";
-import ShoppingList from "./ShoppingList";
-import AddMeal from "./AddMeal";
-import Login from "./Login";
-import Logout from "./Logout";
+import Sidebar from '../layouts/Sidebar';
 
+import Planner from '../pages/Planner/Planner';
+import AddMeal from '../pages/Planner/AddMeal';
+
+import Recipes from '../pages/Recipes/Recipes';
+import AddRecipe from '../pages/Recipes/AddRecipe';
+import EditRecipe from '../pages/Recipes/EditRecipe';
+
+import Pantry from '../pages/Pantry/Pantry';
+import ShoppingList from '../pages/ShoppingList/ShoppingList';
+import Login from '../pages/Login/Login';
+import Logout from '../pages/Logout/Logout';
+import PageNotFound from '../pages/PageNotFound/PageNotFound';
+
+/**
+ * App
+ */
 export default function App() {
     // Sidebar state variables
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
@@ -22,7 +28,7 @@ export default function App() {
         path: '#',
         label: '',
         onClickHandler: () => {},
-    }); // Maybe make each one its own state variable
+    }); 
 
     const setSidebarProps = {
         'setSidebarActiveItem': setSidebarActiveItem, 

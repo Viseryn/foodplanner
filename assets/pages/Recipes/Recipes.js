@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
 import Recipe from './Recipe';
-import Notification from './Notification';
+import Notification from '../../components/Notification';
 
 /**
  * Recipes

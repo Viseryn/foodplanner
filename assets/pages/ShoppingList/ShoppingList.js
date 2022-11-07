@@ -5,9 +5,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
-import Heading from './Heading';
-import Spinner from './Util';
-import Button from './Buttons';
+import Heading from '../../components/Heading';
+import Spinner from '../../components/Spinner';
+import Button from '../../components/Buttons';
 
 /**
  * ShoppingList

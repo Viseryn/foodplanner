@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Heading from './Heading';
-import Spinner from './Util';
-import Button from './Buttons';
+import Heading from '../../components/Heading';
+import Spinner from '../../components/Spinner';
+import Button from '../../components/Buttons';
 
 /**
  * Planner

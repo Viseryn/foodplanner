@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { SubmitButton } from './Buttons';
-import Heading from './Heading';
-import InputRow from './Forms';
-import Notification from './Notification';
-import Spinner from './Util';
+import { SubmitButton } from '../../components/Buttons';
+import Heading from '../../components/Heading';
+import InputRow from '../../components/Forms';
+import Notification from '../../components/Notification';
+import Spinner from '../../components/Spinner';
 
 /**
  * Login

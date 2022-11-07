@@ -6,10 +6,10 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Navigate, useParams } from 'react-router-dom';
 
-import Heading from './Heading';
-import InputRow, { SliderRow, TextareaRow } from './Forms';
-import Button, { SubmitButton } from './Buttons';
-import Spinner from './Util';
+import Heading from '../../components/Heading';
+import InputRow, { SliderRow, TextareaRow } from '../../components/Forms';
+import Button, { SubmitButton } from '../../components/Buttons';
+import Spinner from '../../components/Spinner';
 
 /**
  * EditRecipe
