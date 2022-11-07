@@ -8,9 +8,6 @@
 // Import CSS
 import './styles/app.scss';
 
-// Start the Stimulus application
-import './bootstrap';
-
 // Import SweetAlert
 import swal from 'sweetalert';
 
