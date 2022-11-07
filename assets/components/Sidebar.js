@@ -39,7 +39,7 @@ export default function Sidebar(props) {
         <>
             {/* SidebarDrawer */}
             <aside className={
-                'z-50 fixed h-full w-full ease-in-out duration-300' 
+                'z-50 fixed h-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
                 <div className="flex flex-col justify-end md:justify-start bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-80 px-6 pt-7 pb-3">
@@ -108,11 +108,11 @@ export default function Sidebar(props) {
                     </ul>
                 </div>
             </aside>
+            
             <div className={
                 'bg-gradient-to-r from-black/75 h-full w-full z-40 fixed duration-300'
                 + (isDrawerVisible ? '' : ' opacity-0 -translate-x-full')
-            }>
-            </div>
+            } onClick={() => setDrawerVisible(!isDrawerVisible)} />
 
             {/* Sidebar */}
             <aside className="z-30 bg-blue-50 dark:bg-[#1D252C] shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
