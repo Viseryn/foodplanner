@@ -42,8 +42,8 @@ export default function Sidebar(props) {
                 'z-50 fixed h-full w-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-80 px-6 py-7">
-                    <ul className="mb-2 block w-fit">
+                <div className="flex flex-col justify-end md:justify-start bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-80 px-6 pt-7 pb-3">
+                    <ul className="hidden md:block mb-2 w-fit">
                         <SidebarDrawerButton
                             isDrawerVisible={isDrawerVisible}
                             setDrawerVisible={setDrawerVisible} 
@@ -98,6 +98,14 @@ export default function Sidebar(props) {
                             isDrawerVisible={isDrawerVisible}
                         />
                     </ul>
+
+                    <ul className="md:hidden w-fit mt-10">
+                        <SidebarDrawerButton
+                            isDrawerVisible={isDrawerVisible}
+                            setDrawerVisible={setDrawerVisible} 
+                            icon="close"
+                        />
+                    </ul>
                 </div>
             </aside>
             <div className={
@@ -133,6 +141,11 @@ function SidebarContent(props) {
             </ul>
 
             <ul className="flex flex-row space-x-1 md:flex-col md:space-x-0 md:space-y-2">
+                <SidebarDrawerButton
+                    isDrawerVisible={props.isDrawerVisible}
+                    setDrawerVisible={props.setDrawerVisible} 
+                    className="md:hidden"
+                />
                 <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="planner"
@@ -168,7 +181,7 @@ function SidebarContent(props) {
 
 function SidebarDrawerButton(props) {
     return (
-        <li className="xl:w-min">
+        <li className={'xl:w-min ' + props?.className}>
             <div 
                 className="flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group cursor-pointer"
                 onClick={() => props.setDrawerVisible(!props.isDrawerVisible)}
