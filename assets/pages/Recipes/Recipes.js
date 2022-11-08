@@ -140,7 +140,7 @@ export default function Recipes(props) {
                     ? <RecipeListSkeleton isTwoColumns={isTwoColumns} />
                     : <>
                         {recipesFiltered.length === 0 &&
-                            <Notification color="red">Keine Rezepte gefunden.</Notification>
+                            <Notification color="red" title="Keine Rezepte gefunden." />
                         }
 
                         <div className={
