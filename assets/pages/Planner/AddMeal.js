@@ -6,10 +6,12 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import Button, { SubmitButton } from '../../components/Buttons';
-import Heading from '../../components/Heading';
-import { InputLabel, RadioRow, SelectWidget } from '../../components/Forms';
-import Spinner from '../../components/Spinner';
+import { InputLabel } from '../../components/form/Input';
+import { RadioRow } from '../../components/form/Radio';
+import { SelectWidget } from '../../components/form/Select';
+import Button, { SubmitButton } from '../../components/ui/Buttons';
+import Heading from '../../components/ui/Heading';
+import Spinner from '../../components/ui/Spinner';
 
 /**
  * AddMeal
@@ -101,7 +103,7 @@ export default function AddMeal(props) {
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             {isSubmitted && <Navigate to={'/planner'} />}
 
-            <Heading title='Mahlzeit hinzufügen' />
+            <Heading>Mahlzeit hinzufügen</Heading>
 
             {isLoadingSubmit ? (
                 <Spinner />
@@ -123,9 +125,10 @@ export default function AddMeal(props) {
                         )}
                     </div>
 
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
-                        <RadioRow name="meal[userGroup]" options={[
+                    <RadioRow 
+                        id="meal_userGroup" 
+                        label="Für wen ist die Mahlzeit?"
+                        options={[
                             {
                                 id: 'userGroup_benedikt',
                                 value: 3,
@@ -145,12 +148,13 @@ export default function AddMeal(props) {
                                 label: 'Alle',
                                 checked: 'checked',
                             },
-                        ]} />
-                    </div>
+                        ]} 
+                    />
 
-                    <div className="mb-6">
-                        <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
-                        <RadioRow name="meal[mealCategory]" options={[
+                    <RadioRow 
+                        id="meal_mealCategory" 
+                        label="Wann ist die Mahlzeit?"
+                        options={[
                             {
                                 id: 'mealCategory_breakfast',
                                 value: 1,
@@ -170,8 +174,8 @@ export default function AddMeal(props) {
                                 icon: 'ramen_dining',
                                 label: 'Abends',
                             },
-                        ]} />
-                    </div>
+                        ]} 
+                    />
 
                     <div className="mb-6">
                         <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />

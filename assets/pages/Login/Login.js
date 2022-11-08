@@ -5,11 +5,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { SubmitButton } from '../../components/Buttons';
-import InputRow from '../../components/Forms';
-import Heading from '../../components/Heading';
-import Notification from '../../components/Notification';
-import Spinner from '../../components/Spinner';
+import { InputRow } from '../../components/form/Input';
+import { SubmitButton } from '../../components/ui/Buttons';
+import Heading from '../../components/ui/Heading';
+import Notification from '../../components/ui/Notification';
+import Spinner from '../../components/ui/Spinner';
 
 /**
  * Login

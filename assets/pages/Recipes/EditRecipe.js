@@ -6,10 +6,12 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Navigate, useParams } from 'react-router-dom';
 
-import Heading from '../../components/Heading';
-import InputRow, { SliderRow, TextareaRow } from '../../components/Forms';
-import Button, { SubmitButton } from '../../components/Buttons';
-import Spinner from '../../components/Spinner';
+import { InputRow } from '../../components/form/Input';
+import { TextareaRow } from '../../components/form/Textarea';
+import { SliderRow } from '../../components/form/Slider';
+import Button, { SubmitButton } from '../../components/ui/Buttons';
+import Heading from '../../components/ui/Heading';
+import Spinner from '../../components/ui/Spinner';
 
 /**
  * EditRecipe
@@ -267,7 +269,7 @@ export class EditRecipe extends Component {
                     </>
                 ) : (
                     <>
-                        <Heading title={this.state.recipe.title} />
+                        <Heading>{this.state.recipe.title}</Heading>
                         <form 
                             className="max-w-[400px] md:max-w-[900px]"
                             onSubmit={this.handleSubmit}

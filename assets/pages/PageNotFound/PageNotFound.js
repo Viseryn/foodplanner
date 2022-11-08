@@ -3,7 +3,7 @@
  ***********************************************/
 
 import React, { useEffect } from 'react';
-import Notification from '../../components/Notification';
+import Notification from '../../components/ui/Notification';
 
 /**
  * PageNotFound

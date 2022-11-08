@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Button from '../../components/Buttons';
-import Heading from '../../components/Heading';
-import Spinner from '../../components/Spinner';
+import Button from '../../components/ui/Buttons';
+import Heading from '../../components/ui/Heading';
+import Spinner from '../../components/ui/Spinner';
 
 /**
  * Planner
@@ -131,7 +131,7 @@ export default function Planner(props) {
      */
     return (
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
-            <Heading title="Wochenplan" />
+            <Heading>Wochenplan</Heading>
 
             {isLoading ? (
                 <Spinner />

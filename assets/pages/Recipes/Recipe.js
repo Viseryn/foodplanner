@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Button from '../../components/Buttons';
-import Heading from '../../components/Heading';
-import SkeletonText from '../../components/SkeletonText';
+import Button from '../../components/ui/Buttons';
+import Heading from '../../components/ui/Heading';
+import TextParagraph from '../../components/skeleton/TextParagraph';
 
 /**
  * Recipe
@@ -86,7 +86,7 @@ export default function Recipe(props) {
                     <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2"></div>
                 </div>
                 : <div className="flex justify-between items-start">
-                    <Heading title={recipe.title} />
+                    <Heading>{recipe.title}</Heading>
 
                     <Link to="/recipes">
                         {/* Button for resetting two-column mode */}
@@ -121,16 +121,16 @@ export default function Recipe(props) {
                         <div className="animate-pulse self-center bg-gray-300 dark:bg-gray-700 w-48 h-2.5 rounded-full"></div>
                     </div>
 
-                    <SkeletonText />
+                    <TextParagraph />
                 </>
                 : <>
                     {recipe.ingredients.length > 0 &&
                         <div className="mb-10">
                             <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-3 rounded-xl">
                                 Zutaten für 
-                                {recipe.portionSize == 1 
+                                {recipe.portion_size == 1 
                                     ? ' eine Portion'
-                                    : ' ' + recipe.portionSize + ' Portionen'
+                                    : ' ' + recipe.portion_size + ' Portionen'
                                 }
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2">

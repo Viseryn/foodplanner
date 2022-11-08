@@ -1,11 +1,11 @@
-/***************************************
- * ./assets/components/SkeletonText.js *
- ***************************************/
+/*************************************************
+ * ./assets/components/skeleton/TextParagraph.js *
+ *************************************************/
 
 import React from 'react';
 
 /**
- * SkeletonText
+ * TextParagraph
  * 
  * A component that renders a text skeleton, 
  * e.g. for loading screens.
@@ -13,9 +13,9 @@ import React from 'react';
  * @component
  * 
  * @example
- * <SkeletonText />
+ * <TextParagraph />
  */
-export default function SkeletonText() {
+export default function TextParagraph() {
     return (
         <div role="status" className="space-y-2.5 animate-pulse max-w-lg">
             <div className="flex items-center space-x-2 w-full">

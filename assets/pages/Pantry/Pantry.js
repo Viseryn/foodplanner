@@ -4,8 +4,8 @@
     
 import React, { useEffect } from 'react';
 
-import Heading from '../../components/Heading';
-import Spinner from '../../components/Spinner';
+import Heading from '../../components/ui/Heading';
+import Spinner from '../../components/ui/Spinner';
 
 /**
  * Pantry

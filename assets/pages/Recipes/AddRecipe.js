@@ -6,9 +6,11 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
-import Heading from '../../components/Heading';
-import InputRow, { SliderRow, TextareaRow } from '../../components/Forms';
-import Button, { SubmitButton } from '../../components/Buttons';
+import { InputRow } from '../../components/form/Input';
+import { TextareaRow } from '../../components/form/Textarea';
+import { SliderRow } from '../../components/form/Slider';
+import Button, { SubmitButton } from '../../components/ui/Buttons';
+import Heading from '../../components/ui/Heading';
 
 /**
  * AddRecipe
@@ -112,7 +114,7 @@ export default class AddRecipe extends Component {
                     <Navigate to={'/recipe/' + this.state.newId} />
                 }
 
-                <Heading title='Rezept hinzufügen' />
+                <Heading>Rezept hinzufügen</Heading>
                 <form 
                     className="max-w-[400px] md:max-w-[900px]"
                     onSubmit={this.handleSubmit}

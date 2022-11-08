@@ -1,6 +1,6 @@
-/**********************************
- * ./assets/components/Buttons.js *
- **********************************/
+/*************************************
+ * ./assets/components/ui/Buttons.js *
+ *************************************/
 
 import React from 'react';
 import { Link } from 'react-router-dom';
