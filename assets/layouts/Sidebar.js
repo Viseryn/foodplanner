@@ -12,9 +12,9 @@ import axios from 'axios';
  * A layout component that renders the sidebar.
  * 
  * Break points for the sidebar:
- * < md: Sidebar is on the bottom.
- * < xl: Sidebar is on the side, but retracted.
- * > xl: Sidebar is on the side and extended.
+ * size < md: Sidebar is on the bottom.
+ * size < xl: Sidebar is on the side, but retracted.
+ * size > xl: Sidebar is on the side and extended.
  * 
  * @component
  * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
