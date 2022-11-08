@@ -346,7 +346,7 @@ function SidebarItem(props) {
     return (
         <li>
             {props.path ? (
-                <a href={props.path} className={linkStyle}>
+                <a href={props.path} className={linkStyle} target="_blank" rel="noopener noreferrer">
                     {SidebarItemContent}
                 </a>
             ) : (
