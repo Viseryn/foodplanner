@@ -32,6 +32,7 @@ export default function Notification(props) {
 
     return (
         <div className={notificationStyle}>
+            {/* <div className="text-red-700 text-green-700 text-yellow-700 text-blue-700 bg-red-200 bg-green-200 bg-yellow-200 bg-blue-200 dark:bg-red-900 dark:bg-green-900 dark:bg-yellow-900 dark:bg-blue-900"></div> */}
             <div className="flex items-center">
                 <span className="material-symbols-rounded mr-6">
                     {props.icon || 'info'}
