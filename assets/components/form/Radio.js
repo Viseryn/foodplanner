@@ -30,8 +30,6 @@ import { InputLabel } from "./Input";
  *         ...options
  *     ]}
  * />
- * 
- * @todo Add dark mode colors to the radio buttons.
  */
 function RadioWidget({
     id, 
@@ -52,7 +50,7 @@ function RadioWidget({
                     />
                     <label 
                         htmlFor={option.id}
-                        className="cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 bg-gray-100 hover:bg-blue-100 active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200"
+                        className="cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-100 dark:hover:bg-[#1D252C]/[.5] active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200 dark:peer-checked:bg-blue-400 dark:peer-checked:text-blue-800"
                     >
                         <span className="material-symbols-rounded">{option.icon}</span>
                         <span className="label-content mr-1 ml-3">{option.label}</span>
