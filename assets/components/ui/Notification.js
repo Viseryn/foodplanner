@@ -41,7 +41,7 @@ export default function Notification(props) {
                     <div className="font-semibold">{props.title}</div>
 
                     {props?.children !== undefined &&
-                        <div className="mt-2">
+                        <div className={props?.title !== undefined ? 'mt-2' : ''}>
                             {props.children}
                         </div>
                     }
