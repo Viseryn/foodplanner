@@ -1,13 +1,13 @@
-/**********************************
- * ./assets/components/Recipes.js *
- **********************************/
+/*************************************
+ * ./assets/pages/Recipes/Recipes.js *
+ *************************************/
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import axios from 'axios';
 
-import Recipe from './Recipe';
 import Notification from '../../components/Notification';
+import Recipe from './Recipe';
 
 /**
  * Recipes
@@ -15,18 +15,43 @@ import Notification from '../../components/Notification';
  * A Component for showing a list of all Recipes.
  * Collects the Recipe data from the Recipe List API
  * in the /src/Controller/RecipeController.php.
+ * 
+ * @component
+ * @property {function} setSidebarActiveItem
+ * @property {function} setSidebarActionButton
  */
 export default function Recipes(props) {
-    // ID parameter and current location
+    /**
+     * State variables
+     */
     const { id } = useParams();
     const location = useLocation();
-
-    // State variables
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [searchValue, setSearchValue] = useState('');
     const [isTwoColumns, setTwoColumns] = useState(id > 0);
     const [recipeId, setRecipeId] = useState(id);
+
+    /**
+     * Sidebar props for the Recipe component
+     */
+    const setSidebarProps = {
+        'setSidebarActiveItem': props.setSidebarActiveItem, 
+        'setSidebarActionButton': props.setSidebarActionButton,
+    };
+    
+    /**
+     * Search for user input in recipe list
+     */
+    const recipesFiltered = recipes.filter(recipe => {
+        if (searchValue === '') {
+            return recipe;
+        } else {
+            // Return true if recipe includes the search input value.
+            // Put both to lowercase, so the searchValue is not case-sensitive.
+            return recipe.title.toLowerCase().includes(searchValue.toLowerCase());
+        }
+    });
 
     /**
      * resetSAB
@@ -42,7 +67,9 @@ export default function Recipes(props) {
         }); 
     };
  
-    // When route changes to /recipes, close currently opened recipe
+    /**
+     * When route changes to /recipes, close currently opened recipe
+     */
     useEffect(() => {
         if (location.pathname === '/recipes') {
             setTwoColumns(false);
@@ -50,7 +77,9 @@ export default function Recipes(props) {
         }
     }, [location]);
 
-    // On render, do the following:
+    /**
+     * On render, do the following:
+     */
     useEffect(() => {
         // Load Sidebar
         props.setSidebarActiveItem('recipes');
@@ -69,23 +98,6 @@ export default function Recipes(props) {
                 setLoading(false);
             });
     }, []);
-    
-    // Search for user input in recipe list
-    const recipesFiltered = recipes.filter(recipe => {
-        if (searchValue === '') {
-            return recipe;
-        } else {
-            // Return true if recipe includes the search input value.
-            // Put both to lowercase, so the searchValue is not case-sensitive.
-            return recipe.title.toLowerCase().includes(searchValue.toLowerCase());
-        }
-    });
-
-    // Sidebar props. Needed for the Recipe component.
-    const setSidebarProps = {
-        'setSidebarActiveItem': props.setSidebarActiveItem, 
-        'setSidebarActionButton': props.setSidebarActionButton,
-    };
     
     /**
      * Render
@@ -184,6 +196,14 @@ export default function Recipes(props) {
 
 /**
  * RecipeListSkeleton
+ * 
+ * A component that renders a skeleton for the recipe list
+ * when it is still loading. 
+ * 
+ * @todo Make this a (partly) reusable component.
+ * 
+ * @component
+ * @property {boolean} isTwoColumn Whether two-column mode is active.
  */
 function RecipeListSkeleton(props) {
     return (

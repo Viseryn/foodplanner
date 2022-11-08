@@ -1,13 +1,13 @@
-/*********************************
- * ./assets/components/Recipe.js *
- *********************************/
+/************************************
+ * ./assets/pages/Recipes/Recipe.js *
+ ************************************/
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Heading from '../../components/Heading';
 import Button from '../../components/Buttons';
+import Heading from '../../components/Heading';
 import SkeletonText from '../../components/SkeletonText';
 
 /**
@@ -19,12 +19,33 @@ import SkeletonText from '../../components/SkeletonText';
  * 
  * This component is used in the Recipes component
  * and may not be used as standalone.
+ * 
+ * @component
+ * @property {function} setSidebarActiveItem
+ * @property {function} setSidebarActionButton
  */
 export default function Recipe(props) {
+    /**
+     * State variables
+     */
     const [recipe, setRecipe] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [showButton, setShowButton] = useState(true);
 
+    /**
+     * handleAddShoppingList
+     * 
+     * Handles a click on the "Add to Shopping List" button.
+     */
+    const handleAddShoppingList = () => {
+        const recipes = [recipe];
+        axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
+        setShowButton(false);
+    };
+
+    /** 
+     * Load sidebar and recipe data
+     */
     useEffect(() => {
         // Scroll to top
         window.scrollTo(0, 0);
@@ -50,42 +71,36 @@ export default function Recipe(props) {
             .catch(error => {
                 console.log(error);
                 window.location = "/error/404";
-            });
+            })
+        ;
     }, []);
 
     /**
-     * handleAddShoppingList
+     * Render
      */
-    const handleAddShoppingList = () => {
-        const recipes = [recipe];
-
-        axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
-
-        setShowButton(false);
-    };
-
-    // Render
     return (
         <>
+            {/* Title and close button */}
             {isLoading 
                 ? <div className="animate-pulse mb-10">
                     <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2"></div>
                 </div>
                 : <div className="flex justify-between items-start">
                     <Heading title={recipe.title} />
+
                     <Link to="/recipes">
-                    
-                    {/* Button for resetting two-column mode */}
-                    <span 
-                        className="hidden lg:block material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={() => { props.setTwoColumns(); }}
-                    >
-                        close
-                    </span>
+                        {/* Button for resetting two-column mode */}
+                        <span 
+                            className="hidden lg:block material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                            onClick={() => { props.setTwoColumns(); }}
+                        >
+                            close
+                        </span>
                     </Link>
                 </div>
             }
 
+            {/* Image */}
             {isLoading
                 ? <img className="animate-pulse rounded-3xl h-80 w-full mb-10 object-cover" src='/img/default.jpg' />
                 : <>
@@ -99,16 +114,52 @@ export default function Recipe(props) {
                 </>
             }
 
+            {/* Ingredients, instructions and buttons */}
             {isLoading
                 ? <>
                     <div className="flex bg-gray-100 dark:bg-[#1D252C] shadow-md h-12 font-bold px-6 py-3 mb-6 rounded-xl">
                         <div className="animate-pulse self-center bg-gray-300 dark:bg-gray-700 w-48 h-2.5 rounded-full"></div>
                     </div>
+
                     <SkeletonText />
                 </>
                 : <>
-                    <Ingredients portionSize={recipe.portion_size} ingredients={recipe.ingredients} />
-                    <Instructions instructions={recipe.instructions} />
+                    {recipe.ingredients.length > 0 &&
+                        <div className="mb-10">
+                            <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-3 rounded-xl">
+                                Zutaten für 
+                                {recipe.portionSize == 1 
+                                    ? ' eine Portion'
+                                    : ' ' + recipe.portionSize + ' Portionen'
+                                }
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2">
+                                {recipe.ingredients.map(ingredient =>
+                                    <div key={ingredient.id} className="px-6 pt-2">
+                                        {(ingredient.quantity_value ?? '')
+                                            + ' ' + (ingredient.quantity_unit ?? '')
+                                            + ' ' + ingredient.name}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    }
+
+                    {recipe.instructions.length > 0 &&
+                        <div className="mb-10">
+                            <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-5 rounded-xl">
+                                Zubereitung
+                            </div>
+                            <div className="space-y-2">
+                                {recipe.instructions.map((instruction, index) =>
+                                    <div key={instruction.id} className="flex px-6">
+                                        <span className="mr-2">{index + 1}.</span>
+                                        {instruction.instruction}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    }
 
                     {recipe.image === undefined && recipe.ingredients.length === 0 && recipe.instructions.length === 0 &&
                         <div className="text-gray-400 mb-10">
@@ -144,63 +195,4 @@ export default function Recipe(props) {
             }
         </>
     );
-}
-
-/**
- * Ingredients
- * 
- * Renders a heading and a list of ingredients.
- */
-function Ingredients(props) {
-    return (
-        <>
-            {props.ingredients.length > 0 &&
-                <div className="mb-10">
-                    <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-3 rounded-xl">
-                        Zutaten für 
-                        {props.portionSize == 1 
-                            ? ' eine Portion'
-                            : ' ' + props.portionSize + ' Portionen'
-                        }
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2">
-                        {props.ingredients.map(ingredient =>
-                            <div key={ingredient.id} className="px-6 pt-2">
-                                {(ingredient.quantity_value ?? '')
-                                    + ' ' + (ingredient.quantity_unit ?? '')
-                                    + ' ' + ingredient.name}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            }
-        </>
-    );
-}
-
-/**
- * Ingredients
- * 
- * Renders a heading and a list of instructions.
- */
-function Instructions(props) {
-    return (
-        <>
-            {props.instructions.length > 0 &&
-                <div className="mb-10">
-                    <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-5 rounded-xl">
-                        Zubereitung
-                    </div>
-                    <div className="space-y-2">
-                        {props.instructions.map((instruction, index) =>
-                            <div key={instruction.id} className="flex px-6">
-                                <span className="mr-2">{index + 1}.</span>
-                                {instruction.instruction}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            }
-        </>
-    )
 }
