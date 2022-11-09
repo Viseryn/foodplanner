@@ -54,6 +54,23 @@ export default function App() {
         'setSidebarActionButton': setSidebarActionButton,
     };
 
+    /**
+     * Keep recipes in global state variable
+     * and pass them as props to subcomponents.
+     */
+    const [recipes, setRecipes] = useState([]);
+    const [isLoadingRecipes, setLoadingRecipes] = useState(true);
+    const [recipeIndex, setRecipeIndex] = useState(-1);
+
+    const setRecipesProps = {
+        'recipes': recipes,
+        'setRecipes': setRecipes,
+        'isLoadingRecipes': isLoadingRecipes,
+        'setLoadingRecipes': setLoadingRecipes,
+        'recipeIndex': recipeIndex,
+        'setRecipeIndex': setRecipeIndex,
+    }
+
     /** 
      * Render
      */
@@ -72,10 +89,10 @@ export default function App() {
                     <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} />} />
                     <Route path="/pantry"           element={<Pantry        {...setSidebarProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps} />} />
-                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} />} />
-                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} />} />
-                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} />} />
-                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} />} />
+                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/login"            element={<Login         {...setSidebarProps} />} />
                     <Route path="/logout"           element={<Logout        {...setSidebarProps} />} />
                     <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
