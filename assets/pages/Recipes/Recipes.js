@@ -8,6 +8,7 @@ import axios from 'axios';
 
 import Notification from '../../components/ui/Notification';
 import Recipe from './Recipe';
+import RecipeListSkeleton from './components/RecipeListSkeleton';
 
 /**
  * Recipes
