@@ -20,6 +20,12 @@ import RecipeListSkeleton from './components/RecipeListSkeleton';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {arr} recipes 
+ * @property {function} setRecipes
+ * @property {boolean} isLoadingRecipes
+ * @property {function} setLoadingRecipes
+ * @property {number} recipeIndex
+ * @property {function} setRecipeIndex
  */
 export default function Recipes(props) {
     /**
@@ -27,11 +33,9 @@ export default function Recipes(props) {
      */
     const { id } = useParams();
     const location = useLocation();
-    const [recipes, setRecipes] = useState([]);
-    const [isLoading, setLoading] = useState(true);
+
     const [searchValue, setSearchValue] = useState('');
     const [isTwoColumns, setTwoColumns] = useState(id > 0);
-    const [recipeId, setRecipeId] = useState(id);
 
     /**
      * Sidebar props for the Recipe component
@@ -40,11 +44,23 @@ export default function Recipes(props) {
         'setSidebarActiveItem': props.setSidebarActiveItem, 
         'setSidebarActionButton': props.setSidebarActionButton,
     };
+
+    /**
+     * Recipe props 
+     */
+    const setRecipesProps = {
+        'recipes': props.recipes,
+        'setRecipes': props.setRecipes,
+        'isLoadingRecipes': props.isLoadingRecipes,
+        'setLoadingRecipes': props.setLoadingRecipes,
+        'recipeIndex': props.recipeIndex,
+        'setRecipeIndex': props.setRecipeIndex,
+    }
     
     /**
      * Search for user input in recipe list
      */
-    const recipesFiltered = recipes.filter(recipe => {
+    const recipesFiltered = props.recipes.filter(recipe => {
         if (searchValue === '') {
             return recipe;
         } else {
@@ -75,30 +91,65 @@ export default function Recipes(props) {
         if (location.pathname === '/recipes') {
             setTwoColumns(false);
             resetSAB();
-        }
+        } 
     }, [location]);
 
     /**
-     * On render, do the following:
+     * On first render, load sidebar and 
+     * reset SAB if no recipe is chosen.
      */
     useEffect(() => {
         // Load Sidebar
         props.setSidebarActiveItem('recipes');
 
         // Only load SAB if no Recipe is chosen
-        if (! recipeId > 0) { 
+        if (!id) { 
             resetSAB();
         }
-
-        // Call the Recipe List API and load the Recipe
-        // data into the state variable.
-        axios
-            .get('/api/recipes')
-            .then(response => {
-                setRecipes(JSON.parse(response.data));
-                setLoading(false);
-            });
     }, []);
+
+    /**
+     * Load recipes into global state when isLoadingRecipes 
+     * is true, e.g. on first render or after adding/editing
+     * a recipe.
+     */
+    useEffect(() => {
+        if (props.isLoadingRecipes) {
+            axios
+                .get('/api/recipes')
+                .then(response => {
+                    props.setRecipes(JSON.parse(response.data));
+                    props.setLoadingRecipes(false);
+                })
+            ;
+        }
+    }, [props.isLoadingRecipes]);
+
+    /**
+     * When recipes are loaded, on each re-render, 
+     * check if there is a recipe with the id parameter.
+     * If yes, set the index of that recipe to the 
+     * global state variable recipeIndex, which is 
+     * passed to <Recipe />. If no, redirect to an
+     * Error 404 page.
+     */
+    useEffect(() => {
+        if (!props.isLoadingRecipes) {
+            let returnVal;
+
+            props.recipes.forEach((recipe, index) => {
+                if (recipe.id == id) {
+                    returnVal = index;
+                }
+            });
+
+            if (returnVal >= 0) {
+                props.setRecipeIndex(returnVal);
+            } else if (id) {
+                window.location = "/error/404";
+            }
+        }
+    });
     
     /**
      * Render
@@ -137,7 +188,7 @@ export default function Recipes(props) {
                 </div>
 
                 {/* Recipe List */}
-                {isLoading
+                {props.isLoadingRecipes
                     ? <RecipeListSkeleton isTwoColumns={isTwoColumns} />
                     : <>
                         {recipesFiltered.length === 0 &&
@@ -152,7 +203,6 @@ export default function Recipes(props) {
                                 <div key={recipe.id} className="h-36 w-full shadow-md rounded-2xl transition duration-300">
                                     <div className="relative group cursor-pointer" onClick={() => {
                                         setTwoColumns(true);
-                                        setRecipeId(recipe.id);
                                     }}>
                                         <Link to={'/recipe/' + recipe.id}>
                                             <img 
@@ -181,13 +231,14 @@ export default function Recipes(props) {
                     {/* Pass a function setTwoColumns to the Recipe, so that it 
                         can deactive the two-column mode. Resets the SAB afterwards. */}
                     <Recipe 
-                        key={recipeId}
-                        id={recipeId} 
+                        key={id}
+                        id={id} 
                         setTwoColumns={() => {
                             setTwoColumns(false);
                             resetSAB();
                         }} 
                         {...setSidebarProps} 
+                        {...setRecipesProps}
                     />
                 </div>
             }

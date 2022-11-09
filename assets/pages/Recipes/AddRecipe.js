@@ -92,6 +92,8 @@ export default class AddRecipe extends Component {
                     newId: response.data.id,
                 }
             );
+
+            this.props.setLoadingRecipes(true);
         });
     }
     

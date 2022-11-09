@@ -21,16 +21,23 @@ import TextParagraph from '../../components/skeleton/TextParagraph';
  * and may not be used as standalone.
  * 
  * @component
+ * @property {number} id The id of the recipe.
+ * @property {function} setTwoColumns A function that sets the state isTwoColumns to false and resets the SAB.
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {arr} recipes 
+ * @property {function} setRecipes
+ * @property {boolean} isLoadingRecipes
+ * @property {function} setLoadingRecipes
+ * @property {number} recipeIndex
+ * @property {function} setRecipeIndex
  */
 export default function Recipe(props) {
     /**
      * State variables
      */
-    const [recipe, setRecipe] = useState([]);
-    const [isLoading, setLoading] = useState(true);
     const [showButton, setShowButton] = useState(true);
+    const [recipe, setRecipe] = useState([]);
 
     /**
      * handleAddShoppingList
@@ -44,12 +51,9 @@ export default function Recipe(props) {
     };
 
     /** 
-     * Load sidebar and recipe data
+     * Load sidebar
      */
     useEffect(() => {
-        // Scroll to top
-        window.scrollTo(0, 0);
-
         // Load sidebar
         props.setSidebarActiveItem('recipes');
         props.setSidebarActionButton({
@@ -59,21 +63,17 @@ export default function Recipe(props) {
             label: 'Bearbeiten',
         });
 
-        // Call the Recipe Show API and load the Recipe
-        // data into the state variable. Redirect to an 
-        // Error 404 page if the Recipe does not exist.
-        axios
-            .get('/api/recipe/' + props.id)
-            .then(response => {
-                setRecipe(JSON.parse(response.data));
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log(error);
-                window.location = "/error/404";
-            })
-        ;
+        // Scroll to top
+        window.scrollTo(0, 0);
     }, []);
+
+    /**
+     * Put the selected recipe in a local state 
+     * variable as an abbreviation.
+     */
+    useEffect(() => {
+        setRecipe(props.recipes[props.recipeIndex]);
+    });
 
     /**
      * Render
@@ -81,12 +81,12 @@ export default function Recipe(props) {
     return (
         <>
             {/* Title and close button */}
-            {isLoading 
+            {props.isLoadingRecipes || props.recipeIndex < 0
                 ? <div className="animate-pulse mb-10">
                     <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2"></div>
                 </div>
                 : <div className="flex justify-between items-start">
-                    <Heading>{recipe.title}</Heading>
+                    <Heading>{recipe?.title}</Heading>
 
                     <Link to="/recipes">
                         {/* Button for resetting two-column mode */}
@@ -101,13 +101,13 @@ export default function Recipe(props) {
             }
 
             {/* Image */}
-            {isLoading
+            {props.isLoadingRecipes || props.recipeIndex < 0
                 ? <img className="animate-pulse rounded-3xl h-80 w-full mb-10 object-cover" src='/img/default.jpg' />
                 : <>
-                    {recipe.image != null &&
+                    {recipe?.image != null &&
                         <img 
                             className="rounded-3xl h-80 object-cover mb-10 shadow-md hover:shadow-xl transition duration-300 w-full" 
-                            src={recipe.image.directory + recipe.image.filename}
+                            src={recipe?.image.directory + recipe?.image.filename}
                             alt={recipe}
                         />
                     }
@@ -115,7 +115,7 @@ export default function Recipe(props) {
             }
 
             {/* Ingredients, instructions and buttons */}
-            {isLoading
+            {props.isLoadingRecipes || props.recipeIndex < 0
                 ? <>
                     <div className="flex bg-gray-100 dark:bg-[#1D252C] shadow-md h-12 font-bold px-6 py-3 mb-6 rounded-xl">
                         <div className="animate-pulse self-center bg-gray-300 dark:bg-gray-700 w-48 h-2.5 rounded-full"></div>
@@ -124,17 +124,17 @@ export default function Recipe(props) {
                     <TextParagraph />
                 </>
                 : <>
-                    {recipe.ingredients.length > 0 &&
+                    {recipe?.ingredients?.length > 0 &&
                         <div className="mb-10">
                             <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-3 rounded-xl">
                                 Zutaten für 
-                                {recipe.portion_size == 1 
+                                {recipe?.portion_size == 1 
                                     ? ' eine Portion'
-                                    : ' ' + recipe.portion_size + ' Portionen'
+                                    : ' ' + recipe?.portion_size + ' Portionen'
                                 }
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2">
-                                {recipe.ingredients.map(ingredient =>
+                                {recipe?.ingredients.map(ingredient =>
                                     <div key={ingredient.id} className="px-6 pt-2">
                                         {(ingredient.quantity_value ?? '')
                                             + ' ' + (ingredient.quantity_unit ?? '')
@@ -145,13 +145,13 @@ export default function Recipe(props) {
                         </div>
                     }
 
-                    {recipe.instructions.length > 0 &&
+                    {recipe?.instructions?.length > 0 &&
                         <div className="mb-10">
                             <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-5 rounded-xl">
                                 Zubereitung
                             </div>
                             <div className="space-y-2">
-                                {recipe.instructions.map((instruction, index) =>
+                                {recipe?.instructions.map((instruction, index) =>
                                     <div key={instruction.id} className="flex px-6">
                                         <span className="mr-2">{index + 1}.</span>
                                         {instruction.instruction}
@@ -161,7 +161,7 @@ export default function Recipe(props) {
                         </div>
                     }
 
-                    {recipe.image === undefined && recipe.ingredients.length === 0 && recipe.instructions.length === 0 &&
+                    {recipe?.image === undefined && recipe?.ingredients?.length === 0 && recipe?.instructions?.length === 0 &&
                         <div className="text-gray-400 mb-10">
                             Hier gibt es noch nichts zu sehen.
                         </div>
@@ -170,7 +170,7 @@ export default function Recipe(props) {
                     <div className="flex justify-end gap-4">
                         <div className="hidden md:block">
                             <Button 
-                                to={'/recipe/' + recipe.id + '/edit'}
+                                to={'/recipe/' + recipe?.id + '/edit'}
                                 icon="drive_file_rename_outline"
                                 label="Bearbeiten"
                                 style="transparent"

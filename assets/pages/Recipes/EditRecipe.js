@@ -206,9 +206,11 @@ export class EditRecipe extends Component {
                 this.setState({
                     isSubmittedSuccessfully: true,
                     newId: response.data.id,
-                }
-            );
-        });
+                });
+
+                this.props.setLoadingRecipes(true);
+            }
+        );
     }
 
     /**
