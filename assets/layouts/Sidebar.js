@@ -207,17 +207,17 @@ function SidebarContent(props) {
                     icon="fastfood"
                     label="Rezepte"
                 />
-                {/* <SidebarItem 
-                    sidebarActiveItem={props.sidebarActiveItem}
-                    id="pantry"
-                    icon="kitchen"
-                    label="Vorratskammer"
-                /> */}
                 <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
                     id="shoppinglist"
                     icon="shopping_cart"
                     label="Einkaufsliste"
+                />
+                <SidebarItem 
+                    sidebarActiveItem={props.sidebarActiveItem}
+                    id="pantry"
+                    icon="kitchen"
+                    label="Vorratskammer"
                 />
             </ul>
                 
