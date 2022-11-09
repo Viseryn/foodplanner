@@ -71,22 +71,40 @@ export class EditRecipe extends Component {
      * Error 404 page if the Recipe does not exist.
      * 
      * @param {id} id 
+     * @todo Not working on fresh reload
      */
     getRecipe(id) {
-        axios
-        .get('/api/recipe/' + id)
-        .then(
-            recipe => {
-                this.setState({ 
-                    recipe: JSON.parse(recipe.data), 
-                    loading: false
+
+        if (this.props.isLoadingRecipes) {
+            axios
+                .get('/api/recipes')
+                .then(response => {
+                    this.props.setRecipes(JSON.parse(response.data));
+                    this.props.setLoadingRecipes(false);
                 })
+            ;
+        }
+
+        if (!this.props.isLoadingRecipes) {
+            let returnVal;
+
+            this.props.recipes.forEach((recipe, index) => {
+                if (recipe.id == id) {
+                    returnVal = index;
+                }
+            });
+
+            if (returnVal >= 0) {
+                this.props.setRecipeIndex(returnVal);
+            } else if (id) {
+                window.location = "/error/404";
             }
-        )
-        .catch((err) => {
-            console.log(err);
-            window.location = "/error/404";
-        });
+        }
+
+        this.setState({
+            recipe: this.props.recipes[this.props.recipeIndex],
+            loading: false,
+        })
     }
 
     /**
@@ -107,7 +125,7 @@ export class EditRecipe extends Component {
         let ingredients = '';
         let l = arr?.length;
 
-        arr.map((ingredient, i) => {
+        arr?.map((ingredient, i) => {
             let q = '' + (ingredient.quantity_value ?? '');
 
             if (q !== '' && ingredient?.quantity_unit !== '') {
@@ -146,7 +164,7 @@ export class EditRecipe extends Component {
         let instructions = '';
         let l = arr?.length;
 
-        arr.map((instruction, i) => {
+        arr?.map((instruction, i) => {
             if (l == i + 1) { 
                 instructions += instruction.instruction;
             } else {
@@ -201,7 +219,7 @@ export class EditRecipe extends Component {
         const formData = new FormData(event.target);
         event.preventDefault();
 
-        axios.post('/api/recipe/' + this.state.recipe.id + '/edit', formData).then(
+        axios.post('/api/recipe/' + this.state.recipe?.id + '/edit', formData).then(
             response => {
                 this.setState({
                     isSubmittedSuccessfully: true,
@@ -265,13 +283,13 @@ export class EditRecipe extends Component {
                     <Navigate to="/recipes" />
                 }
 
-                {this.state.loading ? (
+                {this.props.isLoadingRecipes ? (
                     <>
                         <Spinner />
                     </>
                 ) : (
                     <>
-                        <Heading>{this.state.recipe.title}</Heading>
+                        <Heading>{this.state.recipe?.title}</Heading>
                         <form 
                             className="max-w-[400px] md:max-w-[900px]"
                             onSubmit={this.handleSubmit}
@@ -285,11 +303,12 @@ export class EditRecipe extends Component {
                                         inputProps={{
                                             required: 'required', 
                                             maxLength: 255,
-                                            defaultValue: this.state.recipe.title
+                                            defaultValue: this.state.recipe?.title
                                         }}
                                     />
 
                                     <SliderRow
+                                        key={this.state.recipe?.id}
                                         id="recipe_portionSize"
                                         label="Wie viele Portionen?"
                                         sliderProps={{
@@ -297,7 +316,7 @@ export class EditRecipe extends Component {
                                             max: 10,
                                             step: 1,
                                             marks: marks,
-                                            defaultValue: this.state.recipe.portion_size
+                                            defaultValue: this.state.recipe?.portion_size
                                         }}
                                     />
 
@@ -332,7 +351,7 @@ export class EditRecipe extends Component {
                                             }
                                         </div>
 
-                                        {this.state.recipe.image != null &&
+                                        {this.state.recipe?.image != null &&
                                             <label htmlFor="recipe_image_remove" className="inline-flex relative items-center cursor-pointer">
                                                 <input type="checkbox" value="" id="recipe_image_remove" name="recipe[image_remove]" className="sr-only peer" onChange={(e) => this.handleFileRemove(e)} />
                                                 <div className="w-11 h-6 bg-gray-100 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -344,17 +363,17 @@ export class EditRecipe extends Component {
 
                                 <div className="">
                                     <div className="text-sm font-semibold block mb-2">Aktuelles Bild</div>
-                                    {this.state.recipe.image != null 
+                                    {this.state.recipe?.image != null 
                                         ? <>
                                             {this.state.isUploadButtonVisible
                                                 ? <img 
                                                     className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300" 
-                                                    src={this.state.recipe.image.directory + this.state.recipe.image.filename}
+                                                    src={this.state.recipe?.image.directory + this.state.recipe?.image.filename}
                                                     alt={this.state.recipe}
                                                 />
                                                 : <img 
                                                     className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-25" 
-                                                    src={this.state.recipe.image.directory + this.state.recipe.image.filename}
+                                                    src={this.state.recipe?.image.directory + this.state.recipe?.image.filename}
                                                     alt={this.state.recipe}
                                                 />
                                             }
@@ -375,7 +394,7 @@ export class EditRecipe extends Component {
                                     textareaProps={{
                                         rows: 10, 
                                         placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
-                                        defaultValue: this.getIngredients(this.state.recipe.ingredients)
+                                        defaultValue: this.getIngredients(this.state.recipe?.ingredients)
                                     }}
                                     className=""
                                 />
@@ -385,7 +404,7 @@ export class EditRecipe extends Component {
                                     textareaProps={{
                                         rows: 10,
                                         placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
-                                        defaultValue: this.getInstructions(this.state.recipe.instructions)
+                                        defaultValue: this.getInstructions(this.state.recipe?.instructions)
                                     }}
                                     className=""
                                 />
@@ -394,14 +413,14 @@ export class EditRecipe extends Component {
                             <div className="flex justify-end gap-4">
                                 <div className="hidden md:block">
                                     <Button
-                                        to={'/recipe/' + this.state.recipe.id}
+                                        to={'/recipe/' + this.state.recipe?.id}
                                         icon="redo"
                                         label="Zurück"
                                         style="transparent"
                                     />
                                 </div>
                                 <Button
-                                    onClick={() => this.deleteRecipe(this.state.recipe.id)}
+                                    onClick={() => this.deleteRecipe(this.state.recipe?.id)}
                                     icon="delete"
                                     label="Löschen"
                                     style="inverse"
