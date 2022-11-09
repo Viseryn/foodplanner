@@ -35,7 +35,10 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
  */
 export default function App() {
     /**
-     * Sidebar state variables
+     * Sidebar configuration (active item, action button) are kept 
+     * in global state variables.
+     * Sidebar setters will be passed as props to subcomponents, so 
+     * that each subcomponent can alter the sidebar state variables.
      */
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
     const [sidebarActionButton, setSidebarActionButton] = useState({
@@ -46,10 +49,6 @@ export default function App() {
         onClickHandler: () => {},
     }); 
 
-    /**
-     * Sidebar setters will be passed as props to subcomponents, so 
-     * that each subcomponent can alter the sidebar state variables.
-     */
     const setSidebarProps = {
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
