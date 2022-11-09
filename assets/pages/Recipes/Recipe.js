@@ -45,27 +45,37 @@ export default function Recipe(props) {
      * Handles a click on the "Add to Shopping List" button.
      */
     const handleAddShoppingList = () => {
-        const recipes = [recipe];
+        const recipes = [props.recipes[props.recipeIndex]];
         axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
         setShowButton(false);
     };
 
     /** 
      * Load sidebar
+     * @todo not working.
      */
     useEffect(() => {
         // Load sidebar
         props.setSidebarActiveItem('recipes');
-        props.setSidebarActionButton({
-            visible: true, 
-            icon: 'drive_file_rename_outline', 
-            path: '/recipe/' + props.id + '/edit', 
-            label: 'Bearbeiten',
-        });
 
         // Scroll to top
         window.scrollTo(0, 0);
     }, []);
+
+    /**
+     * Update SidebarActionButton when recipe changes
+     * or button is clicked (i.e., showButton is set to false).
+     */
+    useEffect(() => {
+        if (!props.isLoadingRecipes) {
+            props.setSidebarActionButton({
+                visible: true, 
+                icon: showButton ? 'add_shopping_cart' : 'done', 
+                label: showButton ? 'Zur Einkaufsliste' : 'Erledigt!',
+                onClickHandler: handleAddShoppingList,
+            });
+        }
+    }, [recipe, showButton]);
 
     /**
      * Put the selected recipe in a local state 
@@ -77,6 +87,7 @@ export default function Recipe(props) {
 
     /**
      * Render
+     * @todo Maybe move edit button to the top
      */
     return (
         <>
@@ -167,29 +178,13 @@ export default function Recipe(props) {
                         </div>
                     }
 
-                    <div className="flex justify-end gap-4">
-                        <div className="hidden md:block">
-                            <Button 
-                                to={'/recipe/' + recipe?.id + '/edit'}
-                                icon="drive_file_rename_outline"
-                                label="Bearbeiten"
-                                style="transparent"
-                            />
-                        </div>
-                        {showButton ? (
-                            <Button 
-                                to="#"
-                                label="Zur Einkaufsliste hinzufügen"
-                                icon="add_shopping_cart"
-                                onClick={handleAddShoppingList}
-                            />
-                        ) : (
-                            <Button 
-                                to="#"
-                                label="Erledigt!"
-                                icon="done"
-                            />
-                        )}
+                    <div className="flex justify-end">
+                        <Button 
+                            to={'/recipe/' + recipe?.id + '/edit'}
+                            icon="drive_file_rename_outline"
+                            label="Bearbeiten"
+                            style="transparent"
+                        />
                     </div>
                 </>
             }
