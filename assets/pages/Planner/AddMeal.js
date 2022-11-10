@@ -33,7 +33,6 @@ export default function AddMeal(props) {
     const [isLoading, setLoading] = useState(true);
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
     const [isSubmitted, setSubmitted] = useState(false);
-    const [recipes, setRecipes] = useState([]);
     const [days, setDays] = useState([]);
 
     /**
@@ -44,17 +43,10 @@ export default function AddMeal(props) {
      */
     const getData = () => {
         axios
-            .get('/api/recipes')
-            .then(recipes => {
-                setRecipes(JSON.parse(recipes.data));
-                
-                axios
-                    .get('/api/days')
-                    .then(days => {
-                        setDays(JSON.parse(days.data));
-                        setLoading(false);
-                    })
-                ;
+            .get('/api/days')
+            .then(days => {
+                setDays(JSON.parse(days.data));
+                setLoading(false);
             })
         ;
     }
@@ -179,7 +171,7 @@ export default function AddMeal(props) {
 
                     <div className="mb-6">
                         <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
-                        {isLoading ? (
+                        {props.isLoadingRecipes ? (
                             <div role="status" className="max-w-sm animate-pulse">
                                 <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
                                 <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
@@ -187,7 +179,7 @@ export default function AddMeal(props) {
                         ) : (
                             <SelectWidget
                                 id="meal_recipe"
-                                options={recipes}
+                                options={props.recipes}
                                 required="required"
                             />
                         )}

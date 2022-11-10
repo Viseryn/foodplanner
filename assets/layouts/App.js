@@ -2,8 +2,9 @@
  * ./assets/layouts/App.js *
  ***************************/
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import axios from "axios";
 
 import Sidebar from '../layouts/Sidebar';
 
@@ -36,7 +37,10 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
  */
 export default function App() {
     /**
-     * Sidebar state variables
+     * Sidebar configuration (active item, action button) are kept 
+     * in global state variables.
+     * Sidebar setters will be passed as props to subcomponents, so 
+     * that each subcomponent can alter the sidebar state variables.
      */
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
     const [sidebarActionButton, setSidebarActionButton] = useState({
@@ -47,14 +51,44 @@ export default function App() {
         onClickHandler: () => {},
     }); 
 
-    /**
-     * Sidebar setters will be passed as props to subcomponents, so 
-     * that each subcomponent can alter the sidebar state variables.
-     */
     const setSidebarProps = {
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
     };
+
+    /**
+     * Keep recipes in global state variable
+     * and pass them as props to subcomponents.
+     */
+    const [recipes, setRecipes] = useState([]);
+    const [isLoadingRecipes, setLoadingRecipes] = useState(true);
+    const [recipeIndex, setRecipeIndex] = useState(-1);
+
+    const setRecipesProps = {
+        'recipes': recipes,
+        'setRecipes': setRecipes,
+        'isLoadingRecipes': isLoadingRecipes,
+        'setLoadingRecipes': setLoadingRecipes,
+        'recipeIndex': recipeIndex,
+        'setRecipeIndex': setRecipeIndex,
+    }
+
+    /**
+     * Load recipes into global state when isLoadingRecipes 
+     * is true, e.g. on first render or after adding/editing
+     * a recipe.
+     */
+    useEffect(() => {
+        if (isLoadingRecipes) {
+            axios
+                .get('/api/recipes')
+                .then(response => {
+                    setRecipes(JSON.parse(response.data));
+                    setLoadingRecipes(false);
+                })
+            ;
+        }
+    }, [isLoadingRecipes]);
 
     /** 
      * Render
@@ -70,13 +104,14 @@ export default function App() {
                 <Routes>
                     <Route path="/"                 element={<Planner       {...setSidebarProps} />} />
                     <Route path="/planner"          element={<Planner       {...setSidebarProps} />} />
+                    <Route path="/pantry"           element={<Pantry        {...setSidebarProps} />} />
                     <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps} />} />
-                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} />} />
-                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} />} />
-                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} />} />
-                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} />} />
+                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/login"            element={<Login         {...setSidebarProps} />} />
                     <Route path="/logout"           element={<Logout        {...setSidebarProps} />} />
                     <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
