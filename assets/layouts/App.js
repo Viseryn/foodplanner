@@ -106,6 +106,8 @@ export default function App() {
                     <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} />} />
                     <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} />} />
                     <Route path="/pantry"           element={<Pantry        {...setSidebarProps} />} />
+                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps} />} />
                     <Route path="/recipes"          element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} {...setRecipesProps} />} />
