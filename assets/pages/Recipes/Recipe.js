@@ -95,7 +95,6 @@ export default function Recipe(props) {
 
     /**
      * Render
-     * @todo Maybe move edit button to the top
      */
     return (
         <>
@@ -107,15 +106,24 @@ export default function Recipe(props) {
                 : <div className="flex justify-between items-start">
                     <Heading>{recipe?.title}</Heading>
 
-                    <Link to="/recipes">
-                        {/* Button for resetting two-column mode */}
-                        <span 
-                            className="hidden lg:block material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                            onClick={() => { props.setTwoColumns(); }}
-                        >
-                            close
-                        </span>
-                    </Link>
+                    <div className="flex justify-between">
+                        <Link to={'/recipe/' + recipe?.id + '/edit'}>
+                            <span 
+                                className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                            >
+                                drive_file_rename_outline
+                            </span>
+                        </Link>
+                        <Link to="/recipes">
+                            {/* Button for resetting two-column mode */}
+                            <span 
+                                className="hidden md:block material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                                onClick={() => { props.setTwoColumns(); }}
+                            >
+                                close
+                            </span>
+                        </Link>
+                    </div>
                 </div>
             }
 
@@ -165,7 +173,7 @@ export default function Recipe(props) {
                     }
 
                     {recipe?.instructions?.length > 0 &&
-                        <div className="mb-10">
+                        <div className="mb-6">
                             <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-5 rounded-xl">
                                 Zubereitung
                             </div>
@@ -181,19 +189,10 @@ export default function Recipe(props) {
                     }
 
                     {recipe?.image === undefined && recipe?.ingredients?.length === 0 && recipe?.instructions?.length === 0 &&
-                        <div className="text-gray-400 mb-10">
+                        <div className="text-gray-400 mb-6">
                             Hier gibt es noch nichts zu sehen.
                         </div>
                     }
-
-                    <div className="flex justify-end">
-                        <Button 
-                            to={'/recipe/' + recipe?.id + '/edit'}
-                            icon="drive_file_rename_outline"
-                            label="Bearbeiten"
-                            style="transparent"
-                        />
-                    </div>
                 </>
             }
         </>
