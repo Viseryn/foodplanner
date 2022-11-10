@@ -14,10 +14,11 @@ import Recipes from '../pages/Recipes/Recipes';
 import AddRecipe from '../pages/Recipes/AddRecipe';
 import EditRecipe from '../pages/Recipes/EditRecipe';
 
-import Pantry from '../pages/Pantry/Pantry';
 import ShoppingList from '../pages/ShoppingList/ShoppingList';
+
 import Login from '../pages/Login/Login';
 import Logout from '../pages/Logout/Logout';
+
 import PageNotFound from '../pages/PageNotFound/PageNotFound';
 
 /**
@@ -69,9 +70,8 @@ export default function App() {
                 <Routes>
                     <Route path="/"                 element={<Planner       {...setSidebarProps} />} />
                     <Route path="/planner"          element={<Planner       {...setSidebarProps} />} />
-                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} />} />
-                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} />} />
-                    <Route path="/pantry"           element={<Pantry        {...setSidebarProps} />} />
+                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps} />} />
                     <Route path="/recipes"          element={<Recipes       {...setSidebarProps} />} />
                     <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} />} />
