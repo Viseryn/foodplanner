@@ -109,23 +109,6 @@ export default function Recipes(props) {
     }, []);
 
     /**
-     * Load recipes into global state when isLoadingRecipes 
-     * is true, e.g. on first render or after adding/editing
-     * a recipe.
-     */
-    useEffect(() => {
-        if (props.isLoadingRecipes) {
-            axios
-                .get('/api/recipes')
-                .then(response => {
-                    props.setRecipes(JSON.parse(response.data));
-                    props.setLoadingRecipes(false);
-                })
-            ;
-        }
-    }, [props.isLoadingRecipes]);
-
-    /**
      * When recipes are loaded, on each re-render, 
      * check if there is a recipe with the id parameter.
      * If yes, set the index of that recipe to the 
