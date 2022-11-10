@@ -36,6 +36,7 @@ export default function Recipe(props) {
     /**
      * State variables
      */
+    const [buttonCounter, setButtonCounter] = useState(0);
     const [showButton, setShowButton] = useState(true);
     const [recipe, setRecipe] = useState([]);
 
@@ -48,11 +49,13 @@ export default function Recipe(props) {
         const recipes = [props.recipes[props.recipeIndex]];
         axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
         setShowButton(false);
+        setButtonCounter(buttonCounter => {
+            return buttonCounter + 1;
+        });
     };
 
     /** 
      * Load sidebar
-     * @todo not working.
      */
     useEffect(() => {
         // Load sidebar
@@ -71,11 +74,16 @@ export default function Recipe(props) {
             props.setSidebarActionButton({
                 visible: true, 
                 icon: showButton ? 'add_shopping_cart' : 'done', 
-                label: showButton ? 'Zur Einkaufsliste' : 'Erledigt!',
+                label: showButton 
+                    ? 'Zur Einkaufsliste' 
+                    : ('Erledigt!' + (buttonCounter > 1 
+                        ? ' (' + buttonCounter + ')' 
+                        : '')
+                    ),
                 onClickHandler: handleAddShoppingList,
             });
         }
-    }, [recipe, showButton]);
+    }, [recipe, showButton, buttonCounter]);
 
     /**
      * Put the selected recipe in a local state 
