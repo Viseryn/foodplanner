@@ -30,8 +30,6 @@ import Spinner from '../../components/ui/Spinner';
  * @property {function} setLoadingRecipes
  * @property {number} recipeIndex
  * @property {function} setRecipeIndex
- * 
- * @todo Better loading screen on submit
  */
 export default function EditRecipe(props) {
     /**
@@ -42,6 +40,7 @@ export default function EditRecipe(props) {
     const [filename, setFilename] = useState('Datei auswählen');
     const [recipe, setRecipe] = useState([]);
     const [isSubmittedSuccessfully, setSubmittedSuccessfully] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const [isDeleted, setDeleted] = useState(false);
     const [isUploadButtonVisible, setUploadButtonVisible] = useState(true);
     const [newId, setNewId] = useState(0);
@@ -205,6 +204,8 @@ export default function EditRecipe(props) {
         const formData = new FormData(event.target);
         event.preventDefault();
 
+        setLoading(true);
+
         axios
             .post('/api/recipe/' + recipe?.id + '/edit', formData)
             .then(response => {
@@ -272,7 +273,7 @@ export default function EditRecipe(props) {
                 <Navigate to="/recipes" />
             }
 
-            {props.isLoadingRecipes ? (
+            {props.isLoadingRecipes || isLoading ? (
                 <>
                     <Spinner />
                 </>

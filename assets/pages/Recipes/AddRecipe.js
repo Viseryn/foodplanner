@@ -11,6 +11,7 @@ import { TextareaRow } from '../../components/form/Textarea';
 import { SliderRow } from '../../components/form/Slider';
 import Button, { SubmitButton } from '../../components/ui/Buttons';
 import Heading from '../../components/ui/Heading';
+import Spinner from '../../components/ui/Spinner';
 
 /**
  * AddRecipe
@@ -29,8 +30,6 @@ import Heading from '../../components/ui/Heading';
  * @property {function} setLoadingRecipes
  * @property {number} recipeIndex
  * @property {function} setRecipeIndex
- * 
- * @todo Better loading screen on submit
  */
 export default function AddRecipe(props) {
     /**
@@ -38,6 +37,7 @@ export default function AddRecipe(props) {
      */
     const [filename, setFilename] = useState('Datei auswählen');
     const [isSubmittedSuccessfully, setSubmittedSuccessfully] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const [newId, setNewId] = useState(0);
 
     /**
@@ -83,6 +83,8 @@ export default function AddRecipe(props) {
         const formData = new FormData(event.target);
         event.preventDefault();
 
+        setLoading(true);
+
         axios
             .post('/api/recipe/add', formData)
             .then(response => {
@@ -115,87 +117,93 @@ export default function AddRecipe(props) {
                 <Navigate to={'/recipe/' + newId} />
             }
 
-            <Heading>Rezept hinzufügen</Heading>
-            <form 
-                className="max-w-[400px] md:max-w-[900px]"
-                onSubmit={handleSubmit}
-            >
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
-                    <div>
-                        <InputRow
-                            id="recipe_title"
-                            label="Titel"
-                            inputProps={{required: 'required', maxLength: 255}}
-                            className=""
-                        />
-                    </div>
-                </div>
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <>
+                    <Heading>Rezept hinzufügen</Heading>
+                    <form 
+                        className="max-w-[400px] md:max-w-[900px]"
+                        onSubmit={handleSubmit}
+                    >
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
+                            <div>
+                                <InputRow
+                                    id="recipe_title"
+                                    label="Titel"
+                                    inputProps={{required: 'required', maxLength: 255}}
+                                    className=""
+                                />
+                            </div>
+                        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
-                    <SliderRow
-                        id="recipe_portionSize"
-                        label="Wie viele Portionen?"
-                        sliderProps={{
-                            min: 1,
-                            max: 10,
-                            step: 1,
-                            marks: marks
-                        }}
-                        className=""
-                    />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
+                            <SliderRow
+                                id="recipe_portionSize"
+                                label="Wie viele Portionen?"
+                                sliderProps={{
+                                    min: 1,
+                                    max: 10,
+                                    step: 1,
+                                    marks: marks
+                                }}
+                                className=""
+                            />
 
-                    <div>
-                        <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
-                        <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-200 dark:hover:bg-[#1D252C]/[.6] active:bg-blue-300 active:text-blue-800">
-                            <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                            <span className="label-content mr-2 ml-3">{filename}</span>
-                        </label>
-                        <input 
-                            type="file" id="recipe_image" name="recipe[image]" 
-                            className="file-input hidden" 
-                            onChange={(e) => handleFilePick(e)}
-                        />
-                    </div>
-                </div>
+                            <div>
+                                <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
+                                <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-200 dark:hover:bg-[#1D252C]/[.6] active:bg-blue-300 active:text-blue-800">
+                                    <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
+                                    <span className="label-content mr-2 ml-3">{filename}</span>
+                                </label>
+                                <input 
+                                    type="file" id="recipe_image" name="recipe[image]" 
+                                    className="file-input hidden" 
+                                    onChange={(e) => handleFilePick(e)}
+                                />
+                            </div>
+                        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
-                    <TextareaRow
-                        id="recipe_ingredients"
-                        label="Zutaten"
-                        textareaProps={{
-                            rows: 10, 
-                            placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"
-                        }}
-                        className=""
-                    />
-                    <TextareaRow 
-                        id="recipe_instructions"
-                        label="Zubereitung"
-                        textareaProps={{
-                            rows: 10,
-                            placeholder: "Schreibe jeden Schritt in eine eigene Zeile."
-                        }}
-                        className=""
-                    />
-                </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
+                            <TextareaRow
+                                id="recipe_ingredients"
+                                label="Zutaten"
+                                textareaProps={{
+                                    rows: 10, 
+                                    placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"
+                                }}
+                                className=""
+                            />
+                            <TextareaRow 
+                                id="recipe_instructions"
+                                label="Zubereitung"
+                                textareaProps={{
+                                    rows: 10,
+                                    placeholder: "Schreibe jeden Schritt in eine eigene Zeile."
+                                }}
+                                className=""
+                            />
+                        </div>
 
-                <div className="flex justify-end gap-4">
-                    <div className="hidden md:block">
-                        <Button
-                            to="/recipes"
-                            icon="redo"
-                            label="Zurück"
-                            style="transparent"
-                        />
-                    </div>
-                    <SubmitButton 
-                        icon="add" 
-                        label="Speichern" 
-                        elevated={true}
-                    />
-                </div>
-            </form>
+                        <div className="flex justify-end gap-4">
+                            <div className="hidden md:block">
+                                <Button
+                                    to="/recipes"
+                                    icon="redo"
+                                    label="Zurück"
+                                    style="transparent"
+                                />
+                            </div>
+                            <SubmitButton 
+                                icon="add" 
+                                label="Speichern" 
+                                elevated={true}
+                            />
+                        </div>
+                    </form>
+                </>
+            )}
         </div>
     );
 }
