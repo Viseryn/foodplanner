@@ -29,6 +29,8 @@ import Heading from '../../components/ui/Heading';
  * @property {function} setLoadingRecipes
  * @property {number} recipeIndex
  * @property {function} setRecipeIndex
+ * 
+ * @todo Better loading screen on submit
  */
 export default function AddRecipe(props) {
     /**
