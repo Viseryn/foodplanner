@@ -2,7 +2,7 @@
  * ./assets/components/EditRecipe.js *
  *************************************/
     
-import React, {Component} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate, useParams } from 'react-router-dom';
 
@@ -20,40 +20,38 @@ import Spinner from '../../components/ui/Spinner';
  * Shows a form with the initial data of a given Recipe
  * (via ID) which can be submitted to the Recipe Edit API
  * in the /src/Controller/RecipeController.php.
+ * 
+ * @component
+ * @property {function} setSidebarActiveItem
+ * @property {function} setSidebarActionButton
+ * @property {arr} recipes 
+ * @property {function} setRecipes
+ * @property {boolean} isLoadingRecipes
+ * @property {function} setLoadingRecipes
+ * @property {number} recipeIndex
+ * @property {function} setRecipeIndex
+ * 
+ * @todo Better loading screen on submit
  */
-export class EditRecipe extends Component {
+export default function EditRecipe(props) {
     /**
-     * constructor
-     * 
-     * Sets initial state variables.
-     * 
-     * @param {*} props 
+     * State variables
      */
-    constructor(props) {
-        super(props);
-        this.state = {
-            filename: 'Datei auswählen',
-            recipe: [],
-            isSubmittedSuccessfully: false,
-            loading: true,
-            isDeleted: false,
-            isUploadButtonVisible: true,
-            newId: 0,
-        };
-    }
+    const { id } = useParams();
+
+    const [filename, setFilename] = useState('Datei auswählen');
+    const [recipe, setRecipe] = useState([]);
+    const [isSubmittedSuccessfully, setSubmittedSuccessfully] = useState(false);
+    const [isDeleted, setDeleted] = useState(false);
+    const [isUploadButtonVisible, setUploadButtonVisible] = useState(true);
+    const [newId, setNewId] = useState(0);
 
     /**
-     * componentDidMount
-     * 
-     * Loads Recipe on mount and updates sidebar.
-     * Scrolls to the top on load.
+     * Load sidebar and scroll to top
      */
-    componentDidMount() {
-        const { id } = this.props.params;
-        this.getRecipe(id);
-
-        this.props.setSidebarActiveItem('recipes');
-        this.props.setSidebarActionButton({
+    useEffect(() => {
+        props.setSidebarActiveItem('recipes');
+        props.setSidebarActionButton({
             visible: true, 
             icon: 'redo', 
             path: '/recipe/' + id, 
@@ -61,51 +59,41 @@ export class EditRecipe extends Component {
         });
 
         window.scrollTo(0, 0);
-    }
+    }, []);
 
     /**
-     * getRecipe
-     * 
-     * Calls the Recipe Show API and loads the Recipe
-     * data into the state variable. Redirects to an 
-     * Error 404 page if the Recipe does not exist.
-     * 
-     * @param {id} id 
-     * @todo Not working on fresh reload
+     * When recipes are loaded, on each re-render, 
+     * check if there is a recipe with the id parameter.
+     * If yes, set the index of that recipe to the 
+     * global state variable recipeIndex, which is 
+     * passed to <EditRecipe />. If no, redirect to an
+     * Error 404 page.
      */
-    getRecipe(id) {
-
-        if (this.props.isLoadingRecipes) {
-            axios
-                .get('/api/recipes')
-                .then(response => {
-                    this.props.setRecipes(JSON.parse(response.data));
-                    this.props.setLoadingRecipes(false);
-                })
-            ;
-        }
-
-        if (!this.props.isLoadingRecipes) {
+    useEffect(() => {
+        if (!props.isLoadingRecipes) {
             let returnVal;
 
-            this.props.recipes.forEach((recipe, index) => {
+            props.recipes.forEach((recipe, index) => {
                 if (recipe.id == id) {
                     returnVal = index;
                 }
             });
 
             if (returnVal >= 0) {
-                this.props.setRecipeIndex(returnVal);
+                props.setRecipeIndex(returnVal);
             } else if (id) {
                 window.location = "/error/404";
             }
         }
+    });
 
-        this.setState({
-            recipe: this.props.recipes[this.props.recipeIndex],
-            loading: false,
-        })
-    }
+    /**
+     * Put the selected recipe in a local state 
+     * variable as an abbreviation.
+     */
+    useEffect(() => {
+        setRecipe(props.recipes[props.recipeIndex]);
+    });
 
     /**
      * getIngredients
@@ -121,7 +109,7 @@ export class EditRecipe extends Component {
      * @param {*} arr An array of ingredients, e.g. received from the Recipe API.
      * @returns string A list of all ingredients, separated by linebreaks.
      */
-    getIngredients(arr) {
+    const getIngredients = (arr) => {
         let ingredients = '';
         let l = arr?.length;
 
@@ -146,7 +134,7 @@ export class EditRecipe extends Component {
         });
 
         return ingredients;
-    }
+    };
 
     /**
      * getInstructions
@@ -160,7 +148,7 @@ export class EditRecipe extends Component {
      * @param {*} arr An array of instructions, e.g. received from the Recipe API.
      * @returns string A list of all instructions, separated by linebreaks.
      */
-    getInstructions(arr) {
+    const getInstructions = (arr) => {
         let instructions = '';
         let l = arr?.length;
 
@@ -173,7 +161,7 @@ export class EditRecipe extends Component {
         });
 
         return instructions;
-    }
+    };
 
     /**
      * handleFilePick
@@ -183,13 +171,11 @@ export class EditRecipe extends Component {
      * 
      * @param {*} event
      */
-    handleFilePick = (event) => {
+    const handleFilePick = (event) => {
         const val = event.target.value;
 
-        this.setState({
-            filename: (val != '') ? val : 'Datei auswählen'
-        });
-    }
+        setFilename((val != '') ? val : 'Datei auswählen');
+    };
 
     /**
      * handleFileRemove
@@ -199,11 +185,11 @@ export class EditRecipe extends Component {
      * 
      * @param {*} event 
      */
-    handleFileRemove = (event) => {
-        this.setState({
-            isUploadButtonVisible: !this.state.isUploadButtonVisible
-        });
-    }
+    const handleFileRemove = (event) => {
+        setUploadButtonVisible(isUploadButtonVisible => {
+            return !isUploadButtonVisible;
+        })
+    };
 
     /**
      * handleSubmit
@@ -215,21 +201,20 @@ export class EditRecipe extends Component {
      * 
      * @param {*} event
      */
-    handleSubmit = (event) => {
+    const handleSubmit = (event) => {
         const formData = new FormData(event.target);
         event.preventDefault();
 
-        axios.post('/api/recipe/' + this.state.recipe?.id + '/edit', formData).then(
-            response => {
-                this.setState({
-                    isSubmittedSuccessfully: true,
-                    newId: response.data.id,
-                });
+        axios
+            .post('/api/recipe/' + recipe?.id + '/edit', formData)
+            .then(response => {
+                setSubmittedSuccessfully(true);
+                setNewId(response.data.id);
 
-                this.props.setLoadingRecipes(true);
-            }
-        );
-    }
+                props.setLoadingRecipes(true);
+            })
+        ;
+    };
 
     /**
      * deleteRecipe
@@ -241,7 +226,7 @@ export class EditRecipe extends Component {
      * 
      * @param {int} id 
      */
-     deleteRecipe(id) {
+    const deleteRecipe = (id) => {
         swal({
             dangerMode: true,
             icon: 'error',
@@ -253,199 +238,191 @@ export class EditRecipe extends Component {
             },
         }).then((confirm) => {
             if (confirm) {
-                axios.get('/api/recipe/' + id + '/delete').then(() => {
-                    this.setState({
-                        isDeleted: true
+                axios
+                    .get('/api/recipe/' + id + '/delete')
+                    .then(() => {
+                        setDeleted(true);
                     })
-                });
+                ;
             }
         });
-    }
+    };
     
     /**
-     * render 
+     * Create an array for the slider marks from 1 to 10
      */
-    render() {
-        const marks = [];
-        for (let i = 1; i <= 10; i++) {
-            marks.push({
-                value: i, label: i
-            });
-        }
+    const marks = [];
 
-        return (
-            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
-                {this.state.isSubmittedSuccessfully &&
-                    <Navigate to={'/recipe/' + this.state.newId} />
-                }
+    for (let i = 1; i <= 10; i++) {
+        marks.push({
+            value: i, label: i
+        });
+    }
 
-                {this.state.isDeleted &&
-                    <Navigate to="/recipes" />
-                }
+    /**
+     * Render
+     */
+    return (
+        <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
+            {isSubmittedSuccessfully &&
+                <Navigate to={'/recipe/' + newId} />
+            }
 
-                {this.props.isLoadingRecipes ? (
-                    <>
-                        <Spinner />
-                    </>
-                ) : (
-                    <>
-                        <Heading>{this.state.recipe?.title}</Heading>
-                        <form 
-                            className="max-w-[400px] md:max-w-[900px]"
-                            onSubmit={this.handleSubmit}
-                        >
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
-                                <div>
-                                    <InputRow
-                                        id="recipe_title"
-                                        label="Titel"
-                                        inputProps={{
-                                            required: 'required', 
-                                            maxLength: 255,
-                                            defaultValue: this.state.recipe?.title
-                                        }}
-                                    />
+            {isDeleted &&
+                <Navigate to="/recipes" />
+            }
 
-                                    <SliderRow
-                                        key={this.state.recipe?.id}
-                                        id="recipe_portionSize"
-                                        label="Wie viele Portionen?"
-                                        sliderProps={{
-                                            min: 1,
-                                            max: 10,
-                                            step: 1,
-                                            marks: marks,
-                                            defaultValue: this.state.recipe?.portion_size
-                                        }}
-                                    />
+            {props.isLoadingRecipes ? (
+                <>
+                    <Spinner />
+                </>
+            ) : (
+                <>
+                    <Heading>{recipe?.title}</Heading>
+                    <form 
+                        className="max-w-[400px] md:max-w-[900px]"
+                        onSubmit={handleSubmit}
+                    >
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
+                            <div>
+                                <InputRow
+                                    id="recipe_title"
+                                    label="Titel"
+                                    inputProps={{
+                                        required: 'required', 
+                                        maxLength: 255,
+                                        defaultValue: recipe?.title
+                                    }}
+                                />
 
-                                    <div className="text-sm font-semibold block mb-2">Bild bearbeiten</div>
+                                <SliderRow
+                                    key={recipe?.id}
+                                    id="recipe_portionSize"
+                                    label="Wie viele Portionen?"
+                                    sliderProps={{
+                                        min: 1,
+                                        max: 10,
+                                        step: 1,
+                                        marks: marks,
+                                        defaultValue: recipe?.portion_size
+                                    }}
+                                />
 
-                                    <div className="flex justify-between items-center gap-4 h-12">
-                                        <div className="overflow-hidden w-full">
-                                            {this.state.isUploadButtonVisible 
-                                                ? <>
-                                                    <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-200 dark:hover:bg-[#1D252C]/[.6] active:bg-blue-300 active:text-blue-800">
-                                                        <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                                        <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">{this.state.filename}</span>
-                                                    </label>
-                                                    <input 
-                                                        type="file" id="recipe_image" name="recipe[image]" 
-                                                        className="file-input hidden" 
-                                                        onChange={(e) =>this.handleFilePick(e)}
-                                                    />
-                                                </>
-                                                : <>
-                                                    <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-[#1D252C]">
-                                                        <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                                        <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">Datei auswählen</span>
-                                                    </label>
-                                                    <input 
-                                                        disabled="disabled"
-                                                        type="file" id="recipe_image" name="recipe[image]" 
-                                                        className="file-input hidden" 
-                                                        onChange={(e) =>this.handleFilePick(e)}
-                                                    />
-                                                </>
-                                            }
-                                        </div>
+                                <div className="text-sm font-semibold block mb-2">Bild bearbeiten</div>
 
-                                        {this.state.recipe?.image != null &&
-                                            <label htmlFor="recipe_image_remove" className="inline-flex relative items-center cursor-pointer">
-                                                <input type="checkbox" value="" id="recipe_image_remove" name="recipe[image_remove]" className="sr-only peer" onChange={(e) => this.handleFileRemove(e)} />
-                                                <div className="w-11 h-6 bg-gray-100 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                                <span className="ml-3 text-sm text-gray-500 dark:text-gray-200 font-semibold">Entfernen</span>
-                                            </label>
+                                <div className="flex justify-between items-center gap-4 h-12">
+                                    <div className="overflow-hidden w-full">
+                                        {isUploadButtonVisible 
+                                            ? <>
+                                                <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-200 dark:hover:bg-[#1D252C]/[.6] active:bg-blue-300 active:text-blue-800">
+                                                    <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
+                                                    <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">{filename}</span>
+                                                </label>
+                                                <input 
+                                                    type="file" id="recipe_image" name="recipe[image]" 
+                                                    className="file-input hidden" 
+                                                    onChange={handleFilePick}
+                                                />
+                                            </>
+                                            : <>
+                                                <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-[#1D252C]">
+                                                    <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
+                                                    <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">Datei auswählen</span>
+                                                </label>
+                                                <input 
+                                                    disabled="disabled"
+                                                    type="file" id="recipe_image" name="recipe[image]" 
+                                                    className="file-input hidden" 
+                                                    onChange={handleFilePick}
+                                                />
+                                            </>
                                         }
                                     </div>
-                                </div>
 
-                                <div className="">
-                                    <div className="text-sm font-semibold block mb-2">Aktuelles Bild</div>
-                                    {this.state.recipe?.image != null 
-                                        ? <>
-                                            {this.state.isUploadButtonVisible
-                                                ? <img 
-                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300" 
-                                                    src={this.state.recipe?.image.directory + this.state.recipe?.image.filename}
-                                                    alt={this.state.recipe}
-                                                />
-                                                : <img 
-                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-25" 
-                                                    src={this.state.recipe?.image.directory + this.state.recipe?.image.filename}
-                                                    alt={this.state.recipe}
-                                                />
-                                            }
-                                        </>
-                                        : <img 
-                                            className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10 dark:opacity-100 dark:brightness-50" 
-                                            src="/img/default.jpg"
-                                            alt={this.state.recipe}
-                                        />
+                                    {recipe?.image != null &&
+                                        <label htmlFor="recipe_image_remove" className="inline-flex relative items-center cursor-pointer">
+                                            <input type="checkbox" value="" id="recipe_image_remove" name="recipe[image_remove]" className="sr-only peer" onChange={handleFileRemove} />
+                                            <div className="w-11 h-6 bg-gray-100 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                            <span className="ml-3 text-sm text-gray-500 dark:text-gray-200 font-semibold">Entfernen</span>
+                                        </label>
                                     }
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
-                                <TextareaRow
-                                    id="recipe_ingredients"
-                                    label="Zutaten"
-                                    textareaProps={{
-                                        rows: 10, 
-                                        placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
-                                        defaultValue: this.getIngredients(this.state.recipe?.ingredients)
-                                    }}
-                                    className=""
-                                />
-                                <TextareaRow 
-                                    id="recipe_instructions"
-                                    label="Zubereitung"
-                                    textareaProps={{
-                                        rows: 10,
-                                        placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
-                                        defaultValue: this.getInstructions(this.state.recipe?.instructions)
-                                    }}
-                                    className=""
-                                />
-                            </div>
-
-                            <div className="flex justify-end gap-4">
-                                <div className="hidden md:block">
-                                    <Button
-                                        to={'/recipe/' + this.state.recipe?.id}
-                                        icon="redo"
-                                        label="Zurück"
-                                        style="transparent"
+                            <div className="">
+                                <div className="text-sm font-semibold block mb-2">Aktuelles Bild</div>
+                                {recipe?.image != null 
+                                    ? <>
+                                        {isUploadButtonVisible
+                                            ? <img 
+                                                className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300" 
+                                                src={recipe?.image.directory + recipe?.image.filename}
+                                                alt={recipe}
+                                            />
+                                            : <img 
+                                                className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-25" 
+                                                src={recipe?.image.directory + recipe?.image.filename}
+                                                alt={recipe}
+                                            />
+                                        }
+                                    </>
+                                    : <img 
+                                        className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10 dark:opacity-100 dark:brightness-50" 
+                                        src="/img/default.jpg"
+                                        alt={recipe}
                                     />
-                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
+                            <TextareaRow
+                                id="recipe_ingredients"
+                                label="Zutaten"
+                                textareaProps={{
+                                    rows: 10, 
+                                    placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
+                                    defaultValue: getIngredients(recipe?.ingredients)
+                                }}
+                                className=""
+                            />
+                            <TextareaRow 
+                                id="recipe_instructions"
+                                label="Zubereitung"
+                                textareaProps={{
+                                    rows: 10,
+                                    placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
+                                    defaultValue: getInstructions(recipe?.instructions)
+                                }}
+                                className=""
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-4">
+                            <div className="hidden md:block">
                                 <Button
-                                    onClick={() => this.deleteRecipe(this.state.recipe?.id)}
-                                    icon="delete"
-                                    label="Löschen"
-                                    style="inverse"
-                                />
-                                <SubmitButton 
-                                    icon="update" 
-                                    label="Speichern" 
-                                    elevated={true}
+                                    to={'/recipe/' + recipe?.id}
+                                    icon="redo"
+                                    label="Zurück"
+                                    style="transparent"
                                 />
                             </div>
-                        </form>
-                    </>
-                )}
-            </div>
-        )
-    }
+                            <Button
+                                onClick={() => deleteRecipe(recipe?.id)}
+                                icon="delete"
+                                label="Löschen"
+                                style="inverse"
+                            />
+                            <SubmitButton 
+                                icon="update" 
+                                label="Speichern" 
+                                elevated={true}
+                            />
+                        </div>
+                    </form>
+                </>
+            )}
+        </div>
+    );
 }
-
-/**
- * When the component <Recipe /> is called, 
- * all params become usable as props.
- */
-export default (props) => (
-    <EditRecipe
-        {...props}
-        params={useParams()}
-    />
-);
