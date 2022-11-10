@@ -243,6 +243,7 @@ export default function EditRecipe(props) {
                     .get('/api/recipe/' + id + '/delete')
                     .then(() => {
                         setDeleted(true);
+                        props.setLoadingRecipes(true);
                     })
                 ;
             }
