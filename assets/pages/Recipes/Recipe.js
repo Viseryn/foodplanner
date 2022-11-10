@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Button from '../../components/ui/Buttons';
 import Heading from '../../components/ui/Heading';
 import TextParagraph from '../../components/skeleton/TextParagraph';
 
