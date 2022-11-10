@@ -2,8 +2,9 @@
  * ./assets/layouts/App.js *
  ***************************/
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import axios from "axios";
 
 import Sidebar from '../layouts/Sidebar';
 
@@ -70,6 +71,23 @@ export default function App() {
         'recipeIndex': recipeIndex,
         'setRecipeIndex': setRecipeIndex,
     }
+
+    /**
+     * Load recipes into global state when isLoadingRecipes 
+     * is true, e.g. on first render or after adding/editing
+     * a recipe.
+     */
+    useEffect(() => {
+        if (isLoadingRecipes) {
+            axios
+                .get('/api/recipes')
+                .then(response => {
+                    setRecipes(JSON.parse(response.data));
+                    setLoadingRecipes(false);
+                })
+            ;
+        }
+    }, [isLoadingRecipes]);
 
     /** 
      * Render
