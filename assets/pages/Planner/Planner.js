@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Button from '../../components/ui/Buttons';
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 
@@ -20,44 +19,16 @@ import Spinner from '../../components/ui/Spinner';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {arr} days 
+ * @property {boolean} isLoadingDays
+ * @property {function} setLoadingDays
  */
 export default function Planner(props) {
     /**
      * State variables
      */
-    const [isLoading, setLoading] = useState(true);
     const [buttonCounter, setButtonCounter] = useState(0);
     const [isShoppingListButtonVisible, setShoppingListButtonVisible] = useState(true);
-    const [days, setDays] = useState([]);
-
-    /**
-     * getDays
-     * 
-     * Loads data from the Day List API.
-     */
-    const getDays = () => {
-        axios
-            .get('/api/days')
-            .then(response => {
-                setDays(JSON.parse(response.data));
-                setLoading(false);
-            })
-        ;
-    };
-
-    /**
-     * updateDays
-     * 
-     * Calls the Update Days API, which removes all 
-     * unnecessary Days (past days and days further away
-     * than ten), and calls getDays() after.
-     */
-    const updateDays = () => {
-        axios
-            .get('/api/day/update')
-            .then(getDays)
-        ;
-    };
 
     /**
      * deleteMeal
@@ -80,10 +51,8 @@ export default function Planner(props) {
             },
         }).then(confirm => {
             if (confirm) {
-                axios
-                    .get('/api/meal/' + id + '/delete')
-                    .then(getDays)
-                ;
+                axios.get('/api/meal/' + id + '/delete')
+                .then(() => props.setLoadingDays(true));
             }
         });
     }
@@ -99,7 +68,7 @@ export default function Planner(props) {
         // Collect all recipes
         let recipes = [];
 
-        days.forEach(day => {
+        props.days.forEach(day => {
             day.meals.forEach(meal => {
                 recipes.push(meal.recipe);
             });
@@ -116,17 +85,15 @@ export default function Planner(props) {
     };
 
     /**
-     * Load sidebar and updates days
+     * Load sidebar
      */
     useEffect(() => {
         props.setSidebarActiveItem('planner');
         props.setSidebarActionButton();
-
-        updateDays();
     }, []);
 
     useEffect(() => {
-        if (!isLoading) {
+        if (!props.isLoadingDays) {
             props.setSidebarActionButton({
                 visible: true,
                 icon: isShoppingListButtonVisible ? 'add_shopping_cart' : 'done', 
@@ -139,7 +106,7 @@ export default function Planner(props) {
                 onClickHandler: handleAddShoppingList,
             });
         }
-    }, [days, isShoppingListButtonVisible, buttonCounter]);
+    }, [props.days, isShoppingListButtonVisible, buttonCounter]);
     
     /**
      * Render
@@ -148,11 +115,11 @@ export default function Planner(props) {
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
             <Heading>Wochenplan</Heading>
 
-            {isLoading ? (
+            {props.isLoadingDays ? (
                 <Spinner />
             ) : (
                 <>
-                    {days.map(day =>
+                    {props.days.map(day =>
                         <React.Fragment key={day.id}>
                             <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-4 mt-10 block">
                                 {day.weekday}, {day.date}

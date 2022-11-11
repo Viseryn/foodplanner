@@ -24,32 +24,21 @@ import Spinner from '../../components/ui/Spinner';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {arr} recipes 
+ * @property {function} setRecipes
+ * @property {boolean} isLoadingRecipes
+ * @property {function} setLoadingRecipes
+ * @property {arr} days 
+ * @property {boolean} isLoadingDays
+ * @property {function} setLoadingDays
  */
 export default function AddMeal(props) {
     /**
      * State variables
      */
     const { id } = useParams();
-    const [isLoading, setLoading] = useState(true);
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
     const [isSubmitted, setSubmitted] = useState(false);
-    const [days, setDays] = useState([]);
-
-    /**
-     * getData
-     * 
-     * Loads recipes and days data from the 
-     * Recipe List API and Day List API.
-     */
-    const getData = () => {
-        axios
-            .get('/api/days')
-            .then(days => {
-                setDays(JSON.parse(days.data));
-                setLoading(false);
-            })
-        ;
-    }
 
     /**
      * handleSubmit
@@ -66,9 +55,9 @@ export default function AddMeal(props) {
 
         axios
             .post('/api/meal/add', formData)
-            .then(response => {
-                setSubmitted(true);
-                setLoading(false);
+            .then(() => {
+                setSubmitted(true); 
+                props.setLoadingDays(true);
             })
         ;
     };
@@ -84,8 +73,6 @@ export default function AddMeal(props) {
             path: '/planner', 
             label: 'Zurück',
         });
-
-        getData();
     }, []);
 
     /**
@@ -103,7 +90,7 @@ export default function AddMeal(props) {
                 <form className="max-w-[450px]" onSubmit={handleSubmit}>
                     <div className="mb-6">
                         <InputLabel id="meal_day" label="Für welchen Tag?" />
-                        {isLoading ? (
+                        {props.isLoadingDays ? (
                             <div role="status" className="animate-pulse">
                                 <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
                                 <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
@@ -111,7 +98,7 @@ export default function AddMeal(props) {
                         ) : (
                             <SelectWidget
                                 id="meal_day"
-                                options={days}
+                                options={props.days}
                                 defaultValue={id}
                             />
                         )}
