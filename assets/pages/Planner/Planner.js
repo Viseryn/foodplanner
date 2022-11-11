@@ -26,6 +26,7 @@ export default function Planner(props) {
      * State variables
      */
     const [isLoading, setLoading] = useState(true);
+    const [buttonCounter, setButtonCounter] = useState(0);
     const [isShoppingListButtonVisible, setShoppingListButtonVisible] = useState(true);
     const [days, setDays] = useState([]);
 
@@ -109,6 +110,9 @@ export default function Planner(props) {
 
         // Hide button for adding to shopping list
         setShoppingListButtonVisible(false);
+        setButtonCounter(buttonCounter => {
+            return buttonCounter + 1;
+        });
     };
 
     /**
@@ -116,15 +120,26 @@ export default function Planner(props) {
      */
     useEffect(() => {
         props.setSidebarActiveItem('planner');
-        props.setSidebarActionButton({
-            visible: true, 
-            icon: 'add', 
-            path: '/planner/add', 
-            label: 'Neue Mahlzeit',
-        });
+        props.setSidebarActionButton();
 
         updateDays();
     }, []);
+
+    useEffect(() => {
+        if (!isLoading) {
+            props.setSidebarActionButton({
+                visible: true,
+                icon: isShoppingListButtonVisible ? 'add_shopping_cart' : 'done', 
+                label: isShoppingListButtonVisible 
+                ? 'Zur Einkaufsliste' 
+                : ('Erledigt!' + (buttonCounter > 1 
+                    ? ' (' + buttonCounter + ')' 
+                    : '')
+                ),
+                onClickHandler: handleAddShoppingList,
+            });
+        }
+    }, [days, isShoppingListButtonVisible, buttonCounter]);
     
     /**
      * Render
@@ -182,23 +197,6 @@ export default function Planner(props) {
                             </div>
                         </React.Fragment>
                     )}
-
-                    <div className="flex justify-end mt-10">
-                        {isShoppingListButtonVisible ? (
-                            <Button 
-                                to="#"
-                                label="Alles zur Einkaufsliste hinzufügen"
-                                icon="add_shopping_cart"
-                                onClick={handleAddShoppingList}
-                            />
-                        ) : (
-                            <Button 
-                                to="#"
-                                label="Erledigt!"
-                                icon="done"
-                            />
-                        )}
-                    </div>
                 </>
             )}
         </div>
