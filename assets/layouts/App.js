@@ -21,6 +21,7 @@ import Login from '../pages/Login/Login';
 import Logout from '../pages/Logout/Logout';
 
 import PageNotFound from '../pages/PageNotFound/PageNotFound';
+import Settings from '../pages/Settings/Settings';
 
 /**
  * App
@@ -192,6 +193,8 @@ export default function App() {
                     <Route path="/login"            element={<Login         {...setSidebarProps} 
                                                                             {...setUserProps} />} />
                     <Route path="/logout"           element={<Logout        {...setSidebarProps} 
+                                                                            {...setUserProps} />} />
+                    <Route path="/settings"         element={<Settings      {...setSidebarProps} 
                                                                             {...setUserProps} />} />
                     <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
                 </Routes>
