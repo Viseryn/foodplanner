@@ -407,6 +407,15 @@ export default function ShoppingList(props) {
         getShoppingList();
     }, []);
 
+    useEffect(() => {
+        props.setSidebarActionButton({
+            visible: true, 
+            icon: 'low_priority', 
+            label: 'Zusammenfassen',
+            onClickHandler: handleCombine,
+        });
+    }, [items]);
+
     /**
      * Update shopping list items from state to database
      */
@@ -471,59 +480,45 @@ export default function ShoppingList(props) {
             {isLoading ? (
                 <Spinner />
             ) : (
-                <>
-                    <div className="space-y-2">
-                        {items.map(item => 
-                            <div key={item.id} className="flex items-center w-full h-10 rounded-full px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
-                                <input 
-                                    id={item.id} 
-                                    type="checkbox" 
-                                    className="w-4 h-4 text-blue-600 bg-gray-100 rounded-full border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 peer"
-                                    onChange={() => handleCheckboxChange(item.id)} 
-                                    checked={item.checked}
-                                />
-                                <div className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none flex justify-between items-center group">
-                                    <div 
-                                        className={'grow' + (item.checked ? ' line-through text-gray-400' : '')} 
-                                        onClick={event => handleItemClick(event, item.id, item.editable)}
-                                    >
-                                        {item.editable ? (
-                                            <input 
-                                                className="bg-transparent"
-                                                defaultValue={item.name}
-                                                onBlur={event => handleItemNameChange(event, item.id)}
-                                                onKeyDown={event => { 
-                                                    if (event.key === 'Enter') {
-                                                        handleItemNameChange(event, item.id);
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            item.name
-                                        )}
-                                    </div>
+                <div className="space-y-2">
+                    {items.map(item => 
+                        <div key={item.id} className="flex items-center w-full h-10 rounded-full px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
+                            <input 
+                                id={item.id} 
+                                type="checkbox" 
+                                className="w-4 h-4 text-blue-600 bg-gray-100 rounded-full border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 peer"
+                                onChange={() => handleCheckboxChange(item.id)} 
+                                checked={item.checked}
+                            />
+                            <div className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none flex justify-between items-center group">
+                                <div 
+                                    className={'grow' + (item.checked ? ' line-through text-gray-400' : '')} 
+                                    onClick={event => handleItemClick(event, item.id, item.editable)}
+                                >
+                                    {item.editable ? (
+                                        <input 
+                                            className="bg-transparent"
+                                            defaultValue={item.name}
+                                            onBlur={event => handleItemNameChange(event, item.id)}
+                                            onKeyDown={event => { 
+                                                if (event.key === 'Enter') {
+                                                    handleItemNameChange(event, item.id);
+                                                }
+                                            }}
+                                        />
+                                    ) : (
+                                        item.name
+                                    )}
+                                </div>
 
-                                    <div className="flex items-center">
-                                        <span className="material-symbols-rounded" onClick={() => handlePositionUp(item.id)}>expand_less</span>
-                                        <span className="material-symbols-rounded" onClick={() => handlePositionDown(item.id)}>expand_more</span>
-                                    </div>
+                                <div className="flex items-center">
+                                    <span className="material-symbols-rounded" onClick={() => handlePositionUp(item.id)}>expand_less</span>
+                                    <span className="material-symbols-rounded" onClick={() => handlePositionDown(item.id)}>expand_more</span>
                                 </div>
                             </div>
+                        </div>
                         )}
                     </div>
-
-                    {items.length > 0 &&
-                        <div className="flex justify-end mt-6">
-                            <Button
-                                to="#"
-                                label="Zusammenfassen"
-                                icon="low_priority"
-                                onClick={handleCombine}
-                                elevated={true}
-                            />
-                        </div>
-                    }
-                </>
             )}
         </div>
     );
