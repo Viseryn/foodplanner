@@ -99,7 +99,6 @@ export default function App() {
 
     const setDaysProps = {
         'days': days,
-        'setDays': setDays,
         'isLoadingDays': isLoadingDays,
         'setLoadingDays': setLoadingDays,
     };
