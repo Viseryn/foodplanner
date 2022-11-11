@@ -22,6 +22,10 @@ import Spinner from '../../components/ui/Spinner';
  * @property {arr} days 
  * @property {boolean} isLoadingDays
  * @property {function} setLoadingDays
+ * @property {arr} shoppingList 
+ * @property {function} setShoppingList
+ * @property {boolean} isLoadingShoppingList
+ * @property {function} setLoadingShoppingList
  */
 export default function Planner(props) {
     /**
@@ -77,7 +81,11 @@ export default function Planner(props) {
         });
 
         // Make API call
-        axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
+        axios
+            .post('/api/shoppinglist/add', JSON.stringify(recipes))
+            .then(() => props.setLoadingShoppingList(true))
+        ;
+        
 
         // Hide button for adding to shopping list
         setShoppingListButtonVisible(false);
