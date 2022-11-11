@@ -164,6 +164,7 @@ export default function App() {
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
+                    {...setUserProps}
                 />
 
                 <Routes>

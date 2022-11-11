@@ -19,6 +19,9 @@ import axios from 'axios';
  * @component
  * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
  * @property {Object} sidebarActionButton An object that contains the sidebar action button configuration.
+ * @property {arr} user
+ * @property {boolean} isLoadingUser
+ * @property {function} setLoadingUser
  * 
  * @example
  * <Sidebar
@@ -38,30 +41,12 @@ export default function Sidebar(props) {
      */
     const location = useLocation();
     const [isDrawerVisible, setDrawerVisible] = useState(false);
-    const [user, setUser] = useState([]);
-
-    /**
-     * getUser
-     * 
-     * Calls the User API, which responds with an 
-     * array containing the username and user roles
-     * (if authenticated), or an empty array elsewise.
-     */
-     const getUser = () => {
-        axios
-            .get('/api/user')
-            .then(response => {
-                setUser(JSON.parse(response.data));
-            })
-        ;
-    }
  
     /**
      * Close drawer and load user data when route changes.
      */
     useEffect(() => {
         setDrawerVisible(false);
-        getUser();
     }, [location]);
 
     /** 
@@ -84,7 +69,7 @@ export default function Sidebar(props) {
                     </ul>
 
                     <ul className="flex flex-col space-y-2">
-                        {user?.username === undefined 
+                        {props.user?.username === undefined
                             ? <SidebarItem 
                                 id="login"
                                 icon="login"
@@ -95,7 +80,7 @@ export default function Sidebar(props) {
                                 <SidebarItem 
                                     id="login"
                                     icon="account_circle"
-                                    label={'Willkommen, ' + user?.username + '!'}
+                                    label={'Willkommen, ' + props.user?.username + '!'}
                                     isDrawerVisible={isDrawerVisible}
                                 />
                                 <SidebarItem 
