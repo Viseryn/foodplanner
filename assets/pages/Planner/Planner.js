@@ -51,8 +51,10 @@ export default function Planner(props) {
             },
         }).then(confirm => {
             if (confirm) {
-                axios.get('/api/meal/' + id + '/delete')
-                .then(() => props.setLoadingDays(true));
+                axios
+                    .get('/api/meal/' + id + '/delete')
+                    .then(() => props.setLoadingDays(true))
+                ;
             }
         });
     }
