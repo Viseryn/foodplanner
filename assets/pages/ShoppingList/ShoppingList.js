@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import AddItemInputWidget from './components/AddItemInputWidget'
-import Button from '../../components/ui/Buttons';
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 
