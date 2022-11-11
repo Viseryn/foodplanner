@@ -37,6 +37,35 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
  */
 export default function App() {
     /**
+     * Keep user data in global state variable
+     * and pass them as props to subcomponents.
+     */
+    const [user, setUser] = useState([]);
+    const [isLoadingUser, setLoadingUser] = useState(true);
+
+    const setUserProps = {
+        'user': user,
+        'isLoadingUser': isLoadingUser,
+        'setLoadingUser': setLoadingUser,
+    }
+
+    /**
+     * Load user data into global state when isLoadingUser
+     * is true, e.g. on first render or after login/logout.
+     */
+    useEffect(() => {
+        if (isLoadingUser) {
+            axios
+                .get('/api/user')
+                .then(response => {
+                    setUser(JSON.parse(response.data));
+                    setLoadingUser(false);
+                })
+            ;
+        }
+    }, [isLoadingUser]);
+
+    /**
      * Sidebar configuration (active item, action button) are kept 
      * in global state variables.
      * Sidebar setters will be passed as props to subcomponents, so 
