@@ -95,7 +95,7 @@ export default function App() {
      * and pass them as props to subcomponents.
      */
     const [days, setDays] = useState([]);
-    const [isLoadingDays, setLoadingDays] = useState();
+    const [isLoadingDays, setLoadingDays] = useState(true);
 
     const setDaysProps = {
         'days': days,
