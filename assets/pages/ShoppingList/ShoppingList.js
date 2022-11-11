@@ -32,51 +32,7 @@ export default function ShoppingList(props) {
     /**
      * State variables
      */
-    const [items, setItems] = useState([]);
-    const [isLoading, setLoading] = useState(true);
     const [inputValue, setInputValue] = useState('');
-
-    /**
-     * getShoppingList
-     * 
-     * Calls the ShoppingList API. Adds additional 
-     * properties to each item and passes the list 
-     * of item to the state variable.
-     */ 
-    const getShoppingList = () => {
-        axios
-            .get('/api/shoppinglist')
-            .then(response => {
-                let itemsData = JSON.parse(response.data);
-
-                itemsData.forEach(item => {
-                    // Save original name of each item
-                    item.originalName = item.name;
-
-                    // Add quantity to name field
-                    // The Update API will split everything again
-                    item.name = generateDisplayName(
-                        item.quantity_value, 
-                        item.quantity_unit, 
-                        item.originalName
-                    );
-                });
-
-                // Order list by position
-                const compareItems = (a, b) => {
-                    if (a.position < b.position) return -1;
-                    if (a.position > b.position) return 1;
-                    return 0;
-                }
-
-                itemsData.sort(compareItems);
-
-                // Add list to state
-                setItems(itemsData);
-                setLoading(false);
-            })
-        ;
-    };
 
     /**
      * updateItem
@@ -90,7 +46,7 @@ export default function ShoppingList(props) {
      */
     const updateItem = (id, props = {}) => {
         // Create a new list of items
-        let newList = [...items];
+        let newList = [...props.shoppingList];
 
         // Find index of the item that will be changed
         const itemIndex = findItemById(id);
@@ -101,7 +57,7 @@ export default function ShoppingList(props) {
         });
 
         // Set new item list to the state variable
-        setItems(newList);
+        props.setShoppingList(newList);
     }
 
     /**
@@ -113,7 +69,7 @@ export default function ShoppingList(props) {
     const findItemById = (id) => {
         let returnVal = -1;
 
-        items.forEach((item, index) => {
+        props.shoppingList.forEach((item, index) => {
             if (item.id === id) {
                 returnVal = index;
             } 
@@ -128,7 +84,7 @@ export default function ShoppingList(props) {
      * Handler for combining items on the list with the same name.
      */
     const handleCombine = () => {
-        let list = [...items];  // Working copy of item list
+        let list = [...props.shoppingList];  // Working copy of item list
         let appearedItems = []; // A list of "representative" items that all other duplicates are being added to
         let appearedNames = []; // The names of the representative items
 
@@ -163,7 +119,7 @@ export default function ShoppingList(props) {
         });
 
         // Update the state variable
-        setItems(appearedItems);
+        props.setShoppingList(appearedItems);
     };
 
     /**
@@ -185,7 +141,7 @@ export default function ShoppingList(props) {
             axios
                 .post('/api/shoppinglist/ingredient', newItem)
                 .then(response => {
-                    getShoppingList();
+                    props.setLoadingShoppingList(true);
                     setInputValue('');
                 })
             ;
@@ -202,7 +158,7 @@ export default function ShoppingList(props) {
      */ 
     const handleCheckboxChange = (id) => {
         updateItem(id, {
-            'checked': !items[findItemById(id)].checked,
+            'checked': !props.shoppingList[findItemById(id)].checked,
             'editable': false,
         });
     };
@@ -214,11 +170,11 @@ export default function ShoppingList(props) {
      * When clicked, filters out all items that are checked.
      */
     const handleDeleteButtonClicked = () => {
-        const newList = items.filter(item => {
+        const newList = props.shoppingList.filter(item => {
             return !item.checked;
         })
 
-        setItems(newList);
+        props.setShoppingList(newList);
     };
 
     /**
@@ -268,7 +224,7 @@ export default function ShoppingList(props) {
      */
     const handleItemEdit = (id) => {
         // Make all items non-editable
-        items.forEach(item => {
+        props.shoppingList.forEach(item => {
             updateItem(item.id, {
                 'editable': false,
             });
@@ -311,8 +267,8 @@ export default function ShoppingList(props) {
     const handlePositionDown = (id) => {
         const index = findItemById(id);
 
-        if (items.length !== index + 1) {
-            let newItems = [...items];
+        if (props.shoppingList.length !== index + 1) {
+            let newItems = [...props.shoppingList];
             const oldPosition = newItems[index].position;
             const newPosition = newItems[index + 1].position;
 
@@ -321,7 +277,7 @@ export default function ShoppingList(props) {
 
             [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
 
-            setItems(newItems);
+            props.setShoppingList(newItems);
         }
     };
 
@@ -337,7 +293,8 @@ export default function ShoppingList(props) {
         const index = findItemById(id);
 
         if (index !== 0) {
-            let newItems = [...items];
+            let newItems = [...props.shoppingList];
+            
             const oldPosition = newItems[index].position;
             const newPosition = newItems[index - 1].position;
 
@@ -346,7 +303,7 @@ export default function ShoppingList(props) {
 
             [newItems[index], newItems[index - 1]] = [newItems[index - 1], newItems[index]];
 
-            setItems(newItems);
+            props.setShoppingList(newItems);
         }
     };
 
@@ -368,19 +325,17 @@ export default function ShoppingList(props) {
             },
         }).then((confirm) => {
             if (confirm) {
-                setItems([]);
+                props.setShoppingList([]);
             }
         });
     }
 
     /**
-     * Load sidebar and shopping list
+     * Load sidebar
      */ 
     useEffect(() => {
         props.setSidebarActiveItem('shoppinglist');
         props.setSidebarActionButton();
-
-        getShoppingList();
     }, []);
 
     useEffect(() => {
@@ -390,7 +345,7 @@ export default function ShoppingList(props) {
             label: 'Zusammenfassen',
             onClickHandler: handleCombine,
         });
-    }, [items]);
+    }, [props.shoppingList]);
 
     /**
      * Update shopping list items from state to database
@@ -407,8 +362,8 @@ export default function ShoppingList(props) {
         }
 
         // Send items data to API
-        axios.post('/api/shoppinglist/update', JSON.stringify(items));
-    }, [items]);
+        axios.post('/api/shoppinglist/update', JSON.stringify(props.shoppingList));
+    }, [props.shoppingList]);
 
     let first = useRef(true);
     let second = useRef(true);
@@ -439,7 +394,7 @@ export default function ShoppingList(props) {
 
                     <span 
                         className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={getShoppingList}
+                        onClick={() => props.setLoadingShoppingList(true)}
                     >
                         sync
                     </span>
@@ -447,17 +402,17 @@ export default function ShoppingList(props) {
             </div>
             
             <AddItemInputWidget
-                items={items}
+                items={props.shoppingList}
                 inputValue={inputValue}
                 setInputValue={setInputValue}
                 handleNewItemKeyDown={handleNewItemKeyDown}
             />
 
-            {isLoading ? (
+            {props.isLoadingShoppingList ? (
                 <Spinner />
             ) : (
                 <div className="space-y-2">
-                    {items.map(item => 
+                    {props.shoppingList.map(item => 
                         <div key={item.id} className="flex items-center w-full h-10 rounded-full px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
                             <input 
                                 id={item.id} 
