@@ -90,6 +90,43 @@ export default function App() {
         }
     }, [isLoadingRecipes]);
 
+    /**
+     * Keep days in global state variable 
+     * and pass them as props to subcomponents.
+     */
+    const [days, setDays] = useState([]);
+    const [isLoadingDays, setLoadingDays] = useState();
+
+    const setDaysProps = {
+        'days': days,
+        'setDays': setDays,
+        'isLoadingDays': isLoadingDays,
+        'setLoadingDays': setLoadingDays,
+    };
+
+    /**
+     * Calls the Update Days API, which removes all 
+     * unnecessary Days (past days and days further away
+     * than ten), and calls getDays() after.
+     * Loads days data into global state when isLoadingDays
+     * is true, e.g. on first render or after adding/deleting 
+     * a meal.
+     */
+    useEffect(() => {
+        axios
+            .get('/api/day/update')
+            .then(() => {
+                axios
+                    .get('/api/days')
+                    .then(response => {
+                        setDays(JSON.parse(response.data));
+                        setLoadingDays(false);
+                    })
+                ;
+            })
+        ;
+    }, [isLoadingDays]);
+
     /** 
      * Render
      */
@@ -102,10 +139,10 @@ export default function App() {
                 />
 
                 <Routes>
-                    <Route path="/"                 element={<Planner       {...setSidebarProps} />} />
-                    <Route path="/planner"          element={<Planner       {...setSidebarProps} />} />
-                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
-                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} {...setRecipesProps} />} />
+                    <Route path="/"                 element={<Planner       {...setSidebarProps} {...setDaysProps} />} />
+                    <Route path="/planner"          element={<Planner       {...setSidebarProps} {...setDaysProps} />} />
+                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} {...setDaysProps} {...setRecipesProps} />} />
+                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} {...setDaysProps} {...setRecipesProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps} />} />
                     <Route path="/recipes"          element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
                     <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} {...setRecipesProps} />} />
