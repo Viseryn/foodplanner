@@ -141,18 +141,20 @@ export default function App() {
      * a meal.
      */
     useEffect(() => {
-        axios
-            .get('/api/day/update')
-            .then(() => {
-                axios
-                    .get('/api/days')
-                    .then(response => {
-                        setDays(JSON.parse(response.data));
-                        setLoadingDays(false);
-                    })
-                ;
-            })
-        ;
+        if (isLoadingDays) {
+            axios
+                .get('/api/day/update')
+                .then(() => {
+                    axios
+                        .get('/api/days')
+                        .then(response => {
+                            setDays(JSON.parse(response.data));
+                            setLoadingDays(false);
+                        })
+                    ;
+                })
+            ;
+        }
     }, [isLoadingDays]);
 
     /** 
