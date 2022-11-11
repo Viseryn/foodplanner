@@ -30,6 +30,10 @@ import TextParagraph from '../../components/skeleton/TextParagraph';
  * @property {function} setLoadingRecipes
  * @property {number} recipeIndex
  * @property {function} setRecipeIndex
+ * @property {arr} shoppingList 
+ * @property {function} setShoppingList
+ * @property {boolean} isLoadingShoppingList
+ * @property {function} setLoadingShoppingList
  */
 export default function Recipe(props) {
     /**
@@ -46,7 +50,12 @@ export default function Recipe(props) {
      */
     const handleAddShoppingList = () => {
         const recipes = [props.recipes[props.recipeIndex]];
-        axios.post('/api/shoppinglist/add', JSON.stringify(recipes));
+
+        axios
+            .post('/api/shoppinglist/add', JSON.stringify(recipes))
+            .then(() => props.setLoadingShoppingList(true))
+        ;
+        
         setShowButton(false);
         setButtonCounter(buttonCounter => {
             return buttonCounter + 1;

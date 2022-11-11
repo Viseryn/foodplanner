@@ -25,6 +25,10 @@ import RecipeListSkeleton from './components/RecipeListSkeleton';
  * @property {function} setLoadingRecipes
  * @property {number} recipeIndex
  * @property {function} setRecipeIndex
+ * @property {arr} shoppingList 
+ * @property {function} setShoppingList
+ * @property {boolean} isLoadingShoppingList
+ * @property {function} setLoadingShoppingList
  */
 export default function Recipes(props) {
     /**
@@ -55,6 +59,16 @@ export default function Recipes(props) {
         'recipeIndex': props.recipeIndex,
         'setRecipeIndex': props.setRecipeIndex,
     }
+
+    /**
+     * ShoppingList props
+     */
+    const setShoppingListProps = {
+        'shoppingList': props.shoppingList,
+        'setShoppingList': props.setShoppingList,
+        'isLoadingShoppingList': props.isLoadingShoppingList,
+        'setLoadingShoppingList': props.setLoadingShoppingList,
+    };
     
     /**
      * Search for user input in recipe list
@@ -221,6 +235,7 @@ export default function Recipes(props) {
                         }} 
                         {...setSidebarProps} 
                         {...setRecipesProps}
+                        {...setShoppingListProps}
                     />
                 </div>
             }
