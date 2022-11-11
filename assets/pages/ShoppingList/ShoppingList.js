@@ -351,12 +351,8 @@ export default function ShoppingList(props) {
      * Update shopping list items from state to database
      */
     useEffect(() => {
-        // Do not make an AJAX request on the first and second time (items init)
-        if (first.current || second.current) {
-            if (!first.current) {
-                second.current = false;
-            }
-
+        // Do not make an AJAX request on the first time (items init)
+        if (first.current) {
             first.current = false;
             return;
         }
@@ -366,7 +362,6 @@ export default function ShoppingList(props) {
     }, [props.shoppingList]);
 
     let first = useRef(true);
-    let second = useRef(true);
 
     /**
      * Render
