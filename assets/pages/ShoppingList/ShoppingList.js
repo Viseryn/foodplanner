@@ -43,6 +43,8 @@ export default function ShoppingList(props) {
      * 
      * @param {int} id The ID of the item that should be changed.
      * @param {Object} props The properties that should be changed and their values.
+     * 
+     * @todo Not working. (TypeError: undefined is not iterable; cannot read property Symbol(Sybol.iterator).)
      */
     const updateItem = (id, props = {}) => {
         // Create a new list of items
