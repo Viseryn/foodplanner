@@ -97,6 +97,12 @@ export default function Sidebar(props) {
                             label="Registrieren"
                             isDrawerVisible={isDrawerVisible}
                         />
+                        <SidebarItem 
+                            id="settings"
+                            icon="settings"
+                            label="Einstellungen"
+                            isDrawerVisible={isDrawerVisible}
+                        />
                     </ul>
                     <hr className="my-4" />
                     <ul className="flex flex-col space-y-2">
