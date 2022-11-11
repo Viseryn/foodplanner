@@ -13,13 +13,17 @@ import axios from "axios";
  * Since only a redirect happens, the sidebar need not be updated.
  * 
  * @component
+ * @property {arr} user
+ * @property {boolean} isLoadingUser
+ * @property {function} setLoadingUser
  */
-export default function Logout() {
+export default function Logout(props) {
     /**
      * Call Logout API
      */
     useEffect(() => {
         axios.get('/api/logout');
+        props.setLoadingUser(true);
     });
 
     /**

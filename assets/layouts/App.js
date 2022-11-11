@@ -168,17 +168,29 @@ export default function App() {
                 />
 
                 <Routes>
-                    <Route path="/"                 element={<Planner       {...setSidebarProps} {...setDaysProps} />} />
-                    <Route path="/planner"          element={<Planner       {...setSidebarProps} {...setDaysProps} />} />
-                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} {...setDaysProps} {...setRecipesProps} />} />
-                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} {...setDaysProps} {...setRecipesProps} />} />
+                    <Route path="/"                 element={<Planner       {...setSidebarProps} 
+                                                                            {...setDaysProps} />} />
+                    <Route path="/planner"          element={<Planner       {...setSidebarProps} 
+                                                                            {...setDaysProps} />} />
+                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} 
+                                                                            {...setDaysProps} 
+                                                                            {...setRecipesProps} />} />
+                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} 
+                                                                            {...setDaysProps} 
+                                                                            {...setRecipesProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps} />} />
-                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
-                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} {...setRecipesProps} />} />
-                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} {...setRecipesProps} />} />
-                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} {...setRecipesProps} />} />
-                    <Route path="/login"            element={<Login         {...setSidebarProps} />} />
-                    <Route path="/logout"           element={<Logout        {...setSidebarProps} />} />
+                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} 
+                                                                            {...setRecipesProps} />} />
+                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} 
+                                                                            {...setRecipesProps} />} />
+                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} 
+                                                                            {...setRecipesProps} />} />
+                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} 
+                                                                            {...setRecipesProps} />} />
+                    <Route path="/login"            element={<Login         {...setSidebarProps} 
+                                                                            {...setUserProps} />} />
+                    <Route path="/logout"           element={<Logout        {...setSidebarProps} 
+                                                                            {...setUserProps} />} />
                     <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
                 </Routes>
             </div>

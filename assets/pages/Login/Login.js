@@ -20,14 +20,16 @@ import Spinner from '../../components/ui/Spinner';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {arr} user
+ * @property {boolean} isLoadingUser
+ * @property {function} setLoadingUser
  */
 export default function Login(props) {
     /**
      * State variables
      */
-    const [isLoading, setLoading] = useState(true);
     const [response, setResponse] = useState();
-    const [user, setUser] = useState();
+    const [isLoadingSubmit, setLoadingSubmit] = useState(false);
 
     /**
      * Load sidebar and user data
@@ -35,8 +37,6 @@ export default function Login(props) {
     useEffect(() => {
         props.setSidebarActiveItem();
         props.setSidebarActionButton();
-
-        getUser();
     }, []);
 
     /**
@@ -52,33 +52,17 @@ export default function Login(props) {
         event.preventDefault();
 
         setResponse();
-        setLoading(true);
+        setLoadingSubmit(true);
 
         axios
             .post('/api/login', formData)
             .then(response => {
                 setResponse(response.data);
-                getUser();
+                setLoadingSubmit(false);
+                props.setLoadingUser(true);
             })
         ;
     };
-
-    /**
-     * getUser
-     * 
-     * Calls the User API, which responds with an 
-     * array containing the username and user roles
-     * (if authenticated), or an empty array elsewise.
-     */
-    const getUser = () => {
-        axios
-            .get('/api/user')
-            .then(response => {
-                setLoading(false);
-                setUser(JSON.parse(response.data));
-            })
-        ;
-    }
 
     /**
      * Render
@@ -88,7 +72,7 @@ export default function Login(props) {
             <Heading>Login</Heading>
             <div className="min-w-[400px]"></div>
             
-            {isLoading &&
+            {(props.isLoadingUser || isLoadingSubmit) &&
                 <Spinner />
             }
 
@@ -100,13 +84,13 @@ export default function Login(props) {
                 </div>
             }
 
-            {user?.username !== undefined &&
+            {props.user?.username !== undefined && !props.isLoadingUser && !isLoadingSubmit &&
                 <Notification color="green" title="Erfolgreich eingeloggt!">
-                    Willkommen, {user?.username}.
+                    Willkommen, {props.user?.username}.
                 </Notification>
             }
 
-            {user?.username === undefined && !isLoading &&
+            {props.user?.username === undefined && !props.isLoadingUser && !isLoadingSubmit &&
                 <form onSubmit={handleSubmit} className="sm:w-[400px]">
                     <InputRow 
                         id="username"
