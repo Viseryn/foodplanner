@@ -36,7 +36,7 @@ export default function Heading(props) {
  */
 export function SubHeading(props) {
     return (
-        <div className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-10">
+        <div className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-4">
             {props.children}
         </div>
     );
