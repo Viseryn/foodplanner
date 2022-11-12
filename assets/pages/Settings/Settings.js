@@ -26,6 +26,11 @@ export default function Settings(props) {
     const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
 
     useEffect(() => {
+        props.setSidebarActiveItem();
+        props.setSidebarActionButton();
+    }, []);
+
+    useEffect(() => {
         if (! isLoadingUserGroups) return;
 
         axios
@@ -71,7 +76,7 @@ export default function Settings(props) {
                                                     <td className={'p-4' + (index === 0 ? ' rounded-tr-2xl' : '')}><Link to="#" onClick={() => handleMakeStandard(index)}>Standard</Link></td>
                                                 </tr>
                                             )}
-                                            <tr className="dark:border-gray-800 transition duration-300 hover:bg-gray-50 dark:hover:bg-[#252f38]">
+                                            <tr className="dark:border-gray-800 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
                                                 <td colSpan="3" className="p-4 rounded-b-2xl"><Link to="/settings/groups/add">Neue Gruppe hinzufügen</Link></td>
                                             </tr>
                                         </tbody>
