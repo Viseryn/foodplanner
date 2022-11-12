@@ -17,6 +17,8 @@ import Spinner from '../../components/ui/Spinner';
  * @property {arr} user
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
+ * 
+ * @todo This is NOT a safe security gate. Do this in the backend controllers!!!
  */
 export default function Settings(props) {
     /** 
