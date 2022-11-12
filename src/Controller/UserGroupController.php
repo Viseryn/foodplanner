@@ -21,6 +21,9 @@ class UserGroupController extends AbstractController
     #[Route('/api/usergroups', name: 'app_api_usergroups', methods: ['GET'])]
     public function userGroupsAPI(UserGroupRepository $userGroupRepository): JsonResponse
     {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         // Fetch all UserGroup objects from the database
         $userGroups = $userGroupRepository->findAll();
 
