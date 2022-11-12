@@ -244,7 +244,8 @@ export default function App() {
                                                                             {...setRecipesProps}
                                                                             {...setShoppingListProps} />} />
                     <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} 
-                                                                            {...setRecipesProps} />} />
+                                                                            {...setRecipesProps}
+                                                                            {...setDaysProps} />} />
                     <Route path="/login"            element={<Login         {...setSidebarProps} 
                                                                             {...setUserProps} />} />
                     <Route path="/logout"           element={<Logout        {...setSidebarProps} 
