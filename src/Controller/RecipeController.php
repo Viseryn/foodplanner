@@ -6,6 +6,7 @@ use App\Entity\Recipe;
 use App\Form\RecipeType;
 use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
+use App\Repository\MealRepository;
 use App\Repository\RecipeRepository;
 use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
@@ -149,15 +150,22 @@ class RecipeController extends AbstractController
      *
      * @param Request $request
      * @param Recipe $recipe
+     * @param MealRepository $mealRepository
      * @param RecipeRepository $recipeRepository
      * @return Response
-     * 
-     * @todo If a recipe is deleated that belongs to a meal, an error 500 is thrown.
-     * Should deleate all meals for a recipe before.
      */
     #[Route('/api/recipe/{id}/delete', name: 'app_recipe_delete', methods: ['GET'])]
-    public function delete(Recipe $recipe, RecipeRepository $recipeRepository): Response
+    public function delete(Recipe $recipe, MealRepository $mealRepository, RecipeRepository $recipeRepository): Response
     {
+        // Get all meals for that recipe
+        $meals = $mealRepository->findBy(['recipe' => $recipe->getId()]);
+
+        // Delete all meals first
+        foreach ($meals as $meal) {
+            $mealRepository->remove($meal, true);
+        }
+
+        // Delete recipe
         $recipeRepository->remove($recipe, true);
 
         return new Response();

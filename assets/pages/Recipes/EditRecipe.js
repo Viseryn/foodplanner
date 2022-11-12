@@ -213,6 +213,7 @@ export default function EditRecipe(props) {
                 setNewId(response.data.id);
 
                 props.setLoadingRecipes(true);
+                props.setLoadingDays(true);
             })
         ;
     };
@@ -226,8 +227,6 @@ export default function EditRecipe(props) {
      * nothing happens.
      * 
      * @param {int} id 
-     * 
-     * @todo When a Meal has this Recipe, response will be an Error 500. This should be taken care of (e.g. by deleting all Meals with this Recipe).
      */
     const deleteRecipe = (id) => {
         swal({
@@ -246,6 +245,7 @@ export default function EditRecipe(props) {
                     .then(() => {
                         setDeleted(true);
                         props.setLoadingRecipes(true);
+                        props.setLoadingDays(true);
                     })
                 ;
             }
