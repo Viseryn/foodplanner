@@ -42,11 +42,9 @@ export default function ShoppingList(props) {
      * can be passed as an optional parameter.
      * 
      * @param {int} id The ID of the item that should be changed.
-     * @param {Object} props The properties that should be changed and their values.
-     * 
-     * @todo Not working. (TypeError: undefined is not iterable; cannot read property Symbol(Sybol.iterator).)
+     * @param {Object} properties The properties that should be changed and their values.
      */
-    const updateItem = (id, props = {}) => {
+    const updateItem = (id, properties = {}) => {
         // Create a new list of items
         let newList = [...props.shoppingList];
 
@@ -54,8 +52,8 @@ export default function ShoppingList(props) {
         const itemIndex = findItemById(id);
 
         // Change properties of selected item
-        Object.keys(props).forEach(key => {
-            newList[itemIndex][key] = props[key];
+        Object.keys(properties).forEach(key => {
+            newList[itemIndex][key] = properties[key];
         });
 
         // Set new item list to the state variable
