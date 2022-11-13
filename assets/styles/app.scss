@@ -307,3 +307,10 @@ body::-webkit-scrollbar {
         }
     }
 }
+
+/* Slider */
+@media (prefers-color-scheme: dark) {
+    .MuiSlider-markLabel {
+        color: white !important;
+    }
+}
