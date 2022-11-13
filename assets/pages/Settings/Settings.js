@@ -42,7 +42,7 @@ export default function Settings(props) {
         ;
     }, [isLoadingUserGroups]);
 
-    const handleMakeStandard = (index) => {
+    const handleSetStandard = (index) => {
         return;
     };
 
@@ -67,20 +67,25 @@ export default function Settings(props) {
                                 {isLoadingUserGroups ? (
                                     <Spinner />
                                 ) : (
-                                    <table className="w-full">
-                                        <tbody>
-                                            {userGroups.map((group, index) =>
-                                                <tr key={group.id} className="border-b dark:border-gray-800 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                                    <td className={'p-4' + (index === 0 ? ' rounded-tl-2xl' : '')}>{group.name} ({group.users})</td>
-                                                    <td className="p-4"><Link to={'/settings/group/' + group.id}>Bearbeiten</Link></td>
-                                                    <td className={'p-4' + (index === 0 ? ' rounded-tr-2xl' : '')}><Link to="#" onClick={() => handleMakeStandard(index)}>Standard</Link></td>
-                                                </tr>
-                                            )}
-                                            <tr className="dark:border-gray-800 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                                <td colSpan="3" className="p-4 rounded-b-2xl"><Link to="/settings/groups/add">Neue Gruppe hinzufügen</Link></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div className="space-y-2">
+                                        {userGroups.map((group, index) => 
+                                            <div key={group.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
+                                                <div className="pl-4">
+                                                    {group.name} ({group.users})
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <Link to={'/settings/groups/' + group.id}><IconButton>drive_file_rename_outline</IconButton></Link>
+                                                    <IconButton onClick={() => handleSetStandard(index)}>{group.isStandard ? 'check_box' : 'check_box_outline_blank'}</IconButton>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <Link 
+                                            className="rounded-full p-2 pl-6 h-14 w-full flex items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]" 
+                                            to="/settings/groups/add"
+                                        >
+                                            <span>Neue Gruppe hinzufügen</span>
+                                        </Link>
+                                    </div>
                                 )}
                             </>
                         ) : (
@@ -90,5 +95,13 @@ export default function Settings(props) {
                 )}
             </div>
         </>
+    );
+}
+
+function IconButton(props) {
+    return (
+        <span {...props} className="material-symbols-rounded cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full">
+            {props.children}
+        </span>
     );
 }
