@@ -8,6 +8,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import Notification from '../../components/ui/Notification';
 import Recipe from './Recipe';
 import RecipeListSkeleton from './components/RecipeListSkeleton';
+import Heading from '../../components/ui/Heading';
 
 /**
  * Recipes
@@ -155,17 +156,22 @@ export default function Recipes(props) {
             {/* The first column is always shown when no Recipe is chosen.
                 If a Recipe is chosen, it is only shown on lg-screens or larger. */}
             <div className={
-                'mx-6 md:ml-0 pb-16 md:pb-0 my-6 w-full '
+                'px-6 md:pl-0 pt-6 pb-[6.5rem] md:pb-6 w-full min-h-screen bg-white dark:bg-[#29353f] md:bg-transparent '
                 + (isTwoColumns
                     ? 'hidden lg:block max-w-[400px]'
                     : 'max-w-[900px]'
                 )
             }>
+                {/* Heading on smaller screens */}
+                <div className="md:hidden">
+                    <Heading>Rezepte</Heading>
+                </div>
+
                 {/* Search bar */}
-                <div className="mb-4 rounded-full bg-white dark:bg-[#29353f] h-16 flex items-center pl-6 pr-4">
+                <div className="mb-4 rounded-full bg-white dark:bg-[#1D252C] md:dark:bg-[#29353f] h-16 flex items-center pl-6 pr-4">
                     <span className="material-symbols-rounded mr-2 cursor-default">search</span>
                     <input 
-                        className="dark:bg-[#29353f] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
+                        className="dark:bg-[#1D252C] md:dark:bg-[#29353f] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
                         placeholder='Suche nach Rezepten ...'
                         id='search'
                         name='search'
@@ -177,7 +183,7 @@ export default function Recipes(props) {
                     />
                     {searchValue !== '' &&
                         <span 
-                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
+                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:md:hover:bg-[#232325] dark:hover:bg-[#29353f] p-2 rounded-full"
                             onClick={() => setSearchValue('')}
                         >close</span>
                     }
