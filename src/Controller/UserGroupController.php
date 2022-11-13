@@ -37,6 +37,7 @@ class UserGroupController extends AbstractController
                 'name' => $userGroup->getName(),
                 'users' => [],
                 'isStandard' => $userGroup->isStandard(),
+                'icon' => $userGroup->getIcon(),
             ];
 
             // Only add the usernames to the response, not the rest of the user data
