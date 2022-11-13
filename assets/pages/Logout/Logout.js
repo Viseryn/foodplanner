@@ -16,6 +16,8 @@ import axios from "axios";
  * @property {arr} user
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
+ * 
+ * @todo Logout sometimes not working on first or even second try.
  */
 export default function Logout(props) {
     /**
