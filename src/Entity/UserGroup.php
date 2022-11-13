@@ -21,6 +21,9 @@ class UserGroup
     #[ORM\Column(length: 64)]
     private ?string $name = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $standard = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -70,5 +73,17 @@ class UserGroup
     public function __toString()
     {
         return $this->getName();
+    }
+
+    public function isStandard(): ?bool
+    {
+        return $this->standard;
+    }
+
+    public function setStandard(?bool $standard): self
+    {
+        $this->standard = $standard;
+
+        return $this;
     }
 }
