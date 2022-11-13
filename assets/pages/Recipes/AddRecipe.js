@@ -78,6 +78,8 @@ export default function AddRecipe(props) {
      * there after submitting.
      * 
      * @param {*} event
+     * 
+     * @todo If the submit was performed too fast, the navigate will return 404.
      */
     const handleSubmit = (event) => {
         const formData = new FormData(event.target);
