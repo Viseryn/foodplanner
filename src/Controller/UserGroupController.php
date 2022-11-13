@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use JMS\Serializer\SerializerBuilder;
+use Symfony\Component\HttpFoundation\Request as Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserGroupController extends AbstractController
 {
@@ -54,5 +56,43 @@ class UserGroupController extends AbstractController
         $jsonContent = $serializer->serialize($userGroupsResponse, 'json');
 
         return new JsonResponse($jsonContent);
+    }
+
+    /**
+     * UserGroups Update Standard API
+     * 
+     * Updates the standard value 
+     *
+     * @param Request $request
+     * @param UserGroupRepository $userGroupRepository
+     * @return Response
+     */
+    #[Route('/api/usergroups/update-standard', name: 'app_api_usergroups_update_standard', methods: ['GET', 'POST'])]
+    public function updateStandard(Request $request, UserGroupRepository $userGroupRepository): Response 
+    {
+        // Fetch request content
+        $requestContent = json_decode($request->getContent());
+
+        // Update each UserGroup in the database according to the request array
+        foreach ($requestContent as $group) {
+            // Set this to true when standard is set, so there is only one standard group
+            $setStandard = false;
+
+            // Get UserGroup from db
+            $groupDb = $userGroupRepository->find($group->id);
+            
+            if ($group->isStandard && !$setStandard) {
+                $groupDb->setStandard(true);
+                $setStandard = true;
+            } else {
+                $groupDb->setStandard(false);
+            }
+
+            // Update group in database
+            $userGroupRepository->add($groupDb, true);
+        }
+
+        // Empty response
+        return new Response();
     }
 }
