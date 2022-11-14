@@ -2,9 +2,11 @@
  * ./assets/pages/Logout/Logout.js *
  ***********************************/
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import Spinner from "../../components/ui/Spinner";
+import Heading from "../../components/ui/Heading";
 
 /**
  * Logout
@@ -16,22 +18,41 @@ import axios from "axios";
  * @property {arr} user
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
- * 
- * @todo Logout sometimes not working on first or even second try.
  */
 export default function Logout(props) {
+    /**
+     * State variables
+     */
+    const [isLoading, setLoading] = useState(true);
+
     /**
      * Call Logout API
      */
     useEffect(() => {
-        axios.get('/api/logout');
-        props.setLoadingUser(true);
-    });
+        if (!isLoading) return;
+
+        axios
+            .get('/api/logout')
+            .then(() => {
+                props.setLoadingUser(true);
+                setLoading(false);
+            })
+        ;
+    }, [isLoading]);
 
     /**
      * Redirect to login page
      */
     return (
-        <Navigate to="/login" />
+        <>
+            {!isLoading ? (
+                <Navigate to="/login" />
+            ) : (
+                <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
+                    <Heading>Login</Heading>
+                    <Spinner />
+                </div>
+            )}
+        </>
     );
 }
