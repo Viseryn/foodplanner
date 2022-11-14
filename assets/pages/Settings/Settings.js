@@ -122,6 +122,7 @@ export default function Settings(props) {
      * Render
      * 
      * @todo UserGroup - Avatars?
+     * @todo Navigate to login if username === undefined and isLoadingUser == false
      */
     return (
         <>
