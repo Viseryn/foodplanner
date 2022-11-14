@@ -61,7 +61,7 @@ class UserGroupController extends AbstractController
     /**
      * UserGroups Update Standard API
      * 
-     * Updates the standard value 
+     * Updates the standard UserGroup.
      *
      * @param Request $request
      * @param UserGroupRepository $userGroupRepository
