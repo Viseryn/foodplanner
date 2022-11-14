@@ -16,6 +16,9 @@ class MealCategory
     #[ORM\Column(length: 64)]
     private ?string $name = null;
 
+    #[ORM\Column]
+    private ?bool $standard = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -36,5 +39,17 @@ class MealCategory
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function isStandard(): ?bool
+    {
+        return $this->standard;
+    }
+
+    public function setStandard(bool $standard): self
+    {
+        $this->standard = $standard;
+
+        return $this;
     }
 }
