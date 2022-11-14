@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Repository\UserGroupRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use JMS\Serializer\SerializerBuilder;
-use Symfony\Component\HttpFoundation\Request as Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\Serializer\SerializerBuilder;
 
 class UserGroupController extends AbstractController
 {
@@ -70,6 +70,9 @@ class UserGroupController extends AbstractController
     #[Route('/api/usergroups/update-standard', name: 'app_api_usergroups_update_standard', methods: ['GET', 'POST'])]
     public function updateStandard(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         // Fetch request content
         $requestContent = json_decode($request->getContent());
 
