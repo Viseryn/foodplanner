@@ -320,11 +320,15 @@ function SidebarItem(props) {
 
     const SidebarItemContent = (
         <div className={labelStyle}>
-            <span className="material-symbols-rounded">{props.icon}</span>
+            <span className={'material-symbols-rounded' + (props.sidebarActiveItem == props.id ? '' : ' outlined')}>
+                {props.icon}
+            </span>
             <span className={
                 'xl:block ml-4 font-semibold'
                 + (props.isDrawerVisible ? ' block' : ' hidden')
-            }>{props.label}</span>
+            }>
+                {props.label}
+            </span>
         </div>
     );
 
