@@ -18,20 +18,27 @@ import Spinner from '../../components/ui/Spinner';
  * @property {arr} user
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
- * 
- * @todo This is NOT a safe security gate. Do this in the backend controllers!!!
  */
 export default function Settings(props) {
+    /**
+     * State variables
+     */
     const [userGroups, setUserGroups] = useState([]);
     const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
     const [mealCategories, setMealCategories] = useState([]);
     const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
 
+    /**
+     * Load sidebar
+     */
     useEffect(() => {
         props.setSidebarActiveItem();
         props.setSidebarActionButton();
     }, []);
 
+    /**
+     * Load UserGroups
+     */
     useEffect(() => {
         if (!isLoadingUserGroups) return;
 
@@ -44,6 +51,9 @@ export default function Settings(props) {
         ;
     }, [isLoadingUserGroups]);
 
+    /**
+     * Load MealCategories
+     */
     useEffect(() => {
         if (!isLoadingMealCategories) return;
 
@@ -111,14 +121,10 @@ export default function Settings(props) {
     /** 
      * Render
      * 
-     * @todo UserGroup - which one is standard? Avatars?
+     * @todo UserGroup - Avatars?
      */
     return (
         <>
-            {/* {props.user?.username === undefined && (!isLoadingUserGroups && !isLoadingMealCategories) &&
-                <Navigate to="/login" />
-            } */}
-
             <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
                 <Heading>Einstellungen</Heading>
 
