@@ -98,4 +98,32 @@ class UserGroupController extends AbstractController
         // Empty response
         return new Response();
     }
+
+    /**
+     * UserGroup Delete API
+     * 
+     * Deletes the UserGroup with the given ID and responds
+     * with an empty Response.
+     *
+     * @param UserGroup $userGroup
+     * @param UserGroupRepository $userGroupRepository
+     * @param MealRepository $mealRepository
+     * @return Response
+     */
+    #[Route('/api/usergroups/delete/{id}', name: 'app_api_usergroups_delete', methods: ['GET'])]
+    public function delete(UserGroup $userGroup, UserGroupRepository $userGroupRepository, MealRepository $mealRepository): Response
+    {
+        // Get all meals for that UserGroup
+        $meals = $mealRepository->findBy(['userGroup' => $userGroup->getId()]);
+
+        // Delete all meals first
+        foreach ($meals as $meal) {
+            $mealRepository->remove($meal, true);
+        }
+
+        // Delete UserGroup
+        $userGroupRepository->remove($userGroup, true);
+
+        return new Response();
+    }
 }
