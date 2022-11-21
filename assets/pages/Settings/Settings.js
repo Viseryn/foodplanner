@@ -68,9 +68,11 @@ export default function Settings(props) {
 
         categories.forEach((category, i) => {
             if (index === i) {
-                category.standard = true;
+                category.isStandard = true;
+                category.checked = 'checked';
             } else {
-                category.standard = false;
+                category.isStandard = false;
+                category.checked = '';
             }
         });
 
@@ -224,9 +226,7 @@ export default function Settings(props) {
                                         <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
                                         {category.name}
                                     </div>
-                                    <div className="flex gap-2">
-                                        <IconButton outlined={category.standard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
-                                    </div>
+                                        <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
                                 </div>
                             )}
                         </div>
