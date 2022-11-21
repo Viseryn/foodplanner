@@ -18,6 +18,14 @@ import Spinner from '../../components/ui/Spinner';
  * @property {arr} user
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
+ * @property {arr} userGroups
+ * @property {function} setUserGroups
+ * @property {boolean} isLoadingUserGroups
+ * @property {function} setLoadingUserGroups
+ * @property {arr} mealCategories
+ * @property {function} setMealCategories
+ * @property {boolean} isLoadingMealCategories
+ * @property {function} setLoadingMealCategories
  */
 export default function Settings(props) {
     /**
