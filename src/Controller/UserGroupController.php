@@ -118,6 +118,9 @@ class UserGroupController extends AbstractController
     #[Route('/api/usergroups/delete/{id}', name: 'app_api_usergroups_delete', methods: ['GET'])]
     public function delete(UserGroup $userGroup, UserGroupRepository $userGroupRepository, MealRepository $mealRepository): Response
     {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         // Get all meals for that UserGroup
         $meals = $mealRepository->findBy(['userGroup' => $userGroup->getId()]);
 

@@ -65,6 +65,9 @@ class MealCategoryController extends AbstractController
     #[Route('/api/mealcategories/update-standard', name: 'app_api_mealcategories_update_standard', methods: ['GET', 'POST'])]
     public function updateStandard(Request $request, MealCategoryRepository $mealCategoryRepository): Response 
     {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         // Fetch request content
         $requestContent = json_decode($request->getContent());
 
