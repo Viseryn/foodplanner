@@ -222,7 +222,7 @@ export default function ShoppingList(props) {
      * @param {number} id The id of the given item.
      */
     const handleItemNameChange = (event, id) => {
-        if (event.target.value !== '') {
+        if (event.target.value.replace(/\s/g, '').length) {
             updateItem(id, {
                 name: event.target.value,
                 editable: false,
