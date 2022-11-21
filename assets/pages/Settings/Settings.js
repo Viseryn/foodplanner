@@ -8,6 +8,7 @@ import axios from 'axios';
 
 import Heading, { SubHeading } from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
+import IconButton from '../../components/ui/IconButton';
  
 /**
  * Settings
@@ -245,13 +246,5 @@ export default function Settings(props) {
                 )}
             </div>
         </>
-    );
-}
-
-function IconButton(props) {
-    return (
-        <span {...props} className={'material-symbols-rounded cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full' + (props.outlined == 'outlined' ? ' outlined' : '')}>
-            {props.children}
-        </span>
     );
 }
