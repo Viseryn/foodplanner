@@ -90,16 +90,17 @@ export default function App() {
      * is true, e.g. on first render.
      */
     useEffect(() => {
-        if (isLoadingUserGroups) {
-            axios
-                .get('/api/usergroups')
-                .then(response => {
-                    setUserGroups(JSON.parse(response.data));
-                    setLoadingUserGroups(false);
-                })
-            ;
-        }
-    }, [isLoadingUserGroups]);
+        if (!isLoadingUserGroups && !isLoadingUser) return;
+        if (user?.username === undefined) return;
+
+        axios
+            .get('/api/usergroups')
+            .then(response => {
+                setUserGroups(JSON.parse(response.data));
+                setLoadingUserGroups(false);
+            })
+        ;
+    }, [isLoadingUserGroups, isLoadingUser, user]);
 
     /**
      * Keep MealCategory data in global state variable
@@ -120,7 +121,8 @@ export default function App() {
      * is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingMealCategories) return;
+        if (!isLoadingMealCategories && !isLoadingUser) return;
+        if (user?.username === undefined) return;
 
         axios
             .get('/api/mealcategories')
@@ -129,7 +131,7 @@ export default function App() {
                 setLoadingMealCategories(false);
             })
         ;
-    }, [isLoadingMealCategories]);
+    }, [isLoadingMealCategories, isLoadingUser, user]);
 
     /**
      * Sidebar configuration (active item, action button) are kept 
