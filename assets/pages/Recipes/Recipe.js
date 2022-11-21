@@ -8,6 +8,7 @@ import axios from 'axios';
 
 import Heading from '../../components/ui/Heading';
 import TextParagraph from '../../components/skeleton/TextParagraph';
+import IconButton from '../../components/ui/IconButton';
 
 /**
  * Recipe
@@ -116,20 +117,11 @@ export default function Recipe(props) {
 
                     <div className="flex justify-between">
                         <Link to={'/recipe/' + recipe?.id + '/edit'}>
-                            <span 
-                                className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                            >
-                                drive_file_rename_outline
-                            </span>
+                            <IconButton>drive_file_rename_outline</IconButton>
                         </Link>
                         <Link to="/recipes">
                             {/* Button for resetting two-column mode */}
-                            <span 
-                                className="hidden md:block material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                                onClick={() => { props.setTwoColumns(); }}
-                            >
-                                close
-                            </span>
+                            <IconButton styles="hidden md:block" onClick={() => props.setTwoColumns()}>close</IconButton>
                         </Link>
                     </div>
                 </div>
