@@ -76,8 +76,78 @@ export default function Settings(props) {
         axios.post('/api/mealcategories/update-standard', JSON.stringify(categories));
     };
 
-    const handleDeleteGroup = () => {
+    /**
+     * handleDeleteGroup
+     * 
+     * When called, opens a SweetAlert. If it is confirmed,
+     * then the UserGroup Delete API is called and the groups 
+     * are updated. If cancelled, nothing happens.
+     * 
+     * @param {number} index The index of the UserGroup that should be deleted.
+     */
+    const handleDeleteGroup = (index) => {
+        // Get id
+        let id = 0;
 
+        props.userGroups.forEach((group, i) => {
+            if (index === i) {
+                id = props.userGroups[i].value;
+            }
+        });
+
+        // Show warning with confirm and cancel buttons
+        swal({
+            dangerMode: true,
+            icon: 'error',
+            title: 'Benutzergruppe wirklich löschen?',
+            buttons: {
+                cancel: 'Abbrechen',
+                confirm: 'Löschen',
+            },
+        }).then(confirm => {
+            // Cancel if not confirmed
+            if (!confirm) return;
+
+            // Cancel if there is only one UserGroup left
+            if (props.userGroups.length <= 1) {
+                swal({
+                    dangerMode: true,
+                    icon: 'error',
+                    title: 'Benutzergruppe konnte nicht gelöscht werden.',
+                    text: 'Bitte erstelle zunächst eine andere Benutzergruppe, bevor du diese hier löschst.',
+                    buttons: {
+                        confirm: 'Okay',
+                    },
+                });
+
+                return;
+            }
+
+            // Cancel if the given group is standard
+            if (props.userGroups[index].isStandard) {
+                swal({
+                    dangerMode: true,
+                    icon: 'error',
+                    title: 'Benutzergruppe konnte nicht gelöscht werden.',
+                    text: 'Du kannst die Standardgruppe nicht löschen.',
+                    buttons: {
+                        confirm: 'Okay',
+                    },
+                });
+
+                return;
+            }
+
+            // Call UserGroup Delete API if alert was confirmed and 
+            // the group is not the last one or the standard group.
+            axios
+                .get('/api/usergroups/delete/' + id)
+                .then(() => {
+                    props.setLoadingUserGroups(true);
+                    props.setLoadingDays(true);
+                })
+            ;
+        });
     };
 
     /** 
@@ -115,7 +185,7 @@ export default function Settings(props) {
                                             <IconButton>drive_file_rename_outline</IconButton>
                                         </Link>
 
-                                        <IconButton outlined="outlined">delete</IconButton>
+                                        <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
 
                                         <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
                                     </div>
