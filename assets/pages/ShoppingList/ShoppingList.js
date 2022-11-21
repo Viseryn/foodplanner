@@ -359,7 +359,7 @@ export default function ShoppingList(props) {
             ) : (
                 <div className="space-y-2">
                     {props.shoppingList.map(item => 
-                        <div key={item.id} className="flex items-center w-full h-10 rounded-full px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
+                        <div key={item.id} className="flex items-center w-full min-h-[2.5rem] py-2 rounded-3xl px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
                             <input 
                                 id={item.id} 
                                 type="checkbox" 
@@ -369,12 +369,12 @@ export default function ShoppingList(props) {
                             />
                             <div className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none flex justify-between items-center group">
                                 <div 
-                                    className={'grow' + (item.checked ? ' line-through text-gray-400' : '')} 
+                                    className={'md:max-w-[220px] break-words' + (item.checked ? ' line-through text-gray-400' : '')} 
                                     onClick={event => handleItemClick(event, item.id, item.editable)}
                                 >
                                     {item.editable ? (
                                         <input 
-                                            className="bg-transparent"
+                                            className="bg-transparent border rounded-md"
                                             defaultValue={item.name}
                                             onBlur={event => handleItemNameChange(event, item.id)}
                                             onKeyDown={event => { 
@@ -388,7 +388,7 @@ export default function ShoppingList(props) {
                                     )}
                                 </div>
 
-                                <div className="flex items-center">
+                                <div className="flex items-center gap-2">
                                     <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, -1)}>expand_less</span>
                                     <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, 1)}>expand_more</span>
                                 </div>
