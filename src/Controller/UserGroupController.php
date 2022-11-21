@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\UserGroup;
+use App\Repository\MealRepository;
 use App\Repository\UserGroupRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
