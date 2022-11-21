@@ -34,6 +34,7 @@ import { InputLabel } from "./Input";
 function RadioWidget({
     id, 
     options = [], 
+    required = false,
     ...radioProps
 }) {
     return (
@@ -47,6 +48,7 @@ function RadioWidget({
                         defaultValue={option.value}
                         className="peer hidden" 
                         defaultChecked={option.checked}
+                        required={required ? 'required' : ''}
                     />
                     <label 
                         htmlFor={option.id}
@@ -91,6 +93,7 @@ function RadioWidget({
 function RadioRow({
     id, 
     options = [], 
+    required = false,
     labelProps = {}, 
     radioProps = {}, 
     ...rowProps
@@ -98,7 +101,7 @@ function RadioRow({
     return (
         <div className={rowProps.className !== undefined ? rowProps.className : inputRowStyle}>
             {rowProps.label !== undefined && <InputLabel htmlFor={id} label={rowProps.label} {...labelProps} />}
-            <RadioWidget id={id} options={options} {...radioProps} />
+            <RadioWidget id={id} options={options} required={required} {...radioProps} />
         </div>
     );
 }
