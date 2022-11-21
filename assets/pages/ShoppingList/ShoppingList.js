@@ -255,10 +255,10 @@ export default function ShoppingList(props) {
             items[index + direction].position = oldPosition;
 
             [items[index], items[index + direction]] = [items[index + direction], items[index]];
-        }
     
-        // Update list
-        props.setShoppingList(items);
+            // Update list
+            props.setShoppingList(items);
+        }
     };
 
     /**
