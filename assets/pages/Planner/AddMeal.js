@@ -7,7 +7,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { InputLabel } from '../../components/form/Input';
-import { RadioRow } from '../../components/form/Radio';
+import { RadioWidget } from '../../components/form/Radio';
 import { SelectWidget } from '../../components/form/Select';
 import Button, { SubmitButton } from '../../components/ui/Buttons';
 import Heading from '../../components/ui/Heading';
@@ -104,57 +104,37 @@ export default function AddMeal(props) {
                         )}
                     </div>
 
-                    <RadioRow 
-                        id="meal_userGroup" 
-                        label="Für wen ist die Mahlzeit?"
-                        options={[
-                            {
-                                id: 'userGroup_benedikt',
-                                value: 3,
-                                icon: 'face',
-                                label: 'Benedikt',
-                            },
-                            {
-                                id: 'userGroup_kevin',
-                                value: 2,
-                                icon: 'face_6',
-                                label: 'Kevin',
-                            },
-                            {
-                                id: 'userGroup_all',
-                                value: 1,
-                                icon: 'groups',
-                                label: 'Alle',
-                                checked: 'checked',
-                            },
-                        ]} 
-                    />
+                    <div className="mb-6">
+                        <InputLabel id="meal_userGroup" label="Für wen ist die Mahlzeit?" />
+                        {props.isLoadingUserGroups ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <RadioWidget
+                                id="meal_userGroup" 
+                                options={props.userGroups}
+                                required={true}
+                            />
+                        )}
+                    </div>
 
-                    <RadioRow 
-                        id="meal_mealCategory" 
-                        label="Wann ist die Mahlzeit?"
-                        options={[
-                            {
-                                id: 'mealCategory_breakfast',
-                                value: 1,
-                                icon: 'bakery_dining',
-                                label: 'Morgens',
-                            },
-                            {
-                                id: 'mealCategory_lunch',
-                                value: 2,
-                                icon: 'fastfood',
-                                label: 'Mittags',
-                                checked: 'checked',
-                            },
-                            {
-                                id: 'mealCategory_dinner',
-                                value: 3,
-                                icon: 'ramen_dining',
-                                label: 'Abends',
-                            },
-                        ]} 
-                    />
+                    <div className="mb-6">
+                        <InputLabel id="meal_userGroup" label="Wann ist die Mahlzeit?" />
+                        {props.isLoadingUserGroups ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <RadioWidget
+                                id="meal_mealCategory" 
+                                options={props.mealCategories}
+                                required={true}
+                            />
+                        )}
+                    </div>
 
                     <div className="mb-6">
                         <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
@@ -181,11 +161,13 @@ export default function AddMeal(props) {
                                 style="transparent"
                             />
                         </div>
-                        <SubmitButton 
-                            icon="add" 
-                            label="Speichern" 
-                            elevated={true}
-                        />
+                        {!props.isLoadingDays && !props.isLoadingRecipes && !props.isLoadingUserGroups && !props.isLoadingMealCategories &&
+                            <SubmitButton 
+                                icon="add" 
+                                label="Speichern" 
+                                elevated={true}
+                            />
+                        }
                     </div> 
                 </form>
             )}
