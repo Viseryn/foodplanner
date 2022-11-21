@@ -37,11 +37,14 @@ class UserGroupController extends AbstractController
         // Add public data to the response array
         foreach ($userGroups as $userGroup) {
             $userGroupsResponse[] = [
-                'id' => $userGroup->getId(),
                 'name' => $userGroup->getName(),
                 'users' => [],
                 'isStandard' => $userGroup->isStandard(),
                 'icon' => $userGroup->getIcon(),
+                'id' => 'userGroup_' . $userGroup->getName(),           // For radio buttons
+                'value' => $userGroup->getId(),                         // For radio buttons
+                'label' => $userGroup->getName(),                       // For radio buttons
+                'checked' => $userGroup->isStandard() ? 'checked' : '', // For radio buttons
             ];
 
             // Only add the usernames to the response, not the rest of the user data
@@ -84,7 +87,7 @@ class UserGroupController extends AbstractController
             $setStandard = false;
 
             // Get UserGroup from db
-            $groupDb = $userGroupRepository->find($group->id);
+            $groupDb = $userGroupRepository->find($group->value);
             
             if ($group->isStandard && !$setStandard) {
                 $groupDb->setStandard(true);
