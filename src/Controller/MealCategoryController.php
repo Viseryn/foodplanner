@@ -76,7 +76,7 @@ class MealCategoryController extends AbstractController
             // Get UserGroup from db
             $categoryDb = $mealCategoryRepository->find($category->value);
             
-            if ($category->standard && !$setStandard) {
+            if ($category->isStandard && !$setStandard) {
                 $categoryDb->setStandard(true);
                 $setStandard = true;
             } else {
