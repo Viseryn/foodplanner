@@ -101,6 +101,10 @@ export default function ShoppingList(props) {
 
                 if (origItem.quantity_unit === item.quantity_unit 
                     && !origItem.checked && !item.checked) {
+                    // Check whether a quantity value is '1/2' and convert to 0.5
+                    if (origItem.quantity_value === '1/2') origItem.quantity_value = 0.5;
+                    if (item.quantity_value === '1/2') item.quantity_value = 0.5;
+
                     // If the representative has the same unit 
                     // and both are not checked, add them up.
                     origItem.quantity_value = +origItem.quantity_value + +item.quantity_value;
