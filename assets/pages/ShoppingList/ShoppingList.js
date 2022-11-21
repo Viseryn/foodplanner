@@ -34,11 +34,6 @@ import Spinner from '../../components/ui/Spinner';
  */
 export default function ShoppingList(props) {
     /**
-     * State variables
-     */
-    const [inputValue, setInputValue] = useState('');
-
-    /**
      * updateItem
      * 
      * Updates one item with the given ID in the items state variable.
@@ -124,32 +119,6 @@ export default function ShoppingList(props) {
 
         // Update the state variable
         props.setShoppingList(appearedItems);
-    };
-
-    /**
-     * handleNewItemKeyDown
-     * 
-     * Handler for "enter" presses when the AddItemInputWidget
-     * component is focused. Adds the input value as a new item 
-     * and clears the input field.
-     * 
-     * @param {*} event
-     */ 
-    const handleNewItemKeyDown = (event) => {
-        if (event.key === 'Enter' && inputValue !== '') {
-            const newItem = {
-                name: inputValue,
-            };
-
-            // Send new item to database and reload list
-            axios
-                .post('/api/shoppinglist/ingredient', newItem)
-                .then(response => {
-                    props.setLoadingShoppingList(true);
-                    setInputValue('');
-                })
-            ;
-        }
     };
 
     /**
@@ -402,9 +371,7 @@ export default function ShoppingList(props) {
             
             <AddItemInputWidget
                 items={props.shoppingList}
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                handleNewItemKeyDown={handleNewItemKeyDown}
+                setShoppingList={props.setShoppingList}
             />
 
             {props.isLoadingShoppingList ? (
