@@ -43,8 +43,10 @@ export default function Settings(props) {
         groups.forEach((group, i) => {
             if (index === i) {
                 group.isStandard = true;
+                group.checked = 'checked';
             } else {
                 group.isStandard = false;
+                group.checked = '';
             }
         });
 
