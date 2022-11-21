@@ -4,7 +4,8 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-import updateShoppingList from "../../../util/updateShoppingList";
+
+import loadShoppingList from "../../../util/loadShoppingList";
 
 /**
  * AddItemInputWidget
@@ -55,8 +56,8 @@ import updateShoppingList from "../../../util/updateShoppingList";
                     // Clear input field
                     setInputValue('');
 
-                    // Update shopping list
-                    updateShoppingList(props.setShoppingList);
+                    // Load new shopping list
+                    loadShoppingList(props.setShoppingList);
                 })
             ;
         }

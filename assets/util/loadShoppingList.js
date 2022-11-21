@@ -1,12 +1,12 @@
 /***************************************
- * ./assets/util/updateShoppingList.js *
+ * ./assets/util/loadShoppingList.js *
  ***************************************/
 
 import axios from "axios";
 import parseShoppingList from "./parseShoppingList";
 
 /**
- * updateShoppingList
+ * loadShoppingList
  * 
  * Calls the ShoppingList API and parses the ShoppingList.
  * After loading, an optional cleanup function can be called
@@ -15,7 +15,7 @@ import parseShoppingList from "./parseShoppingList";
  * @param {function} setShoppingList The setter function of the global shopping list state variable.
  * @param {function} callback An optional cleanup function which the updated shopping list items are passed to.
  */
-const updateShoppingList = (setShoppingList, callback = () => {}) => {
+const loadShoppingList = (setShoppingList, callback = () => {}) => {
     axios
         .get('/api/shoppinglist')
         .then(response => {
@@ -32,4 +32,4 @@ const updateShoppingList = (setShoppingList, callback = () => {}) => {
     ;
 };
 
-export default updateShoppingList;
+export default loadShoppingList;

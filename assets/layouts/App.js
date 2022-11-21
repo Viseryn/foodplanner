@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import axios from "axios";
 
-import updateShoppingList from "../util/updateShoppingList";
+import loadShoppingList from "../util/loadShoppingList";
 
 import Sidebar from '../layouts/Sidebar';
 import Planner from '../pages/Planner/Planner';
@@ -175,7 +175,7 @@ export default function App() {
      */
     useEffect(() => {
         if (isLoadingShoppingList) {
-            updateShoppingList(setShoppingList, () => {
+            loadShoppingList(setShoppingList, () => {
                 // Disable loading screen
                 setLoadingShoppingList(false);
             });
