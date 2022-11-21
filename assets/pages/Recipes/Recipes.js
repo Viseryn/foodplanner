@@ -76,11 +76,27 @@ export default function Recipes(props) {
      */
     const recipesFiltered = props.recipes.filter(recipe => {
         if (searchValue === '') {
-            return recipe;
+            return true;
         } else {
             // Return true if recipe includes the search input value.
-            // Put both to lowercase, so the searchValue is not case-sensitive.
-            return recipe.title.toLowerCase().includes(searchValue.toLowerCase());
+            // Put both to lowercase so that the searchValue is not case-sensitive.
+            if (recipe.title.toLowerCase().includes(searchValue.toLowerCase())) {
+                return true;
+            }
+
+            // If the block above did not return:
+            let returnValue = false;
+
+            // Return true if the search input value appears in ingredients.
+            // Put both to lowercase so that the searchValue is not case-sensitive.
+            recipe.ingredients.forEach(ingredient => {
+                if (ingredient.name.toLowerCase().includes(searchValue.toLowerCase())) {
+                    returnValue = true;
+                }
+            });
+
+            // Return true if searchValue appeared in an ingredient
+            return returnValue;
         }
     });
 
@@ -168,7 +184,7 @@ export default function Recipes(props) {
                 </div>
 
                 {/* Search bar */}
-                <div className="mb-4 rounded-full bg-white dark:bg-[#1D252C] md:dark:bg-[#29353f] h-16 flex items-center pl-6 pr-4">
+                <div className="mb-4 rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] md:dark:bg-[#29353f] shadow-md md:shadow-none h-16 flex items-center pl-6 pr-4">
                     <span className="material-symbols-rounded mr-2 cursor-default">search</span>
                     <input 
                         className="dark:bg-[#1D252C] md:dark:bg-[#29353f] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
