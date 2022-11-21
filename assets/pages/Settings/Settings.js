@@ -170,7 +170,7 @@ export default function Settings(props) {
      */
     return (
         <>
-            {props.user?.username === undefined &&
+            {!props.isLoadingUser && props.user?.username === undefined &&
                 <Navigate to="/login" />
             }
 
