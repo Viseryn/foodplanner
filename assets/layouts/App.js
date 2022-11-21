@@ -43,6 +43,7 @@ export default function App() {
 
     const setUserProps = {
         'user': user,
+        'setUser': setUser,
         'isLoadingUser': isLoadingUser,
         'setLoadingUser': setLoadingUser,
     }

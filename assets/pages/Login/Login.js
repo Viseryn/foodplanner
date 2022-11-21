@@ -21,6 +21,7 @@ import Spinner from '../../components/ui/Spinner';
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
  * @property {arr} user
+ * @property {function} setUser
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
  */

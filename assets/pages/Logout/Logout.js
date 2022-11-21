@@ -16,6 +16,7 @@ import Heading from "../../components/ui/Heading";
  * 
  * @component
  * @property {arr} user
+ * @property {function} setUser
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
  */

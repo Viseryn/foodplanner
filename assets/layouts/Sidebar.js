@@ -20,6 +20,7 @@ import axios from 'axios';
  * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
  * @property {Object} sidebarActionButton An object that contains the sidebar action button configuration.
  * @property {arr} user
+ * @property {function} setUser
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
  * 
