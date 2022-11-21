@@ -56,8 +56,15 @@ export default function App() {
             axios
                 .get('/api/user')
                 .then(response => {
+                    // Load user data
                     setUser(JSON.parse(response.data));
                     setLoadingUser(false);
+
+                    // Remove user-sensitive data
+                    setUserGroups([]);
+                    setMealCategories([]);
+                    setLoadingUserGroups(true);
+                    setLoadingMealCategories(true);
                 })
             ;
         }
