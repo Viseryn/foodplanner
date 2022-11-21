@@ -220,7 +220,7 @@ export default function Settings(props) {
                         <Spinner />
                     ) : (
                         <div className="space-y-2">
-                            {props.mealCategories?.map((category, index) => 
+                            {props.mealCategories.map((category, index) => 
                                 <div key={category.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
                                     <div className="pl-4 flex items-center">
                                         <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
