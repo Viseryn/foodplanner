@@ -8,6 +8,7 @@ import axios from 'axios';
 
 import Heading, { SubHeading } from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
+import IconButton from '../../components/ui/IconButton';
  
 /**
  * Settings
@@ -16,6 +17,7 @@ import Spinner from '../../components/ui/Spinner';
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
  * @property {arr} user
+ * @property {function} setUser
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
  * @property {arr} userGroups
@@ -166,10 +168,13 @@ export default function Settings(props) {
      * Render
      * 
      * @todo UserGroup - Avatars?
-     * @todo Navigate to login if username === undefined and isLoadingUser == false
      */
     return (
         <>
+            {!props.isLoadingUser && props.user?.username === undefined &&
+                <Navigate to="/login" />
+            }
+
             <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
                 <Heading>Einstellungen</Heading>
 
@@ -193,12 +198,10 @@ export default function Settings(props) {
                                         {/* ({group.users.join(', ')}) */}
                                     </div>
                                     <div className="flex gap-2">
-                                        <Link to={'/settings/groups/' + group.id}>
+                                        <Link to={'/settings/groups/' + group.value}>
                                             <IconButton>drive_file_rename_outline</IconButton>
                                         </Link>
-
                                         <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
-
                                         <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
                                     </div>
                                 </div>
@@ -242,13 +245,5 @@ export default function Settings(props) {
                 )}
             </div>
         </>
-    );
-}
-
-function IconButton(props) {
-    return (
-        <span {...props} className={'material-symbols-rounded cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full' + (props.outlined == 'outlined' ? ' outlined' : '')}>
-            {props.children}
-        </span>
     );
 }

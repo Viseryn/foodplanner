@@ -19,6 +19,7 @@ import Login from '../pages/Login/Login';
 import Logout from '../pages/Logout/Logout';
 import PageNotFound from '../pages/PageNotFound/PageNotFound';
 import Settings from '../pages/Settings/Settings';
+import AddGroup from "../pages/Settings/AddGroup";
 
 /**
  * App
@@ -302,6 +303,10 @@ export default function App() {
                                                                             {...setUserProps}
                                                                             {...setUserGroupsProps}
                                                                             {...setMealCategoriesProps} />} />
+                    <Route path="/settings/groups/add" 
+                                                    element={<AddGroup      {...setSidebarProps} 
+                                                                            {...setUserProps}
+                                                                            {...setUserGroupsProps} />} />
                     <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
                 </Routes>
             </div>
