@@ -90,12 +90,12 @@ export default function AddRecipe(props) {
         axios
             .post('/api/recipe/add', formData)
             .then(response => {
+                setLoading(false);
                 setSubmittedSuccessfully(true);
+                props.setLoadingRecipes(true);
                 setNewId(response.data.id);
             })
         ;
-
-        props.setLoadingRecipes(true);
     };
 
     /**
@@ -115,11 +115,11 @@ export default function AddRecipe(props) {
     return (
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
             {/* If the form is submitted, redirect to the new recipe */}
-            {isSubmittedSuccessfully &&
+            {isSubmittedSuccessfully && !props.isLoadingRecipes &&
                 <Navigate to={'/recipe/' + newId} />
             }
 
-            {isLoading ? (
+            {isLoading || props.isLoadingRecipes ? (
                 <Spinner />
             ) : (
                 <>
