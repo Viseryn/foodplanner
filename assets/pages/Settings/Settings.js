@@ -17,6 +17,7 @@ import IconButton from '../../components/ui/IconButton';
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
  * @property {arr} user
+ * @property {function} setUser
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
  * @property {arr} userGroups
