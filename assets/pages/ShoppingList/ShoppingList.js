@@ -138,12 +138,12 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * handleDeleteButtonClicked
+     * handleDeleteChecked
      * 
      * A handler for onClick events of the delete button.
      * When clicked, filters out all items that are checked.
      */
-    const handleDeleteButtonClicked = () => {
+    const handleDeleteChecked = () => {
         const newList = props.shoppingList.filter(item => {
             return !item.checked;
         })
@@ -328,7 +328,7 @@ export default function ShoppingList(props) {
                 {/* Delete and update buttons */}
                 <div>
                     <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
-                    <IconButton onClick={handleDeleteButtonClicked}>delete_sweep</IconButton>
+                    <IconButton onClick={handleDeleteChecked}>delete_sweep</IconButton>
                     <IconButton onClick={() => props.setLoadingShoppingList(true)}>sync</IconButton>
                 </div>
             </div>
