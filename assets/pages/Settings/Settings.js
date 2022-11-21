@@ -197,12 +197,10 @@ export default function Settings(props) {
                                         {/* ({group.users.join(', ')}) */}
                                     </div>
                                     <div className="flex gap-2">
-                                        <Link to={'/settings/groups/' + group.id}>
+                                        <Link to={'/settings/groups/' + group.value}>
                                             <IconButton>drive_file_rename_outline</IconButton>
                                         </Link>
-
                                         <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
-
                                         <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
                                     </div>
                                 </div>
