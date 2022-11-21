@@ -268,11 +268,13 @@ export default function App() {
                                                                             {...setDaysProps}
                                                                             {...setShoppingListProps} />} />
                     <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} 
+                                                                            {...setUserProps}
                                                                             {...setDaysProps} 
                                                                             {...setRecipesProps}
                                                                             {...setUserGroupsProps}
                                                                             {...setMealCategoriesProps} />} />
                     <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} 
+                                                                            {...setUserProps}
                                                                             {...setDaysProps} 
                                                                             {...setRecipesProps}
                                                                             {...setUserGroupsProps}
