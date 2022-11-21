@@ -27,6 +27,10 @@ import Spinner from '../../components/ui/Spinner';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {arr} shoppingList 
+ * @property {function} setShoppingList
+ * @property {boolean} isLoadingShoppingList
+ * @property {function} setLoadingShoppingList
  */
 export default function ShoppingList(props) {
     /**
