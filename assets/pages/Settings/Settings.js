@@ -21,50 +21,12 @@ import Spinner from '../../components/ui/Spinner';
  */
 export default function Settings(props) {
     /**
-     * State variables
-     */
-    const [userGroups, setUserGroups] = useState([]);
-    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
-    const [mealCategories, setMealCategories] = useState([]);
-    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
-
-    /**
      * Load sidebar
      */
     useEffect(() => {
         props.setSidebarActiveItem();
         props.setSidebarActionButton();
     }, []);
-
-    /**
-     * Load UserGroups
-     */
-    useEffect(() => {
-        if (!isLoadingUserGroups) return;
-
-        axios
-            .get('/api/usergroups')
-            .then(response => {
-                setUserGroups(JSON.parse(response.data));
-                setLoadingUserGroups(false);
-            })
-        ;
-    }, [isLoadingUserGroups]);
-
-    /**
-     * Load MealCategories
-     */
-    useEffect(() => {
-        if (!isLoadingMealCategories) return;
-
-        axios
-            .get('/api/mealcategories')
-            .then(response => {
-                setMealCategories(JSON.parse(response.data));
-                setLoadingMealCategories(false);
-            })
-        ;
-    }, [isLoadingMealCategories]);
 
     /**
      * handleSetStandardGroup
@@ -76,7 +38,7 @@ export default function Settings(props) {
      * @param {number} index The index of the group that shall be the standard group.
      */
     const handleSetStandardGroup = (index) => {
-        let groups = [...userGroups];
+        let groups = [...props.userGroups];
 
         groups.forEach((group, i) => {
             if (index === i) {
@@ -86,7 +48,7 @@ export default function Settings(props) {
             }
         });
 
-        setUserGroups(groups);
+        props.setUserGroups(groups);
         axios.post('/api/usergroups/update-standard', JSON.stringify(groups));
     };
 
@@ -100,7 +62,7 @@ export default function Settings(props) {
      * @param {number} index The index of the category that shall be the standard category.
      */
     const handleSetStandardMealCategory = (index) => {
-        let categories = [...mealCategories];
+        let categories = [...props.mealCategories];
 
         categories.forEach((category, i) => {
             if (index === i) {
@@ -110,7 +72,7 @@ export default function Settings(props) {
             }
         });
 
-        setMealCategories(categories);
+        props.setMealCategories(categories);
         axios.post('/api/mealcategories/update-standard', JSON.stringify(categories));
     };
 
@@ -137,12 +99,12 @@ export default function Settings(props) {
                 {props.isLoadingUser ? (
                     <Spinner />
                 ) : (
-                    (isLoadingUserGroups ? (
+                    (props.isLoadingUserGroups ? (
                         <Spinner />
                     ) : (
                         <div className="space-y-2">
-                            {userGroups.map((group, index) => 
-                                <div key={group.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
+                            {props.userGroups.map((group, index) => 
+                                <div key={index} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
                                     <div className="pl-4 flex items-center">
                                         <span className="material-symbols-rounded mr-4">{group.icon}</span>
                                         {group.name} 
@@ -177,14 +139,14 @@ export default function Settings(props) {
                     Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
                 </p>
 
-                {props.isLoadingMealCategories ? (
+                {props.isLoadingUser ? (
                     <Spinner />
                 ) : (
-                    (isLoadingMealCategories ? (
+                    (props.isLoadingMealCategories ? (
                         <Spinner />
                     ) : (
                         <div className="space-y-2">
-                            {mealCategories.map((category, index) => 
+                            {props.mealCategories?.map((category, index) => 
                                 <div key={category.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
                                     <div className="pl-4 flex items-center">
                                         <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>

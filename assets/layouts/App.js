@@ -64,6 +64,66 @@ export default function App() {
     }, [isLoadingUser]);
 
     /**
+     * Keep UserGroup data in global state variable
+     * and pass them as props to subcomponents.
+     */
+    const [userGroups, setUserGroups] = useState([]);
+    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
+
+    const setUserGroupsProps = {
+        'userGroups': userGroups,
+        'setUserGroups': setUserGroups,
+        'isLoadingUserGroups': isLoadingUserGroups,
+        'setLoadingUserGroups': setLoadingUserGroups,
+    }
+
+    /**
+     * Load UserGroup data into global state when isLoadingUserGroups
+     * is true, e.g. on first render.
+     */
+    useEffect(() => {
+        if (isLoadingUserGroups) {
+            axios
+                .get('/api/usergroups')
+                .then(response => {
+                    setUserGroups(JSON.parse(response.data));
+                    setLoadingUserGroups(false);
+                })
+            ;
+        }
+    }, [isLoadingUserGroups]);
+
+    /**
+     * Keep MealCategory data in global state variable
+     * and pass them as props to subcomponents.
+     */
+    const [mealCategories, setMealCategories] = useState([]);
+    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
+
+    const setMealCategoriesProps = {
+        'mealCategories': mealCategories,
+        'setMealCategories': setMealCategories,
+        'isLoadingMealCategories': isLoadingMealCategories,
+        'setLoadingMealCategories': setLoadingMealCategories,
+    }
+
+    /**
+     * Load MealCategory data into global state when isLoadingMealCategories
+     * is true, e.g. on first render.
+     */
+    useEffect(() => {
+        if (!isLoadingMealCategories) return;
+
+        axios
+            .get('/api/mealcategories')
+            .then(response => {
+                setMealCategories(JSON.parse(response.data));
+                setLoadingMealCategories(false);
+            })
+        ;
+    }, [isLoadingMealCategories]);
+
+    /**
      * Sidebar configuration (active item, action button) are kept 
      * in global state variables.
      * Sidebar setters will be passed as props to subcomponents, so 
@@ -202,10 +262,14 @@ export default function App() {
                                                                             {...setShoppingListProps} />} />
                     <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} 
                                                                             {...setDaysProps} 
-                                                                            {...setRecipesProps} />} />
+                                                                            {...setRecipesProps}
+                                                                            {...setUserGroupsProps}
+                                                                            {...setMealCategoriesProps} />} />
                     <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} 
                                                                             {...setDaysProps} 
-                                                                            {...setRecipesProps} />} />
+                                                                            {...setRecipesProps}
+                                                                            {...setUserGroupsProps}
+                                                                            {...setMealCategoriesProps} />} />
                     <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps}
                                                                             {...setShoppingListProps} />} />
                     <Route path="/recipes"          element={<Recipes       {...setSidebarProps} 
@@ -223,7 +287,9 @@ export default function App() {
                     <Route path="/logout"           element={<Logout        {...setSidebarProps} 
                                                                             {...setUserProps} />} />
                     <Route path="/settings"         element={<Settings      {...setSidebarProps} 
-                                                                            {...setUserProps} />} />
+                                                                            {...setUserProps}
+                                                                            {...setUserGroupsProps}
+                                                                            {...setMealCategoriesProps} />} />
                     <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
                 </Routes>
             </div>
