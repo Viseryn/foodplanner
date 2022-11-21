@@ -230,54 +230,34 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * handlePositionDown
+     * handlePositionChange
      * 
-     * Swaps the position of the selected item 
-     * with the next item (if existent).
-     * 
-     * @param {number} id The id of the given item.
-     */
-    const handlePositionDown = (id) => {
-        const index = findItemById(id);
-
-        if (props.shoppingList.length !== index + 1) {
-            let newItems = [...props.shoppingList];
-            const oldPosition = newItems[index].position;
-            const newPosition = newItems[index + 1].position;
-
-            newItems[index].position = newPosition;
-            newItems[index + 1].position = oldPosition;
-
-            [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
-
-            props.setShoppingList(newItems);
-        }
-    };
-
-    /**
-     * handlePositionUp
-     * 
-     * Swaps the position of the selected item 
-     * with the previous item (if existent).
+     * Moves the given item up or down in the Shopping List.
      * 
      * @param {number} id The id of the given item.
+     * @param {number} direction Possible values are -1 (up) and 1 (down).
      */
-    const handlePositionUp = (id) => {
+    const handlePositionChange = (id, direction) => {
+        let items = [...props.shoppingList];
+
         const index = findItemById(id);
+        const oldPosition = items[index].position;
+        const newPosition = items[index + direction]?.position;
 
-        if (index !== 0) {
-            let newItems = [...props.shoppingList];
-            
-            const oldPosition = newItems[index].position;
-            const newPosition = newItems[index - 1].position;
+        // Move item up only when it is not the first item and 
+        // move item down only when it is not the last item.
+        if (
+            (direction === -1 && index !== 0)
+            || (direction === 1 && index !== props.shoppingList.length - 1)
+        ) {
+            items[index].position = newPosition;
+            items[index + direction].position = oldPosition;
 
-            newItems[index].position = newPosition;
-            newItems[index - 1].position = oldPosition;
-
-            [newItems[index], newItems[index - 1]] = [newItems[index - 1], newItems[index]];
-
-            props.setShoppingList(newItems);
+            [items[index], items[index + direction]] = [items[index + direction], items[index]];
         }
+    
+        // Update list
+        props.setShoppingList(items);
     };
 
     /**
@@ -409,8 +389,8 @@ export default function ShoppingList(props) {
                                 </div>
 
                                 <div className="flex items-center">
-                                    <span className="material-symbols-rounded" onClick={() => handlePositionUp(item.id)}>expand_less</span>
-                                    <span className="material-symbols-rounded" onClick={() => handlePositionDown(item.id)}>expand_more</span>
+                                    <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, -1)}>expand_less</span>
+                                    <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, 1)}>expand_more</span>
                                 </div>
                             </div>
                         </div>
