@@ -32,11 +32,16 @@ export default function Logout(props) {
     useEffect(() => {
         if (!isLoading) return;
 
+        // Remove user data from state
+        props.setUser([]);
+
         axios
             .get('/api/logout')
             .then(() => {
-                props.setLoadingUser(true);
                 setLoading(false);
+
+                // Trigger reload of user data
+                props.setLoadingUser(true);
             })
         ;
     }, [isLoading]);
