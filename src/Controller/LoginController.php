@@ -23,7 +23,7 @@ class LoginController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
 
         return new JsonResponse([
-            'error' => $error->getMessageKey(),
+            'error' => $error?->getMessageKey(),
         ]);
     }
 }
