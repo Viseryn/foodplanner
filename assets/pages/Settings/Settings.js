@@ -2,7 +2,7 @@
  * ./assets/pages/Settings/Settings.js *
  ***************************************/
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
