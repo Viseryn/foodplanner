@@ -10,6 +10,7 @@ import generateDisplayName from '../../util/generateDisplayName';
 import AddItemInputWidget from './components/AddItemInputWidget'
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
+import IconButton from '../../components/ui/IconButton';
 
 /**
  * ShoppingList
@@ -326,26 +327,9 @@ export default function ShoppingList(props) {
 
                 {/* Delete and update buttons */}
                 <div>
-                    <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={handleDeleteAll}
-                    >
-                        delete_forever
-                    </span>
-
-                    <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={handleDeleteButtonClicked}
-                    >
-                        delete_sweep
-                    </span>
-
-                    <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={() => props.setLoadingShoppingList(true)}
-                    >
-                        sync
-                    </span>
+                    <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
+                    <IconButton onClick={handleDeleteButtonClicked}>delete_sweep</IconButton>
+                    <IconButton onClick={() => props.setLoadingShoppingList(true)}>sync</IconButton>
                 </div>
             </div>
             
