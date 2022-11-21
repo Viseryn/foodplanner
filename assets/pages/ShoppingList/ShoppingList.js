@@ -10,6 +10,7 @@ import generateDisplayName from '../../util/generateDisplayName';
 import AddItemInputWidget from './components/AddItemInputWidget'
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
+import IconButton from '../../components/ui/IconButton';
 
 /**
  * ShoppingList
@@ -27,13 +28,12 @@ import Spinner from '../../components/ui/Spinner';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {arr} shoppingList 
+ * @property {function} setShoppingList
+ * @property {boolean} isLoadingShoppingList
+ * @property {function} setLoadingShoppingList
  */
 export default function ShoppingList(props) {
-    /**
-     * State variables
-     */
-    const [inputValue, setInputValue] = useState('');
-
     /**
      * updateItem
      * 
@@ -123,32 +123,6 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * handleNewItemKeyDown
-     * 
-     * Handler for "enter" presses when the AddItemInputWidget
-     * component is focused. Adds the input value as a new item 
-     * and clears the input field.
-     * 
-     * @param {*} event
-     */ 
-    const handleNewItemKeyDown = (event) => {
-        if (event.key === 'Enter' && inputValue !== '') {
-            const newItem = {
-                name: inputValue,
-            };
-
-            // Send new item to database and reload list
-            axios
-                .post('/api/shoppinglist/ingredient', newItem)
-                .then(response => {
-                    props.setLoadingShoppingList(true);
-                    setInputValue('');
-                })
-            ;
-        }
-    };
-
-    /**
      * handleCheckboxChange
      * 
      * Toggle the checked status of the given item.
@@ -164,12 +138,12 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * handleDeleteButtonClicked
+     * handleDeleteChecked
      * 
      * A handler for onClick events of the delete button.
      * When clicked, filters out all items that are checked.
      */
-    const handleDeleteButtonClicked = () => {
+    const handleDeleteChecked = () => {
         const newList = props.shoppingList.filter(item => {
             return !item.checked;
         })
@@ -257,54 +231,34 @@ export default function ShoppingList(props) {
     };
 
     /**
-     * handlePositionDown
+     * handlePositionChange
      * 
-     * Swaps the position of the selected item 
-     * with the next item (if existent).
-     * 
-     * @param {number} id The id of the given item.
-     */
-    const handlePositionDown = (id) => {
-        const index = findItemById(id);
-
-        if (props.shoppingList.length !== index + 1) {
-            let newItems = [...props.shoppingList];
-            const oldPosition = newItems[index].position;
-            const newPosition = newItems[index + 1].position;
-
-            newItems[index].position = newPosition;
-            newItems[index + 1].position = oldPosition;
-
-            [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
-
-            props.setShoppingList(newItems);
-        }
-    };
-
-    /**
-     * handlePositionUp
-     * 
-     * Swaps the position of the selected item 
-     * with the previous item (if existent).
+     * Moves the given item up or down in the Shopping List.
      * 
      * @param {number} id The id of the given item.
+     * @param {number} direction Possible values are -1 (up) and 1 (down).
      */
-    const handlePositionUp = (id) => {
+    const handlePositionChange = (id, direction) => {
+        let items = [...props.shoppingList];
+
         const index = findItemById(id);
+        const oldPosition = items[index].position;
+        const newPosition = items[index + direction]?.position;
 
-        if (index !== 0) {
-            let newItems = [...props.shoppingList];
-            
-            const oldPosition = newItems[index].position;
-            const newPosition = newItems[index - 1].position;
+        // Move item up only when it is not the first item and 
+        // move item down only when it is not the last item.
+        if (
+            (direction === -1 && index !== 0)
+            || (direction === 1 && index !== props.shoppingList.length - 1)
+        ) {
+            items[index].position = newPosition;
+            items[index + direction].position = oldPosition;
 
-            newItems[index].position = newPosition;
-            newItems[index - 1].position = oldPosition;
-
-            [newItems[index], newItems[index - 1]] = [newItems[index - 1], newItems[index]];
-
-            props.setShoppingList(newItems);
+            [items[index], items[index + direction]] = [items[index + direction], items[index]];
         }
+    
+        // Update list
+        props.setShoppingList(items);
     };
 
     /**
@@ -373,34 +327,15 @@ export default function ShoppingList(props) {
 
                 {/* Delete and update buttons */}
                 <div>
-                    <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={handleDeleteAll}
-                    >
-                        delete_forever
-                    </span>
-
-                    <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={handleDeleteButtonClicked}
-                    >
-                        delete_sweep
-                    </span>
-
-                    <span 
-                        className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full"
-                        onClick={() => props.setLoadingShoppingList(true)}
-                    >
-                        sync
-                    </span>
+                    <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
+                    <IconButton onClick={handleDeleteChecked}>delete_sweep</IconButton>
+                    <IconButton onClick={() => props.setLoadingShoppingList(true)}>sync</IconButton>
                 </div>
             </div>
             
             <AddItemInputWidget
                 items={props.shoppingList}
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                handleNewItemKeyDown={handleNewItemKeyDown}
+                setShoppingList={props.setShoppingList}
             />
 
             {props.isLoadingShoppingList ? (
@@ -408,7 +343,7 @@ export default function ShoppingList(props) {
             ) : (
                 <div className="space-y-2">
                     {props.shoppingList.map(item => 
-                        <div key={item.id} className="flex items-center w-full h-10 rounded-full px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
+                        <div key={item.id} className="flex items-center w-full min-h-[2.5rem] py-2 rounded-3xl px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
                             <input 
                                 id={item.id} 
                                 type="checkbox" 
@@ -418,12 +353,12 @@ export default function ShoppingList(props) {
                             />
                             <div className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none flex justify-between items-center group">
                                 <div 
-                                    className={'grow' + (item.checked ? ' line-through text-gray-400' : '')} 
+                                    className={'md:max-w-[220px] break-words' + (item.checked ? ' line-through text-gray-400' : '')} 
                                     onClick={event => handleItemClick(event, item.id, item.editable)}
                                 >
                                     {item.editable ? (
                                         <input 
-                                            className="bg-transparent"
+                                            className="bg-transparent border rounded-md"
                                             defaultValue={item.name}
                                             onBlur={event => handleItemNameChange(event, item.id)}
                                             onKeyDown={event => { 
@@ -437,9 +372,9 @@ export default function ShoppingList(props) {
                                     )}
                                 </div>
 
-                                <div className="flex items-center">
-                                    <span className="material-symbols-rounded" onClick={() => handlePositionUp(item.id)}>expand_less</span>
-                                    <span className="material-symbols-rounded" onClick={() => handlePositionDown(item.id)}>expand_more</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, -1)}>expand_less</span>
+                                    <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, 1)}>expand_more</span>
                                 </div>
                             </div>
                         </div>

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import axios from "axios";
 
-import generateDisplayName from '../util/generateDisplayName';
+import loadShoppingList from "../util/loadShoppingList";
 
 import Sidebar from '../layouts/Sidebar';
 import Planner from '../pages/Planner/Planner';
@@ -175,38 +175,10 @@ export default function App() {
      */
     useEffect(() => {
         if (isLoadingShoppingList) {
-            axios
-                .get('/api/shoppinglist')
-                .then(response => {
-                    let itemsRaw = JSON.parse(response.data);
-
-                    itemsRaw.forEach(item => {
-                        // Save original name of each item
-                        item.originalName = item.name;
-
-                        // Add quantity to the name field, which will be displayed.
-                        // The Shopping List Update API will split everything later.
-                        item.name = generateDisplayName(
-                            item.quantity_value, 
-                            item.quantity_unit, 
-                            item.originalName
-                        );
-                    });
-
-                    // Order list by position
-                    const compareItems = (a, b) => {
-                        if (a.position < b.position) return -1;
-                        if (a.position > b.position) return 1;
-                        return 0;
-                    }
-
-                    itemsRaw.sort(compareItems);
-
-                    // Add list to state
-                    setShoppingList(itemsRaw);
-                    setLoadingShoppingList(false);
-                })
-            ;
+            loadShoppingList(setShoppingList, () => {
+                // Disable loading screen
+                setLoadingShoppingList(false);
+            });
         }
     }, [isLoadingShoppingList]);
 
