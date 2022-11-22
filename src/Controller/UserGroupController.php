@@ -134,4 +134,31 @@ class UserGroupController extends AbstractController
 
         return new Response();
     }
+
+
+    /**
+     * UserGroup Add API
+     */
+    #[Route('/api/usergroups/add', name: 'app_api_usergroups_add', methods: ['GET', 'POST'])]
+    public function add(Request $request): Response 
+    {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $userGroup = new UserGroup();
+
+        $form = $this->createForm(UserGroupType::class, $userGroup);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            // Add UserGroup to database
+            $userGroupRepository->add($userGroup, true);
+
+            return new Response();
+        }
+
+        // Respond with Error 500 if no form is submitted
+        $response = (new Response())->setStatusCode(500);
+        return $response;
+    }
 }

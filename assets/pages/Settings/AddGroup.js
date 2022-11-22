@@ -68,7 +68,7 @@ export default function AddGroup(props) {
             .post('/api/usergroups/add', formData)
             .then(() => {
                 setSubmitted(true); 
-                props.setUserGroups(true);
+                props.setUserGroups(true); ////
             })
         ;
     };
