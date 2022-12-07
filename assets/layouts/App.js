@@ -42,13 +42,6 @@ export default function App() {
     const [user, setUser] = useState([]);
     const [isLoadingUser, setLoadingUser] = useState(true);
 
-    const setUserProps = {
-        'user': user,
-        'setUser': setUser,
-        'isLoadingUser': isLoadingUser,
-        'setLoadingUser': setLoadingUser,
-    }
-
     /**
      * Load user data into global state when isLoadingUser
      * is true, e.g. on first render or after login/logout.
@@ -79,13 +72,6 @@ export default function App() {
     const [userGroups, setUserGroups] = useState([]);
     const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
 
-    const setUserGroupsProps = {
-        'userGroups': userGroups,
-        'setUserGroups': setUserGroups,
-        'isLoadingUserGroups': isLoadingUserGroups,
-        'setLoadingUserGroups': setLoadingUserGroups,
-    }
-
     /**
      * Load UserGroup data into global state when isLoadingUserGroups
      * is true, e.g. on first render.
@@ -109,13 +95,6 @@ export default function App() {
      */
     const [mealCategories, setMealCategories] = useState([]);
     const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
-
-    const setMealCategoriesProps = {
-        'mealCategories': mealCategories,
-        'setMealCategories': setMealCategories,
-        'isLoadingMealCategories': isLoadingMealCategories,
-        'setLoadingMealCategories': setLoadingMealCategories,
-    }
 
     /**
      * Load MealCategory data into global state when isLoadingMealCategories
@@ -149,11 +128,6 @@ export default function App() {
         onClickHandler: () => {},
     }); 
 
-    const setSidebarProps = {
-        'setSidebarActiveItem': setSidebarActiveItem, 
-        'setSidebarActionButton': setSidebarActionButton,
-    };
-
     /**
      * Keep recipes in global state variable
      * and pass them as props to subcomponents.
@@ -161,15 +135,6 @@ export default function App() {
     const [recipes, setRecipes] = useState([]);
     const [isLoadingRecipes, setLoadingRecipes] = useState(true);
     const [recipeIndex, setRecipeIndex] = useState(-1);
-
-    const setRecipesProps = {
-        'recipes': recipes,
-        'setRecipes': setRecipes,
-        'isLoadingRecipes': isLoadingRecipes,
-        'setLoadingRecipes': setLoadingRecipes,
-        'recipeIndex': recipeIndex,
-        'setRecipeIndex': setRecipeIndex,
-    }
 
     /**
      * Load recipes into global state when isLoadingRecipes 
@@ -194,12 +159,6 @@ export default function App() {
      */
     const [days, setDays] = useState([]);
     const [isLoadingDays, setLoadingDays] = useState(true);
-
-    const setDaysProps = {
-        'days': days,
-        'isLoadingDays': isLoadingDays,
-        'setLoadingDays': setLoadingDays,
-    };
 
     /**
      * Calls the Update Days API, which removes all 
@@ -233,13 +192,6 @@ export default function App() {
     const [shoppingList, setShoppingList] = useState([]);
     const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
 
-    const setShoppingListProps = {
-        'shoppingList': shoppingList,
-        'setShoppingList': setShoppingList,
-        'isLoadingShoppingList': isLoadingShoppingList,
-        'setLoadingShoppingList': setLoadingShoppingList,
-    };
-
     /**
      * Load shopping list into global state when 
      * isLoadingShoppingList is true, e.g. on first render.
@@ -253,6 +205,52 @@ export default function App() {
         }
     }, [isLoadingShoppingList]);
 
+    /**
+     * Props for subcomponents
+     */
+    const props = {
+        // User
+        'user': user,
+        'setUser': setUser,
+        'isLoadingUser': isLoadingUser,
+        'setLoadingUser': setLoadingUser,
+
+        // ShoppingList
+        'shoppingList': shoppingList,
+        'setShoppingList': setShoppingList,
+        'isLoadingShoppingList': isLoadingShoppingList,
+        'setLoadingShoppingList': setLoadingShoppingList,
+
+        // Days
+        'days': days,
+        'isLoadingDays': isLoadingDays,
+        'setLoadingDays': setLoadingDays,
+
+        // Recipes
+        'recipes': recipes,
+        'setRecipes': setRecipes,
+        'isLoadingRecipes': isLoadingRecipes,
+        'setLoadingRecipes': setLoadingRecipes,
+        'recipeIndex': recipeIndex,
+        'setRecipeIndex': setRecipeIndex,
+
+        // UserGroups
+        'userGroups': userGroups,
+        'setUserGroups': setUserGroups,
+        'isLoadingUserGroups': isLoadingUserGroups,
+        'setLoadingUserGroups': setLoadingUserGroups,
+
+        // MealCategories
+        'mealCategories': mealCategories,
+        'setMealCategories': setMealCategories,
+        'isLoadingMealCategories': isLoadingMealCategories,
+        'setLoadingMealCategories': setLoadingMealCategories,
+
+        // Sidebar
+        'setSidebarActiveItem': setSidebarActiveItem, 
+        'setSidebarActionButton': setSidebarActionButton,
+    };
+
     /** 
      * Render
      */
@@ -262,7 +260,7 @@ export default function App() {
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
-                    {...setUserProps}
+                    {...props}
                 />
 
                 <Routes>
