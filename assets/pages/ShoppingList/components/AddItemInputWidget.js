@@ -23,10 +23,7 @@ import loadShoppingList from "../../../util/loadShoppingList";
  * @property {function} setShoppingList
  * 
  * @example
- * <AddItemInputWidget 
- *     items={items} 
- *     setShoppingList={setShoppingList} 
- * />
+ * <AddItemInputWidget items={props.shoppingList} {...props} />
  */
  export default function AddItemInputWidget(props) {
     /** @type {[string, function]} */
