@@ -2,7 +2,7 @@
  * app.js
  * 
  * @author Kevin Sporbeck
- * @version v0.3.4
+ * @version v0.3.5
  */
 
 // Import CSS

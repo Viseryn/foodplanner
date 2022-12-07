@@ -18,10 +18,11 @@ const inputWidgetStyle = 'dark:placeholder-gray-400 dark:bg-[#1D252C] border bor
  * @example const name = nameFromId('recipe_name'); // 'recipe[name]'
  */
 function nameFromId(id) {
-    let arr = id?.split("_");
-    let str = (arr?.length > 1) ? arr[0] + '[' + arr[1] + ']' : '';
+    const index = id?.lastIndexOf('_');
+    const prefix = id?.slice(0, index);
+    const name = id?.slice(index + 1);
     
-    return str;
+    return prefix + '[' + name + ']';
 }
 
 /** 
