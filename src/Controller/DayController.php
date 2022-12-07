@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class DayController extends AbstractController
 {
@@ -25,8 +26,15 @@ class DayController extends AbstractController
      * @return Response
      */
     #[Route('/api/days', name: 'app_day_list', methods: ['GET'])]
-    public function list(DayRepository $dayRepository): Response
+    public function list(DayRepository $dayRepository, Security $security): Response
     {
+        $user = $security->getUser();
+        
+        // Deny access if not logged in
+        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+            return new JsonResponse();
+        }
+
         $daysResult = $dayRepository->findBy([], ['timestamp' => 'ASC']);
         $days = [];
         $i = 0;
