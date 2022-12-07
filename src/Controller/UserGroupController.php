@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\UserGroup;
+use App\Form\UserGroupType;
 use App\Repository\MealRepository;
 use App\Repository\UserGroupRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -135,23 +136,32 @@ class UserGroupController extends AbstractController
         return new Response();
     }
 
-
     /**
      * UserGroup Add API
+     * 
+     * Adds a new UserGroup to the database when the form 
+     * in the Request was submitted. If no form was submitted, 
+     * responds with an Error 500.
+     *
+     * @param Request $request
+     * @param UserGroupRepository $userGroupRepository
+     * @return Response
      */
     #[Route('/api/usergroups/add', name: 'app_api_usergroups_add', methods: ['GET', 'POST'])]
-    public function add(Request $request): Response 
+    public function add(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        // Create empty UserGroup object
         $userGroup = new UserGroup();
 
+        // Handle form data and pass to UserGroup object
         $form = $this->createForm(UserGroupType::class, $userGroup);
         $form->handleRequest($request);
 
+        // If form is submitted, add UserGroup to database
         if ($form->isSubmitted()) {
-            // Add UserGroup to database
             $userGroupRepository->add($userGroup, true);
 
             return new Response();
