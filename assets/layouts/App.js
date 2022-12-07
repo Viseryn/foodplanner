@@ -211,7 +211,10 @@ export default function App() {
     /**
      * isAuthenticated
      * 
-     * @return {boolean}
+     * Returns true when the authenticated user has the admin role
+     * and false otherwise.
+     * 
+     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
      */
     const isAuthenticated = () => {
         return user?.roles?.includes('ROLE_ADMIN');
