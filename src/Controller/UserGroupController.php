@@ -27,7 +27,7 @@ class UserGroupController extends AbstractController
     public function userGroupsAPI(UserGroupRepository $userGroupRepository): JsonResponse
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch all UserGroup objects from the database
         $userGroups = $userGroupRepository->findAll();
@@ -77,7 +77,7 @@ class UserGroupController extends AbstractController
     public function updateStandard(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch request content
         $requestContent = json_decode($request->getContent());
@@ -120,7 +120,7 @@ class UserGroupController extends AbstractController
     public function delete(UserGroup $userGroup, UserGroupRepository $userGroupRepository, MealRepository $mealRepository): Response
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Get all meals for that UserGroup
         $meals = $mealRepository->findBy(['userGroup' => $userGroup->getId()]);
@@ -151,7 +151,7 @@ class UserGroupController extends AbstractController
     public function add(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Create empty UserGroup object
         $userGroup = new UserGroup();
