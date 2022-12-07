@@ -25,7 +25,7 @@ class MealCategoryController extends AbstractController
     public function mealCategoriesAPI(MealCategoryRepository $mealCategoryRepository): JsonResponse
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch all MealCategory objects from the database
         $mealCategories = $mealCategoryRepository->findAll();
@@ -66,7 +66,7 @@ class MealCategoryController extends AbstractController
     public function updateStandard(Request $request, MealCategoryRepository $mealCategoryRepository): Response 
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch request content
         $requestContent = json_decode($request->getContent());

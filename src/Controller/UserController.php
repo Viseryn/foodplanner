@@ -35,7 +35,7 @@ class UserController extends AbstractController
     public function users(UserRepository $userRepository): Response
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch all User objects from the database
         $users = $userRepository->findAll();

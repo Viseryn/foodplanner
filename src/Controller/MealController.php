@@ -27,7 +27,7 @@ class MealController extends AbstractController
     #[Route('/api/meal/add', name: 'app_meal_add', methods: ['GET', 'POST'])]
     public function add(Request $request, MealRepository $mealRepository): Response {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $meal = new Meal();
 
@@ -58,7 +58,7 @@ class MealController extends AbstractController
     public function delete(Meal $meal, MealRepository $mealRepository): Response
     {
         // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $mealRepository->remove($meal, true);
 

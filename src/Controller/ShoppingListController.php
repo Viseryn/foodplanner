@@ -40,6 +40,9 @@ class ShoppingListController extends AbstractController
         IngredientRepository $ingredientRepository, 
         IngredientUtil $ingredientUtil
     ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // Decode request data
         $requestContent = json_decode($request->getContent());
 
@@ -101,6 +104,9 @@ class ShoppingListController extends AbstractController
         IngredientRepository $ingredientRepository, 
         IngredientUtil $ingredientUtil
     ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // Decode request data
         $requestContent = json_decode($request->getContent());
 
@@ -156,11 +162,13 @@ class ShoppingListController extends AbstractController
     #[Route('/api/shoppinglist/ingredient', name: 'app_shoppinglist_ingredient', methods: ['GET', 'POST'])]
     public function ingredient(
         Request $request, 
-        RecipeRepository $recipeRepository,
         StorageRepository $storageRepository, 
         IngredientRepository $ingredientRepository, 
         IngredientUtil $ingredientUtil
     ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
         // Decode request data
         $requestContent = json_decode($request->getContent());
 
