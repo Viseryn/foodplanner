@@ -78,7 +78,7 @@ export default function App() {
      */
     useEffect(() => {
         if (!isLoadingUserGroups && !isLoadingUser) return;
-        if (user?.username === undefined) return;
+        if (!isAuthenticated()) return;
 
         axios
             .get('/api/usergroups')
@@ -102,7 +102,7 @@ export default function App() {
      */
     useEffect(() => {
         if (!isLoadingMealCategories && !isLoadingUser) return;
-        if (user?.username === undefined) return;
+        if (!isAuthenticated()) return;
 
         axios
             .get('/api/mealcategories')
@@ -142,15 +142,16 @@ export default function App() {
      * a recipe.
      */
     useEffect(() => {
-        if (isLoadingRecipes) {
-            axios
-                .get('/api/recipes')
-                .then(response => {
-                    setRecipes(JSON.parse(response.data));
-                    setLoadingRecipes(false);
-                })
-            ;
-        }
+        if (!isLoadingRecipes) return;
+        if (!isAuthenticated()) return;
+
+        axios
+            .get('/api/recipes')
+            .then(response => {
+                setRecipes(JSON.parse(response.data));
+                setLoadingRecipes(false);
+            })
+        ;
     }, [isLoadingRecipes]);
 
     /**
@@ -169,20 +170,21 @@ export default function App() {
      * a meal.
      */
     useEffect(() => {
-        if (isLoadingDays) {
-            axios
-                .get('/api/day/update')
-                .then(() => {
-                    axios
-                        .get('/api/days')
-                        .then(response => {
-                            setDays(JSON.parse(response.data));
-                            setLoadingDays(false);
-                        })
-                    ;
-                })
-            ;
-        }
+        if (!isLoadingDays) return;
+        if (!isAuthenticated()) return;
+
+        axios
+            .get('/api/day/update')
+            .then(() => {
+                axios
+                    .get('/api/days')
+                    .then(response => {
+                        setDays(JSON.parse(response.data));
+                        setLoadingDays(false);
+                    })
+                ;
+            })
+        ;
     }, [isLoadingDays]);
 
     /**
@@ -197,12 +199,13 @@ export default function App() {
      * isLoadingShoppingList is true, e.g. on first render.
      */
     useEffect(() => {
-        if (isLoadingShoppingList) {
-            loadShoppingList(setShoppingList, () => {
-                // Disable loading screen
-                setLoadingShoppingList(false);
-            });
-        }
+        if (!isLoadingShoppingList) return;
+        if (!isAuthenticated()) return;
+
+        loadShoppingList(setShoppingList, () => {
+            // Disable loading screen
+            setLoadingShoppingList(false);
+        });
     }, [isLoadingShoppingList]);
 
     /**
