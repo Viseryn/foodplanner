@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\User;
 use App\Entity\UserGroup;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,8 +16,14 @@ class UserGroupType extends AbstractType
         $builder
             ->add('name')
             ->add('icon')
-            ->add('standard') // @todo Boolean
-            ->add('users')    // @todo Array
+            ->add('standard')
+            ->add('users', EntityType::class, [
+                'class' => User::class,
+                'multiple' => true,
+                'choice_value' => function (?User $user) {
+                    return $user ? $user->getId() : '';
+                },
+            ])
         ;
     }
 
