@@ -3,7 +3,7 @@
  ***************************/
 
 import React, { useEffect, useState } from "react";
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
 import axios from "axios";
 
 import loadShoppingList from "../util/loadShoppingList";
@@ -206,6 +206,15 @@ export default function App() {
     }, [isLoadingShoppingList]);
 
     /**
+     * isAuthenticated
+     * 
+     * @return {boolean}
+     */
+    const isAuthenticated = () => {
+        return user?.roles?.includes('ROLE_ADMIN');
+    };
+
+    /**
      * Props for subcomponents
      */
     const props = {
@@ -264,48 +273,20 @@ export default function App() {
                 />
 
                 <Routes>
-                    <Route path="/"                 element={<Planner       {...setSidebarProps} 
-                                                                            {...setDaysProps} />} />
-                    <Route path="/planner"          element={<Planner       {...setSidebarProps} 
-                                                                            {...setDaysProps}
-                                                                            {...setShoppingListProps} />} />
-                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setDaysProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setUserGroupsProps}
-                                                                            {...setMealCategoriesProps} />} />
-                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setDaysProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setUserGroupsProps}
-                                                                            {...setMealCategoriesProps} />} />
-                    <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps}
-                                                                            {...setShoppingListProps} />} />
-                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} 
-                                                                            {...setRecipesProps} />} />
-                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} 
-                                                                            {...setRecipesProps} />} />
-                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setShoppingListProps} />} />
-                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setDaysProps} />} />
-                    <Route path="/login"            element={<Login         {...setSidebarProps} 
-                                                                            {...setUserProps} />} />
-                    <Route path="/logout"           element={<Logout        {...setSidebarProps} 
-                                                                            {...setUserProps} />} />
-                    <Route path="/settings"         element={<Settings      {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setUserGroupsProps}
-                                                                            {...setMealCategoriesProps} />} />
-                    <Route path="/settings/groups/add" 
-                                                    element={<AddGroup      {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setUserGroupsProps} />} />
-                    <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
+                    <Route path="/"                     element={!isAuthenticated() ? <Navigate to="/login" /> : <Planner {...props} />} />
+                    <Route path="/planner"              element={!isAuthenticated() ? <Navigate to="/login" /> : <Planner {...props} />} />
+                    <Route path="/planner/add"          element={!isAuthenticated() ? <Navigate to="/login" /> : <AddMeal {...props} />} />
+                    <Route path="/planner/add/:id"      element={!isAuthenticated() ? <Navigate to="/login" /> : <AddMeal {...props} />} />
+                    <Route path="/shoppinglist"         element={!isAuthenticated() ? <Navigate to="/login" /> : <ShoppingList {...props} />} />
+                    <Route path="/recipes"              element={!isAuthenticated() ? <Navigate to="/login" /> : <Recipes {...props} />} />
+                    <Route path="/recipe/add"           element={!isAuthenticated() ? <Navigate to="/login" /> : <AddRecipe {...props} />} />
+                    <Route path="/recipe/:id"           element={!isAuthenticated() ? <Navigate to="/login" /> : <Recipes {...props} />} />
+                    <Route path="/recipe/:id/edit"      element={!isAuthenticated() ? <Navigate to="/login" /> : <EditRecipe {...props} />} />
+                    <Route path="/settings"             element={!isAuthenticated() ? <Navigate to="/login" /> : <Settings {...props} />} />
+                    <Route path="/settings/groups/add"  element={!isAuthenticated() ? <Navigate to="/login" /> : <AddGroup {...props} />} />
+                    <Route path="/login"                element={<Login {...props} />} />
+                    <Route path="/logout"               element={<Logout {...props} />} />
+                    <Route path="*"                     element={<PageNotFound {...props} />} />
                 </Routes>
             </div>
         </BrowserRouter>
