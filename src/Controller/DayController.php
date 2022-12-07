@@ -84,6 +84,9 @@ class DayController extends AbstractController
     #[Route('/api/day/update', name: 'app_day_new', methods: ['GET'])]
     public function updateDays(DayRepository $dayRepository): Response
     {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $currentDays = $dayRepository->findBy([], ['timestamp' => 'ASC']);
         $today = strtotime('today');
 
