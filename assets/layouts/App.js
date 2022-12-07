@@ -302,7 +302,8 @@ export default function App() {
                     <Route path="/settings"         element={<Settings      {...setSidebarProps} 
                                                                             {...setUserProps}
                                                                             {...setUserGroupsProps}
-                                                                            {...setMealCategoriesProps} />} />
+                                                                            {...setMealCategoriesProps}
+                                                                            {...setDaysProps} />} />
                     <Route path="/settings/groups/add" 
                                                     element={<AddGroup      {...setSidebarProps} 
                                                                             {...setUserProps}

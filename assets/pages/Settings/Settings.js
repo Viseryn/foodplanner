@@ -28,6 +28,9 @@ import IconButton from '../../components/ui/IconButton';
  * @property {function} setMealCategories
  * @property {boolean} isLoadingMealCategories
  * @property {function} setLoadingMealCategories
+ * @property {arr} days 
+ * @property {boolean} isLoadingDays
+ * @property {function} setLoadingDays
  */
 export default function Settings(props) {
     /**
