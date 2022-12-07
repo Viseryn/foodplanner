@@ -4,7 +4,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
 
 /**
  * Sidebar
@@ -105,7 +104,9 @@ export default function Sidebar(props) {
                             isDrawerVisible={isDrawerVisible}
                         />
                     </ul>
+
                     <hr className="my-4" />
+
                     <ul className="flex flex-col space-y-2">
                         <SidebarItem 
                             path="https://github.com/Viseryn/foodplanner"
@@ -130,6 +131,10 @@ export default function Sidebar(props) {
                             icon="close"
                         />
                     </ul>
+
+                    <div className="text-xs flex justify-end absolute bottom-5 right-5">
+                        v0.3.5
+                    </div>
                 </div>
             </aside>
             
