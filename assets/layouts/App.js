@@ -47,22 +47,27 @@ export default function App() {
      * is true, e.g. on first render or after login/logout.
      */
     useEffect(() => {
-        if (isLoadingUser) {
-            axios
-                .get('/api/user')
-                .then(response => {
-                    // Load user data
-                    setUser(JSON.parse(response.data));
-                    setLoadingUser(false);
+        if (!isLoadingUser) return;
 
-                    // Remove user-sensitive data
-                    setUserGroups([]);
-                    setMealCategories([]);
-                    setLoadingUserGroups(true);
-                    setLoadingMealCategories(true);
-                })
-            ;
-        }
+        axios
+            .get('/api/user')
+            .then(response => {
+                // Load user data
+                setUser(JSON.parse(response.data));
+                setLoadingUser(false);
+
+                // Remove user-sensitive data
+                setUserGroups([]);
+                setMealCategories([]);
+                setLoadingUserGroups(true);
+                setLoadingMealCategories(true);
+
+                // Update state variables
+                setLoadingDays(true);
+                setLoadingRecipes(true);
+                setLoadingShoppingList(true);
+            })
+        ;
     }, [isLoadingUser]);
 
     /**
