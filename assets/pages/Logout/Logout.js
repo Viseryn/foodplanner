@@ -35,6 +35,12 @@ export default function Logout(props) {
         // Remove user data from state
         props.setUser([]);
 
+        // Remove other sensitive data
+        props.setShoppingList([]);
+        props.setDays([]);
+        props.setRecipes([]);
+
+        // Call Logout API
         axios
             .get('/api/logout')
             .then(() => {
