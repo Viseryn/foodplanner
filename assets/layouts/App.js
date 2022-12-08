@@ -3,7 +3,7 @@
  ***************************/
 
 import React, { useEffect, useState } from "react";
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
 import axios from "axios";
 
 import loadShoppingList from "../util/loadShoppingList";
@@ -36,105 +36,6 @@ import AddGroup from "../pages/Settings/AddGroup";
  */
 export default function App() {
     /**
-     * Keep user data in global state variable
-     * and pass them as props to subcomponents.
-     */
-    const [user, setUser] = useState([]);
-    const [isLoadingUser, setLoadingUser] = useState(true);
-
-    const setUserProps = {
-        'user': user,
-        'setUser': setUser,
-        'isLoadingUser': isLoadingUser,
-        'setLoadingUser': setLoadingUser,
-    }
-
-    /**
-     * Load user data into global state when isLoadingUser
-     * is true, e.g. on first render or after login/logout.
-     */
-    useEffect(() => {
-        if (isLoadingUser) {
-            axios
-                .get('/api/user')
-                .then(response => {
-                    // Load user data
-                    setUser(JSON.parse(response.data));
-                    setLoadingUser(false);
-
-                    // Remove user-sensitive data
-                    setUserGroups([]);
-                    setMealCategories([]);
-                    setLoadingUserGroups(true);
-                    setLoadingMealCategories(true);
-                })
-            ;
-        }
-    }, [isLoadingUser]);
-
-    /**
-     * Keep UserGroup data in global state variable
-     * and pass them as props to subcomponents.
-     */
-    const [userGroups, setUserGroups] = useState([]);
-    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
-
-    const setUserGroupsProps = {
-        'userGroups': userGroups,
-        'setUserGroups': setUserGroups,
-        'isLoadingUserGroups': isLoadingUserGroups,
-        'setLoadingUserGroups': setLoadingUserGroups,
-    }
-
-    /**
-     * Load UserGroup data into global state when isLoadingUserGroups
-     * is true, e.g. on first render.
-     */
-    useEffect(() => {
-        if (!isLoadingUserGroups && !isLoadingUser) return;
-        if (user?.username === undefined) return;
-
-        axios
-            .get('/api/usergroups')
-            .then(response => {
-                setUserGroups(JSON.parse(response.data));
-                setLoadingUserGroups(false);
-            })
-        ;
-    }, [isLoadingUserGroups, isLoadingUser, user]);
-
-    /**
-     * Keep MealCategory data in global state variable
-     * and pass them as props to subcomponents.
-     */
-    const [mealCategories, setMealCategories] = useState([]);
-    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
-
-    const setMealCategoriesProps = {
-        'mealCategories': mealCategories,
-        'setMealCategories': setMealCategories,
-        'isLoadingMealCategories': isLoadingMealCategories,
-        'setLoadingMealCategories': setLoadingMealCategories,
-    }
-
-    /**
-     * Load MealCategory data into global state when isLoadingMealCategories
-     * is true, e.g. on first render.
-     */
-    useEffect(() => {
-        if (!isLoadingMealCategories && !isLoadingUser) return;
-        if (user?.username === undefined) return;
-
-        axios
-            .get('/api/mealcategories')
-            .then(response => {
-                setMealCategories(JSON.parse(response.data));
-                setLoadingMealCategories(false);
-            })
-        ;
-    }, [isLoadingMealCategories, isLoadingUser, user]);
-
-    /**
      * Sidebar configuration (active item, action button) are kept 
      * in global state variables.
      * Sidebar setters will be passed as props to subcomponents, so 
@@ -149,27 +50,155 @@ export default function App() {
         onClickHandler: () => {},
     }); 
 
-    const setSidebarProps = {
-        'setSidebarActiveItem': setSidebarActiveItem, 
-        'setSidebarActionButton': setSidebarActionButton,
-    };
-
     /**
-     * Keep recipes in global state variable
+     * Keep data in global state variables
      * and pass them as props to subcomponents.
      */
+    // User
+    const [user, setUser] = useState([]);
+    const [isLoadingUser, setLoadingUser] = useState(true);
+
+    // ShoppingList
+    const [shoppingList, setShoppingList] = useState([]);
+    const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
+
+    // Days
+    const [days, setDays] = useState([]);
+    const [isLoadingDays, setLoadingDays] = useState(true);
+
+    // Recipes
     const [recipes, setRecipes] = useState([]);
     const [isLoadingRecipes, setLoadingRecipes] = useState(true);
     const [recipeIndex, setRecipeIndex] = useState(-1);
 
-    const setRecipesProps = {
+    // UserGroups
+    const [userGroups, setUserGroups] = useState([]);
+    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
+
+    // MealCategories
+    const [mealCategories, setMealCategories] = useState([]);
+    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
+
+    /**
+     * Props for subcomponents
+     */
+    const props = {
+        // User
+        'user': user,
+        'setUser': setUser,
+        'isLoadingUser': isLoadingUser,
+        'setLoadingUser': setLoadingUser,
+
+        // ShoppingList
+        'shoppingList': shoppingList,
+        'setShoppingList': setShoppingList,
+        'isLoadingShoppingList': isLoadingShoppingList,
+        'setLoadingShoppingList': setLoadingShoppingList,
+
+        // Days
+        'days': days,
+        'setDays': setDays,
+        'isLoadingDays': isLoadingDays,
+        'setLoadingDays': setLoadingDays,
+
+        // Recipes
         'recipes': recipes,
         'setRecipes': setRecipes,
         'isLoadingRecipes': isLoadingRecipes,
         'setLoadingRecipes': setLoadingRecipes,
         'recipeIndex': recipeIndex,
         'setRecipeIndex': setRecipeIndex,
-    }
+
+        // UserGroups
+        'userGroups': userGroups,
+        'setUserGroups': setUserGroups,
+        'isLoadingUserGroups': isLoadingUserGroups,
+        'setLoadingUserGroups': setLoadingUserGroups,
+
+        // MealCategories
+        'mealCategories': mealCategories,
+        'setMealCategories': setMealCategories,
+        'isLoadingMealCategories': isLoadingMealCategories,
+        'setLoadingMealCategories': setLoadingMealCategories,
+
+        // Sidebar
+        'setSidebarActiveItem': setSidebarActiveItem, 
+        'setSidebarActionButton': setSidebarActionButton,
+    };
+
+    /**
+     * isAuthenticated
+     * 
+     * Returns true when the authenticated user has the admin role
+     * and false otherwise.
+     * 
+     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
+     */
+    const isAuthenticated = () => {
+        return user?.roles?.includes('ROLE_ADMIN');
+    };
+
+    /**
+     * Load user data into global state when isLoadingUser
+     * is true, e.g. on first render or after login/logout.
+     */
+    useEffect(() => {
+        if (!isLoadingUser) return;
+
+        axios
+            .get('/api/user')
+            .then(response => {
+                // Load user data
+                setUser(JSON.parse(response.data));
+                setLoadingUser(false);
+
+                // Remove user-sensitive data
+                setUserGroups([]);
+                setMealCategories([]);
+                setLoadingUserGroups(true);
+                setLoadingMealCategories(true);
+
+                // Update state variables
+                setLoadingDays(true);
+                setLoadingRecipes(true);
+                setLoadingShoppingList(true);
+            })
+        ;
+    }, [isLoadingUser]);
+
+    /**
+     * Load UserGroup data into global state when isLoadingUserGroups
+     * is true, e.g. on first render.
+     */
+    useEffect(() => {
+        if (!isLoadingUserGroups && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
+
+        axios
+            .get('/api/usergroups')
+            .then(response => {
+                setUserGroups(JSON.parse(response.data));
+                setLoadingUserGroups(false);
+            })
+        ;
+    }, [isLoadingUserGroups, isLoadingUser, user]);
+
+    /**
+     * Load MealCategory data into global state when isLoadingMealCategories
+     * is true, e.g. on first render.
+     */
+    useEffect(() => {
+        if (!isLoadingMealCategories && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
+
+        axios
+            .get('/api/mealcategories')
+            .then(response => {
+                setMealCategories(JSON.parse(response.data));
+                setLoadingMealCategories(false);
+            })
+        ;
+    }, [isLoadingMealCategories, isLoadingUser, user]);
 
     /**
      * Load recipes into global state when isLoadingRecipes 
@@ -177,29 +206,17 @@ export default function App() {
      * a recipe.
      */
     useEffect(() => {
-        if (isLoadingRecipes) {
-            axios
-                .get('/api/recipes')
-                .then(response => {
-                    setRecipes(JSON.parse(response.data));
-                    setLoadingRecipes(false);
-                })
-            ;
-        }
-    }, [isLoadingRecipes]);
+        if (!isLoadingRecipes && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
 
-    /**
-     * Keep days in global state variable 
-     * and pass them as props to subcomponents.
-     */
-    const [days, setDays] = useState([]);
-    const [isLoadingDays, setLoadingDays] = useState(true);
-
-    const setDaysProps = {
-        'days': days,
-        'isLoadingDays': isLoadingDays,
-        'setLoadingDays': setLoadingDays,
-    };
+        axios
+            .get('/api/recipes')
+            .then(response => {
+                setRecipes(JSON.parse(response.data));
+                setLoadingRecipes(false);
+            })
+        ;
+    }, [isLoadingRecipes, isLoadingUser, user]);
 
     /**
      * Calls the Update Days API, which removes all 
@@ -210,48 +227,36 @@ export default function App() {
      * a meal.
      */
     useEffect(() => {
-        if (isLoadingDays) {
-            axios
-                .get('/api/day/update')
-                .then(() => {
-                    axios
-                        .get('/api/days')
-                        .then(response => {
-                            setDays(JSON.parse(response.data));
-                            setLoadingDays(false);
-                        })
-                    ;
-                })
-            ;
-        }
-    }, [isLoadingDays]);
+        if (!isLoadingDays && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
 
-    /**
-     * Keep shopping list in global state variable
-     * and pass it as props to subcomponents.
-     */
-    const [shoppingList, setShoppingList] = useState([]);
-    const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
-
-    const setShoppingListProps = {
-        'shoppingList': shoppingList,
-        'setShoppingList': setShoppingList,
-        'isLoadingShoppingList': isLoadingShoppingList,
-        'setLoadingShoppingList': setLoadingShoppingList,
-    };
+        axios
+            .get('/api/day/update')
+            .then(() => {
+                axios
+                    .get('/api/days')
+                    .then(response => {
+                        setDays(JSON.parse(response.data));
+                        setLoadingDays(false);
+                    })
+                ;
+            })
+        ;
+    }, [isLoadingDays, isLoadingUser, user]);
 
     /**
      * Load shopping list into global state when 
      * isLoadingShoppingList is true, e.g. on first render.
      */
     useEffect(() => {
-        if (isLoadingShoppingList) {
-            loadShoppingList(setShoppingList, () => {
-                // Disable loading screen
-                setLoadingShoppingList(false);
-            });
-        }
-    }, [isLoadingShoppingList]);
+        if (!isLoadingShoppingList && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
+
+        loadShoppingList(setShoppingList, () => {
+            // Disable loading screen
+            setLoadingShoppingList(false);
+        });
+    }, [isLoadingShoppingList, isLoadingUser, user]);
 
     /** 
      * Render
@@ -262,52 +267,24 @@ export default function App() {
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
-                    {...setUserProps}
+                    {...props}
                 />
 
                 <Routes>
-                    <Route path="/"                 element={<Planner       {...setSidebarProps} 
-                                                                            {...setDaysProps} />} />
-                    <Route path="/planner"          element={<Planner       {...setSidebarProps} 
-                                                                            {...setDaysProps}
-                                                                            {...setShoppingListProps} />} />
-                    <Route path="/planner/add"      element={<AddMeal       {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setDaysProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setUserGroupsProps}
-                                                                            {...setMealCategoriesProps} />} />
-                    <Route path="/planner/add/:id"  element={<AddMeal       {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setDaysProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setUserGroupsProps}
-                                                                            {...setMealCategoriesProps} />} />
-                    <Route path="/shoppinglist"     element={<ShoppingList  {...setSidebarProps}
-                                                                            {...setShoppingListProps} />} />
-                    <Route path="/recipes"          element={<Recipes       {...setSidebarProps} 
-                                                                            {...setRecipesProps} />} />
-                    <Route path="/recipe/add"       element={<AddRecipe     {...setSidebarProps} 
-                                                                            {...setRecipesProps} />} />
-                    <Route path="/recipe/:id"       element={<Recipes       {...setSidebarProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setShoppingListProps} />} />
-                    <Route path="/recipe/:id/edit"  element={<EditRecipe    {...setSidebarProps} 
-                                                                            {...setRecipesProps}
-                                                                            {...setDaysProps} />} />
-                    <Route path="/login"            element={<Login         {...setSidebarProps} 
-                                                                            {...setUserProps} />} />
-                    <Route path="/logout"           element={<Logout        {...setSidebarProps} 
-                                                                            {...setUserProps} />} />
-                    <Route path="/settings"         element={<Settings      {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setUserGroupsProps}
-                                                                            {...setMealCategoriesProps} />} />
-                    <Route path="/settings/groups/add" 
-                                                    element={<AddGroup      {...setSidebarProps} 
-                                                                            {...setUserProps}
-                                                                            {...setUserGroupsProps} />} />
-                    <Route path="*"                 element={<PageNotFound  {...setSidebarProps} />} />
+                    <Route path="/"                     element={!isAuthenticated() ? <Navigate to="/login" /> : <Planner {...props} />} />
+                    <Route path="/planner"              element={!isAuthenticated() ? <Navigate to="/login" /> : <Planner {...props} />} />
+                    <Route path="/planner/add"          element={!isAuthenticated() ? <Navigate to="/login" /> : <AddMeal {...props} />} />
+                    <Route path="/planner/add/:id"      element={!isAuthenticated() ? <Navigate to="/login" /> : <AddMeal {...props} />} />
+                    <Route path="/shoppinglist"         element={!isAuthenticated() ? <Navigate to="/login" /> : <ShoppingList {...props} />} />
+                    <Route path="/recipes"              element={!isAuthenticated() ? <Navigate to="/login" /> : <Recipes {...props} />} />
+                    <Route path="/recipe/add"           element={!isAuthenticated() ? <Navigate to="/login" /> : <AddRecipe {...props} />} />
+                    <Route path="/recipe/:id"           element={!isAuthenticated() ? <Navigate to="/login" /> : <Recipes {...props} />} />
+                    <Route path="/recipe/:id/edit"      element={!isAuthenticated() ? <Navigate to="/login" /> : <EditRecipe {...props} />} />
+                    <Route path="/settings"             element={!isAuthenticated() ? <Navigate to="/login" /> : <Settings {...props} />} />
+                    <Route path="/settings/groups/add"  element={!isAuthenticated() ? <Navigate to="/login" /> : <AddGroup {...props} />} />
+                    <Route path="/login"                element={<Login {...props} />} />
+                    <Route path="/logout"               element={<Logout {...props} />} />
+                    <Route path="*"                     element={<PageNotFound {...props} />} />
                 </Routes>
             </div>
         </BrowserRouter>

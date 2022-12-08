@@ -339,7 +339,7 @@ export default function ShoppingList(props) {
             
             <AddItemInputWidget
                 items={props.shoppingList}
-                setShoppingList={props.setShoppingList}
+                {...props}
             />
 
             {props.isLoadingShoppingList ? (

@@ -28,6 +28,9 @@ import IconButton from '../../components/ui/IconButton';
  * @property {function} setMealCategories
  * @property {boolean} isLoadingMealCategories
  * @property {function} setLoadingMealCategories
+ * @property {arr} days 
+ * @property {boolean} isLoadingDays
+ * @property {function} setLoadingDays
  */
 export default function Settings(props) {
     /**
@@ -170,80 +173,74 @@ export default function Settings(props) {
      * @todo UserGroup - Avatars?
      */
     return (
-        <>
-            {!props.isLoadingUser && props.user?.username === undefined &&
-                <Navigate to="/login" />
-            }
+        <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
+            <Heading>Einstellungen</Heading>
 
-            <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
-                <Heading>Einstellungen</Heading>
+            <SubHeading>Benutzergruppen verwalten</SubHeading>
+            <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+                Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen bearbeiten und eine Standardgruppe für neue Mahlzeiten festlegen.
+            </p>
 
-                <SubHeading>Benutzergruppen verwalten</SubHeading>
-                <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                    Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen bearbeiten und eine Standardgruppe für neue Mahlzeiten festlegen.
-                </p>
-
-                {props.isLoadingUser ? (
+            {props.isLoadingUser ? (
+                <Spinner />
+            ) : (
+                (props.isLoadingUserGroups ? (
                     <Spinner />
                 ) : (
-                    (props.isLoadingUserGroups ? (
-                        <Spinner />
-                    ) : (
-                        <div className="space-y-2">
-                            {props.userGroups.map((group, index) => 
-                                <div key={index} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                    <div className="pl-4 flex items-center">
-                                        <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                        {group.name} 
-                                        {/* ({group.users.join(', ')}) */}
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Link to={'/settings/groups/' + group.value}>
-                                            <IconButton>drive_file_rename_outline</IconButton>
-                                        </Link>
-                                        <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
-                                        <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
-                                    </div>
+                    <div className="space-y-2">
+                        {props.userGroups.map((group, index) => 
+                            <div key={index} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
+                                <div className="pl-4 flex items-center">
+                                    <span className="material-symbols-rounded mr-4">{group.icon}</span>
+                                    {group.name} 
+                                    {/* ({group.users.join(', ')}) */}
                                 </div>
-                            )}
-                            <Link 
-                                className="rounded-full p-2 pl-6 h-14 w-full flex items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]" 
-                                to="/settings/groups/add"
-                            >
-                                <span className="material-symbols-rounded mr-4">add</span>
-                                <span>Neue Gruppe hinzufügen</span>
-                            </Link>
-                        </div>
-                    ))
-                )}
+                                <div className="flex gap-2">
+                                    <Link to={'/settings/groups/' + group.value}>
+                                        <IconButton>drive_file_rename_outline</IconButton>
+                                    </Link>
+                                    <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
+                                    <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
+                                </div>
+                            </div>
+                        )}
+                        <Link 
+                            className="rounded-full p-2 pl-6 h-14 w-full flex items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]" 
+                            to="/settings/groups/add"
+                        >
+                            <span className="material-symbols-rounded mr-4">add</span>
+                            <span>Neue Gruppe hinzufügen</span>
+                        </Link>
+                    </div>
+                ))
+            )}
 
-                <div className="mb-10"></div>
+            <div className="mb-10"></div>
 
-                <SubHeading>Standardzeit für Mahlzeiten einstellen</SubHeading>
-                <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                    Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
-                </p>
+            <SubHeading>Standardzeit für Mahlzeiten einstellen</SubHeading>
+            <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+                Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
+            </p>
 
-                {props.isLoadingUser ? (
+            {props.isLoadingUser ? (
+                <Spinner />
+            ) : (
+                (props.isLoadingMealCategories ? (
                     <Spinner />
                 ) : (
-                    (props.isLoadingMealCategories ? (
-                        <Spinner />
-                    ) : (
-                        <div className="space-y-2">
-                            {props.mealCategories.map((category, index) => 
-                                <div key={category.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                    <div className="pl-4 flex items-center">
-                                        <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
-                                        {category.name}
-                                    </div>
-                                        <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
+                    <div className="space-y-2">
+                        {props.mealCategories.map((category, index) => 
+                            <div key={category.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
+                                <div className="pl-4 flex items-center">
+                                    <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
+                                    {category.name}
                                 </div>
-                            )}
-                        </div>
-                    ))
-                )}
-            </div>
-        </>
+                                    <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
+                            </div>
+                        )}
+                    </div>
+                ))
+            )}
+        </div>
     );
 }

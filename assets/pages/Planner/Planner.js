@@ -22,9 +22,6 @@ import Spinner from '../../components/ui/Spinner';
  * @property {arr} days 
  * @property {boolean} isLoadingDays
  * @property {function} setLoadingDays
- * @property {arr} shoppingList 
- * @property {function} setShoppingList
- * @property {boolean} isLoadingShoppingList
  * @property {function} setLoadingShoppingList
  */
 export default function Planner(props) {

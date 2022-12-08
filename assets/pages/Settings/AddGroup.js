@@ -68,7 +68,7 @@ export default function AddGroup(props) {
             .post('/api/usergroups/add', formData)
             .then(() => {
                 setSubmitted(true); 
-                props.setUserGroups(true);
+                props.setLoadingUserGroups(true); 
             })
         ;
     };
@@ -88,10 +88,6 @@ export default function AddGroup(props) {
      */
     return (
         <>
-            {!props.isLoadingUser && props.user?.username === undefined &&
-                <Navigate to="/login" />
-            }
-
             {isSubmitted && <Navigate to={'/settings'} />}
 
             <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
@@ -106,24 +102,33 @@ export default function AddGroup(props) {
                             Hier kannst du eine neue Benutzergruppen hinzufügen.
                         </p>
 
-                        <form onSubmit={handleSubmit}>
+                        <form name="user_group" onSubmit={handleSubmit}>
                             <InputRow
-                                id="userGroup_name"
+                                id="user_group_name"
                                 label="Name der Benutzergruppe"
-                                inputProps={{ required: 'required', maxLength: 64, placeholder: 'Name der Benutzergruppe' }}
+                                inputProps={{ 
+                                    required: 'required', 
+                                    maxLength: 64, 
+                                    placeholder: 'Name der Benutzergruppe',
+                                }}
                             />
 
                             <InputRow
-                                id="userGroup_icon"
+                                id="user_group_icon"
                                 label="Icon der Benutzergruppe (optional)"
-                                inputProps={{ maxLength: 255, placeholder: 'Material-Symbols-Bezeichnung, z.B. face_5' }}
+                                inputProps={{ 
+                                    required: 'required', 
+                                    maxLength: 255, 
+                                    placeholder: 'Material-Symbols-Bezeichnung, z.B. face_5',
+                                }}
                             />
 
                             <div className="mb-6">
-                                <InputLabel id="userGroup_users" label="Welche Benutzer sollen zur Gruppe gehören?" />
+                                <InputLabel id="user_group_users" label="Welche Benutzer sollen zur Gruppe gehören?" />
                                 <select 
                                     defaultValue={[]} 
-                                    id="userGroup_users" 
+                                    id="user_group_users" 
+                                    name="user_group[users][]"
                                     className="dark:placeholder-gray-400 dark:bg-[#1D252C] border border-gray-300 dark:border-none 
                                         rounded-3xl px-6 shadow-sm dark:shadow-md w-full transition duration-300 focus:border-blue-600 overflow-hidden"
                                     multiple 

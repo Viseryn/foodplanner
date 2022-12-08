@@ -65,6 +65,9 @@ class RecipeController extends AbstractController
         RecipeRepository $recipeRepository,
         RecipeUtil $recipeUtil,
     ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $recipe = new Recipe();
 
         $form = $this->createForm(RecipeType::class, $recipe);
@@ -109,6 +112,9 @@ class RecipeController extends AbstractController
         InstructionUtil $instructionUtil,
         RecipeUtil  $recipeUtil,
     ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this
             ->createForm(RecipeType::class, $recipe)
             ->add('ingredients', TextareaType::class, [
@@ -157,6 +163,9 @@ class RecipeController extends AbstractController
     #[Route('/api/recipe/{id}/delete', name: 'app_recipe_delete', methods: ['GET'])]
     public function delete(Recipe $recipe, MealRepository $mealRepository, RecipeRepository $recipeRepository): Response
     {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
         // Get all meals for that recipe
         $meals = $mealRepository->findBy(['recipe' => $recipe->getId()]);
 
