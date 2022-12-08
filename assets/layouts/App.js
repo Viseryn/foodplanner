@@ -36,11 +36,107 @@ import AddGroup from "../pages/Settings/AddGroup";
  */
 export default function App() {
     /**
-     * Keep user data in global state variable
+     * Sidebar configuration (active item, action button) are kept 
+     * in global state variables.
+     * Sidebar setters will be passed as props to subcomponents, so 
+     * that each subcomponent can alter the sidebar state variables.
+     */
+    const [sidebarActiveItem, setSidebarActiveItem] = useState('');
+    const [sidebarActionButton, setSidebarActionButton] = useState({
+        visible: false,
+        icon: '',
+        path: '#',
+        label: '',
+        onClickHandler: () => {},
+    }); 
+
+    /**
+     * Keep data in global state variables
      * and pass them as props to subcomponents.
      */
+    // User
     const [user, setUser] = useState([]);
     const [isLoadingUser, setLoadingUser] = useState(true);
+
+    // ShoppingList
+    const [shoppingList, setShoppingList] = useState([]);
+    const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
+
+    // Days
+    const [days, setDays] = useState([]);
+    const [isLoadingDays, setLoadingDays] = useState(true);
+
+    // Recipes
+    const [recipes, setRecipes] = useState([]);
+    const [isLoadingRecipes, setLoadingRecipes] = useState(true);
+    const [recipeIndex, setRecipeIndex] = useState(-1);
+
+    // UserGroups
+    const [userGroups, setUserGroups] = useState([]);
+    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
+
+    // MealCategories
+    const [mealCategories, setMealCategories] = useState([]);
+    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
+
+    /**
+     * Props for subcomponents
+     */
+    const props = {
+        // User
+        'user': user,
+        'setUser': setUser,
+        'isLoadingUser': isLoadingUser,
+        'setLoadingUser': setLoadingUser,
+
+        // ShoppingList
+        'shoppingList': shoppingList,
+        'setShoppingList': setShoppingList,
+        'isLoadingShoppingList': isLoadingShoppingList,
+        'setLoadingShoppingList': setLoadingShoppingList,
+
+        // Days
+        'days': days,
+        'setDays': setDays,
+        'isLoadingDays': isLoadingDays,
+        'setLoadingDays': setLoadingDays,
+
+        // Recipes
+        'recipes': recipes,
+        'setRecipes': setRecipes,
+        'isLoadingRecipes': isLoadingRecipes,
+        'setLoadingRecipes': setLoadingRecipes,
+        'recipeIndex': recipeIndex,
+        'setRecipeIndex': setRecipeIndex,
+
+        // UserGroups
+        'userGroups': userGroups,
+        'setUserGroups': setUserGroups,
+        'isLoadingUserGroups': isLoadingUserGroups,
+        'setLoadingUserGroups': setLoadingUserGroups,
+
+        // MealCategories
+        'mealCategories': mealCategories,
+        'setMealCategories': setMealCategories,
+        'isLoadingMealCategories': isLoadingMealCategories,
+        'setLoadingMealCategories': setLoadingMealCategories,
+
+        // Sidebar
+        'setSidebarActiveItem': setSidebarActiveItem, 
+        'setSidebarActionButton': setSidebarActionButton,
+    };
+
+    /**
+     * isAuthenticated
+     * 
+     * Returns true when the authenticated user has the admin role
+     * and false otherwise.
+     * 
+     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
+     */
+    const isAuthenticated = () => {
+        return user?.roles?.includes('ROLE_ADMIN');
+    };
 
     /**
      * Load user data into global state when isLoadingUser
@@ -71,13 +167,6 @@ export default function App() {
     }, [isLoadingUser]);
 
     /**
-     * Keep UserGroup data in global state variable
-     * and pass them as props to subcomponents.
-     */
-    const [userGroups, setUserGroups] = useState([]);
-    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
-
-    /**
      * Load UserGroup data into global state when isLoadingUserGroups
      * is true, e.g. on first render.
      */
@@ -93,13 +182,6 @@ export default function App() {
             })
         ;
     }, [isLoadingUserGroups, isLoadingUser, user]);
-
-    /**
-     * Keep MealCategory data in global state variable
-     * and pass them as props to subcomponents.
-     */
-    const [mealCategories, setMealCategories] = useState([]);
-    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
 
     /**
      * Load MealCategory data into global state when isLoadingMealCategories
@@ -119,35 +201,12 @@ export default function App() {
     }, [isLoadingMealCategories, isLoadingUser, user]);
 
     /**
-     * Sidebar configuration (active item, action button) are kept 
-     * in global state variables.
-     * Sidebar setters will be passed as props to subcomponents, so 
-     * that each subcomponent can alter the sidebar state variables.
-     */
-    const [sidebarActiveItem, setSidebarActiveItem] = useState('');
-    const [sidebarActionButton, setSidebarActionButton] = useState({
-        visible: false,
-        icon: '',
-        path: '#',
-        label: '',
-        onClickHandler: () => {},
-    }); 
-
-    /**
-     * Keep recipes in global state variable
-     * and pass them as props to subcomponents.
-     */
-    const [recipes, setRecipes] = useState([]);
-    const [isLoadingRecipes, setLoadingRecipes] = useState(true);
-    const [recipeIndex, setRecipeIndex] = useState(-1);
-
-    /**
      * Load recipes into global state when isLoadingRecipes 
      * is true, e.g. on first render or after adding/editing
      * a recipe.
      */
     useEffect(() => {
-        if (!isLoadingRecipes) return;
+        if (!isLoadingRecipes && !isLoadingUser) return;
         if (!isAuthenticated()) return;
 
         axios
@@ -157,14 +216,7 @@ export default function App() {
                 setLoadingRecipes(false);
             })
         ;
-    }, [isLoadingRecipes]);
-
-    /**
-     * Keep days in global state variable 
-     * and pass them as props to subcomponents.
-     */
-    const [days, setDays] = useState([]);
-    const [isLoadingDays, setLoadingDays] = useState(true);
+    }, [isLoadingRecipes, isLoadingUser, user]);
 
     /**
      * Calls the Update Days API, which removes all 
@@ -175,7 +227,7 @@ export default function App() {
      * a meal.
      */
     useEffect(() => {
-        if (!isLoadingDays) return;
+        if (!isLoadingDays && !isLoadingUser) return;
         if (!isAuthenticated()) return;
 
         axios
@@ -190,86 +242,21 @@ export default function App() {
                 ;
             })
         ;
-    }, [isLoadingDays]);
-
-    /**
-     * Keep shopping list in global state variable
-     * and pass it as props to subcomponents.
-     */
-    const [shoppingList, setShoppingList] = useState([]);
-    const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
+    }, [isLoadingDays, isLoadingUser, user]);
 
     /**
      * Load shopping list into global state when 
      * isLoadingShoppingList is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingShoppingList) return;
+        if (!isLoadingShoppingList && !isLoadingUser) return;
         if (!isAuthenticated()) return;
 
         loadShoppingList(setShoppingList, () => {
             // Disable loading screen
             setLoadingShoppingList(false);
         });
-    }, [isLoadingShoppingList]);
-
-    /**
-     * isAuthenticated
-     * 
-     * Returns true when the authenticated user has the admin role
-     * and false otherwise.
-     * 
-     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
-     */
-    const isAuthenticated = () => {
-        return user?.roles?.includes('ROLE_ADMIN');
-    };
-
-    /**
-     * Props for subcomponents
-     */
-    const props = {
-        // User
-        'user': user,
-        'setUser': setUser,
-        'isLoadingUser': isLoadingUser,
-        'setLoadingUser': setLoadingUser,
-
-        // ShoppingList
-        'shoppingList': shoppingList,
-        'setShoppingList': setShoppingList,
-        'isLoadingShoppingList': isLoadingShoppingList,
-        'setLoadingShoppingList': setLoadingShoppingList,
-
-        // Days
-        'days': days,
-        'isLoadingDays': isLoadingDays,
-        'setLoadingDays': setLoadingDays,
-
-        // Recipes
-        'recipes': recipes,
-        'setRecipes': setRecipes,
-        'isLoadingRecipes': isLoadingRecipes,
-        'setLoadingRecipes': setLoadingRecipes,
-        'recipeIndex': recipeIndex,
-        'setRecipeIndex': setRecipeIndex,
-
-        // UserGroups
-        'userGroups': userGroups,
-        'setUserGroups': setUserGroups,
-        'isLoadingUserGroups': isLoadingUserGroups,
-        'setLoadingUserGroups': setLoadingUserGroups,
-
-        // MealCategories
-        'mealCategories': mealCategories,
-        'setMealCategories': setMealCategories,
-        'isLoadingMealCategories': isLoadingMealCategories,
-        'setLoadingMealCategories': setLoadingMealCategories,
-
-        // Sidebar
-        'setSidebarActiveItem': setSidebarActiveItem, 
-        'setSidebarActionButton': setSidebarActionButton,
-    };
+    }, [isLoadingShoppingList, isLoadingUser, user]);
 
     /** 
      * Render
