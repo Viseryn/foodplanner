@@ -122,6 +122,70 @@ class FileUploader
         );
     }
 
-    // public function exists(string $filename, ?string $dir): bool {}
-    // public function remove(mixed $file): bool {}
+    /**
+     * exists
+     * 
+     * Checks whether a File object, or a string, 
+     * corresponds to an actual file on the server.
+     *
+     * @param File|string $file A File object, e.g. from the database, or a filename (including the path).
+     * @return boolean Returns true if a file corresponding to the argument exists.
+     * 
+     * @throws Exception
+     */
+    public function exists(File|string $file): bool 
+    {
+        if (is_a($file, File::class)) {
+            $path = $file->getPath(['showRootDir' => true]);
+            return is_file($path);
+        }
+
+        if (is_string($file)) {
+            return is_file($file);
+        }
+    }
+
+    /**
+     * remove
+     * 
+     * Removes a file corresponding to a File object or 
+     * a string containing a path from the server.
+     * Also removes a corresponding database entry.
+     *
+     * @param File|string $file A File object, e.g. from the database, or a filename (including the path).
+     * @return boolean Returns true if file was removed.
+     */
+    public function remove(File|string $file): bool
+    {
+        // Terminate if file does not exist
+        if (!$this->exists($file)) {
+            return false;
+        }
+
+        // Path to file
+        $path = is_string($file) 
+            ? $file 
+            : $file->getPath(['showRootDir' => true]);
+        ;
+        
+        if (!is_a($file, File::class)) {
+            // Separate filename
+            $filename = end(explode('/', $path));
+
+            // Search for File in DB
+            $fileObject = $this->fileRepository->findOneByFilename($filename);
+
+            // Remove file from database
+            if ($fileObject !== null) {
+                $this->fileRepository->remove($fileObject, true);
+            }
+        } else {
+            $this->fileRepository->remove($file, true);
+        }
+
+        // Remove file from server
+        if (is_file($path)) {
+            unlink($path);
+        }
+    }
 }
