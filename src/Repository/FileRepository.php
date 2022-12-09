@@ -39,6 +39,34 @@ class FileRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * findOneByFilename
+     *
+     * @param string $filename
+     * @param string|null $path
+     * @return File|null
+     */
+    public function findOneByFilename(string $filename, ?string $path = ''): ?File
+    {
+        $query = $this
+            ->createQueryBuilder('f')
+            ->andWhere('f.filename = :filename')
+            ->setParameter('filename', $filename)
+        ;
+        
+        if ($path !== '') {
+            $query
+                ->andWhere('f.path = :path')
+                ->setParameter('path', $path)
+            ;
+        }
+
+        return $query
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
 //    /**
 //     * @return File[] Returns an array of File objects
 //     */
