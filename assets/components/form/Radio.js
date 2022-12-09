@@ -40,7 +40,7 @@ function RadioWidget({
     return (
         <div className="flex flex-wrap justify-between gap-2" {...radioProps}>
             {options.map(option => 
-                <div className="grow" key={option.id}>
+                <div className="grow" key={option.value}>
                     <input 
                         id={option.id}
                         type="radio" 
