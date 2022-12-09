@@ -25,8 +25,9 @@ import AddGroup from "../pages/Settings/AddGroup";
  * App
  * 
  * Main component of the application. Handles the routing
- * and provides state functions for the sidebar, e.g. setting 
- * the active sidebar item and updating the sidebar action button.
+ * and provides state variables and setter functions for 
+ * various global components, such as the sidebar or 
+ * the shopping list.
  * 
  * Renders a flex container consisting of two columns; 
  * the sidebar, rendered by the Sidebar component, and 
@@ -128,9 +129,6 @@ export default function App() {
 
     /**
      * isAuthenticated
-     * 
-     * Returns true when the authenticated user has the admin role
-     * and false otherwise.
      * 
      * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
      */

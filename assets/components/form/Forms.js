@@ -13,9 +13,9 @@ const inputWidgetStyle = 'dark:placeholder-gray-400 dark:bg-[#1D252C] border bor
  * nameFromId
  * 
  * @param {string} id The id of some form field.
- * @returns The name for the corresponding form field.
+ * @returns The name for the corresponding Symfony form field.
  * 
- * @example const name = nameFromId('recipe_name'); // 'recipe[name]'
+ * @example const name = nameFromId('user_group_name'); // 'user_group[name]'
  */
 function nameFromId(id) {
     const index = id?.lastIndexOf('_');
