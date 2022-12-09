@@ -19,6 +19,9 @@ import Heading from "../../components/ui/Heading";
  * @property {function} setUser
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
+ * @property {function} setShoppingList
+ * @property {function} setDays 
+ * @property {function} setRecipes
  */
 export default function Logout(props) {
     /**

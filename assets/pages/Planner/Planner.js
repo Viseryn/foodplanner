@@ -105,11 +105,11 @@ export default function Planner(props) {
                 visible: true,
                 icon: isShoppingListButtonVisible ? 'add_shopping_cart' : 'done', 
                 label: isShoppingListButtonVisible 
-                ? 'Zur Einkaufsliste' 
-                : ('Erledigt!' + (buttonCounter > 1 
-                    ? ' (' + buttonCounter + ')' 
-                    : '')
-                ),
+                    ? 'Zur Einkaufsliste' 
+                    : ('Erledigt!' + (buttonCounter > 1 
+                        ? ' (' + buttonCounter + ')' 
+                        : '')
+                    ),
                 onClickHandler: handleAddShoppingList,
             });
         }

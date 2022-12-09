@@ -24,14 +24,8 @@ import Spinner from '../../components/ui/Spinner';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
- * @property {arr} user
- * @property {function} setUser
- * @property {boolean} isLoadingUser
- * @property {function} setLoadingUser
  * @property {arr} recipes 
- * @property {function} setRecipes
  * @property {boolean} isLoadingRecipes
- * @property {function} setLoadingRecipes
  * @property {arr} days 
  * @property {boolean} isLoadingDays
  * @property {function} setLoadingDays
@@ -67,7 +61,7 @@ export default function AddMeal(props) {
     };
 
     /**
-     * Load sidebar and data
+     * Load sidebar
      */
     useEffect(() => {
         props.setSidebarActiveItem('planner');
@@ -87,10 +81,6 @@ export default function AddMeal(props) {
             {isSubmitted && <Navigate to={'/planner'} />}
 
             <Heading>Mahlzeit hinzufügen</Heading>
-
-            {props.user?.username === undefined &&
-                <Navigate to="/login" />
-            }
 
             {isLoadingSubmit ? (
                 <Spinner />

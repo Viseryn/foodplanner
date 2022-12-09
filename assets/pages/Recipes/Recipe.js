@@ -26,14 +26,9 @@ import IconButton from '../../components/ui/IconButton';
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
  * @property {arr} recipes 
- * @property {function} setRecipes
  * @property {boolean} isLoadingRecipes
  * @property {function} setLoadingRecipes
  * @property {number} recipeIndex
- * @property {function} setRecipeIndex
- * @property {arr} shoppingList 
- * @property {function} setShoppingList
- * @property {boolean} isLoadingShoppingList
  * @property {function} setLoadingShoppingList
  */
 export default function Recipe(props) {

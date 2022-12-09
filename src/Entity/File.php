@@ -23,6 +23,11 @@ class File
     #[ORM\Column]
     private ?bool $public = null;
 
+    public function __toString() 
+    {
+        return $this->getDirectory() . $this->getFilename();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,10 +67,5 @@ class File
         $this->public = $public;
 
         return $this;
-    }
-
-    public function __toString() 
-    {
-        return $this->getDirectory() . $this->getFilename();
     }
 }

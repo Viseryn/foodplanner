@@ -6,7 +6,6 @@ use App\Repository\DayRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DayRepository::class)]
@@ -27,6 +26,11 @@ class Day
     public function __construct()
     {
         $this->meal = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getDate() . ', ' . $this->getWeekday();
     }
 
     public function getId(): ?int
@@ -74,11 +78,6 @@ class Day
         }
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->getDate() . ', ' . $this->getWeekday();
     }
 
     public function getDate(string $format = 'd.m.Y'): string

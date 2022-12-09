@@ -3,8 +3,8 @@
  ************************************/
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Navigate } from 'react-router-dom';
+import axios from 'axios';
 
 import { InputRow } from '../../components/form/Input';
 import { TextareaRow } from '../../components/form/Textarea';
@@ -24,12 +24,8 @@ import Spinner from '../../components/ui/Spinner';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
- * @property {arr} recipes 
- * @property {function} setRecipes
  * @property {boolean} isLoadingRecipes
  * @property {function} setLoadingRecipes
- * @property {number} recipeIndex
- * @property {function} setRecipeIndex
  */
 export default function AddRecipe(props) {
     /**

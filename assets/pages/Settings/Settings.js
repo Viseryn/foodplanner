@@ -16,10 +16,7 @@ import IconButton from '../../components/ui/IconButton';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
- * @property {arr} user
- * @property {function} setUser
  * @property {boolean} isLoadingUser
- * @property {function} setLoadingUser
  * @property {arr} userGroups
  * @property {function} setUserGroups
  * @property {boolean} isLoadingUserGroups
@@ -28,8 +25,6 @@ import IconButton from '../../components/ui/IconButton';
  * @property {function} setMealCategories
  * @property {boolean} isLoadingMealCategories
  * @property {function} setLoadingMealCategories
- * @property {arr} days 
- * @property {boolean} isLoadingDays
  * @property {function} setLoadingDays
  */
 export default function Settings(props) {

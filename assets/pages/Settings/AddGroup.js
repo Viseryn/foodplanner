@@ -17,13 +17,6 @@ import Button, { SubmitButton } from '../../components/ui/Buttons';
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
- * @property {arr} user
- * @property {function} setUser
- * @property {boolean} isLoadingUser
- * @property {function} setLoadingUser
- * @property {arr} userGroups
- * @property {function} setUserGroups
- * @property {boolean} isLoadingUserGroups
  * @property {function} setLoadingUserGroups
  */
 export default function AddGroup(props) {
@@ -145,17 +138,17 @@ export default function AddGroup(props) {
                             </div>
 
                             <div className="flex justify-end gap-4">
-                                    <Button
-                                        to="/settings"
-                                        icon="redo"
-                                        label="Zurück"
-                                        style="transparent"
-                                    />
-                                    <SubmitButton 
-                                        icon="group_add" 
-                                        label="Hinzufügen" 
-                                        elevated={true}
-                                    />
+                                <Button
+                                    to="/settings"
+                                    icon="redo"
+                                    label="Zurück"
+                                    style="transparent"
+                                />
+                                <SubmitButton 
+                                    icon="group_add" 
+                                    label="Hinzufügen" 
+                                    elevated={true}
+                                />
                             </div>
                         </form>
                     </>
