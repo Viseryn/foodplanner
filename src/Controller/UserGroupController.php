@@ -13,17 +13,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerBuilder;
 
+#[Route('/api/usergroups')]
 class UserGroupController extends AbstractController
 {
     /**
-     * UserGroup API
+     * UserGroups List API
      * 
      * Responds with an array of UserGroups.
      *
      * @param UserGroupRepository $userGroupRepository
      * @return JsonResponse
      */
-    #[Route('/api/usergroups', name: 'app_api_usergroups', methods: ['GET'])]
+    #[Route('/list', name: 'api_usergroups_list', methods: ['GET'])]
     public function userGroupsAPI(UserGroupRepository $userGroupRepository): JsonResponse
     {
         // Deny access if not logged in
@@ -65,7 +66,7 @@ class UserGroupController extends AbstractController
     }
 
     /**
-     * UserGroups Update Standard API
+     * UserGroups Standard API
      * 
      * Updates the standard UserGroup.
      *
@@ -73,7 +74,7 @@ class UserGroupController extends AbstractController
      * @param UserGroupRepository $userGroupRepository
      * @return Response
      */
-    #[Route('/api/usergroups/update-standard', name: 'app_api_usergroups_update_standard', methods: ['GET', 'POST'])]
+    #[Route('/standard', name: 'api_usergroups_standard', methods: ['GET', 'POST'])]
     public function updateStandard(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
         // Deny access if not logged in
@@ -106,7 +107,7 @@ class UserGroupController extends AbstractController
     }
 
     /**
-     * UserGroup Delete API
+     * UserGroups Delete API
      * 
      * Deletes the UserGroup with the given ID and responds
      * with an empty Response.
@@ -116,7 +117,7 @@ class UserGroupController extends AbstractController
      * @param MealRepository $mealRepository
      * @return Response
      */
-    #[Route('/api/usergroups/delete/{id}', name: 'app_api_usergroups_delete', methods: ['GET'])]
+    #[Route('/delete/{id}', name: 'api_usergroups_delete', methods: ['GET'])]
     public function delete(UserGroup $userGroup, UserGroupRepository $userGroupRepository, MealRepository $mealRepository): Response
     {
         // Deny access if not logged in
@@ -137,7 +138,7 @@ class UserGroupController extends AbstractController
     }
 
     /**
-     * UserGroup Add API
+     * UserGroups Add API
      * 
      * Adds a new UserGroup to the database when the form 
      * in the Request was submitted. If no form was submitted, 
@@ -147,7 +148,7 @@ class UserGroupController extends AbstractController
      * @param UserGroupRepository $userGroupRepository
      * @return Response
      */
-    #[Route('/api/usergroups/add', name: 'app_api_usergroups_add', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'api_usergroups_add', methods: ['GET', 'POST'])]
     public function add(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
         // Deny access if not logged in

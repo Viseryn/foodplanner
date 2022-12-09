@@ -22,6 +22,11 @@ class MealCategory
     #[ORM\Column(length: 255)]
     private ?string $icon = null;
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -37,11 +42,6 @@ class MealCategory
         $this->name = $name;
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->name;
     }
 
     public function isStandard(): ?bool

@@ -10,10 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api/meals')]
 class MealController extends AbstractController
 {
     /**
-     * Meal Add API
+     * Meals Add API
      * 
      * Adds a new Meal to the database when the form
      * in the Request was submitted. Returns an empty 
@@ -24,7 +25,7 @@ class MealController extends AbstractController
      * @param MealRepository $mealRepository
      * @return Response
      */
-    #[Route('/api/meal/add', name: 'app_meal_add', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'api_meals_add', methods: ['GET', 'POST'])]
     public function add(Request $request, MealRepository $mealRepository): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -45,7 +46,7 @@ class MealController extends AbstractController
     }
 
     /**
-     * Meal Delete API
+     * Meals Delete API
      * 
      * Deletes the Meal with the given ID and responds
      * with an empty Response.
@@ -54,7 +55,7 @@ class MealController extends AbstractController
      * @param MealRepository $mealRepository
      * @return Response
      */
-    #[Route('/api/meal/{id}/delete', name: 'app_meal_delete', methods: ['GET'])]
+    #[Route('/delete/{id}', name: 'api_meals_delete', methods: ['GET'])]
     public function delete(Meal $meal, MealRepository $mealRepository): Response
     {
         // Deny access if not logged in

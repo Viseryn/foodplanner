@@ -16,14 +16,14 @@ class LoginController extends AbstractController
      * @param AuthenticationUtils $authenticationUtils
      * @return Response
      */
-    #[Route('/api/login', name: 'app_login')]
+    #[Route('/api/login', name: 'api_login')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
         // Get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
         return new JsonResponse([
-            'error' => $error?->getMessageKey(),
+            'error' => $error?->getMessageKey() ?? '',
         ]);
     }
 }

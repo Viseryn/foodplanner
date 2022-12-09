@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Repository\MealCategoryRepository;
-use App\Repository\UserGroupRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,17 +10,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerBuilder;
 
+#[Route('/api/mealcategories')]
 class MealCategoryController extends AbstractController
 {
     /**
-     * MealCategory API
+     * MealCategories List API
      * 
      * Responds with an array of MealCategories.
      *
      * @param MealCategoryRepository $mealCategoryRepository
      * @return JsonResponse
      */
-    #[Route('/api/mealcategories', name: 'app_api_mealcategories', methods: ['GET'])]
+    #[Route('/list', name: 'api_mealcategories_list', methods: ['GET'])]
     public function mealCategoriesAPI(MealCategoryRepository $mealCategoryRepository): JsonResponse
     {
         // Deny access if not logged in
@@ -39,7 +39,7 @@ class MealCategoryController extends AbstractController
                 'name' => $mealCategory->getName(),
                 'isStandard' => $mealCategory->isStandard(),
                 'icon' => $mealCategory->getIcon(),
-                'id' => 'mealCategory_' . $mealCategory->getName(),           // For radio buttons
+                'id' => 'mealCategory_' . $mealCategory->getName(),        // For radio buttons
                 'value' => $mealCategory->getId(),                         // For radio buttons
                 'label' => $mealCategory->getName(),                       // For radio buttons
                 'checked' => $mealCategory->isStandard() ? 'checked' : '', // For radio buttons
@@ -54,15 +54,15 @@ class MealCategoryController extends AbstractController
     }
 
     /**
-     * MealCategory Update Standard API
+     * MealCategories Standard API
      * 
-     * Updates the standard MealCategory 
+     * Updates the standard MealCategory.
      *
      * @param Request $request
      * @param MealCategoryRepository $mealCategoryRepository
      * @return Response
      */
-    #[Route('/api/mealcategories/update-standard', name: 'app_api_mealcategories_update_standard', methods: ['GET', 'POST'])]
+    #[Route('/standard', name: 'api_mealcategories_standard', methods: ['GET', 'POST'])]
     public function updateStandard(Request $request, MealCategoryRepository $mealCategoryRepository): Response 
     {
         // Deny access if not logged in

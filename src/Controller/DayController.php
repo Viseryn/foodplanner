@@ -4,19 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Day;
 use App\Repository\DayRepository;
-use App\Service\PlanUtil;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
+#[Route('/api/days')]
 class DayController extends AbstractController
 {
     /**
-     * Day List API
+     * Days List API
      * 
      * Fetches all Day objects and responds with a JSON
      * array containing all the data, including all Meals
@@ -25,7 +24,7 @@ class DayController extends AbstractController
      * @param DayRepository $dayRepository
      * @return Response
      */
-    #[Route('/api/days', name: 'app_day_list', methods: ['GET'])]
+    #[Route('/list', name: 'api_days_list', methods: ['GET'])]
     public function list(DayRepository $dayRepository, Security $security): Response
     {
         $user = $security->getUser();
@@ -81,7 +80,7 @@ class DayController extends AbstractController
     }
 
     /**
-     * Update Days API
+     * Days Update API
      * 
      * Deletes all past Day objects and creates new Day objects up 
      * to ten days in the future.
@@ -89,12 +88,13 @@ class DayController extends AbstractController
      * @param DayRepository $dayRepository
      * @return Response
      */
-    #[Route('/api/day/update', name: 'app_day_new', methods: ['GET'])]
+    #[Route('/update', name: 'api_days_update', methods: ['GET'])]
     public function updateDays(DayRepository $dayRepository): Response
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        // Fetch current days
         $currentDays = $dayRepository->findBy([], ['timestamp' => 'ASC']);
         $today = strtotime('today');
 

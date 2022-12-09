@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use JMS\Serializer\SerializerBuilder;
 
+#[Route('/api/user')]
 class UserController extends AbstractController
 {
     /**
@@ -16,7 +17,7 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/api/user', name: 'app_user')]
+    #[Route('/', name: 'api_user')]
     public function index(): Response
     {
         $serializer = SerializerBuilder::create()->build();
@@ -29,9 +30,9 @@ class UserController extends AbstractController
     }
 
     /**
-     * Users API
+     * User List API
      */
-    #[Route('/api/users', name: 'app_api_users')]
+    #[Route('/list', name: 'api_user_list')]
     public function users(UserRepository $userRepository): Response
     {
         // Deny access if not logged in

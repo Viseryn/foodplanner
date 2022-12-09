@@ -35,6 +35,10 @@ class Ingredient
     #[ORM\Column(nullable: true)]
     private ?bool $checked = null;
 
+    public function __toString() {
+        return $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -163,10 +167,6 @@ class Ingredient
         }
 
         return $this;
-    }
-
-    public function __toString() {
-        return $this->name;
     }
 
     public function getPosition(): ?int

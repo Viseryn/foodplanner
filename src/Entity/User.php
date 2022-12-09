@@ -39,6 +39,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userGroups = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->username;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -134,10 +139,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->username;
     }
 }

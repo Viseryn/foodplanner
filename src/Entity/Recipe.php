@@ -37,6 +37,10 @@ class Recipe
         $this->instructions = new ArrayCollection();
     }
 
+    public function __toString() {
+        return $this->title;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,10 +128,6 @@ class Recipe
         }
 
         return $this;
-    }
-
-    public function __toString() {
-        return $this->title;
     }
 
     public function getImage(): ?File

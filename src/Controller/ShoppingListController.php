@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
@@ -14,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api/shoppinglist')]
 class ShoppingListController extends AbstractController
 {
     /**
@@ -22,7 +22,7 @@ class ShoppingListController extends AbstractController
      * @param IngredientRepository $ingredientRepository
      * @return Response
      */
-    #[Route('/api/shoppinglist', name: 'app_shoppinglist', methods: ['GET'])]
+    #[Route('/', name: 'api_shoppinglist', methods: ['GET'])]
     public function index(IngredientRepository $ingredientRepository): Response
     {
         $ingredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
@@ -33,7 +33,16 @@ class ShoppingListController extends AbstractController
         return (new JsonResponse($jsonContent));
     }
 
-    #[Route('/api/shoppinglist/update', name: 'app_shoppinglist_update', methods: ['GET', 'POST'])]
+    /**
+     * ShoppingList Update API
+     *
+     * @param Request $request
+     * @param StorageRepository $storageRepository
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @return Response
+     */
+    #[Route('/update', name: 'api_shoppinglist_update', methods: ['GET', 'POST'])]
     public function update(
         Request $request, 
         StorageRepository $storageRepository, 
@@ -96,7 +105,7 @@ class ShoppingListController extends AbstractController
      * @param IngredientUtil $ingredientUtil
      * @return Response
      */
-    #[Route('/api/shoppinglist/add', name: 'app_shoppinglist_add', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'api_shoppinglist_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
         RecipeRepository $recipeRepository,
@@ -150,7 +159,7 @@ class ShoppingListController extends AbstractController
     }
 
     /**
-     * ShoppingList Add Ingredients API
+     * ShoppingList Ingredients API
      *
      * @param Request $request
      * @param RecipeRepository $recipeRepository
@@ -159,7 +168,7 @@ class ShoppingListController extends AbstractController
      * @param IngredientUtil $ingredientUtil
      * @return Response
      */
-    #[Route('/api/shoppinglist/ingredient', name: 'app_shoppinglist_ingredient', methods: ['GET', 'POST'])]
+    #[Route('/ingredients', name: 'api_shoppinglist_ingredients', methods: ['GET', 'POST'])]
     public function ingredient(
         Request $request, 
         StorageRepository $storageRepository, 

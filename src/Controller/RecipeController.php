@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api/recipes')]
 class RecipeController extends AbstractController
 {
     /**
@@ -31,10 +32,9 @@ class RecipeController extends AbstractController
      * @param RecipeRepository $recipeRepository
      * @return Response
      */
-    #[Route('/api/recipes', name: 'app_recipe_list', methods: ['GET'])]
+    #[Route('/list', name: 'api_recipes_list', methods: ['GET'])]
     public function list(RecipeRepository $recipeRepository): Response
     {
-        // (TODO) lighter query
         $recipes = $recipeRepository->findBy([], ['title' => 'ASC']);
 
         $serializer = SerializerBuilder::create()->build();
@@ -44,7 +44,7 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipe Add API
+     * Recipes Add API
      * 
      * Adds a new Recipe to the database when the form 
      * in the Request was submitted. Responds with the 
@@ -59,7 +59,7 @@ class RecipeController extends AbstractController
      * @param InstructionUtil $instructionUtil
      * @return Response
      */
-    #[Route('/api/recipe/add', name: 'app_recipe_add', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'api_recipes_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
         RecipeRepository $recipeRepository,
@@ -87,7 +87,7 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipe Edit API
+     * Recipes Edit API
      * 
      * Edits an existing Recipe when the form 
      * in the Request was submitted. Responds with the 
@@ -103,7 +103,7 @@ class RecipeController extends AbstractController
      * @param InstructionUtil $instructionUtil
      * @return Response
      */
-    #[Route('/api/recipe/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'api_recipes_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request, 
         Recipe $recipe, 
@@ -149,7 +149,7 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipe Delete API
+     * Recipes Delete API
      * 
      * Deletes the Recipe with the given ID and responds
      * with an empty Response.
@@ -160,7 +160,7 @@ class RecipeController extends AbstractController
      * @param RecipeRepository $recipeRepository
      * @return Response
      */
-    #[Route('/api/recipe/{id}/delete', name: 'app_recipe_delete', methods: ['GET'])]
+    #[Route('/delete/{id}', name: 'api_recipes_delete', methods: ['GET'])]
     public function delete(Recipe $recipe, MealRepository $mealRepository, RecipeRepository $recipeRepository): Response
     {
         // Deny access if not logged in

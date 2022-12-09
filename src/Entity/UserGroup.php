@@ -32,6 +32,11 @@ class UserGroup
         $this->users = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,11 +76,6 @@ class UserGroup
         $this->name = $name;
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->getName();
     }
 
     public function isStandard(): ?bool
