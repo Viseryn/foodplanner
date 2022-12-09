@@ -53,7 +53,7 @@ export default function Planner(props) {
         }).then(confirm => {
             if (confirm) {
                 axios
-                    .get('/api/meal/' + id + '/delete')
+                    .get('/api/meals/delete/' + id)
                     .then(() => props.setLoadingDays(true))
                 ;
             }

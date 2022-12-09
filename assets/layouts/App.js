@@ -175,7 +175,7 @@ export default function App() {
         if (!isAuthenticated()) return;
 
         axios
-            .get('/api/usergroups')
+            .get('/api/usergroups/list')
             .then(response => {
                 setUserGroups(JSON.parse(response.data));
                 setLoadingUserGroups(false);
@@ -192,7 +192,7 @@ export default function App() {
         if (!isAuthenticated()) return;
 
         axios
-            .get('/api/mealcategories')
+            .get('/api/mealcategories/list')
             .then(response => {
                 setMealCategories(JSON.parse(response.data));
                 setLoadingMealCategories(false);
@@ -210,7 +210,7 @@ export default function App() {
         if (!isAuthenticated()) return;
 
         axios
-            .get('/api/recipes')
+            .get('/api/recipes/list')
             .then(response => {
                 setRecipes(JSON.parse(response.data));
                 setLoadingRecipes(false);
@@ -231,10 +231,10 @@ export default function App() {
         if (!isAuthenticated()) return;
 
         axios
-            .get('/api/day/update')
+            .get('/api/days/update')
             .then(() => {
                 axios
-                    .get('/api/days')
+                    .get('/api/days/list')
                     .then(response => {
                         setDays(JSON.parse(response.data));
                         setLoadingDays(false);

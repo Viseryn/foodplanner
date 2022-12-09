@@ -48,7 +48,7 @@ import loadShoppingList from "../../../util/loadShoppingList";
 
             // Send new item to database and reload list
             axios
-                .post('/api/shoppinglist/ingredient', newItem)
+                .post('/api/shoppinglist/ingredients', newItem)
                 .then(() => {
                     // Clear input field
                     setInputValue('');

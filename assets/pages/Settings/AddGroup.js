@@ -36,7 +36,7 @@ export default function AddGroup(props) {
         if (!isLoadingUsers) return;
 
         axios
-            .get('/api/users')
+            .get('/api/user/list')
             .then(response => {
                 setUsers(JSON.parse(response.data));
                 setLoadingUsers(false);

@@ -207,7 +207,7 @@ export default function EditRecipe(props) {
         setLoading(true);
 
         axios
-            .post('/api/recipe/' + recipe?.id + '/edit', formData)
+            .post('/api/recipes/edit/'+ recipe?.id, formData)
             .then(response => {
                 setSubmittedSuccessfully(true);
                 setNewId(response.data.id);
@@ -241,7 +241,7 @@ export default function EditRecipe(props) {
         }).then((confirm) => {
             if (confirm) {
                 axios
-                    .get('/api/recipe/' + id + '/delete')
+                    .get('/api/recipes/delete/' + id)
                     .then(() => {
                         setDeleted(true);
                         props.setLoadingRecipes(true);

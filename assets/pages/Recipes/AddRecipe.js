@@ -82,7 +82,7 @@ export default function AddRecipe(props) {
         setLoading(true);
 
         axios
-            .post('/api/recipe/add', formData)
+            .post('/api/recipes/add', formData)
             .then(response => {
                 setLoading(false);
                 setSubmittedSuccessfully(true);

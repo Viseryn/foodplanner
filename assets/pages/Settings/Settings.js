@@ -59,7 +59,7 @@ export default function Settings(props) {
         });
 
         props.setUserGroups(groups);
-        axios.post('/api/usergroups/update-standard', JSON.stringify(groups));
+        axios.post('/api/usergroups/standard', JSON.stringify(groups));
     };
 
     /**
@@ -85,7 +85,7 @@ export default function Settings(props) {
         });
 
         props.setMealCategories(categories);
-        axios.post('/api/mealcategories/update-standard', JSON.stringify(categories));
+        axios.post('/api/mealcategories/standard', JSON.stringify(categories));
     };
 
     /**

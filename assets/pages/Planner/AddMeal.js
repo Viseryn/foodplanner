@@ -52,7 +52,7 @@ export default function AddMeal(props) {
         setLoadingSubmit(true);
 
         axios
-            .post('/api/meal/add', formData)
+            .post('/api/meals/add', formData)
             .then(() => {
                 setSubmitted(true); 
                 props.setLoadingDays(true);
