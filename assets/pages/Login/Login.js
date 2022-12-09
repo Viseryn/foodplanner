@@ -21,7 +21,6 @@ import Spinner from '../../components/ui/Spinner';
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
  * @property {arr} user
- * @property {function} setUser
  * @property {boolean} isLoadingUser
  * @property {function} setLoadingUser
  */
@@ -86,9 +85,19 @@ export default function Login(props) {
             }
 
             {props.user?.username !== undefined && !props.isLoadingUser && !isLoadingSubmit &&
-                <Notification color="green" title="Erfolgreich eingeloggt!">
-                    Willkommen, {props.user?.username}.
-                </Notification>
+                <>
+                    <Notification color="green" title="Erfolgreich eingeloggt!">
+                        Willkommen, {props.user?.username}.
+                    </Notification>
+
+                    {!props.user?.roles?.includes('ROLE_ADMIN') &&
+                        <div className="mt-6">
+                            <Notification title="Nicht genügend Berechtigungen.">
+                                Für den Zugriff auf alle Funktionen sind Admin-Berechtigungen nötig.
+                            </Notification>
+                        </div>
+                    }
+                </>
             }
 
             {props.user?.username === undefined && !props.isLoadingUser && !isLoadingSubmit &&
