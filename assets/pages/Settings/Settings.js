@@ -187,8 +187,7 @@ export default function Settings(props) {
                             <div key={index} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
                                 <div className="pl-4 flex items-center">
                                     <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                    {group.name} 
-                                    {/* ({group.users.join(', ')}) */}
+                                    {group.name} ({group.users.join(', ')})
                                 </div>
                                 <div className="flex gap-2">
                                     <Link to={'/settings/groups/' + group.value}>
