@@ -3,7 +3,7 @@
  ***************************************/
 
 import React, { useEffect } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import Heading, { SubHeading } from '../../components/ui/Heading';
