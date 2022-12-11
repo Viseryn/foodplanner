@@ -20,6 +20,7 @@ import Logout from '../pages/Logout/Logout';
 import PageNotFound from '../pages/PageNotFound/PageNotFound';
 import Settings from '../pages/Settings/Settings';
 import AddGroup from "../pages/Settings/AddGroup";
+import Registration from "../pages/Registration/Registration";
 
 /**
  * App
@@ -282,6 +283,7 @@ export default function App() {
                     <Route path="/settings/groups/add"  element={!isAuthenticated() ? <Navigate to="/login" /> : <AddGroup {...props} />} />
                     <Route path="/login"                element={<Login {...props} />} />
                     <Route path="/logout"               element={<Logout {...props} />} />
+                    <Route path="/register"             element={<Registration {...props} />} />
                     <Route path="*"                     element={<PageNotFound {...props} />} />
                 </Routes>
             </div>
