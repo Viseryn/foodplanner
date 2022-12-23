@@ -46,8 +46,7 @@ export default function Planner(props) {
         swal({
             dangerMode: true,
             icon: 'error',
-            title: 'Für immer löschen?',
-            text: 'Gelöschte Inhalte können nicht wiederhergestellt werden.',
+            title: 'Mahlzeit wirklich löschen?',
             buttons: {
                 cancel: 'Abbrechen',
                 confirm: 'Löschen',
