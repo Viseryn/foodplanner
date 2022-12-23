@@ -136,6 +136,9 @@ export default function Recipes(props) {
         if (!id) { 
             resetSAB();
         }
+
+        // Scroll to top
+        window.scrollTo(0, 0);
     }, []);
 
     /**

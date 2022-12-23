@@ -99,6 +99,9 @@ export default function Planner(props) {
     useEffect(() => {
         props.setSidebarActiveItem('planner');
         props.setSidebarActionButton();
+
+        // Scroll to top
+        window.scrollTo(0, 0);
     }, []);
 
     useEffect(() => {

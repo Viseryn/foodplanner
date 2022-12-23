@@ -34,6 +34,9 @@ export default function Settings(props) {
     useEffect(() => {
         props.setSidebarActiveItem();
         props.setSidebarActionButton();
+
+        // Scroll to top
+        window.scrollTo(0, 0);
     }, []);
 
     /**

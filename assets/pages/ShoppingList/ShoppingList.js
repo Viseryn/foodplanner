@@ -294,6 +294,9 @@ export default function ShoppingList(props) {
     useEffect(() => {
         props.setSidebarActiveItem('shoppinglist');
         props.setSidebarActionButton();
+
+        // Scroll to top
+        window.scrollTo(0, 0);
     }, []);
 
     useEffect(() => {

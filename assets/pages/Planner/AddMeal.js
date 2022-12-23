@@ -71,6 +71,9 @@ export default function AddMeal(props) {
             path: '/planner', 
             label: 'Zurück',
         });
+
+        // Scroll to top
+        window.scrollTo(0, 0);
     }, []);
 
     /**
