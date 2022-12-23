@@ -215,6 +215,14 @@ function SidebarContent(props) {
                     icon="shopping_cart"
                     label="Einkaufsliste"
                 />
+                {props.settings.showPantry &&
+                    <SidebarItem 
+                        sidebarActiveItem={props.sidebarActiveItem}
+                        id="pantry"
+                        icon="shelves"
+                        label="Vorratskammer"
+                    />
+                }
             </ul>
                 
             <ul className="md:hidden">

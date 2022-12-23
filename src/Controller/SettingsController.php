@@ -39,4 +39,32 @@ class SettingsController extends AbstractController
         return new JsonResponse($response);
     }
     
+    /**
+     * Update Pantry Settings API
+     * 
+     * Updates the Pantry Settings.
+     *
+     * @param Request $request
+     * @param SettingsRepository $settingsRepository
+     * @return Response
+     */
+    #[Route('/pantry', name: 'api_settings_pantry', methods: ['GET', 'POST'])]
+    public function updatePantry(
+        Request $request,
+        SettingsRepository $settingsRepository
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Fetch request content
+        $requestContent = json_decode($request->getContent(), true);
+
+        // Update pantry settings
+        $settings = $settingsRepository->find(1);
+        $settings->setShowPantry($requestContent['showPantry']);
+        $settingsRepository->save($settings, true);
+
+        // Empty response
+        return new Response();
+    }
 }

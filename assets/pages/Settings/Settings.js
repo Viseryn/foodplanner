@@ -165,6 +165,26 @@ export default function Settings(props) {
         });
     };
 
+    /**
+     * handlePantrySettings
+     * 
+     * Updates the showPantry property of the Settings object.
+     * After each update, the Update Pantry Settings API will 
+     * be called (as long as the Settings are not loading).
+     */
+    const handlePantrySettings = (e) => {
+        props.setSettings({ 
+            ...props.settings,
+            showPantry: !props.settings.showPantry,
+        });
+    };
+
+    useEffect(() => {
+        if (props.isLoadingSettings) return;
+
+        axios.post('/api/settings/pantry', JSON.stringify(props.settings));
+    }, [props.settings]);
+
     /** 
      * Render
      * 
@@ -173,6 +193,23 @@ export default function Settings(props) {
     return (
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             <Heading>Einstellungen</Heading>
+
+            <SubHeading>Vorratskammer anzeigen</SubHeading>
+            <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+                Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht.
+            </p>
+
+            <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
+                <input type="checkbox" value={props.settings.showPantry} checked={props.settings.showPantry ? 'checked' : ''} id="showPantry" name="showPantry" className="sr-only peer" onChange={handlePantrySettings} />
+
+                <div className="w-11 h-6 bg-gray-100 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 dark:border-gray-600 peer-checked:bg-blue-600"></div>
+
+                <span className="ml-3 text-sm text-gray-500 dark:text-gray-200 font-semibold">
+                    Vorratskammer wird {!props.settings.showPantry && ' nicht '} angezeigt
+                </span>
+            </label>
+
+            <div className="mb-10"></div>
 
             <SubHeading>Benutzergruppen verwalten</SubHeading>
             <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
