@@ -20,7 +20,7 @@ class Day
     private ?int $timestamp = null;
 
     #[ORM\OneToMany(mappedBy: 'day', targetEntity: Meal::class, orphanRemoval: true)]
-    #[ORM\OrderBy(['mealCategory' => 'ASC'])]
+    #[ORM\OrderBy(['mealCategory' => 'ASC', 'userGroup' => 'ASC'])]
     private Collection $meals;
 
     public function __construct()
