@@ -276,8 +276,7 @@ export default function ShoppingList(props) {
         swal({
             dangerMode: true,
             icon: 'error',
-            title: 'Alle Einträge löschen?',
-            text: 'Gelöschte Inhalte können nicht wiederhergestellt werden.',
+            title: 'Wirklich alle Einträge löschen?',
             buttons: {
                 cancel: 'Abbrechen',
                 confirm: 'Löschen',
