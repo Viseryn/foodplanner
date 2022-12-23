@@ -335,7 +335,9 @@ export default function ShoppingList(props) {
 
                 {/* Delete and update buttons */}
                 <div>
-                    <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
+                    {props.shoppingList.length > 0 && 
+                        <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
+                    }
                     <IconButton onClick={() => props.setLoadingShoppingList(true)}>sync</IconButton>
                 </div>
             </div>
