@@ -11,6 +11,7 @@ import AddItemInputWidget from './components/AddItemInputWidget'
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 import IconButton from '../../components/ui/IconButton';
+import Button from '../../components/ui/Buttons';
 
 /**
  * ShoppingList
@@ -302,9 +303,9 @@ export default function ShoppingList(props) {
     useEffect(() => {
         props.setSidebarActionButton({
             visible: true, 
-            icon: 'low_priority', 
-            label: 'Zusammenfassen',
-            onClickHandler: handleCombine,
+            icon: 'delete_sweep', 
+            label: 'Erledigte löschen',
+            onClickHandler: handleDeleteChecked,
         });
     }, [props.shoppingList]);
 
@@ -335,7 +336,6 @@ export default function ShoppingList(props) {
                 {/* Delete and update buttons */}
                 <div>
                     <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
-                    <IconButton onClick={handleDeleteChecked}>delete_sweep</IconButton>
                     <IconButton onClick={() => props.setLoadingShoppingList(true)}>sync</IconButton>
                 </div>
             </div>
@@ -398,6 +398,17 @@ export default function ShoppingList(props) {
                             </div>
                         )}
                     </div>
+                    
+                    {props.shoppingList.length > 1 &&
+                        <div className="flex justify-end gap-4 mt-6">
+                            <Button
+                                onClick={handleCombine}
+                                label="Zusammenfassen"
+                                icon="low_priority"
+                                elevated={true}
+                            />
+                        </div>
+                    }
                 </>
             )}
         </div>
