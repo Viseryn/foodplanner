@@ -18,7 +18,9 @@ import React from 'react';
  * <IconButton
  *     outlined={true}
  *     onClick={() => someHandler(params)}
- * />
+ * >
+ *     sync
+ * </IconButton>
  */
 function IconButton({ outlined = false, styles = '', ...props }) {
     return (
