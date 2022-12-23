@@ -255,6 +255,24 @@ export default function Pantry(props) {
     }
 
     /**
+     * handleDeleteItem
+     * 
+     * Deletes the given item from the list.
+     * 
+     * @param {*} id 
+     */
+    const handleDeleteItem = (id) => {
+        let items = [...props.pantry];
+        const index = findItemById(id);
+
+        // Remove the item
+        items.splice(index, 1);
+
+        // Update list
+        props.setPantry(items);
+    };
+
+    /**
      * Load sidebar
      */ 
     useEffect(() => {
@@ -340,6 +358,7 @@ export default function Pantry(props) {
                                 </div>
 
                                 <div className="flex gap-2">
+                                    <IconButton onClick={() => handleDeleteItem(item.id)} outlined={true}>delete_sweep</IconButton>
                                     <IconButton onClick={() => handlePositionChange(item.id, -1)}>expand_less</IconButton>
                                     <IconButton onClick={() => handlePositionChange(item.id, 1)}>expand_more</IconButton>
                                 </div>
