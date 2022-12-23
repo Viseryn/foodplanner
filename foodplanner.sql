@@ -126,6 +126,24 @@ CREATE TABLE `recipe` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL,
+  `show_pantry` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Daten für Tabelle `settings`
+--
+
+INSERT INTO `settings` (`id`, `show_pantry`) VALUES
+(1, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `storage`
 --
 
@@ -234,6 +252,12 @@ ALTER TABLE `recipe`
   ADD KEY `IDX_DA88B1373DA5256D` (`image_id`);
 
 --
+-- Indizes für die Tabelle `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indizes für die Tabelle `storage`
 --
 ALTER TABLE `storage`
@@ -304,6 +328,12 @@ ALTER TABLE `meal_category`
 -- AUTO_INCREMENT für Tabelle `recipe`
 --
 ALTER TABLE `recipe`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+--
+-- AUTO_INCREMENT für Tabelle `settings`
+--
+ALTER TABLE `settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
