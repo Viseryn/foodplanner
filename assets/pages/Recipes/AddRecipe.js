@@ -41,12 +41,7 @@ export default function AddRecipe(props) {
      */
     useEffect(() => {
         props.setSidebarActiveItem('recipes');
-        props.setSidebarActionButton({
-            visible: true, 
-            icon: 'redo', 
-            path: '/recipes', 
-            label: 'Zurück',
-        });
+        props.setSidebarActionButton();
 
         window.scrollTo(0, 0)
     }, []);
@@ -183,14 +178,12 @@ export default function AddRecipe(props) {
                         </div>
 
                         <div className="flex justify-end gap-4">
-                            <div className="hidden md:block">
-                                <Button
-                                    to="/recipes"
-                                    icon="redo"
-                                    label="Zurück"
-                                    style="transparent"
-                                />
-                            </div>
+                            <Button
+                                to="/recipes"
+                                icon="redo"
+                                label="Zurück"
+                                style="transparent"
+                            />
                             <SubmitButton 
                                 icon="add" 
                                 label="Speichern" 

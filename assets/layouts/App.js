@@ -83,6 +83,10 @@ export default function App() {
     const [mealCategories, setMealCategories] = useState([]);
     const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
 
+    // Settings
+    const [settings, setSettings] = useState([]);
+    const [isLoadingSettings, setLoadingSettings] = useState(true);
+
     /**
      * isAuthenticated
      * 
@@ -135,6 +139,12 @@ export default function App() {
         'isLoadingMealCategories': isLoadingMealCategories,
         'setLoadingMealCategories': setLoadingMealCategories,
 
+        // Settings
+        'settings': settings,
+        'setSettings': setSettings,
+        'isLoadingSettings': isLoadingSettings,
+        'setLoadingSettings': setLoadingSettings,
+
         // Sidebar
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
@@ -157,8 +167,10 @@ export default function App() {
                 // Remove user-sensitive data
                 setUserGroups([]);
                 setMealCategories([]);
+                setSettings([]);
                 setLoadingUserGroups(true);
                 setLoadingMealCategories(true);
+                setLoadingSettings(true);
 
                 // Update state variables
                 setLoadingDays(true);
@@ -201,6 +213,23 @@ export default function App() {
             })
         ;
     }, [isLoadingMealCategories, isLoadingUser, user]);
+
+    /**
+     * Load Settings data into global state when isLoadingSettings
+     * is true, e.g. on first render.
+     */
+    useEffect(() => {
+        if (!isLoadingSettings && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
+
+        axios
+            .get('/api/settings')
+            .then(response => {
+                setSettings(JSON.parse(response.data));
+                setLoadingSettings(false);
+            })
+        ;
+    }, [isLoadingSettings, isLoadingUser, user]);
 
     /**
      * Load recipes into global state when isLoadingRecipes 

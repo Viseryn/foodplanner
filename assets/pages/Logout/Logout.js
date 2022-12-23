@@ -42,6 +42,7 @@ export default function Logout(props) {
         props.setShoppingList([]);
         props.setDays([]);
         props.setRecipes([]);
+        props.setSettings([]);
 
         // Call Logout API
         axios

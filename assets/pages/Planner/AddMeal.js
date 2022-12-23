@@ -65,12 +65,10 @@ export default function AddMeal(props) {
      */
     useEffect(() => {
         props.setSidebarActiveItem('planner');
-        props.setSidebarActionButton({
-            visible: true, 
-            icon: 'redo', 
-            path: '/planner', 
-            label: 'Zurück',
-        });
+        props.setSidebarActionButton();
+
+        // Scroll to top
+        window.scrollTo(0, 0);
     }, []);
 
     /**
@@ -151,14 +149,12 @@ export default function AddMeal(props) {
                     </div>
 
                     <div className="flex justify-end gap-4">
-                        <div className="hidden md:block">
-                            <Button
-                                to="/planner"
-                                icon="redo"
-                                label="Zurück"
-                                style="transparent"
-                            />
-                        </div>
+                        <Button
+                            to="/planner"
+                            icon="redo"
+                            label="Zurück"
+                            style="transparent"
+                        />
                         {!props.isLoadingDays && !props.isLoadingRecipes && !props.isLoadingUserGroups && !props.isLoadingMealCategories &&
                             <SubmitButton 
                                 icon="add" 
