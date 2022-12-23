@@ -7,6 +7,7 @@ import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
 import axios from "axios";
 
 import loadShoppingList from "../util/loadShoppingList";
+import loadPantry from "../util/loadPantry.js";
 
 import Sidebar from './Sidebar';
 import AuthChecker from "./AuthChecker";
@@ -67,6 +68,10 @@ export default function App() {
     const [shoppingList, setShoppingList] = useState([]);
     const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
 
+    // Pantry
+    const [pantry, setPantry] = useState([]);
+    const [isLoadingPantry, setLoadingPantry] = useState(true);
+
     // Days
     const [days, setDays] = useState([]);
     const [isLoadingDays, setLoadingDays] = useState(true);
@@ -113,6 +118,12 @@ export default function App() {
         'setShoppingList': setShoppingList,
         'isLoadingShoppingList': isLoadingShoppingList,
         'setLoadingShoppingList': setLoadingShoppingList,
+
+        // Pantry
+        'pantry': pantry,
+        'setPantry': setPantry,
+        'isLoadingPantry': isLoadingPantry,
+        'setLoadingPantry': setLoadingPantry,
 
         // Days
         'days': days,
@@ -177,6 +188,7 @@ export default function App() {
                 setLoadingDays(true);
                 setLoadingRecipes(true);
                 setLoadingShoppingList(true);
+                setLoadingPantry(true);
             })
         ;
     }, [isLoadingUser]);
@@ -289,6 +301,20 @@ export default function App() {
             setLoadingShoppingList(false);
         });
     }, [isLoadingShoppingList, isLoadingUser, user]);
+
+    /**
+     * Load pantry into global state when 
+     * isLoadingPantry is true, e.g. on first render.
+     */
+    useEffect(() => {
+        if (!isLoadingPantry && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
+
+        loadPantry(setPantry, () => {
+            // Disable loading screen
+            setLoadingPantry(false);
+        });
+    }, [isLoadingPantry, isLoadingUser, user]);
 
     /** 
      * Render
