@@ -153,11 +153,7 @@ export default function Pantry(props) {
             // Only do the single click action if after a short 
             // delay no double click was registered. Also, do not 
             // do the single click action if the item is editable.
-            setTimeout(() => {
-                if (!preventSingleClick && !editable) {
-                    handleCheckboxChange(id);
-                }
-            }, 200);
+            setTimeout(() => {}, 200);
         }
     };
 
