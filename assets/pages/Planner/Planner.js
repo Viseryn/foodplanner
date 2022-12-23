@@ -120,7 +120,11 @@ export default function Planner(props) {
      */
     return (
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
-            <Heading>Wochenplan</Heading>
+            <div className="flex justify-between items-start">
+                <Heading>Wochenplan</Heading>
+
+                <IconButton onClick={() => props.setLoadingDays(true)}>sync</IconButton>
+            </div>
 
             {props.isLoadingDays ? (
                 <Spinner />
@@ -128,11 +132,11 @@ export default function Planner(props) {
                 <>
                     {props.days.map(day =>
                         <React.Fragment key={day.id}>
-                            <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-4 mt-10 block">
+                            <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-4 block">
                                 {day.weekday}, {day.date}
                             </Link>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
                                 {day.meals.map(meal =>
                                     <div key={meal.id} className="h-40 w-full rounded-2xl shadow-md hover:shadow-2xl transition duration-300">
                                         <div className="relative group">
