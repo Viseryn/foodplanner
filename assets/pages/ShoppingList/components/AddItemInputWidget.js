@@ -64,10 +64,7 @@ import loadShoppingList from "../../../util/loadShoppingList";
      * Render
      */
     return (
-        <div className={
-            'rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] shadow-md h-16 flex items-center pl-6 pr-4' 
-            + (props.items.length > 0 ? ' mb-10' : '')
-        }>
+        <div className="rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] shadow-md h-16 flex items-center pl-6 pr-4 mb-10">
             <span className="material-symbols-rounded mr-2 cursor-default">add</span>
 
             <input 
