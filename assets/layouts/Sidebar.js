@@ -138,7 +138,7 @@ export default function Sidebar(props) {
                     </ul>
 
                     <div className="text-xs flex justify-end absolute bottom-5 right-5">
-                        v1.0.1
+                        v1.0.2
                     </div>
                 </div>
             </aside>
