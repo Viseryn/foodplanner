@@ -157,7 +157,7 @@ CREATE TABLE `storage` (
 --
 
 INSERT INTO `storage` (`id`, `name`) VALUES
-(1, 'storage'),
+(1, 'pantry'),
 (2, 'shoppinglist');
 
 -- --------------------------------------------------------
