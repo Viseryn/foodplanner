@@ -171,6 +171,15 @@ export default function Planner(props) {
                             </div>
                         </React.Fragment>
                     )}
+
+                    <div className="flex justify-end">
+                        <Button 
+                            to="/planner/add"
+                            label="Neue Mahlzeit hinzufügen"
+                            icon="add"
+                            elevated="true"
+                        />
+                    </div>
                 </>
             )}
         </div>
