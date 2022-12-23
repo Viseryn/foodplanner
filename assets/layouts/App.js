@@ -8,7 +8,9 @@ import axios from "axios";
 
 import loadShoppingList from "../util/loadShoppingList";
 
-import Sidebar from '../layouts/Sidebar';
+import Sidebar from './Sidebar';
+import AuthChecker from "./AuthChecker";
+
 import Planner from '../pages/Planner/Planner';
 import AddMeal from '../pages/Planner/AddMeal';
 import Recipes from '../pages/Recipes/Recipes';
@@ -82,6 +84,15 @@ export default function App() {
     const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
 
     /**
+     * isAuthenticated
+     * 
+     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
+     */
+    const isAuthenticated = () => {
+        return user?.roles?.includes('ROLE_ADMIN');
+    };
+
+    /**
      * Props for subcomponents
      */
     const props = {
@@ -90,6 +101,7 @@ export default function App() {
         'setUser': setUser,
         'isLoadingUser': isLoadingUser,
         'setLoadingUser': setLoadingUser,
+        'isAuthenticated': isAuthenticated,
 
         // ShoppingList
         'shoppingList': shoppingList,
@@ -126,15 +138,6 @@ export default function App() {
         // Sidebar
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
-    };
-
-    /**
-     * isAuthenticated
-     * 
-     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
-     */
-    const isAuthenticated = () => {
-        return user?.roles?.includes('ROLE_ADMIN');
     };
 
     /**
@@ -270,17 +273,17 @@ export default function App() {
                 />
 
                 <Routes>
-                    <Route path="/"                     element={!isAuthenticated() ? <Navigate to="/login" /> : <Planner {...props} />} />
-                    <Route path="/planner"              element={!isAuthenticated() ? <Navigate to="/login" /> : <Planner {...props} />} />
-                    <Route path="/planner/add"          element={!isAuthenticated() ? <Navigate to="/login" /> : <AddMeal {...props} />} />
-                    <Route path="/planner/add/:id"      element={!isAuthenticated() ? <Navigate to="/login" /> : <AddMeal {...props} />} />
-                    <Route path="/shoppinglist"         element={!isAuthenticated() ? <Navigate to="/login" /> : <ShoppingList {...props} />} />
-                    <Route path="/recipes"              element={!isAuthenticated() ? <Navigate to="/login" /> : <Recipes {...props} />} />
-                    <Route path="/recipe/add"           element={!isAuthenticated() ? <Navigate to="/login" /> : <AddRecipe {...props} />} />
-                    <Route path="/recipe/:id"           element={!isAuthenticated() ? <Navigate to="/login" /> : <Recipes {...props} />} />
-                    <Route path="/recipe/:id/edit"      element={!isAuthenticated() ? <Navigate to="/login" /> : <EditRecipe {...props} />} />
-                    <Route path="/settings"             element={!isAuthenticated() ? <Navigate to="/login" /> : <Settings {...props} />} />
-                    <Route path="/settings/groups/add"  element={!isAuthenticated() ? <Navigate to="/login" /> : <AddGroup {...props} />} />
+                    <Route path="/"                     element={<AuthChecker component={<Planner {...props} />} {...props} />} />
+                    <Route path="/planner"              element={<AuthChecker component={<Planner {...props} />} {...props} />} />
+                    <Route path="/planner/add"          element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
+                    <Route path="/planner/add/:id"      element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
+                    <Route path="/shoppinglist"         element={<AuthChecker component={<ShoppingList {...props} />} {...props} />} />
+                    <Route path="/recipes"              element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
+                    <Route path="/recipe/add"           element={<AuthChecker component={<AddRecipe {...props} />} {...props} />} />
+                    <Route path="/recipe/:id"           element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
+                    <Route path="/recipe/:id/edit"      element={<AuthChecker component={<EditRecipe {...props} />} {...props} />} />
+                    <Route path="/settings"             element={<AuthChecker component={<Settings {...props} />} {...props} />} />
+                    <Route path="/settings/groups/add"  element={<AuthChecker component={<AddGroup {...props} />} {...props} />} />
                     <Route path="/login"                element={<Login {...props} />} />
                     <Route path="/logout"               element={<Logout {...props} />} />
                     <Route path="/register"             element={<Registration {...props} />} />
