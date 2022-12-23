@@ -50,12 +50,7 @@ export default function EditRecipe(props) {
      */
     useEffect(() => {
         props.setSidebarActiveItem('recipes');
-        props.setSidebarActionButton({
-            visible: true, 
-            icon: 'redo', 
-            path: '/recipe/' + id, 
-            label: 'Zurück',
-        });
+        props.setSidebarActionButton();
 
         window.scrollTo(0, 0);
     }, []);
@@ -403,20 +398,20 @@ export default function EditRecipe(props) {
                             />
                         </div>
 
-                        <div className="flex justify-end gap-4">
-                            <div className="hidden md:block">
-                                <Button
-                                    to={'/recipe/' + recipe?.id}
-                                    icon="redo"
-                                    label="Zurück"
-                                    style="transparent"
-                                />
-                            </div>
+                        <div className="flex justify-end mb-6">
                             <Button
                                 onClick={() => deleteRecipe(recipe?.id)}
                                 icon="delete"
-                                label="Löschen"
-                                style="inverse"
+                                label="Rezept löschen"
+                                style="transparent"
+                            />
+                        </div>
+                        <div className="flex justify-end gap-4">
+                            <Button
+                                to={'/recipe/' + recipe?.id}
+                                icon="redo"
+                                label="Zurück"
+                                style="transparent"
                             />
                             <SubmitButton 
                                 icon="update" 
