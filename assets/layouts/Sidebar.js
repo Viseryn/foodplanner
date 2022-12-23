@@ -70,39 +70,44 @@ export default function Sidebar(props) {
 
                     <ul className="flex flex-col space-y-2">
                         {props.user?.username === undefined
-                            ? <SidebarItem 
-                                id="login"
-                                icon="login"
-                                label="Einloggen"
-                                isDrawerVisible={isDrawerVisible}
-                            />
-                            : <>
-                                <SidebarItem 
-                                    id="login"
-                                    icon="account_circle"
-                                    label={'Willkommen, ' + props.user?.username + '!'}
-                                    isDrawerVisible={isDrawerVisible}
-                                />
-                                <SidebarItem 
-                                    id="logout"
-                                    icon="logout"
-                                    label="Ausloggen"
-                                    isDrawerVisible={isDrawerVisible}
-                                />
-                            </>
+                            ? (
+                                <>
+                                    <SidebarItem 
+                                        id="login"
+                                        icon="login"
+                                        label="Einloggen"
+                                        isDrawerVisible={isDrawerVisible}
+                                    />
+                                    <SidebarItem 
+                                        id="register"
+                                        icon="person_add"
+                                        label="Registrieren"
+                                        isDrawerVisible={isDrawerVisible}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <SidebarItem 
+                                        id="login"
+                                        icon="account_circle"
+                                        label={'Willkommen, ' + props.user?.username + '!'}
+                                        isDrawerVisible={isDrawerVisible}
+                                    />
+                                    <SidebarItem 
+                                        id="logout"
+                                        icon="logout"
+                                        label="Ausloggen"
+                                        isDrawerVisible={isDrawerVisible}
+                                    />
+                                    <SidebarItem 
+                                        id="settings"
+                                        icon="settings"
+                                        label="Einstellungen"
+                                        isDrawerVisible={isDrawerVisible}
+                                    />
+                                </>
+                            )
                         }
-                        <SidebarItem 
-                            id="register"
-                            icon="person_add"
-                            label="Registrieren"
-                            isDrawerVisible={isDrawerVisible}
-                        />
-                        <SidebarItem 
-                            id="settings"
-                            icon="settings"
-                            label="Einstellungen"
-                            isDrawerVisible={isDrawerVisible}
-                        />
                     </ul>
 
                     <hr className="my-4" />
