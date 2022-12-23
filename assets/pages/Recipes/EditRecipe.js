@@ -227,8 +227,8 @@ export default function EditRecipe(props) {
         swal({
             dangerMode: true,
             icon: 'error',
-            title: 'Für immer löschen?',
-            text: 'Gelöschte Inhalte können nicht wiederhergestellt werden.',
+            title: 'Rezept endgültig löschen?',
+            text: 'Gelöschte Rezepte können nicht wiederhergestellt werden.',
             buttons: {
                 cancel: 'Abbrechen',
                 confirm: 'Löschen',
