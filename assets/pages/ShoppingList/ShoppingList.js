@@ -348,45 +348,57 @@ export default function ShoppingList(props) {
             {props.isLoadingShoppingList ? (
                 <Spinner />
             ) : (
-                <div className="space-y-2">
-                    {props.shoppingList.map(item => 
-                        <div key={item.id} className="flex items-center w-full min-h-[2.5rem] py-2 rounded-3xl px-4 transition duration-300 hover:bg-gray-100 dark:hover:bg-[#1D252C]">
-                            <input 
-                                id={item.id} 
-                                type="checkbox" 
-                                className="w-4 h-4 text-blue-600 bg-gray-100 rounded-full border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 peer"
-                                onChange={() => handleCheckboxChange(item.id)} 
-                                checked={item.checked}
-                            />
-                            <div className="transition duration-200 ml-4 text-gray-900 dark:text-gray-300 grow select-none flex justify-between items-center group">
-                                <div 
-                                    className={'md:max-w-[220px] break-words' + (item.checked ? ' line-through text-gray-400' : '')} 
-                                    onClick={event => handleItemClick(event, item.id, item.editable)}
-                                >
-                                    {item.editable ? (
-                                        <input 
-                                            className="bg-transparent border rounded-md"
-                                            defaultValue={item.name}
-                                            onBlur={event => handleItemNameChange(event, item.id)}
-                                            onKeyDown={event => { 
-                                                if (event.key === 'Enter') {
-                                                    handleItemNameChange(event, item.id);
-                                                }
-                                            }}
-                                        />
-                                    ) : (
-                                        item.name
-                                    )}
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, -1)}>expand_less</span>
-                                    <span className="material-symbols-rounded" onClick={() => handlePositionChange(item.id, 1)}>expand_more</span>
+                <>
+                    <div className="space-y-2 max-w-[400px] justify-center">
+                        {props.shoppingList.length === 0 &&
+                            <div className="rounded-full p-2 h-14 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
+                                <div className="pl-4 flex items-center">
+                                    <span className="material-symbols-rounded outlined mr-4">info</span>
+                                    Die Einkaufsliste ist leer.
                                 </div>
                             </div>
-                        </div>
+                        }
+
+                        {props.shoppingList.map(item =>
+                            <div key={item.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
+                                <div className="pl-4 flex items-center">
+                                    <input 
+                                        id={item.id} 
+                                        type="checkbox" 
+                                        className="w-4 h-4 mr-4 text-blue-600 bg-gray-100 rounded-full border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 peer"
+                                        onChange={() => handleCheckboxChange(item.id)} 
+                                        checked={item.checked}
+                                    />
+
+                                    <div 
+                                        className={'md:max-w-[220px] break-words' + (item.checked ? ' line-through text-gray-400' : '')} 
+                                        onClick={event => handleItemClick(event, item.id, item.editable)} /** @todo Move that to parent */
+                                    >
+                                        {item.editable ? (
+                                            <input 
+                                                className="bg-transparent border rounded-md"
+                                                defaultValue={item.name}
+                                                onBlur={event => handleItemNameChange(event, item.id)}
+                                                onKeyDown={event => { 
+                                                    if (event.key === 'Enter') {
+                                                        handleItemNameChange(event, item.id);
+                                                    }
+                                                }}
+                                            />
+                                        ) : (
+                                            item.name
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <IconButton onClick={() => handlePositionChange(item.id, -1)}>expand_less</IconButton>
+                                    <IconButton onClick={() => handlePositionChange(item.id, 1)}>expand_more</IconButton>
+                                </div>
+                            </div>
                         )}
                     </div>
+                </>
             )}
         </div>
     );
