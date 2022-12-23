@@ -162,7 +162,6 @@ class ShoppingListController extends AbstractController
      * ShoppingList Ingredients API
      *
      * @param Request $request
-     * @param RecipeRepository $recipeRepository
      * @param StorageRepository $storageRepository
      * @param IngredientRepository $ingredientRepository
      * @param IngredientUtil $ingredientUtil
