@@ -176,7 +176,7 @@ export default function Settings(props) {
 
             <SubHeading>Benutzergruppen verwalten</SubHeading>
             <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen bearbeiten und eine Standardgruppe für neue Mahlzeiten festlegen.
+                Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen entfernen und eine Standardgruppe für neue Mahlzeiten festlegen.
             </p>
 
             {props.isLoadingUser ? (
@@ -193,9 +193,6 @@ export default function Settings(props) {
                                     {group.name} ({group.users.join(', ')})
                                 </div>
                                 <div className="flex gap-2">
-                                    <Link to={'/settings/groups/' + group.value}>
-                                        <IconButton>drive_file_rename_outline</IconButton>
-                                    </Link>
                                     <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
                                     <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
                                 </div>
