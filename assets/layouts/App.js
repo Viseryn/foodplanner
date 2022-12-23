@@ -23,6 +23,7 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
 import Settings from '../pages/Settings/Settings';
 import AddGroup from "../pages/Settings/AddGroup";
 import Registration from "../pages/Registration/Registration";
+import Pantry from "../pages/Pantry/Pantry";
 
 /**
  * App
@@ -311,6 +312,7 @@ export default function App() {
                     <Route path="/recipe/add"           element={<AuthChecker component={<AddRecipe {...props} />} {...props} />} />
                     <Route path="/recipe/:id"           element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
                     <Route path="/recipe/:id/edit"      element={<AuthChecker component={<EditRecipe {...props} />} {...props} />} />
+                    <Route path="/pantry"               element={<AuthChecker component={<Pantry {...props} />} {...props} />} />
                     <Route path="/settings"             element={<AuthChecker component={<Settings {...props} />} {...props} />} />
                     <Route path="/settings/groups/add"  element={<AuthChecker component={<AddGroup {...props} />} {...props} />} />
                     <Route path="/login"                element={<Login {...props} />} />
