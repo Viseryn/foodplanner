@@ -128,6 +128,69 @@ export default function ShoppingList(props) {
     };
 
     /**
+     * handlePantryCombine
+     */
+    const handlePantryCombine = () => {
+        let pantry = JSON.parse(JSON.stringify(props.pantry));
+
+        // Give each pantry item negative quantity value
+        pantry.forEach(item => {
+            item.quantity_value *= -1;
+        });
+
+        // Combine ShoppingList and Pantry into one list
+        let list = [...props.shoppingList, ...pantry];
+
+        // Now we do the same as in handleCombine, with the difference
+        // that we remove each item that has non-positive quantity afterwards.
+        // This will only leave the original shopping list items or less,
+        // with their new quantity values.
+
+        let appearedItems = []; // A list of "representative" items that all other duplicates are being added to
+        let appearedNames = []; // The names of the representative items
+
+        list.forEach(item => {
+            if (!appearedNames.includes(item.originalName)) {
+                // If item has not been saved as unique 
+                // representative, save it now.
+                appearedNames.push(item.originalName);
+                appearedItems.push(item);
+            } else {
+                // If item is a duplicate, find the representative
+                const index = appearedNames.indexOf(item.originalName);
+                let origItem = appearedItems[index];
+
+                if (origItem.quantity_unit === item.quantity_unit 
+                    && !origItem.checked && !item.checked) {
+                    // Check whether a quantity value is '1/2' and convert to 0.5
+                    if (origItem.quantity_value === '1/2') origItem.quantity_value = 0.5;
+                    if (item.quantity_value === '1/2') item.quantity_value = 0.5;
+
+                    // If the representative has the same unit 
+                    // and both are not checked, add them up.
+                    origItem.quantity_value = +origItem.quantity_value + +item.quantity_value;
+                } else {
+                    // If either item is checked or units do not match, 
+                    // add the "duplicate" to the representative list.
+                    appearedNames.push(item.originalName);
+                    appearedItems.push(item);
+                }
+            }
+        });
+
+        // In the list of representative items, generate the display names.
+        appearedItems.forEach(item => {
+            item.name = generateDisplayName(item.quantity_value, item.quantity_unit, item.originalName);
+        });
+
+        // Filter all items that have negative quantity value
+        appearedItems = appearedItems.filter(item => item.quantity_value > 0 || !item.quantity_value && item.quantity_value !== 0);
+
+        // Update the state variable
+        props.setShoppingList(appearedItems);
+    };
+
+    /**
      * handleCheckboxChange
      * 
      * Toggle the checked status of the given item.
@@ -399,17 +462,28 @@ export default function ShoppingList(props) {
                             </div>
                         )}
                     </div>
-                    
-                    {props.shoppingList.length > 1 &&
-                        <div className="flex justify-end gap-4 mt-6">
-                            <Button
-                                onClick={handleCombine}
-                                label="Zusammenfassen"
-                                icon="low_priority"
-                                elevated={true}
-                            />
-                        </div>
-                    }
+
+                    <div className={'flex justify-end gap-4' + (props.shoppingList.length >= 1 ? ' mt-6' : '')}>
+                        {props.shoppingList.length >= 1 &&
+                            <>
+                                {props.settings.showPantry &&
+                                    <Button
+                                        onClick={handlePantryCombine}
+                                        label="Vorräte"
+                                        icon="cell_merge"
+                                        style="transparent"
+                                    />
+                                }
+                                
+                                <Button
+                                    onClick={handleCombine}
+                                    label="Zusammenfassen"
+                                    icon="low_priority"
+                                    elevated={true}
+                                />
+                            </>
+                        }
+                    </div>
                 </>
             )}
         </div>
