@@ -205,12 +205,6 @@ function SidebarContent(props) {
                 />
                 <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
-                    id="recipes"
-                    icon="fastfood"
-                    label="Rezepte"
-                />
-                <SidebarItem 
-                    sidebarActiveItem={props.sidebarActiveItem}
                     id="shoppinglist"
                     icon="shopping_cart"
                     label="Einkaufsliste"
@@ -226,6 +220,12 @@ function SidebarContent(props) {
                         label="Vorratskammer"
                     />
                 }
+                <SidebarItem 
+                    sidebarActiveItem={props.sidebarActiveItem}
+                    id="recipes"
+                    icon="receipt_long"
+                    label="Rezepte"
+                />
             </ul>
                 
             <ul className="md:hidden">
