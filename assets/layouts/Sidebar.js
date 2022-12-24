@@ -215,7 +215,10 @@ function SidebarContent(props) {
                     icon="shopping_cart"
                     label="Einkaufsliste"
                 />
-                {props.settings.showPantry &&
+                {(props.settings.showPantry 
+                    || !props.isAuthenticated()
+                    || props.isLoadingSettings) 
+                &&
                     <SidebarItem 
                         sidebarActiveItem={props.sidebarActiveItem}
                         id="pantry"
