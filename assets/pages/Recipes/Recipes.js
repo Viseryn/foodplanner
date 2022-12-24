@@ -40,36 +40,6 @@ export default function Recipes(props) {
 
     const [searchValue, setSearchValue] = useState('');
     const [isTwoColumns, setTwoColumns] = useState(id > 0);
-
-    /**
-     * Sidebar props for the Recipe component
-     */
-    const setSidebarProps = {
-        'setSidebarActiveItem': props.setSidebarActiveItem, 
-        'setSidebarActionButton': props.setSidebarActionButton,
-    };
-
-    /**
-     * Recipe props 
-     */
-    const setRecipesProps = {
-        'recipes': props.recipes,
-        'setRecipes': props.setRecipes,
-        'isLoadingRecipes': props.isLoadingRecipes,
-        'setLoadingRecipes': props.setLoadingRecipes,
-        'recipeIndex': props.recipeIndex,
-        'setRecipeIndex': props.setRecipeIndex,
-    }
-
-    /**
-     * ShoppingList props
-     */
-    const setShoppingListProps = {
-        'shoppingList': props.shoppingList,
-        'setShoppingList': props.setShoppingList,
-        'isLoadingShoppingList': props.isLoadingShoppingList,
-        'setLoadingShoppingList': props.setLoadingShoppingList,
-    };
     
     /**
      * Search for user input in recipe list
@@ -258,9 +228,7 @@ export default function Recipes(props) {
                             setTwoColumns(false);
                             resetSAB();
                         }} 
-                        {...setSidebarProps} 
-                        {...setRecipesProps}
-                        {...setShoppingListProps}
+                        {...props}
                     />
                 </div>
             }
