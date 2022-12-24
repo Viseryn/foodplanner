@@ -129,9 +129,6 @@ export default function Recipe(props) {
                     <Heading>{recipe?.title}</Heading>
 
                     <div className="flex justify-between">
-                        <Link to={'/recipe/' + recipe?.id + '/edit'}>
-                            <IconButton>drive_file_rename_outline</IconButton>
-                        </Link>
                         <Link to="/recipes">
                             {/* Button for resetting two-column mode */}
                             <IconButton styles="hidden md:block" onClick={() => props.setTwoColumns()}>close</IconButton>
@@ -216,6 +213,12 @@ export default function Recipe(props) {
                                 onClick={handleAddPantry}
                             />
                         }
+                        <Button
+                            to={`/recipe/${recipe?.id}/edit`}
+                            icon="edit_note"
+                            label="Bearbeiten"
+                            elevated="true"
+                        />
                     </div>
                 </>
             }
