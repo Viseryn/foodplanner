@@ -108,7 +108,7 @@ export default function Recipes(props) {
     const resetSAB = () => {
         props.setSidebarActionButton({
             visible: true, 
-            icon:'add', 
+            icon: 'post_add', 
             path: '/recipe/add',
             label: 'Neues Rezept',
         }); 

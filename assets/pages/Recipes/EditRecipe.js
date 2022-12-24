@@ -414,7 +414,7 @@ export default function EditRecipe(props) {
                                 style="transparent"
                             />
                             <SubmitButton 
-                                icon="update" 
+                                icon="edit_note" 
                                 label="Speichern" 
                                 elevated={true}
                             />

@@ -185,7 +185,7 @@ export default function AddRecipe(props) {
                                 style="transparent"
                             />
                             <SubmitButton 
-                                icon="add" 
+                                icon="post_add" 
                                 label="Speichern" 
                                 elevated={true}
                             />
