@@ -365,7 +365,7 @@ export default function ShoppingList(props) {
     useEffect(() => {
         props.setSidebarActionButton({
             visible: true, 
-            icon: 'delete_sweep', 
+            icon: 'remove_done', 
             label: 'Erledigte löschen',
             onClickHandler: handleDeleteChecked,
         });
