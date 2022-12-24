@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\IngredientRepository;
+use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
 use JMS\Serializer\SerializerBuilder;
@@ -84,6 +85,69 @@ class PantryController extends AbstractController
         
         foreach($oldIngredients as $ingredient) {
             $ingredientRepository->remove($ingredient, true);
+        }
+
+        // Add new pantry ingredients to the database
+        foreach($newIngredients as $ingredient) {
+            $ingredientRepository->add($ingredient, true);
+        }
+
+        // Empty Response
+        return new Response();
+    }
+
+    /**
+     * Pantry Add API
+     *
+     * @param Request $request
+     * @param RecipeRepository $recipeRepository
+     * @param StorageRepository $storageRepository
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @return Response
+     */
+    #[Route('/add', name: 'api_pantry_add', methods: ['GET', 'POST'])]
+    public function add(
+        Request $request, 
+        RecipeRepository $recipeRepository,
+        StorageRepository $storageRepository, 
+        IngredientRepository $ingredientRepository, 
+        IngredientUtil $ingredientUtil
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+
+        // Collect all ingredients and combine to a string
+        $ingredients = '';
+
+        foreach ($requestContent as $recipeData) {
+            $recipe = $recipeRepository->find($recipeData->id);
+            $ingredients .= $ingredientUtil->ingredientString($recipe->getIngredients());
+            $ingredients .= "\n";
+        }
+
+        // Transform data into Ingredient objects
+        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
+
+        // Check highest position
+        $oldIngredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'DESC']);
+        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
+
+        // Add position and checked to Ingredient objects
+        $i = 0;
+        $storage = $storageRepository->find(1);
+
+        foreach ($newIngredients as $ingredient) {
+            $newIngredients[$i]
+                ->setStorage($storage)
+                ->setChecked(false)
+                ->setPosition($highestPosition + 1 + $i)
+            ;
+
+            $i++;
         }
 
         // Add new pantry ingredients to the database
