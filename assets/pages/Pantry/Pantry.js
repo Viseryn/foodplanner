@@ -35,6 +35,11 @@ import Button from '../../components/ui/Buttons';
  */
 export default function Pantry(props) {
     /**
+     * State variables
+     */
+    const [sortingOrder, setSortingOrder] = useState(true); // true is ASC, false is DESC
+    
+    /**
      * updateItem
      * 
      * Updates one item with the given ID in the items state variable.
@@ -273,6 +278,35 @@ export default function Pantry(props) {
     };
 
     /**
+     * handleSort
+     * 
+     * Sorts all items by alphabet.
+     */
+    const handleSort = () => {
+        let items = [...props.pantry];
+
+        // Sort array by alphabet (ascending or descending depending on state)
+        items.sort((a, b) => {
+            const textA = a.originalName.toLowerCase();
+            const textB = b.originalName.toLowerCase();
+            const returnValue = (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+
+            return (sortingOrder ? 1 : -1) * returnValue;
+        });
+
+        // Give each item a correct position
+        for (let i = 0; i < items.length; i++) {
+           items[i].position = i + 1;
+        }
+
+        // Change sorting order
+        setSortingOrder(sortingOrder => { return !sortingOrder; });
+
+        // Update list
+        props.setPantry(items);
+    };
+
+    /**
      * Load sidebar
      */ 
     useEffect(() => {
@@ -368,6 +402,12 @@ export default function Pantry(props) {
                     
                     {props.pantry.length > 1 &&
                         <div className="flex justify-end gap-4 mt-6">
+                            <Button
+                                onClick={handleSort}
+                                label="Sortieren"
+                                icon="sort_by_alpha"
+                                style="transparent"
+                            />
                             <Button
                                 onClick={handleCombine}
                                 label="Zusammenfassen"
