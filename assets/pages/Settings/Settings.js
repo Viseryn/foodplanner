@@ -196,7 +196,8 @@ export default function Settings(props) {
 
             <SubHeading>Vorratskammer anzeigen</SubHeading>
             <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht.
+                Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene
+                Funktionen werden dann ebenfalls ein- oder ausgeblendet.
             </p>
 
             <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
