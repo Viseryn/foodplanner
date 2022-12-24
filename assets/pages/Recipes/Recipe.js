@@ -9,6 +9,7 @@ import axios from 'axios';
 import Heading from '../../components/ui/Heading';
 import TextParagraph from '../../components/skeleton/TextParagraph';
 import IconButton from '../../components/ui/IconButton';
+import Button from '../../components/ui/Buttons';
 
 /**
  * Recipe
@@ -37,6 +38,7 @@ export default function Recipe(props) {
      */
     const [buttonCounter, setButtonCounter] = useState(0);
     const [showButton, setShowButton] = useState(true);
+    const [showPantryButton, setShowPantryButton] = useState(true);
     const [recipe, setRecipe] = useState([]);
 
     /**
@@ -56,6 +58,22 @@ export default function Recipe(props) {
         setButtonCounter(buttonCounter => {
             return buttonCounter + 1;
         });
+    };
+
+    /**
+     * handleAddPantry
+     * 
+     * Handles a click on the "Add to Pantry" button.
+     */
+    const handleAddPantry = () => {
+        const recipes = [props.recipes[props.recipeIndex]];
+
+        axios
+            .post('/api/pantry/add', JSON.stringify(recipes))
+            .then(() => props.setLoadingPantry(true))
+        ;
+        
+        setShowPantryButton(false);
     };
 
     /** 
@@ -188,6 +206,17 @@ export default function Recipe(props) {
                             Hier gibt es noch nichts zu sehen.
                         </div>
                     }
+
+                    <div className="flex justify-end gap-4">
+                        {props.settings.showPantry &&
+                            <Button
+                                icon={showPantryButton ? 'add_home' : 'done'}
+                                label={showPantryButton ? 'Zum Vorrat' : 'Erledigt!'}
+                                style="transparent"
+                                onClick={handleAddPantry}
+                            />
+                        }
+                    </div>
                 </>
             }
         </>

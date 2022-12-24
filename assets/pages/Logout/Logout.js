@@ -40,6 +40,7 @@ export default function Logout(props) {
 
         // Remove other sensitive data
         props.setShoppingList([]);
+        props.setPantry([]);
         props.setDays([]);
         props.setRecipes([]);
         props.setSettings([]);

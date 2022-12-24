@@ -7,6 +7,7 @@ import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
 import axios from "axios";
 
 import loadShoppingList from "../util/loadShoppingList";
+import loadPantry from "../util/loadPantry.js";
 
 import Sidebar from './Sidebar';
 import AuthChecker from "./AuthChecker";
@@ -23,6 +24,7 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
 import Settings from '../pages/Settings/Settings';
 import AddGroup from "../pages/Settings/AddGroup";
 import Registration from "../pages/Registration/Registration";
+import Pantry from "../pages/Pantry/Pantry";
 
 /**
  * App
@@ -65,6 +67,10 @@ export default function App() {
     // ShoppingList
     const [shoppingList, setShoppingList] = useState([]);
     const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
+
+    // Pantry
+    const [pantry, setPantry] = useState([]);
+    const [isLoadingPantry, setLoadingPantry] = useState(true);
 
     // Days
     const [days, setDays] = useState([]);
@@ -112,6 +118,12 @@ export default function App() {
         'setShoppingList': setShoppingList,
         'isLoadingShoppingList': isLoadingShoppingList,
         'setLoadingShoppingList': setLoadingShoppingList,
+
+        // Pantry
+        'pantry': pantry,
+        'setPantry': setPantry,
+        'isLoadingPantry': isLoadingPantry,
+        'setLoadingPantry': setLoadingPantry,
 
         // Days
         'days': days,
@@ -176,6 +188,7 @@ export default function App() {
                 setLoadingDays(true);
                 setLoadingRecipes(true);
                 setLoadingShoppingList(true);
+                setLoadingPantry(true);
             })
         ;
     }, [isLoadingUser]);
@@ -289,6 +302,20 @@ export default function App() {
         });
     }, [isLoadingShoppingList, isLoadingUser, user]);
 
+    /**
+     * Load pantry into global state when 
+     * isLoadingPantry is true, e.g. on first render.
+     */
+    useEffect(() => {
+        if (!isLoadingPantry && !isLoadingUser) return;
+        if (!isAuthenticated()) return;
+
+        loadPantry(setPantry, () => {
+            // Disable loading screen
+            setLoadingPantry(false);
+        });
+    }, [isLoadingPantry, isLoadingUser, user]);
+
     /** 
      * Render
      */
@@ -311,6 +338,7 @@ export default function App() {
                     <Route path="/recipe/add"           element={<AuthChecker component={<AddRecipe {...props} />} {...props} />} />
                     <Route path="/recipe/:id"           element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
                     <Route path="/recipe/:id/edit"      element={<AuthChecker component={<EditRecipe {...props} />} {...props} />} />
+                    <Route path="/pantry"               element={<AuthChecker component={<Pantry {...props} />} {...props} />} />
                     <Route path="/settings"             element={<AuthChecker component={<Settings {...props} />} {...props} />} />
                     <Route path="/settings/groups/add"  element={<AuthChecker component={<AddGroup {...props} />} {...props} />} />
                     <Route path="/login"                element={<Login {...props} />} />
