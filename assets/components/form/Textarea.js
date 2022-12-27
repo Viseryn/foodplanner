@@ -10,7 +10,7 @@ import { InputLabel } from "./Input";
 /**
  * Textarea styles
  */
-const textareaWidgetStyle = 'dark:placeholder-gray-400 dark:bg-[#1D252C] block border border-gray-300 dark:border-none rounded-xl px-4 py-2 shadow-sm dark:shadow-md w-full transition duration-300 focus:border-blue-600';
+const textareaWidgetStyle = 'dark:placeholder-gray-400 dark:bg-[#1D252C] block border border-gray-300 dark:border-none rounded-xl px-4 py-2 shadow-sm dark:shadow-md w-full transition duration-300 focus:border-blue-600 resize-none';
 
 /**
  * TextareaWidget
