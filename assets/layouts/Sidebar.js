@@ -88,12 +88,6 @@ export default function Sidebar(props) {
                             ) : (
                                 <>
                                     <SidebarItem 
-                                        id="login"
-                                        icon="account_circle"
-                                        label={'Willkommen, ' + props.user?.username + '!'}
-                                        isDrawerVisible={isDrawerVisible}
-                                    />
-                                    <SidebarItem 
                                         id="logout"
                                         icon="logout"
                                         label="Ausloggen"
@@ -205,6 +199,12 @@ function SidebarContent(props) {
                 />
                 <SidebarItem 
                     sidebarActiveItem={props.sidebarActiveItem}
+                    id="recipes"
+                    icon="receipt_long"
+                    label="Rezepte"
+                />
+                <SidebarItem 
+                    sidebarActiveItem={props.sidebarActiveItem}
                     id="shoppinglist"
                     icon="shopping_cart"
                     label="Einkaufsliste"
@@ -220,12 +220,6 @@ function SidebarContent(props) {
                         label="Vorratskammer"
                     />
                 }
-                <SidebarItem 
-                    sidebarActiveItem={props.sidebarActiveItem}
-                    id="recipes"
-                    icon="receipt_long"
-                    label="Rezepte"
-                />
             </ul>
                 
             <ul className="md:hidden">
