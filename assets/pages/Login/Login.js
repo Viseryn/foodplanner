@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { InputRow } from '../../components/form/Input';
-import { SubmitButton } from '../../components/ui/Buttons';
+import Button from '../../components/ui/Buttons/Button';
 import Heading from '../../components/ui/Heading';
 import Notification from '../../components/ui/Notification';
 import Spinner from '../../components/ui/Spinner';
@@ -121,9 +121,11 @@ export default function Login(props) {
                     />
 
                     <div className="flex justify-end">
-                        <SubmitButton
+                        <Button
+                            type="submit"
                             icon="login"
                             label="Einloggen"
+                            elevated={true}
                         />
                     </div>
                 </form>
