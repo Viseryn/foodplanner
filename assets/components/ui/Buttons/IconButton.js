@@ -1,6 +1,6 @@
-/****************************************
- * ./assets/components/ui/IconButton.js *
- ****************************************/
+/************************************************
+ * ./assets/components/ui/Buttons/IconButton.js *
+ ************************************************/
 
 import React from 'react';
 
@@ -11,8 +11,8 @@ import React from 'react';
  * 
  * @component
  * @property {?boolean} outlined Whether or not the icon should be outlines only (true) or filled (false, default).
- * @property
- * @property {*} props An optional object of properties of the <span /> element.
+ * @property {?string} style Additional styling classes.
+ * @property {*} props An optional object of properties of the <span /> element, e.g. onClick handling.
  * 
  * @example
  * <IconButton
@@ -22,14 +22,14 @@ import React from 'react';
  *     sync
  * </IconButton>
  */
-function IconButton({ outlined = false, styles = '', ...props }) {
+export default function IconButton({ outlined = false, style = '', ...props }) {
     return (
         <span 
             className={
                 'material-symbols-rounded cursor-pointer transition duration-300 '
                 + 'hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full' 
                 + (outlined ? ' outlined' : '')
-                + ' ' + styles
+                + ' ' + style
             }
             {...props} 
         >
@@ -37,5 +37,3 @@ function IconButton({ outlined = false, styles = '', ...props }) {
         </span>
     );
 }
-
-export default IconButton;
