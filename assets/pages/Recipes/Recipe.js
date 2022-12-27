@@ -8,8 +8,8 @@ import axios from 'axios';
 
 import Heading from '../../components/ui/Heading';
 import TextParagraph from '../../components/skeleton/TextParagraph';
-import IconButton from '../../components/ui/IconButton';
-import Button from '../../components/ui/Buttons';
+import IconButton from '../../components/ui/Buttons/IconButton';
+import Button from '../../components/ui/Buttons/Button';
 
 /**
  * Recipe
@@ -131,7 +131,12 @@ export default function Recipe(props) {
                     <div className="flex justify-between">
                         <Link to="/recipes">
                             {/* Button for resetting two-column mode */}
-                            <IconButton styles="hidden md:block" onClick={() => props.setTwoColumns()}>close</IconButton>
+                            <IconButton 
+                                style="hidden lg:block" 
+                                onClick={() => props.setTwoColumns()}
+                            >
+                                close
+                            </IconButton>
                         </Link>
                     </div>
                 </div>
@@ -204,20 +209,20 @@ export default function Recipe(props) {
                         </div>
                     }
 
-                    <div className="flex justify-end gap-4">
+                    <div className="flex justify-end gap-4 mt-auto">
                         {props.settings.showPantry &&
                             <Button
                                 icon={showPantryButton ? 'add_home' : 'done'}
                                 label={showPantryButton ? 'Zum Vorrat' : 'Erledigt!'}
-                                style="transparent"
                                 onClick={handleAddPantry}
+                                role="tertiary"
                             />
                         }
                         <Button
-                            to={`/recipe/${recipe?.id}/edit`}
+                            location={`/recipe/${recipe?.id}/edit`}
                             icon="edit_note"
                             label="Bearbeiten"
-                            elevated="true"
+                            role="secondary"
                         />
                     </div>
                 </>
