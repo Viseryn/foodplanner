@@ -3,15 +3,16 @@
  *************************************/
     
 import React, { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { InputRow } from '../../components/form/Input';
 import { TextareaRow } from '../../components/form/Textarea';
 import { SliderRow } from '../../components/form/Slider';
-import Button, { SubmitButton } from '../../components/ui/Buttons';
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
+import IconButton from '../../components/ui/Buttons/IconButton';
+import Button from '../../components/ui/Buttons/Button';
 
 /**
  * EditRecipe
@@ -277,7 +278,18 @@ export default function EditRecipe(props) {
                 </>
             ) : (
                 <>
-                    <Heading>{recipe?.title}</Heading>
+                    <div className="flex justify-start items-start">
+                        <div className="flex justify-between">
+                            <Link to={'/recipe/' + recipe?.id}>
+                                <IconButton style="mr-4">
+                                    arrow_back
+                                </IconButton>
+                            </Link>
+                        </div>
+
+                        <Heading>{recipe?.title}</Heading>
+                    </div>
+
                     <form 
                         className="max-w-[400px] md:max-w-[900px]"
                         onSubmit={handleSubmit}
@@ -398,25 +410,30 @@ export default function EditRecipe(props) {
                             />
                         </div>
 
-                        <div className="flex justify-end mb-6">
+                        <div className="flex justify-between">
                             <Button
                                 onClick={() => deleteRecipe(recipe?.id)}
                                 icon="delete"
                                 label="Rezept löschen"
-                                style="transparent"
+                                role="tertiary"
                             />
+                            <div className="hidden md:block">
+                                <Button
+                                    type="submit"
+                                    icon="edit_note" 
+                                    label="Speichern" 
+                                    elevated={true}
+                                />
+                            </div>
                         </div>
-                        <div className="flex justify-end gap-4">
+
+                        <div className="flex justify-end gap-4 md:hidden">
                             <Button
-                                to={'/recipe/' + recipe?.id}
-                                icon="redo"
-                                label="Zurück"
-                                style="transparent"
-                            />
-                            <SubmitButton 
+                                type="submit"
                                 icon="edit_note" 
                                 label="Speichern" 
                                 elevated={true}
+                                floating={true}
                             />
                         </div>
                     </form>

@@ -9,7 +9,7 @@ import axios from 'axios';
 import { InputRow } from '../../components/form/Input';
 import { TextareaRow } from '../../components/form/Textarea';
 import { SliderRow } from '../../components/form/Slider';
-import Button, { SubmitButton } from '../../components/ui/Buttons';
+import Button from '../../components/ui/Buttons/Button';
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 
@@ -177,17 +177,13 @@ export default function AddRecipe(props) {
                             />
                         </div>
 
-                        <div className="flex justify-end gap-4">
+                        <div className="flex justify-end gap-4 mb-10 md:mb-0">
                             <Button
-                                to="/recipes"
-                                icon="redo"
-                                label="Zurück"
-                                style="transparent"
-                            />
-                            <SubmitButton 
+                                type="submit"
                                 icon="post_add" 
                                 label="Speichern" 
                                 elevated={true}
+                                floating={true}
                             />
                         </div>
                     </form>

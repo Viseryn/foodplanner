@@ -8,7 +8,7 @@ import axios from 'axios';
 
 import Heading, { SubHeading } from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/IconButton';
+import IconButton from '../../components/ui/Buttons/IconButton';
  
 /**
  * Settings

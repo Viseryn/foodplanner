@@ -9,7 +9,8 @@ import axios from 'axios';
 import Heading, { SubHeading } from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 import { InputLabel, InputRow } from '../../components/form/Input';
-import Button, { SubmitButton } from '../../components/ui/Buttons';
+import Button from '../../components/ui/Buttons/Button';
+import IconButton from '../../components/ui/Buttons/IconButton';
 
 /**
  * AddGroup
@@ -84,15 +85,25 @@ export default function AddGroup(props) {
             {isSubmitted && <Navigate to={'/settings'} />}
 
             <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
-                <Heading>Einstellungen</Heading>
-
                 {isLoadingSubmit ? (
                     <Spinner />
                 ) : (
                     <>
-                        <SubHeading>Neue Benutzergruppe hinzufügen</SubHeading>
-                        <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                            Hier kannst du eine neue Benutzergruppen hinzufügen.
+                        <div className="flex justify-start items-start">
+                            <div className="flex justify-between">
+                                <Link to="/settings">
+                                    <IconButton style="mr-4">
+                                        arrow_back
+                                    </IconButton>
+                                </Link>
+                            </div>
+
+                            <Heading>Neue Benutzergruppe hinzufügen</Heading>
+                        </div>
+                        
+                        <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
+                            Hier kannst du eine neue Benutzergruppen hinzufügen. Die Liste von 
+                            Material Symbols findest du <a target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 transition duration-300" href="https://fonts.google.com/icons?icon.style=Rounded&icon.set=Material+Symbols">hier</a>.
                         </p>
 
                         <form name="user_group" onSubmit={handleSubmit}>
@@ -139,12 +150,7 @@ export default function AddGroup(props) {
 
                             <div className="flex justify-end gap-4">
                                 <Button
-                                    to="/settings"
-                                    icon="redo"
-                                    label="Zurück"
-                                    style="transparent"
-                                />
-                                <SubmitButton 
+                                    type="submit" 
                                     icon="group_add" 
                                     label="Hinzufügen" 
                                     elevated={true}
