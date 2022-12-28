@@ -11,6 +11,7 @@ import Spinner from '../../components/ui/Spinner';
 import { InputLabel, InputRow } from '../../components/form/Input';
 import Button from '../../components/ui/Buttons/Button';
 import IconButton from '../../components/ui/Buttons/IconButton';
+import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
 
 /**
  * AddGroup
@@ -89,17 +90,7 @@ export default function AddGroup(props) {
                     <Spinner />
                 ) : (
                     <>
-                        <div className="flex justify-start items-start">
-                            <div className="flex justify-between">
-                                <Link to="/settings">
-                                    <IconButton style="mr-4">
-                                        arrow_back
-                                    </IconButton>
-                                </Link>
-                            </div>
-
-                            <Heading>Neue Benutzergruppe hinzufügen</Heading>
-                        </div>
+                        <HeadingAndBackButton location="/settings">Neue Benutzergruppe hinzufügen</HeadingAndBackButton>
                         
                         <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
                             Hier kannst du eine neue Benutzergruppen hinzufügen. Die Liste von 
@@ -148,12 +139,13 @@ export default function AddGroup(props) {
                                 </select>
                             </div>
 
-                            <div className="flex justify-end gap-4">
+                            <div className="flex justify-end">
                                 <Button
                                     type="submit" 
                                     icon="group_add" 
                                     label="Hinzufügen" 
                                     elevated={true}
+                                    floating={true}
                                 />
                             </div>
                         </form>

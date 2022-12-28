@@ -8,8 +8,8 @@ import axios from 'axios';
 
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/IconButton';
-import Button from '../../components/ui/Buttons';
+import IconButton from '../../components/ui/Buttons/IconButton';
+import Button from '../../components/ui/Buttons/Button';
 
 /**
  * Planner
@@ -140,7 +140,7 @@ export default function Planner(props) {
                                 {day.weekday}, {day.date}
                             </Link>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                                 {day.meals.map(meal =>
                                     <div key={meal.id} className="h-40 w-full rounded-2xl shadow-md hover:shadow-2xl transition duration-300">
                                         <div className="relative group">
@@ -180,12 +180,12 @@ export default function Planner(props) {
                         </React.Fragment>
                     )}
 
-                    <div className="flex justify-end">
+                    <div className="flex justify-start">
                         <Button 
-                            to="/planner/add"
-                            label="Neue Mahlzeit hinzufügen"
+                            location="/planner/add"
+                            label="Neue Mahlzeit"
                             icon="add"
-                            elevated="true"
+                            role="secondary"
                         />
                     </div>
                 </>

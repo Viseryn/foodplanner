@@ -10,8 +10,8 @@ import generateDisplayName from '../../util/generateDisplayName';
 import AddItemInputWidget from './components/AddItemInputWidget'
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/IconButton';
-import Button from '../../components/ui/Buttons';
+import IconButton from '../../components/ui/Buttons/IconButton';
+import Button from '../../components/ui/Buttons/Button';
 
 /**
  * ShoppingList

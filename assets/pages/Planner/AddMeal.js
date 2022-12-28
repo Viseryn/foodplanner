@@ -9,8 +9,8 @@ import axios from 'axios';
 import { InputLabel } from '../../components/form/Input';
 import { RadioWidget } from '../../components/form/Radio';
 import { SelectWidget } from '../../components/form/Select';
-import Button, { SubmitButton } from '../../components/ui/Buttons';
-import Heading from '../../components/ui/Heading';
+import Button from '../../components/ui/Buttons/Button';
+import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
 import Spinner from '../../components/ui/Spinner';
 
 /**
@@ -78,7 +78,7 @@ export default function AddMeal(props) {
         <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             {isSubmitted && <Navigate to={'/planner'} />}
 
-            <Heading>Mahlzeit hinzufügen</Heading>
+            <HeadingAndBackButton location="/planner">Mahlzeit hinzufügen</HeadingAndBackButton>
 
             {isLoadingSubmit ? (
                 <Spinner />
@@ -148,18 +148,14 @@ export default function AddMeal(props) {
                         )}
                     </div>
 
-                    <div className="flex justify-end gap-4">
-                        <Button
-                            to="/planner"
-                            icon="redo"
-                            label="Zurück"
-                            style="transparent"
-                        />
+                    <div className="flex justify-end">
                         {!props.isLoadingDays && !props.isLoadingRecipes && !props.isLoadingUserGroups && !props.isLoadingMealCategories &&
-                            <SubmitButton 
+                            <Button
+                                type="submit"
                                 icon="add" 
                                 label="Speichern" 
                                 elevated={true}
+                                floating={true}
                             />
                         }
                     </div> 

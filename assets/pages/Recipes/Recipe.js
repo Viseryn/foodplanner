@@ -188,7 +188,7 @@ export default function Recipe(props) {
                     }
 
                     {recipe?.instructions?.length > 0 &&
-                        <div className="mb-6">
+                        <div className="mb-10">
                             <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-5 rounded-xl">
                                 Zubereitung
                             </div>
@@ -209,13 +209,14 @@ export default function Recipe(props) {
                         </div>
                     }
 
-                    <div className="flex justify-end gap-4 mt-auto">
+                    <div className="flex flex-col md:flex-row items-start justify-end gap-4 mt-auto ">
                         {props.settings.showPantry &&
                             <Button
                                 icon={showPantryButton ? 'add_home' : 'done'}
                                 label={showPantryButton ? 'Zum Vorrat' : 'Erledigt!'}
                                 onClick={handleAddPantry}
-                                role="tertiary"
+                                role="secondary"
+                                small={true}
                             />
                         }
                         <Button
@@ -223,6 +224,7 @@ export default function Recipe(props) {
                             icon="edit_note"
                             label="Bearbeiten"
                             role="secondary"
+                            small={true}
                         />
                     </div>
                 </>

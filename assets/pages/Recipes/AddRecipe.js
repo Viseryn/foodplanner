@@ -3,7 +3,7 @@
  ************************************/
 
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { InputRow } from '../../components/form/Input';
@@ -12,6 +12,8 @@ import { SliderRow } from '../../components/form/Slider';
 import Button from '../../components/ui/Buttons/Button';
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
+import IconButton from '../../components/ui/Buttons/IconButton';
+import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
 
 /**
  * AddRecipe
@@ -112,7 +114,8 @@ export default function AddRecipe(props) {
                 <Spinner />
             ) : (
                 <>
-                    <Heading>Rezept hinzufügen</Heading>
+                    <HeadingAndBackButton location="/recipes">Rezept hinzufügen</HeadingAndBackButton>
+
                     <form 
                         className="max-w-[400px] md:max-w-[900px]"
                         onSubmit={handleSubmit}

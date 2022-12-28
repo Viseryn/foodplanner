@@ -10,8 +10,8 @@ import generateDisplayName from '../../util/generateDisplayName';
 import AddItemInputWidget from './components/AddItemInputWidget'
 import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/IconButton';
-import Button from '../../components/ui/Buttons';
+import IconButton from '../../components/ui/Buttons/IconButton';
+import Button from '../../components/ui/Buttons/Button';
 
 /**
  * Pantry
@@ -343,7 +343,6 @@ export default function Pantry(props) {
 
                 {/* Delete and update buttons */}
                 <div>
-                    <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
                     <IconButton onClick={() => props.setLoadingPantry(true)}>sync</IconButton>
                 </div>
             </div>
@@ -399,20 +398,30 @@ export default function Pantry(props) {
                             </div>
                         )}
                     </div>
-                    
+
                     {props.pantry.length > 1 &&
                         <div className="flex justify-end gap-4 mt-6">
                             <Button
                                 onClick={handleSort}
                                 label="Sortieren"
-                                icon="sort_by_alpha"
-                                style="transparent"
+                                icon="sort"
+                                role="secondary"
+                                small={true}
                             />
                             <Button
                                 onClick={handleCombine}
                                 label="Zusammenfassen"
                                 icon="low_priority"
-                                elevated={true}
+                                role="secondary"
+                                small={true}
+                            />
+                            <Button
+                                onClick={handleDeleteAll}
+                                title="Alle Zutaten löschen"
+                                icon="delete_forever"
+                                outlined={true}
+                                role="secondary"
+                                small={true}
                             />
                         </div>
                     }
