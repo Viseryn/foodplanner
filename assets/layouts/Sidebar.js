@@ -221,9 +221,10 @@ function SidebarContent(props) {
                     />
                 }
             </ul>
-                
-            <ul className="md:hidden">
-                <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
+            
+            {/* Sidebar Action Button for mobile is floating and hidden on larger screens */}
+            <ul className="fixed bottom-24 right-6 md:hidden">
+                <SidebarActionButton floating={true} sidebarActionButton={props.sidebarActionButton} />
             </ul>
         </>
     );
@@ -274,17 +275,44 @@ function SidebarDrawerButton(props) {
  * @property {?function} onClickHandler An optional onClickHandler for the SAB.
  * @property {string} icon The icon of the SAB.
  * @property {string} label The label of the SAB.
+ * @property {?boolean} floating If true, the SAB will be displayed extended and floating in the bottom-right corner.
  * 
  * @example 
  * <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
  */
 function SidebarActionButton(props) {
-    let SABbaseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14 w-14 xl:w-auto';
-    let SABinvisibleStyle = SABbaseStyle + ' text-transparent bg-transparent cursor-default';
+    let SABbaseStyle = 'flex items-center p-4 rounded-2xl transition duration-300 h-14 xl:w-auto' + (props.floating ? ' w-auto fixed bottom-24 right-6 shadow-xl' : ' w-14');
+    let SABinvisibleStyle = SABbaseStyle + ' hidden';
     let SABvisibleStyle = SABbaseStyle + ' text-gray-900 dark:text-gray-300 bg-pink-300 dark:bg-pink-800 hover:bg-pink-400 dark:hover:bg-pink-600 active:bg-pink-500 active:scale-90';
 
+    /**
+     * Helpers for visibility of SAB label on mobile
+     */
+    const [isVisible, setVisible] = useState(true);
+    const [scrollY, setScrollY] = useState(0);
+  
+    useEffect(() => {   
+      window.addEventListener("scroll", listenToScroll);
+      return () => window.removeEventListener("scroll", listenToScroll); 
+    }, []);
+
+    const listenToScroll = () => {
+        const heightToHideFrom = 1; // Removes label of SAB after scrolling past 1px
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        setScrollY(winScroll);
+
+        if (winScroll > heightToHideFrom) {  
+            isVisible && setVisible(false);
+        } else {
+            setVisible(true);
+        }  
+    };
+
+    /**
+     * Render
+     */
     return (
-        <li className="sidebar-action-button">
+        <li className="sidebar-action-button h-14">
             <Link 
                 to={props.sidebarActionButton?.path}
                 className={props.sidebarActionButton?.visible ? SABvisibleStyle : SABinvisibleStyle}
@@ -297,7 +325,7 @@ function SidebarActionButton(props) {
                         : ''
                     }
                 </span>
-                <div className="hidden xl:block w-full ml-4 font-semibold">{props.sidebarActionButton?.label}</div>
+                <div className={(props.floating && isVisible ? '' : 'hidden ') + 'xl:block w-full ml-4 font-semibold'}>{props.sidebarActionButton?.label}</div>
             </Link>
         </li>
     );
