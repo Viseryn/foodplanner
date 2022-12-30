@@ -134,15 +134,16 @@ export default function Planner(props) {
                 <Spinner />
             ) : (
                 <>
-                    {props.days.map(day =>
+                    {props.days.map((day, index) =>
                         <React.Fragment key={day.id}>
-                            <Link to={'/planner/add/' + day.id} className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-4 block">
-                                {day.weekday}, {day.date}
-                            </Link>
+                            <div className="text-xl font-semibold text-blue-600 dark:text-gray-100 mb-4 -block flex -justify-center md:justify-start">
+                                    <span>{day.weekday},&nbsp;</span>
+                                    <span>{day.date}</span>
+                            </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                 {day.meals.map(meal =>
-                                    <div key={meal.id} className="h-40 w-full rounded-2xl shadow-md hover:shadow-2xl transition duration-300">
+                                    <div key={meal.id} className="h-40 w-full rounded-2xl transition duration-300">
                                         <div className="relative group">
                                             <img 
                                                 className="rounded-2xl h-40 w-full object-cover brightness-[.7]" 
@@ -171,23 +172,18 @@ export default function Planner(props) {
                                     </div>
                                 )}
 
-                                {day.meals.length == 0 &&
-                                    <span className="text-gray-400">
-                                        <Link to={'/planner/add/' + day.id}>Noch nichts geplant!</Link>
-                                    </span>
-                                }
+                                <Link 
+                                    to={'/planner/add/' + day.id} 
+                                    className={(day.meals.length > 0 ? 'h-14 md:h-40' : 'h-40') + ' w-full rounded-2xl transition duration-300 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-100 dark:hover:bg-[#1D252C]/[.5] font-semibold text-lg flex justify-center items-center flex-row md:flex-col gap-4' + (index === props.days.length - 1 ? '' : ' mb-10')}
+                                >
+                                    <span className="material-symbols-rounded">add</span>
+                                    <span>Neue Mahlzeit</span>
+                                </Link>
                             </div>
                         </React.Fragment>
                     )}
 
-                    <div className="flex justify-start">
-                        <Button 
-                            location="/planner/add"
-                            label="Neue Mahlzeit"
-                            icon="add"
-                            role="secondary"
-                        />
-                    </div>
+                    <div className="pb-20 md:pb-0" />
                 </>
             )}
         </div>
