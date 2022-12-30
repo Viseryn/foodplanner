@@ -339,7 +339,7 @@ export default function ShoppingList(props) {
         swal({
             dangerMode: true,
             icon: 'error',
-            title: 'Wirklich alle Einträge löschen?',
+            title: 'Wirklich alle Zutaten löschen?',
             buttons: {
                 cancel: 'Abbrechen',
                 confirm: 'Löschen',
@@ -391,7 +391,7 @@ export default function ShoppingList(props) {
      * Render
      */
     return (
-        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
+        <div className="flex flex-col px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             <div className="flex justify-between items-start">
                 <Heading>Einkaufsliste</Heading>
 
@@ -463,27 +463,26 @@ export default function ShoppingList(props) {
                         )}
                     </div>
 
-                    <div className={'flex justify-end gap-4' + (props.shoppingList.length >= 1 ? ' mt-6' : '')}>
-                        {props.shoppingList.length >= 1 &&
-                            <>
-                                {props.settings.showPantry &&
-                                    <Button
-                                        onClick={handlePantryCombine}
-                                        label="Vorräte"
-                                        icon="cell_merge"
-                                        style="transparent"
-                                    />
-                                }
-                                
+                    {props.shoppingList.length >= 1 &&
+                        <div className="flex flex-col items-end justify-end gap-4 mt-auto pt-6 pb-20 md:pb-0">
+                            {props.settings.showPantry && props.pantry.length > 0 &&
                                 <Button
-                                    onClick={handleCombine}
-                                    label="Zusammenfassen"
-                                    icon="low_priority"
-                                    elevated={true}
+                                    onClick={handlePantryCombine}
+                                    label="Vorräte verrechnen"
+                                    icon="cell_merge"
+                                    role="tertiary"
+                                    small={true}
                                 />
-                            </>
-                        }
-                    </div>
+                            }
+                            <Button
+                                onClick={handleCombine}
+                                icon="low_priority"
+                                label="Zutaten zusammenfassen"
+                                role="tertiary"
+                                small={true}
+                            />
+                        </div>
+                    }
                 </>
             )}
         </div>

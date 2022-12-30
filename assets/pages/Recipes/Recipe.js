@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import Heading from '../../components/ui/Heading';
+import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
 import TextParagraph from '../../components/skeleton/TextParagraph';
 import IconButton from '../../components/ui/Buttons/IconButton';
 import Button from '../../components/ui/Buttons/Button';
@@ -126,7 +127,12 @@ export default function Recipe(props) {
                     <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2"></div>
                 </div>
                 : <div className="flex justify-between items-start">
-                    <Heading>{recipe?.title}</Heading>
+                    <div className="hidden lg:block">
+                        <Heading>{recipe?.title}</Heading>
+                    </div>
+                    <div className="lg:hidden">
+                        <HeadingAndBackButton location="/recipes">{recipe?.title}</HeadingAndBackButton>
+                    </div>
 
                     <div className="flex justify-between">
                         <Link to="/recipes">
@@ -213,17 +219,19 @@ export default function Recipe(props) {
                         {props.settings.showPantry &&
                             <Button
                                 icon={showPantryButton ? 'add_home' : 'done'}
+                                outlined={true}
                                 label={showPantryButton ? 'Zum Vorrat' : 'Erledigt!'}
                                 onClick={handleAddPantry}
-                                role="secondary"
+                                role="tertiary"
                                 small={true}
                             />
                         }
                         <Button
                             location={`/recipe/${recipe?.id}/edit`}
-                            icon="edit_note"
+                            icon="edit"
+                            outlined={true}
                             label="Bearbeiten"
-                            role="secondary"
+                            role="tertiary"
                             small={true}
                         />
                     </div>

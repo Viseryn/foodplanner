@@ -337,12 +337,15 @@ export default function Pantry(props) {
      * Render
      */
     return (
-        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
+        <div className="flex flex-col px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             <div className="flex justify-between items-start">
                 <Heading>Vorratskammer</Heading>
 
                 {/* Delete and update buttons */}
                 <div>
+                    {props.pantry.length > 0 && 
+                        <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
+                    }
                     <IconButton onClick={() => props.setLoadingPantry(true)}>sync</IconButton>
                 </div>
             </div>
@@ -392,35 +395,25 @@ export default function Pantry(props) {
 
                                 <div className="flex gap-2">
                                     <IconButton onClick={() => handleDeleteItem(item.id)} outlined={true}>delete_sweep</IconButton>
-                                    <IconButton onClick={() => handlePositionChange(item.id, -1)}>expand_less</IconButton>
-                                    <IconButton onClick={() => handlePositionChange(item.id, 1)}>expand_more</IconButton>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {props.pantry.length > 1 &&
-                        <div className="flex justify-end gap-4 mt-6">
+                    {props.pantry.length > 0 &&
+                        <div className="flex flex-col items-end justify-end gap-4 mt-auto pt-6 -pb-20 md:pb-0">
                             <Button
                                 onClick={handleSort}
                                 label="Sortieren"
                                 icon="sort"
-                                role="secondary"
+                                role="tertiary"
                                 small={true}
                             />
                             <Button
                                 onClick={handleCombine}
-                                label="Zusammenfassen"
+                                label="Zutaten sammenfassen"
                                 icon="low_priority"
-                                role="secondary"
-                                small={true}
-                            />
-                            <Button
-                                onClick={handleDeleteAll}
-                                title="Alle Zutaten löschen"
-                                icon="delete_forever"
-                                outlined={true}
-                                role="secondary"
+                                role="tertiary"
                                 small={true}
                             />
                         </div>
