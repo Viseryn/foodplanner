@@ -242,16 +242,18 @@ export default function Recipe(props) {
                                                 outlined={true}
                                                 role="tertiary"
                                             />
-                                            <Button
-                                                style={'pantry-' + ingredient.id} 
-                                                onClick={() => { 
-                                                    handleAddSingleToPantry(ingredient); 
-                                                    document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done"; 
-                                                }}
-                                                icon="add_home"
-                                                outlined={true}
-                                                role="tertiary"
-                                            />
+                                            {props.settings.showPantry &&
+                                                <Button
+                                                    style={'pantry-' + ingredient.id} 
+                                                    onClick={() => { 
+                                                        handleAddSingleToPantry(ingredient); 
+                                                        document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done"; 
+                                                    }}
+                                                    icon="add_home"
+                                                    outlined={true}
+                                                    role="tertiary"
+                                                />
+                                            }
                                         </div>
                                     </div>
                                 )}
