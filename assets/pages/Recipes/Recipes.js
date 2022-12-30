@@ -145,7 +145,7 @@ export default function Recipes(props) {
             {/* The first column is always shown when no Recipe is chosen.
                 If a Recipe is chosen, it is only shown on lg-screens or larger. */}
             <div className={
-                'px-6 md:pl-0 pt-6 pb-[6.5rem] md:pb-6 w-full min-h-screen bg-white dark:bg-[#29353f] md:bg-transparent '
+                'px-6 md:pl-0 pt-6 pb-[11.5rem] md:pb-6 w-full min-h-screen bg-white dark:bg-[#29353f] md:bg-transparent '
                 + (isTwoColumns
                     ? 'hidden lg:block max-w-[400px]'
                     : 'max-w-[900px]'
