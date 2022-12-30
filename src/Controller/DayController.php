@@ -56,6 +56,7 @@ class DayController extends AbstractController
                         ],
                     ],
                     'user_group' => (string) $meal->getUserGroup(),
+                    'user_group_icon' => $meal->getUserGroup()->getIcon(),
                 ];
 
                 $j++;

@@ -141,7 +141,7 @@ export default function Planner(props) {
                                     <span>{day.date}</span>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {day.meals.map(meal =>
                                     <div key={meal.id} className="h-40 w-full rounded-2xl transition duration-300">
                                         <div className="relative group">
@@ -157,9 +157,15 @@ export default function Planner(props) {
                                                 to={'/recipe/' + meal.recipe.id} 
                                                 className="absolute w-full bottom-4 px-6 text-white font-semibold"
                                             >
-                                                <div className="text-xl">{meal.recipe.title}</div>
-                                                <div className="text-md">{meal.user_group}</div>
-                                                <div className="text-sm">{meal.meal_category.name}</div>
+                                                <div className="text-xl mr-4">{meal.recipe.title}</div>
+                                                <div className="text-md flex items-center mt-2">
+                                                    <span className="material-symbols-rounded mr-2">{meal.user_group_icon}</span>
+                                                    <span>{meal.user_group}</span>
+                                                </div>
+                                                <div className="text-md flex items-center mt-2">
+                                                    <span className="material-symbols-rounded mr-2">{meal.meal_category.icon}</span>
+                                                    <span>{meal.meal_category.name}</span>
+                                                </div>
                                             </Link>
                                             <span 
                                                 onClick={() => deleteMeal(meal.id)}
