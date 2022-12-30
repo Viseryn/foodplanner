@@ -104,7 +104,7 @@ export default function AddRecipe(props) {
      * Render
      */
     return (
-        <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
+        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
             {/* If the form is submitted, redirect to the new recipe */}
             {isSubmittedSuccessfully && !props.isLoadingRecipes &&
                 <Navigate to={'/recipe/' + newId} />

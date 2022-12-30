@@ -75,7 +75,7 @@ export default function AddMeal(props) {
      * Render
      */
     return (
-        <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
+        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
             {isSubmitted && <Navigate to={'/planner'} />}
 
             <HeadingAndBackButton location="/planner">Mahlzeit hinzufügen</HeadingAndBackButton>
