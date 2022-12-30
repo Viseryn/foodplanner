@@ -157,10 +157,10 @@ export default function Recipes(props) {
                 </div>
 
                 {/* Search bar */}
-                <div className="mb-4 rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] md:dark:bg-[#29353f] shadow-md md:shadow-none h-16 flex items-center pl-6 pr-4">
-                    <span className="material-symbols-rounded mr-2 cursor-default">search</span>
+                <div className="mb-4 rounded-full font-semibold bg-blue-100 md:bg-white dark:bg-[#1D252C] md:dark:bg-[#29353f] h-14 flex items-center pl-6 pr-4">
+                    <span className="text-blue-600 md:text-gray-900 dark:text-gray-100 md:dark:text-gray-100 material-symbols-rounded mr-2 cursor-default">search</span>
                     <input 
-                        className="dark:bg-[#1D252C] md:dark:bg-[#29353f] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
+                        className="text-blue-600 dark:text-gray-100 md:dark:text-gray-100 md:text-gray-900 placeholder-blue-500 md:placeholder-gray-400 bg-blue-100 md:bg-white dark:bg-[#1D252C] md:dark:bg-[#29353f] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
                         placeholder='Suche nach Rezepten ...'
                         id='search'
                         name='search'
@@ -172,7 +172,7 @@ export default function Recipes(props) {
                     />
                     {searchValue !== '' &&
                         <span 
-                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-gray-200 dark:md:hover:bg-[#232325] dark:hover:bg-[#29353f] p-2 rounded-full"
+                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-blue-300 md:hover:bg-gray-200 dark:md:hover:bg-[#232325] dark:hover:bg-[#29353f] p-2 rounded-full"
                             onClick={() => setSearchValue('')}
                         >close</span>
                     }
