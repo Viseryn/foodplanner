@@ -111,7 +111,7 @@ const buttonStyle = ({
         noLabel: 'p-2',
         elevated: 'shadow-lg active:shadow-xl',
         elevatedTertiary: 'border border-gray-100 dark:border-[#252f38]',
-        floating: 'fixed bottom-[96px] z-[60] md:relative md:bottom-0',
+        floating: 'fixed bottom-[6.5rem] z-[60] md:relative md:bottom-0',
         small: 'h-10 px-3 -text-sm',
     };
 
