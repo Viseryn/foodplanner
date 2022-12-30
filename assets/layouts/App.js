@@ -9,7 +9,7 @@ import axios from "axios";
 import loadShoppingList from "../util/loadShoppingList";
 import loadPantry from "../util/loadPantry.js";
 
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar/Sidebar';
 import AuthChecker from "./AuthChecker";
 
 import Planner from '../pages/Planner/Planner';
