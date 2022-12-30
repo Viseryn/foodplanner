@@ -109,7 +109,7 @@ const buttonStyle = ({
         tertiary: 'text-blue-600 dark:text-blue-300 hover:bg-gray-100 dark:hover:bg-[#1D252C] active:bg-gray-200 active:text-blue-800',
         withLabel: 'h-12 px-4 text-base',
         noLabel: 'p-2',
-        elevated: 'shadow-md active:shadow-xl',
+        elevated: 'shadow-lg active:shadow-xl',
         elevatedTertiary: 'border border-gray-100 dark:border-[#252f38]',
         floating: 'fixed bottom-[96px] z-[60] md:relative md:bottom-0',
         small: 'h-10 px-3 -text-sm',
