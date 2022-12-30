@@ -258,7 +258,7 @@ function SidebarContent(props) {
             </ul>
             
             {/* Sidebar Action Button for mobile is floating and hidden on larger screens */}
-            <ul className="fixed bottom-24 right-6 md:hidden">
+            <ul className="fixed bottom-[6.5rem] right-6 md:hidden">
                 <SidebarActionButton floating={true} sidebarActionButton={props.sidebarActionButton} />
             </ul>
         </>
