@@ -123,7 +123,7 @@ export default function Planner(props) {
      * Render
      */
     return (
-        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
+        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-fit md:min-w-[450px] md:max-w-[900px]">
             <div className="flex justify-between items-start">
                 <Heading>Wochenplan</Heading>
 
@@ -136,7 +136,7 @@ export default function Planner(props) {
                 <>
                     {props.days.map((day, index) =>
                         <React.Fragment key={day.id}>
-                            <div className="text-xl font-semibold text-blue-600 dark:text-gray-100 mb-4 -block flex -justify-center md:justify-start">
+                            <div className="text-xl font-semibold text-blue-600 dark:text-gray-100 mb-4 flex md:justify-start">
                                     <span>{day.weekday},&nbsp;</span>
                                     <span>{day.date}</span>
                             </div>
