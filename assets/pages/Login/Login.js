@@ -98,12 +98,13 @@ export default function Login(props) {
                         </div>
                     }
 
-                    <div className="flex justify-end mt-6">
+                    <div className="mt-6">
                         <Button
                             location="/planner"
                             icon="date_range"
                             label="Zum Wochenplan"
                             elevated={true}
+                            style="flex justify-center"
                         />
                     </div>
                 </>
