@@ -41,6 +41,7 @@ export default function Recipe(props) {
     const [showButton, setShowButton] = useState(true);
     const [showPantryButton, setShowPantryButton] = useState(true);
     const [recipe, setRecipe] = useState([]);
+    const [tmpRecipe, setTmpRecipe] = useState([]);
     const [portionSize, setPortionSize] = useState(0);
 
     /**
@@ -78,6 +79,35 @@ export default function Recipe(props) {
         setShowPantryButton(false);
     };
 
+    /**
+     * Calculate the ingredient quantities depending on selected portionSize
+     */
+    useEffect(() => {
+        if(props.isLoadingRecipes) return;
+
+        let newRecipe = {...recipe};
+        newRecipe.ingredients = [];
+        newRecipe.portion_size = portionSize;
+
+        recipe?.ingredients?.forEach(ingredient => {
+            let newIngredient = {...ingredient};
+
+            newIngredient['quantity_value'] = (ingredient.quantity_value === '1/2' ? 0.5 : ingredient.quantity_value) / recipe.portion_size * portionSize;
+
+            if (newIngredient.quantity_value === 0.5) {
+                newIngredient.quantity_value = '1/2';
+            } else if (newIngredient.quantity_value === 0) {
+                newIngredient.quantity_value = '';
+            }
+
+            newRecipe.ingredients.push(newIngredient);
+        });
+
+        // Set the new calculated recipe in tmpRecipe.
+        // This does NOT trigger a reassignment of portionSize.
+        setTmpRecipe(newRecipe);
+    }, [portionSize]);
+    
     /** 
      * Load sidebar
      */
@@ -106,18 +136,21 @@ export default function Recipe(props) {
                     ),
                 onClickHandler: handleAddShoppingList,
             });
-
-            setPortionSize(recipe.portion_size);
         }
     }, [recipe, showButton, buttonCounter]);
 
     /**
      * Put the selected recipe in a local state 
-     * variable as an abbreviation.
+     * variable as an abbreviation. A copy is also 
+     * stored in tmpRecipe.
      */
     useEffect(() => {
         setRecipe(props.recipes[props.recipeIndex]);
-    });
+        setTmpRecipe(props.recipes[props.recipeIndex]);
+        
+        // Set initial portion size
+        setPortionSize(recipe?.portion_size);
+    }, [props.recipeIndex, recipe]);
 
     /**
      * Render
@@ -178,14 +211,9 @@ export default function Recipe(props) {
                     {recipe?.ingredients?.length > 0 &&
                         <div className="mb-10">
                             <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-3 rounded-xl">
-                                {/* Zutaten für 
-                                {recipe?.portion_size == 1 
-                                    ? ' eine Portion'
-                                    : ' ' + recipe?.portion_size + ' Portionen'
-                                } */}
                                 Zutaten für 
                                 <select
-                                    className="dark:placeholder-gray-400 dark:bg-[#1D252C] border border-gray-300 dark:border-none rounded-full h-10 w-20 mx-4 px-6 shadow-sm dark:shadow-md transition duration-300 focus:border-blue-600"
+                                    className="dark:placeholder-gray-400 dark:bg-[#323a41] border border-gray-400 dark:border-none rounded-full h-10 w-20 mx-4 px-6 shadow-sm dark:shadow-md transition duration-300 focus:border-blue-600"
                                     value={portionSize}
                                     onChange={e => setPortionSize(e.target.value)}
                                 >
@@ -201,7 +229,7 @@ export default function Recipe(props) {
                                 {portionSize == 1 ? 'Portion' : 'Portionen'}
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2">
-                                {recipe?.ingredients.map(ingredient =>
+                                {tmpRecipe?.ingredients.map(ingredient =>
                                     <div key={ingredient.id} className="px-6 pt-2">
                                         {(ingredient.quantity_value ?? '')
                                             + ' ' + (ingredient.quantity_unit ?? '')
