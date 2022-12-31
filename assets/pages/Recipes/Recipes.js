@@ -135,7 +135,7 @@ export default function Recipes(props) {
                 window.location = "/error/404";
             }
         }
-    });
+    }, [props.isLoadingRecipes, id]);
     
     /**
      * Render
