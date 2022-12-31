@@ -41,6 +41,7 @@ export default function Recipe(props) {
     const [showButton, setShowButton] = useState(true);
     const [showPantryButton, setShowPantryButton] = useState(true);
     const [recipe, setRecipe] = useState([]);
+    const [portionSize, setPortionSize] = useState(0);
 
     /**
      * handleAddShoppingList
@@ -105,6 +106,8 @@ export default function Recipe(props) {
                     ),
                 onClickHandler: handleAddShoppingList,
             });
+
+            setPortionSize(recipe.portion_size);
         }
     }, [recipe, showButton, buttonCounter]);
 
@@ -175,11 +178,27 @@ export default function Recipe(props) {
                     {recipe?.ingredients?.length > 0 &&
                         <div className="mb-10">
                             <div className="bg-gray-100 dark:bg-[#1D252C] shadow-md font-bold px-6 py-3 mb-3 rounded-xl">
-                                Zutaten für 
+                                {/* Zutaten für 
                                 {recipe?.portion_size == 1 
                                     ? ' eine Portion'
                                     : ' ' + recipe?.portion_size + ' Portionen'
-                                }
+                                } */}
+                                Zutaten für 
+                                <select
+                                    className="dark:placeholder-gray-400 dark:bg-[#1D252C] border border-gray-300 dark:border-none rounded-full h-10 w-20 mx-4 px-6 shadow-sm dark:shadow-md transition duration-300 focus:border-blue-600"
+                                    value={portionSize}
+                                    onChange={e => setPortionSize(e.target.value)}
+                                >
+                                    {[...Array(10)].map((x, index) => 
+                                        <option
+                                            key={index + 1}
+                                            value={index + 1}
+                                        >
+                                            {index + 1}
+                                        </option>
+                                    )}
+                                </select>
+                                {portionSize == 1 ? 'Portion' : 'Portionen'}
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2">
                                 {recipe?.ingredients.map(ingredient =>
