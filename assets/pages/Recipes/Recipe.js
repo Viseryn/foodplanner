@@ -11,6 +11,9 @@ import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
 import TextParagraph from '../../components/skeleton/TextParagraph';
 import IconButton from '../../components/ui/Buttons/IconButton';
 import Button from '../../components/ui/Buttons/Button';
+import loadShoppingList from '../../util/loadShoppingList';
+import generateDisplayName from '../../util/generateDisplayName';
+import loadPantry from '../../util/loadPantry';
 
 /**
  * Recipe
@@ -108,6 +111,46 @@ export default function Recipe(props) {
         setTmpRecipe(newRecipe);
     }, [portionSize]);
     
+    /**
+     * handleAddSingleToShoppingList
+     */
+    const handleAddSingleToShoppingList = (ingredient) => {
+        const newItem = { 
+            name: generateDisplayName(
+                ingredient.quantity_value,
+                ingredient.quantity_unit,
+                ingredient.name,
+            ),
+        };
+
+        axios
+            .post('/api/shoppinglist/ingredients', newItem)
+            .then(() => {
+                loadShoppingList(props.setShoppingList);
+            })
+        ;
+    }
+
+    /**
+     * handleAddSingleToPantry
+     */
+    const handleAddSingleToPantry = (ingredient) => {
+        const newItem = { 
+            name: generateDisplayName(
+                ingredient.quantity_value,
+                ingredient.quantity_unit,
+                ingredient.name,
+            ),
+        };
+
+        axios
+            .post('/api/pantry/ingredients', newItem)
+            .then(() => {
+                loadPantry(props.setPantry);
+            })
+        ;
+    }
+
     /** 
      * Load sidebar
      */
@@ -228,12 +271,37 @@ export default function Recipe(props) {
                                 </select>
                                 {portionSize == 1 ? 'Portion' : 'Portionen'}
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                                 {tmpRecipe?.ingredients.map(ingredient =>
-                                    <div key={ingredient.id} className="px-6 pt-2">
-                                        {(ingredient.quantity_value ?? '')
-                                            + ' ' + (ingredient.quantity_unit ?? '')
-                                            + ' ' + ingredient.name}
+                                    <div key={ingredient.id} className="pl-6 pt-2 flex items-center justify-between">
+                                        <span>
+                                            {generateDisplayName(ingredient.quantity_value, ingredient.quantity_unit, ingredient.name)}
+                                        </span>
+
+                                        <div className="flex flex-row">
+                                            <Button 
+                                                style={'shoppinglist-' + ingredient.id} 
+                                                onClick={() => { 
+                                                    handleAddSingleToShoppingList(ingredient); 
+                                                    document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild.innerHTML = "done"; 
+                                                }}
+                                                icon="add_shopping_cart"
+                                                outlined={true}
+                                                role="tertiary"
+                                            />
+                                            {props.settings.showPantry &&
+                                                <Button
+                                                    style={'pantry-' + ingredient.id} 
+                                                    onClick={() => { 
+                                                        handleAddSingleToPantry(ingredient); 
+                                                        document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done"; 
+                                                    }}
+                                                    icon="add_home"
+                                                    outlined={true}
+                                                    role="tertiary"
+                                                />
+                                            }
+                                        </div>
                                     </div>
                                 )}
                             </div>
