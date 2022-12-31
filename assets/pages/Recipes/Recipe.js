@@ -52,11 +52,9 @@ export default function Recipe(props) {
      * 
      * Handles a click on the "Add to Shopping List" button.
      */
-    const handleAddShoppingList = () => {
-        const recipes = [props.recipes[props.recipeIndex]];
-
+    const handleAddShoppingList = (argRecipe) => {
         axios
-            .post('/api/shoppinglist/add', JSON.stringify(recipes))
+            .post('/api/shoppinglist/add', JSON.stringify([argRecipe]))
             .then(() => props.setLoadingShoppingList(true))
         ;
         
@@ -71,11 +69,9 @@ export default function Recipe(props) {
      * 
      * Handles a click on the "Add to Pantry" button.
      */
-    const handleAddPantry = () => {
-        const recipes = [props.recipes[props.recipeIndex]];
-
+    const handleAddPantry = (argRecipe) => {
         axios
-            .post('/api/pantry/add', JSON.stringify(recipes))
+            .post('/api/pantry/add', JSON.stringify([argRecipe]))
             .then(() => props.setLoadingPantry(true))
         ;
         
@@ -177,10 +173,10 @@ export default function Recipe(props) {
                         ? ' (' + buttonCounter + ')' 
                         : '')
                     ),
-                onClickHandler: handleAddShoppingList,
+                onClickHandler: () => handleAddShoppingList(tmpRecipe),
             });
         }
-    }, [recipe, showButton, buttonCounter]);
+    }, [recipe, showButton, buttonCounter, tmpRecipe]);
 
     /**
      * Put the selected recipe in a local state 
@@ -336,7 +332,7 @@ export default function Recipe(props) {
                                 icon={showPantryButton ? 'add_home' : 'done'}
                                 outlined={true}
                                 label={showPantryButton ? 'Zum Vorrat' : 'Erledigt!'}
-                                onClick={handleAddPantry}
+                                onClick={() => handleAddPantry(tmpRecipe)}
                                 role="tertiary"
                                 small={true}
                             />

@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -123,10 +125,32 @@ class PantryController extends AbstractController
         // Collect all ingredients and combine to a string
         $ingredients = '';
 
-        foreach ($requestContent as $recipeData) {
-            $recipe = $recipeRepository->find($recipeData->id);
-            $ingredients .= $ingredientUtil->ingredientString($recipe->getIngredients());
-            $ingredients .= "\n";
+        // If only one recipe is given, the quantity might have been changed
+        if (count($requestContent) === 1) {
+            // Array for new ingredient objects, since
+            // these are not in the database
+            $ingredientsArr = [];
+
+            // Create a new Ingredient object for each ingredient from the request
+            foreach ($requestContent[0]->ingredients as $rawIngredient) {
+                $ingredientsArr[] = (new Ingredient())
+                    ->setName($rawIngredient->name)
+                    ->setQuantityValue($rawIngredient->quantity_value)
+                    ->setQuantityUnit($rawIngredient->quantity_unit)
+                ;
+            }
+
+            // Create the ingredient string
+            $ingredients .= $ingredientUtil->ingredientString(new ArrayCollection($ingredientsArr));
+        }
+
+        // For multiple recipes, go through all their ingredients
+        if (count($requestContent) > 1) {
+            foreach ($requestContent as $recipeData) {
+                $recipe = $recipeRepository->find($recipeData->id);
+                $ingredients .= $ingredientUtil->ingredientString($recipe->getIngredients());
+                $ingredients .= "\n";
+            }
         }
 
         // Transform data into Ingredient objects
