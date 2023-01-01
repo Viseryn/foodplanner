@@ -152,8 +152,9 @@ export default function AddMeal(props) {
                         {!props.isLoadingDays && !props.isLoadingRecipes && !props.isLoadingUserGroups && !props.isLoadingMealCategories &&
                             <Button
                                 type="submit"
-                                icon="add" 
+                                icon="save" 
                                 label="Speichern" 
+                                outlined={true}
                                 elevated={true}
                                 floating={true}
                             />

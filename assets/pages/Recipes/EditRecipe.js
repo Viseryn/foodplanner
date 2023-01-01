@@ -409,9 +409,10 @@ export default function EditRecipe(props) {
                             <div className="hidden md:block">
                                 <Button
                                     type="submit"
-                                    icon="edit_note" 
+                                    icon="save" 
                                     label="Speichern" 
                                     elevated={true}
+                                    outlined={true}
                                 />
                             </div>
                         </div>
@@ -419,10 +420,11 @@ export default function EditRecipe(props) {
                         <div className="flex justify-end gap-4 md:hidden">
                             <Button
                                 type="submit"
-                                icon="edit_note" 
+                                icon="save" 
                                 label="Speichern" 
                                 elevated={true}
                                 floating={true}
+                                outlined={true}
                             />
                         </div>
                     </form>

@@ -183,9 +183,10 @@ export default function AddRecipe(props) {
                         <div className="flex justify-end gap-4 mb-10 md:mb-0">
                             <Button
                                 type="submit"
-                                icon="post_add" 
+                                icon="save" 
                                 label="Speichern" 
                                 elevated={true}
+                                outlined={true}
                                 floating={true}
                             />
                         </div>
