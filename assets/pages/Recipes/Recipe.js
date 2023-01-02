@@ -14,6 +14,7 @@ import Button from '../../components/ui/Buttons/Button';
 import loadShoppingList from '../../util/loadShoppingList';
 import generateDisplayName from '../../util/generateDisplayName';
 import loadPantry from '../../util/loadPantry';
+import { floatToFraction, fractionToFloat } from '../../util/fractions';
 
 /**
  * Recipe
@@ -91,13 +92,9 @@ export default function Recipe(props) {
         recipe?.ingredients?.forEach(ingredient => {
             let newIngredient = {...ingredient};
 
-            newIngredient['quantity_value'] = (ingredient.quantity_value === '1/2' ? 0.5 : ingredient.quantity_value) / recipe.portion_size * portionSize;
-
-            if (newIngredient.quantity_value === 0.5) {
-                newIngredient.quantity_value = '1/2';
-            } else if (newIngredient.quantity_value === 0) {
-                newIngredient.quantity_value = '';
-            }
+            newIngredient['quantity_value'] = floatToFraction(
+                fractionToFloat(ingredient.quantity_value) / recipe.portion_size * portionSize
+            );
 
             newRecipe.ingredients.push(newIngredient);
         });
