@@ -92,9 +92,7 @@ export default function Recipe(props) {
         recipe?.ingredients?.forEach(ingredient => {
             let newIngredient = {...ingredient};
 
-            newIngredient['quantity_value'] = floatToFraction(
-                fractionToFloat(ingredient.quantity_value) / recipe.portion_size * portionSize
-            );
+            newIngredient['quantity_value'] = fractionToFloat(ingredient.quantity_value) / recipe.portion_size * portionSize;
 
             newRecipe.ingredients.push(newIngredient);
         });
@@ -268,7 +266,7 @@ export default function Recipe(props) {
                                 {tmpRecipe?.ingredients.map(ingredient =>
                                     <div key={ingredient.id} className="pl-6 pt-2 flex items-center justify-between">
                                         <span>
-                                            {generateDisplayName(ingredient.quantity_value, ingredient.quantity_unit, ingredient.name)}
+                                            {generateDisplayName(floatToFraction(ingredient.quantity_value), ingredient.quantity_unit, ingredient.name)}
                                         </span>
 
                                         <div className="flex flex-row">
