@@ -20,7 +20,7 @@ export const fractionToFloat = (fraction) => {
     let integerValue = 0;
     let decimalValue = 0;
 
-    const decimalSplit = fraction.split('/');
+    const decimalSplit = ('' + fraction).split('/');
 
     if (decimalSplit.length > 1) {
         // Check if fraction is mixed
