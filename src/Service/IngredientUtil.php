@@ -95,7 +95,7 @@ class IngredientUtil
             ];
 
             // Find quantity value with regexp
-            preg_match('/^(\d*|\d*\.\d+|\d+\/\d+)(\D+)$/', $ing, $ingData);
+            preg_match('/^(\d*|\d*\.\d+|\d+\/\d+|\d*\s\d+\/\d+)(\D+)$/', $ing, $ingData);
             array_shift($ingData);
 
             // Check if there is a quantity value
