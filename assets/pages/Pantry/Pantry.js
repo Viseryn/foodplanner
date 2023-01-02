@@ -12,6 +12,7 @@ import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 import IconButton from '../../components/ui/Buttons/IconButton';
 import Button from '../../components/ui/Buttons/Button';
+import { floatToFraction, fractionToFloat } from '../../util/fractions';
 
 /**
  * Pantry
@@ -106,9 +107,9 @@ export default function Pantry(props) {
 
                 if (origItem.quantity_unit === item.quantity_unit 
                     && !origItem.checked && !item.checked) {
-                    // Check whether a quantity value is '1/2' and convert to 0.5
-                    if (origItem.quantity_value === '1/2') origItem.quantity_value = 0.5;
-                    if (item.quantity_value === '1/2') item.quantity_value = 0.5;
+                        // Convert fractions to floats
+                        origItem.quantity_value = fractionToFloat(origItem.quantity_value);
+                        item.quantity_value = fractionToFloat(item.quantity_value);
 
                     // If the representative has the same unit 
                     // and both are not checked, add them up.
@@ -124,7 +125,11 @@ export default function Pantry(props) {
 
         // In the list of representative items, generate the display names.
         appearedItems.forEach(item => {
-            item.name = generateDisplayName(item.quantity_value, item.quantity_unit, item.originalName);
+            item.name = generateDisplayName(
+                floatToFraction(item.quantity_value), 
+                item.quantity_unit, 
+                item.originalName
+            );
         });
 
         // Update the state variable

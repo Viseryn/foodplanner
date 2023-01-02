@@ -2,6 +2,7 @@
  * ./assets/util/parseShoppingList.js *
  **************************************/
 
+import { floatToFraction } from "./fractions";
 import generateDisplayName from "./generateDisplayName";
 
 /**
@@ -22,7 +23,7 @@ const parseShoppingList = (items) => {
         // Add quantity to the name field, which will be displayed.
         // The Shopping List Update API will split everything later.
         item.name = generateDisplayName(
-            item.quantity_value, 
+            floatToFraction(item.quantity_value), 
             item.quantity_unit, 
             item.originalName
         );
