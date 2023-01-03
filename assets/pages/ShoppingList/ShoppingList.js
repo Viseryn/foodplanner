@@ -302,7 +302,7 @@ export default function ShoppingList(props) {
     const handleItemNameChange = (event, id) => {
         if (event.target.value.replace(/\s/g, '').length) {
             updateItem(id, {
-                name: event.target.value,
+                name: event.target.value.trim(),
                 editable: false,
             })
         }

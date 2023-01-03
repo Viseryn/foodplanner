@@ -44,7 +44,7 @@ import loadPantry from "../../../util/loadPantry";
 
         // Only accept input if it consists of more than whitespaces
         if (inputValue.replace(/\s/g, '').length) {
-            const newItem = { name: inputValue };
+            const newItem = { name: inputValue.trim() };
 
             // Send new item to database and reload list
             axios
