@@ -15,7 +15,7 @@ module.exports = {
         200: '#1e5200',
       },
       'primary-dark': {
-        100: '#8fda66',
+        100: '#eeffde',
         200: '#1e5200',
       },
       'secondary': {
