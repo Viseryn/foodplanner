@@ -71,7 +71,7 @@ export default function Login(props) {
      */
     return (
         <div className="pb-[6.5rem] md:pb-6 w-full min-w-[400px]">
-            <div className="px-4 pt-4 md:pt-9">
+            <div className="px-6 md:px-4 pt-4 md:pt-9">
                 <Heading>Login</Heading>
             </div>
 
