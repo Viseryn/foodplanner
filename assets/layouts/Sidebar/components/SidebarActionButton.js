@@ -34,8 +34,8 @@ export default function SidebarActionButton(props) {
      */
     const styles = {
         base: 'flex items-center p-4 rounded-2xl transition duration-300 h-14'
-            + ' text-gray-900 dark:text-gray-300 bg-pink-300 dark:bg-pink-800 hover:bg-pink-400'
-            + ' dark:hover:bg-pink-600 active:bg-pink-500 active:scale-90',
+            + ' text-tertiary-900 dark:text-tertiary-dark-900 bg-tertiary-100 dark:bg-tertiary-dark-100 hover:bg-tertiary-200'
+            + ' dark:hover:bg-tertiary-dark-200 active:scale-90',
         smSize: ' shadow-xl transition-all duration-300 overflow-hidden', 
         smSizeReduced: ' max-w-[56px]',
         smSizeExpanded: ' max-w-[250px]',
