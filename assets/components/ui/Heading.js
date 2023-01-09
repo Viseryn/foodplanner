@@ -17,7 +17,7 @@ import React from 'react';
  */
 export default function Heading(props) {
     return (
-        <div className="text-3xl font-semibold text-blue-600 dark:text-gray-100 mb-10">
+        <div className="text-3xl font-semibold text-primary-200 dark:text-secondary-dark-900">
             {props.children}
         </div>
     );
@@ -36,7 +36,26 @@ export default function Heading(props) {
  */
 export function SubHeading(props) {
     return (
-        <div className="text-lg font-semibold text-blue-600 dark:text-gray-100 mb-4">
+        <div className="text-lg font-semibold text-primary-200 dark:text-secondary-dark-900">
+            {props.children}
+        </div>
+    );
+}
+
+/**
+ * SecondHeading
+ * 
+ * A component that renders a very large heading.
+ * 
+ * @component
+ * @property {*} children 
+ * 
+ * @example
+ * <SecondHeading>This is a title</SecondHeading>
+ */
+export function SecondHeading(props) {
+    return (
+        <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900">
             {props.children}
         </div>
     );
