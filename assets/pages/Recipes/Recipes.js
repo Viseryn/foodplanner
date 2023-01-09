@@ -145,22 +145,22 @@ export default function Recipes(props) {
             {/* The first column is always shown when no Recipe is chosen.
                 If a Recipe is chosen, it is only shown on lg-screens or larger. */}
             <div className={
-                'px-6 md:pl-0 pt-6 pb-[11.5rem] md:pb-6 w-full min-h-screen bg-white dark:bg-[#29353f] md:bg-transparent '
+                'pb-[11.5rem] md:pb-4 px-4 md:pl-0 lg:mr-2 w-full min-h-screen '
                 + (isTwoColumns
-                    ? 'hidden lg:block max-w-[400px]'
+                    ? 'hidden lg:block max-w-[400px] md:pr-0'
                     : 'max-w-[900px]'
                 )
             }>
                 {/* Heading on smaller screens */}
-                <div className="md:hidden">
+                <div className="md:hidden px-2 pt-4 pb-6">
                     <Heading>Rezepte</Heading>
                 </div>
 
                 {/* Search bar */}
-                <div className="mb-4 rounded-full font-semibold bg-blue-100 md:bg-white dark:bg-[#1D252C] md:dark:bg-[#29353f] h-14 flex items-center pl-6 pr-4">
-                    <span className="text-blue-600 md:text-gray-900 dark:text-gray-100 md:dark:text-gray-100 material-symbols-rounded mr-2 cursor-default">search</span>
+                <div className="mb-4 md:mt-7 rounded-full font-semibold bg-secondary-100 dark:bg-secondary-dark-100 h-14 flex items-center pl-6 pr-4">
+                    <span className="material-symbols-rounded mr-2 cursor-default">search</span>
                     <input 
-                        className="text-blue-600 dark:text-gray-100 md:dark:text-gray-100 md:text-gray-900 placeholder-blue-500 md:placeholder-gray-400 bg-blue-100 md:bg-white dark:bg-[#1D252C] md:dark:bg-[#29353f] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
+                        className="bg-secondary-100 dark:bg-secondary-dark-100 dark:placeholder-secondary-dark-300 w-full border-transparent focus:border-transparent focus:ring-0"
                         placeholder='Suche nach Rezepten ...'
                         id='search'
                         name='search'
@@ -172,7 +172,7 @@ export default function Recipes(props) {
                     />
                     {searchValue !== '' &&
                         <span 
-                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-blue-300 md:hover:bg-gray-200 dark:md:hover:bg-[#232325] dark:hover:bg-[#29353f] p-2 rounded-full"
+                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 p-2 rounded-full"
                             onClick={() => setSearchValue('')}
                         >close</span>
                     }
@@ -191,13 +191,13 @@ export default function Recipes(props) {
                             + (!isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
                         }>
                             {recipesFiltered.map(recipe => 
-                                <div key={recipe.id} className="h-36 w-full shadow-md rounded-2xl transition duration-300">
+                                <div key={recipe.id} className="h-36 w-full rounded-xl transition duration-300">
                                     <div className="relative group cursor-pointer" onClick={() => {
                                         setTwoColumns(true);
                                     }}>
                                         <Link to={'/recipe/' + recipe.id}>
                                             <img 
-                                                className="rounded-2xl h-36 w-full object-cover brightness-[.7]" 
+                                                className="rounded-xl h-36 w-full object-cover brightness-[.7]" 
                                                 src={recipe.image?.filename != null 
                                                     ? recipe.image?.directory + recipe.image?.filename
                                                     : '/img/default.jpg'
@@ -218,7 +218,8 @@ export default function Recipes(props) {
 
             {/* Second column is always shown when a Recipe is chosen. */}
             {isTwoColumns && 
-                <div className="flex flex-col px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
+                // <div className="flex flex-col px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-secondary-100 dark:bg-[#29353f] md:rounded-xl md:max-w-[900px]"></div>
+                <div className="flex flex-col pb-[11.5rem] w-full min-h-screen md:min-h-fit md:max-w-[900px]">
                     {/* Pass a function setTwoColumns to the Recipe, so that it 
                         can deactive the two-column mode. Resets the SAB afterwards. */}
                     <Recipe 
