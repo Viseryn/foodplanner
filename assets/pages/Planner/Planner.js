@@ -136,7 +136,6 @@ export default function Planner(props) {
                 <Spinner /> /** @todo Add skeletons */
             ) : (
                 <>
-
                     <Spacer height="6" />
 
                     {props.days.map((day, index) =>
