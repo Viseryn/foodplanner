@@ -65,8 +65,11 @@ export default function Logout(props) {
             {props.isLoadingUser || !isLoading ? (
                 <Navigate to="/login" />
             ) : (
-                <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
-                    <Heading>Login</Heading>
+                <div className="pb-[6.5rem] md:pb-6 pt-4 md:pt-9 px-4 md:pl-0 w-full md:w-[450px]">
+                    <div className="px-4">
+                        <Heading>Login</Heading>
+                    </div>
+                    
                     <Spinner />
                 </div>
             )}
