@@ -61,7 +61,7 @@ export default function Sidebar(props) {
                 'z-[9000] fixed h-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="flex flex-col justify-end md:justify-start bg-white dark:bg-[#29353f] rounded-r-3xl h-full w-80 px-6 pt-7 pb-3">
+                <div className="flex flex-col justify-end md:justify-start bg-white dark:bg-bg-dark rounded-r-3xl h-full w-80 px-6 pt-7 pb-3">
                     <SidebarDrawerContent
                         isDrawerVisible={isDrawerVisible}
                         setDrawerVisible={setDrawerVisible}
@@ -80,7 +80,7 @@ export default function Sidebar(props) {
             />
 
             {/* Sidebar */}
-            <aside className="z-30 bg-blue-50 dark:bg-[#1D252C] shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
+            <aside className="z-30 bg-bg dark:bg-bg-dark shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
                 <div className="px-6 py-3 w-full fixed flex justify-between md:px-6 md:py-7 md:max-w-fit md:block xl:w-64 xl:max-w-none">
                     <SidebarContent 
                         isDrawerVisible={isDrawerVisible}
@@ -288,10 +288,10 @@ function SidebarDrawerButton(props) {
     return (
         <li className={'xl:w-min ' + props?.className}>
             <div 
-                className="flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group cursor-pointer"
+                className="flex items-center p-4 rounded-full transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 active:scale-90 group cursor-pointer"
                 onClick={() => props.setDrawerVisible(!props.isDrawerVisible)}
             >
-                <span className="material-symbols-rounded transition duration-300 text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-200">
+                <span className="material-symbols-rounded transition duration-300 group-hover:text-primary-200 dark:group-hover:text-primary-dark-100">
                     {props.icon || 'menu'}
                 </span>
             </div>
@@ -322,12 +322,12 @@ function SidebarDrawerButton(props) {
  * />
  */
 function SidebarItem(props) {
-    const baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-blue-200 dark:hover:bg-[#1f3953] active:bg-blue-200 active:scale-90 group';
-    const activeLinkStyle = baseLinkStyle + ' bg-blue-200 dark:bg-[#1f3953]';
+    const baseLinkStyle = 'flex items-center p-4 rounded-full transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 active:bg-secondary-200 active:scale-90 group';
+    const activeLinkStyle = baseLinkStyle + ' bg-secondary-200 dark:bg-secondary-dark-200';
     const linkStyle = props.sidebarActiveItem == props.id ? activeLinkStyle : baseLinkStyle;
 
-    const baseLabelStyle = 'transition duration-300 text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-200 flex items-center';
-    const activeLabelStyle = baseLabelStyle + ' text-gray-900 dark:text-gray-200';
+    const baseLabelStyle = 'transition duration-300 group-hover:text-primary-200 dark:group-hover:text-primary-dark-100 flex items-center';
+    const activeLabelStyle = baseLabelStyle + ' text-primary-200 dark:text-primary-dark-100';
     const labelStyle = props.sidebarActiveItem == props.id ? activeLabelStyle : baseLabelStyle;
 
     const SidebarItemContent = (
