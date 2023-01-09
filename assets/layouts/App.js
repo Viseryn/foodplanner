@@ -321,7 +321,7 @@ export default function App() {
      */
     return (
         <BrowserRouter>
-            <div className="flex items-start bg-blue-50 dark:bg-[#1D252C] min-h-screen text-gray-700 dark:text-gray-100">
+            <div className="flex items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900">
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
