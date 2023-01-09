@@ -7,7 +7,7 @@
  */
 const inputRowStyle    = 'mb-6';
 const inputLabelStyle  = 'text-sm font-semibold block mb-2';
-const inputWidgetStyle = 'dark:placeholder-gray-400 dark:bg-[#1D252C] border border-gray-300 dark:border-none rounded-full h-10 px-6 shadow-sm dark:shadow-md w-full transition duration-300 focus:border-blue-600';
+const inputWidgetStyle = 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-14 px-6 w-full transition duration-300 focus:border-primary-100';
 
 /**
  * nameFromId
