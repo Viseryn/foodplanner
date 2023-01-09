@@ -61,7 +61,7 @@ export default function Sidebar(props) {
                 'z-[9000] fixed h-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="flex flex-col justify-end md:justify-start bg-white dark:bg-bg-dark rounded-r-3xl h-full w-80 px-6 pt-7 pb-3">
+                <div className="flex flex-col justify-start bg-white dark:bg-bg-dark rounded-r-3xl h-full w-80 px-6 pt-7 pb-3">
                     <SidebarDrawerContent
                         isDrawerVisible={isDrawerVisible}
                         setDrawerVisible={setDrawerVisible}
@@ -89,6 +89,16 @@ export default function Sidebar(props) {
                     />
                 </div>
             </aside>
+
+            {/* Top bar for mobile screens */}
+            <div className="pt-2 pl-2 -bg-blue-500 w-full md:hidden">
+                <ul className="flex justify-start">
+                    <SidebarDrawerButton
+                        isDrawerVisible={isDrawerVisible}
+                        setDrawerVisible={setDrawerVisible} 
+                    />
+                </ul>
+            </div>
         </>
     );
 }
@@ -111,7 +121,7 @@ export default function Sidebar(props) {
 function SidebarDrawerContent(props) {
     return (
         <>
-            <ul className="hidden md:block mb-2 w-fit">
+            <ul className="mb-2 w-fit">
                 <SidebarDrawerButton
                     isDrawerVisible={props.isDrawerVisible}
                     setDrawerVisible={props.setDrawerVisible} 
@@ -174,16 +184,8 @@ function SidebarDrawerContent(props) {
                 />
             </ul>
 
-            <ul className="md:hidden w-fit mt-10">
-                <SidebarDrawerButton
-                    isDrawerVisible={props.isDrawerVisible}
-                    setDrawerVisible={props.setDrawerVisible} 
-                    icon="close"
-                />
-            </ul>
-
             <div className="text-xs flex justify-end absolute bottom-5 right-5">
-                v1.1.1-pre
+                v1.2.0-pre
             </div>
         </>
     );
@@ -209,58 +211,95 @@ function SidebarDrawerContent(props) {
 function SidebarContent(props) {
     return (
         <>
-            {/* Sidebar Drawer Button and SAB for large screens */}
-            <ul className="space-y-2 mb-16 hidden md:block">
-                <SidebarDrawerButton
-                    isDrawerVisible={props.isDrawerVisible}
-                    setDrawerVisible={props.setDrawerVisible} 
-                />
-                
-                <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
-            </ul>
+            {/* Sidebar for small screens becomes bottom navbar */}
+            <div className="md:hidden w-full">
+                <ul className="flex flex-row w-full justify-between">
+                    <BottomNavbarItem 
+                        sidebarActiveItem={props.sidebarActiveItem}
+                        id="planner"
+                        icon="date_range"
+                        label="Wochenplan"
+                    />
+                    <BottomNavbarItem 
+                        sidebarActiveItem={props.sidebarActiveItem}
+                        id="recipes"
+                        icon="receipt_long"
+                        label="Rezepte"
+                    />
+                    <BottomNavbarItem 
+                        sidebarActiveItem={props.sidebarActiveItem}
+                        id="shoppinglist"
+                        icon="shopping_cart"
+                        label="Einkaufsliste"
+                    />
+                    {(props.settings.showPantry 
+                        || !props.isAuthenticated()
+                        || props.isLoadingSettings) 
+                    &&
+                        <BottomNavbarItem 
+                            sidebarActiveItem={props.sidebarActiveItem}
+                            id="pantry"
+                            icon="shelves"
+                            label="Vorrat"
+                        />
+                    }
+                </ul>
 
-            {/* Main navigation destinations, for all screen sizes */}
-            <ul className="flex flex-row w-full justify-between space-x-1 md:flex-col md:space-x-0 md:space-y-2">
-                <SidebarDrawerButton
-                    isDrawerVisible={props.isDrawerVisible}
-                    setDrawerVisible={props.setDrawerVisible} 
-                    className="md:hidden"
-                />
-                <SidebarItem 
-                    sidebarActiveItem={props.sidebarActiveItem}
-                    id="planner"
-                    icon="date_range"
-                    label="Wochenplan"
-                />
-                <SidebarItem 
-                    sidebarActiveItem={props.sidebarActiveItem}
-                    id="recipes"
-                    icon="receipt_long"
-                    label="Rezepte"
-                />
-                <SidebarItem 
-                    sidebarActiveItem={props.sidebarActiveItem}
-                    id="shoppinglist"
-                    icon="shopping_cart"
-                    label="Einkaufsliste"
-                />
-                {(props.settings.showPantry 
-                    || !props.isAuthenticated()
-                    || props.isLoadingSettings) 
-                &&
+                <ul className="fixed bottom-[6.5rem] right-6">
+                    <SidebarActionButton floating={true} sidebarActionButton={props.sidebarActionButton} />
+                </ul>
+            </div>
+
+            {/* Sidebar for large screens (md+) */}
+            <div className="hidden md:block">
+                {/* Sidebar Drawer Button and SAB for large screens */}
+                <ul className="space-y-2 mb-16 hidden md:block">
+                    <SidebarDrawerButton
+                        isDrawerVisible={props.isDrawerVisible}
+                        setDrawerVisible={props.setDrawerVisible} 
+                    />
+                    
+                    <SidebarActionButton sidebarActionButton={props.sidebarActionButton} />
+                </ul>
+
+                {/* Main navigation destinations, for all screen sizes */}
+                <ul className="flex flex-row w-full justify-between space-x-1 md:flex-col md:space-x-0 md:space-y-2">
+                    <SidebarDrawerButton
+                        isDrawerVisible={props.isDrawerVisible}
+                        setDrawerVisible={props.setDrawerVisible} 
+                        className="md:hidden"
+                    />
                     <SidebarItem 
                         sidebarActiveItem={props.sidebarActiveItem}
-                        id="pantry"
-                        icon="shelves"
-                        label="Vorratskammer"
+                        id="planner"
+                        icon="date_range"
+                        label="Wochenplan"
                     />
-                }
-            </ul>
-            
-            {/* Sidebar Action Button for mobile is floating and hidden on larger screens */}
-            <ul className="fixed bottom-[6.5rem] right-6 md:hidden">
-                <SidebarActionButton floating={true} sidebarActionButton={props.sidebarActionButton} />
-            </ul>
+                    <SidebarItem 
+                        sidebarActiveItem={props.sidebarActiveItem}
+                        id="recipes"
+                        icon="receipt_long"
+                        label="Rezepte"
+                    />
+                    <SidebarItem 
+                        sidebarActiveItem={props.sidebarActiveItem}
+                        id="shoppinglist"
+                        icon="shopping_cart"
+                        label="Einkaufsliste"
+                    />
+                    {(props.settings.showPantry 
+                        || !props.isAuthenticated()
+                        || props.isLoadingSettings) 
+                    &&
+                        <SidebarItem 
+                            sidebarActiveItem={props.sidebarActiveItem}
+                            id="pantry"
+                            icon="shelves"
+                            label="Vorratskammer"
+                        />
+                    }
+                </ul>
+            </div>
         </>
     );
 }
@@ -355,6 +394,50 @@ function SidebarItem(props) {
                     {SidebarItemContent}
                 </Link>
             )}
+        </li>
+    );
+}
+
+/**
+ * BottomNavbarItem
+ * 
+ * A component that renders a single bottom navbar item, i.e. 
+ * a <li> element that contains an icon and a label.
+ * 
+ * @component
+ * @property {string} sidebarActiveItem The id of the bottom navbar item that should be highlighted.
+ * @property {string} id The id of the component this bottom navbar item should link to. Default is '/'. 
+ * @property {string} icon The icon of the bottom navbar item. 
+ * @property {string} label The label of the bottom navbar item.
+ * 
+ * @example
+ * <BottomNavbarItem
+ *     sidebarActiveItem={props.sidebarActiveItem}
+ *     id="planner"
+ *     icon="date_range"
+ *     label="Wochenplan"
+ * />
+ */
+function BottomNavbarItem(props) {
+    return (
+        <li>
+            <Link to={'/' + props.id} className="group">
+                <div className={
+                    'group-hover:text-primary-200 dark:group-hover:text-primary-dark-100 flex flex-col items-center'
+                    + (props.sidebarActiveItem == props.id ? ' text-primary-200 dark:text-primary-dark-100' : '')
+                }>
+                    <span className={
+                        'transition duration-300 material-symbols-rounded rounded-full w-16 h-8 '
+                        + 'flex justify-center items-center group-hover:bg-secondary-200 dark:group-hover:bg-secondary-dark-200' 
+                        + (props.sidebarActiveItem == props.id ? ' bg-secondary-200 dark:bg-secondary-dark-200' : ' outlined')
+                    }>
+                        {props.icon}
+                    </span>
+                    <span className="font-semibold mt-1 text-xs">
+                        {props.label}
+                    </span>
+                </div>
+            </Link>
         </li>
     );
 }
