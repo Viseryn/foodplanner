@@ -27,7 +27,7 @@ export default function IconButton({ outlined = false, style = '', ...props }) {
         <span 
             className={
                 'material-symbols-rounded cursor-pointer transition duration-300 '
-                + 'hover:bg-gray-200 dark:hover:bg-[#232325] p-2 rounded-full' 
+                + 'hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 p-2 rounded-full' 
                 + (outlined ? ' outlined' : '')
                 + ' ' + style
             }
