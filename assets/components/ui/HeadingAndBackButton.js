@@ -24,7 +24,7 @@ export default function HeadingAndBackButton(props) {
     return (
         <div className="flex justify-start items-start">
             <div className="flex justify-between">
-                <Link to={props.location} className="mr-4 text-blue-600 dark:text-gray-100">
+                <Link to={props.location} className="mr-4 text-primary-200 dark:text-secondary-dark-900">
                     <IconButton>
                         arrow_back
                     </IconButton>
