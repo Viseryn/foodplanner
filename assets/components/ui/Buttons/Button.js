@@ -104,9 +104,9 @@ const buttonStyle = ({
 }) => {
     const styles = {
         base: 'rounded-full font-semibold transition duration-300 flex items-center active:scale-95',
-        primary: 'text-white dark:text-blue-100 bg-blue-500 dark:bg-blue-800 hover:bg-blue-700 dark:hover:bg-blue-900 active:bg-blue-500 dark:active:bg-blue-700',
-        secondary: 'text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-100 dark:hover:bg-[#1D252C]/[.5] active:bg-blue-300 active:text-blue-800',
-        tertiary: 'text-blue-600 dark:text-blue-300 hover:bg-gray-100 dark:hover:bg-[#1D252C] active:bg-gray-200 active:text-blue-800',
+        primary: 'text-white bg-primary-100 dark:bg-primary-dark-200 hover:bg-primary-200 dark:hover:bg-primary-100 active:bg-primary-200 dark:active:bg-primary-100',
+        secondary: 'text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300',
+        tertiary: 'text-primary-100 dark:text-primary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200',
         withLabel: 'h-12 px-4 text-base',
         noLabel: 'p-2',
         elevated: 'shadow-lg active:shadow-xl',
