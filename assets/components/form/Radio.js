@@ -52,7 +52,7 @@ function RadioWidget({
                     />
                     <label 
                         htmlFor={option.id}
-                        className="cursor-pointer overflow-ellipsis rounded-full h-10 px-3 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-100 dark:hover:bg-[#1D252C]/[.5] active:bg-blue-300 active:text-blue-800 peer-checked:bg-blue-200 dark:peer-checked:bg-blue-400 dark:peer-checked:text-blue-800"
+                        className="cursor-pointer overflow-ellipsis rounded-xl h-9 px-2 font-semibold text-sm transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200  dark:peer-checked:bg-secondary-dark-200 -dark:peer-checked:text-blue-800 border border-secondary-200 dark:border-secondary-dark-200"
                     >
                         <span className="material-symbols-rounded">{option.icon}</span>
                         <span className="label-content mr-1 ml-3">{option.label}</span>
