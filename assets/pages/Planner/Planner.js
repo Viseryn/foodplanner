@@ -10,6 +10,8 @@ import Heading from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 import IconButton from '../../components/ui/Buttons/IconButton';
 import Button from '../../components/ui/Buttons/Button';
+import Card from '../../components/ui/Card';
+import Spacer from '../../components/ui/Spacer';
 
 /**
  * Planner
@@ -116,29 +118,35 @@ export default function Planner(props) {
                     ),
                 onClickHandler: handleAddShoppingList,
             });
+        } else {
+            props.setSidebarActionButton();
         }
-    }, [props.days, isShoppingListButtonVisible, buttonCounter]);
+    }, [props.days, isShoppingListButtonVisible, buttonCounter, props.isLoadingDays]);
     
     /**
      * Render
      */
     return (
-        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-fit md:min-w-[450px] md:max-w-[900px]">
-            <div className="flex justify-between items-start">
+        <div className="pb-[6.5rem] w-full md:w-fit md:min-w-[450px] md:max-w-[900px]">
+            <div className="p-4 px-6 md:px-4 md:pt-9 flex items-start justify-between">
                 <Heading>Wochenplan</Heading>
-
-                <IconButton onClick={() => props.setLoadingDays(true)}>sync</IconButton>
+                {!props.isLoadingDays && <IconButton onClick={() => props.setLoadingDays(true)}>sync</IconButton>}
             </div>
-
             {props.isLoadingDays ? (
-                <Spinner />
+                <Spinner /> /** @todo Add skeletons */
             ) : (
                 <>
+
+                    <Spacer height="6" />
+
                     {props.days.map((day, index) =>
-                        <React.Fragment key={day.id}>
-                            <div className="text-xl font-semibold text-blue-600 dark:text-gray-100 mb-4 flex md:justify-start">
-                                    <span>{day.weekday},&nbsp;</span>
-                                    <span>{day.date}</span>
+                        <Card 
+                            style={'mx-4 md:ml-0'
+                                + (index === props.days.length - 1 ? ' mb-4' : ' mb-4 md:mb-6')}
+                            key={day.id}
+                        >
+                            <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900 mb-4 md:mb-6">
+                                <span>{day.weekday}, {day.date}</span>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -180,13 +188,13 @@ export default function Planner(props) {
 
                                 <Link 
                                     to={'/planner/add/' + day.id} 
-                                    className={(day.meals.length > 0 ? 'h-14 md:h-40' : 'h-40') + ' w-full rounded-2xl transition duration-300 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-100 dark:hover:bg-[#1D252C]/[.5] font-semibold text-lg flex justify-center items-center flex-row md:flex-col gap-4' + (index === props.days.length - 1 ? '' : ' mb-10')}
+                                    className={(day.meals.length > 0 ? 'h-14 md:h-40' : 'h-40') + ' w-full rounded-2xl transition duration-300 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300 font-semibold text-lg flex justify-center items-center flex-row md:flex-col gap-4'}
                                 >
                                     <span className="material-symbols-rounded">add</span>
                                     <span>Neue Mahlzeit</span>
                                 </Link>
                             </div>
-                        </React.Fragment>
+                        </Card>
                     )}
 
                     <div className="pb-20 md:pb-0" />
