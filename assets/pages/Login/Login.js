@@ -10,6 +10,8 @@ import Button from '../../components/ui/Buttons/Button';
 import Heading from '../../components/ui/Heading';
 import Notification from '../../components/ui/Notification';
 import Spinner from '../../components/ui/Spinner';
+import Card from '../../components/ui/Card';
+import Spacer from '../../components/ui/Spacer';
 
 /**
  * Login
@@ -68,16 +70,21 @@ export default function Login(props) {
      * Render
      */
     return (
-        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-fit">
-            <Heading>Login</Heading>
-            <div className="min-w-[400px]"></div>
+        <div className="pb-[6.5rem] md:pb-6 w-full min-w-[400px]">
+            <div className="px-4 pt-4 md:pt-9">
+                <Heading>Login</Heading>
+            </div>
+
+            <Spacer height="10" />
             
             {(props.isLoadingUser || isLoadingSubmit) &&
-                <Spinner />
+                <div className="mb-6 md:w-[400px] px-4 md:pl-0">
+                    <Spinner />
+                </div>
             }
 
             {response?.error &&
-                <div className="mb-10">
+                <div className="mb-6 md:w-[400px] px-4 md:pl-0">
                     <Notification color="red" title="Login fehlgeschlagen!">
                         Fehlercode: {response?.error}
                     </Notification>
@@ -85,7 +92,7 @@ export default function Login(props) {
             }
 
             {props.user?.username !== undefined && !props.isLoadingUser && !isLoadingSubmit &&
-                <>
+                <div className="md:w-[400px] px-4 md:pl-0">
                     <Notification color="green" title="Erfolgreich eingeloggt!">
                         Willkommen, {props.user?.username}.
                     </Notification>
@@ -107,35 +114,38 @@ export default function Login(props) {
                             style="flex justify-center"
                         />
                     </div>
-                </>
+                </div>
             }
 
             {props.user?.username === undefined && !props.isLoadingUser && !isLoadingSubmit &&
-                <form onSubmit={handleSubmit} className="sm:w-[400px]">
-                    <InputRow 
-                        id="username"
-                        label="Dein Benutzername"
-                        inputProps={{
-                            required: 'required', 
-                            name: '_username',
-                        }}
-                    />
-                    <InputRow 
-                        id="password"
-                        label="Dein Passwort"
-                        inputProps={{
-                            required: 'required', 
-                            type: 'password',
-                            name: '_password',
-                        }}
-                    />
+                <form onSubmit={handleSubmit} className="md:w-[400px] px-4 md:pl-0">
+                    <Card>
+                        <InputRow 
+                            id="username"
+                            label="Dein Benutzername"
+                            inputProps={{
+                                required: 'required', 
+                                name: '_username',
+                            }}
+                        />
+                        <InputRow 
+                            id="password"
+                            label="Dein Passwort"
+                            inputProps={{
+                                required: 'required', 
+                                type: 'password',
+                                name: '_password',
+                            }}
+                        />
+                    </Card>
+
+                    <Spacer height="6" />
 
                     <div className="flex justify-end">
                         <Button
                             type="submit"
                             icon="login"
                             label="Einloggen"
-                            elevated={true}
                         />
                     </div>
                 </form>
