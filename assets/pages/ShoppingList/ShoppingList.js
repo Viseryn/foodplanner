@@ -13,6 +13,8 @@ import Spinner from '../../components/ui/Spinner';
 import IconButton from '../../components/ui/Buttons/IconButton';
 import Button from '../../components/ui/Buttons/Button';
 import { floatToFraction, fractionToFloat } from '../../util/fractions';
+import Spacer from '../../components/ui/Spacer';
+import Card from '../../components/ui/Card';
 
 /**
  * ShoppingList
@@ -401,9 +403,9 @@ export default function ShoppingList(props) {
      * Render
      */
     return (
-        <div className="flex flex-col px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
-            <div className="flex justify-between items-start">
-                <Heading>Einkaufsliste</Heading>
+        <div className="flex flex-col pb-[6.5rem] pt-4 md:pt-9 w-full min-h-screen md:min-h-fit md:w-[450px]">
+            <div className="flex justify-between items-start pr-4 md:pr-0">
+                <Heading style="px-6 md:px-4">Einkaufsliste</Heading>
 
                 {/* Delete and update buttons */}
                 <div>
@@ -413,68 +415,76 @@ export default function ShoppingList(props) {
                     <IconButton onClick={() => props.setLoadingShoppingList(true)}>sync</IconButton>
                 </div>
             </div>
+
+            <Spacer height="10" />
             
-            <AddItemInputWidget
-                items={props.shoppingList}
-                {...props}
-            />
+            <div className="mx-4 md:mx-0">
+                <AddItemInputWidget
+                    items={props.shoppingList}
+                    {...props}
+                />
+            </div>
+
+            <Spacer height="10" />
 
             {props.isLoadingShoppingList ? (
                 <Spinner />
             ) : (
                 <>
-                    <div className="space-y-2 max-w-[400px] justify-center">
-                        {props.shoppingList.length === 0 &&
-                            <div className="rounded-full p-2 h-14 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                <div className="pl-4 flex items-center">
-                                    <span className="material-symbols-rounded outlined mr-4">info</span>
-                                    Die Einkaufsliste ist leer.
-                                </div>
-                            </div>
-                        }
-
-                        {props.shoppingList.map(item =>
-                            <div key={item.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                <div className="pl-4 flex items-center">
-                                    <input 
-                                        id={item.id} 
-                                        type="checkbox" 
-                                        className="w-4 h-4 mr-4 text-blue-600 bg-gray-100 rounded-full border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 peer"
-                                        onChange={() => handleCheckboxChange(item.id)} 
-                                        checked={item.checked}
-                                    />
-
-                                    <div 
-                                        className={'md:max-w-[220px] break-words' + (item.checked ? ' line-through text-gray-400' : '')} 
-                                        onClick={event => handleItemClick(event, item.id, item.editable)} /** @todo Move that to parent */
-                                    >
-                                        {item.editable ? (
-                                            <input 
-                                                className="bg-transparent border rounded-md"
-                                                defaultValue={item.name}
-                                                onBlur={event => handleItemNameChange(event, item.id)}
-                                                onKeyDown={event => { 
-                                                    if (event.key === 'Enter') {
-                                                        handleItemNameChange(event, item.id);
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            item.name
-                                        )}
+                    <Card style="mx-4 md:mx-0">
+                        <div className="space-y-2 justify-center">
+                            {props.shoppingList.length === 0 &&
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center">
+                                        <span className="material-symbols-rounded outlined mr-4">info</span>
+                                        Die Einkaufsliste ist leer.
                                     </div>
                                 </div>
+                            }
 
-                                <div className="flex gap-2">
-                                    <IconButton onClick={() => handlePositionChange(item.id, -1)}>expand_less</IconButton>
-                                    <IconButton onClick={() => handlePositionChange(item.id, 1)}>expand_more</IconButton>
+                            {props.shoppingList.map(item =>
+                                <div key={item.id} className="flex justify-between items-center" >
+                                    <div className="flex items-center" >
+                                        <input 
+                                            id={item.id} 
+                                            type="checkbox" 
+                                            className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border-2 border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
+                                            onChange={() => handleCheckboxChange(item.id)} 
+                                            checked={item.checked}
+                                        />
+
+                                        <div 
+                                            className={'break-words' + (item.checked ? ' line-through text-[#74796d]' : '')} 
+                                            onClick={event => handleItemClick(event, item.id, item.editable)}
+                                        >
+                                            {item.editable ? (
+                                                <input 
+                                                    className="bg-transparent border rounded-md"
+                                                    defaultValue={item.name}
+                                                    onBlur={event => handleItemNameChange(event, item.id)}
+                                                    onKeyDown={event => { 
+                                                        if (event.key === 'Enter') {
+                                                            handleItemNameChange(event, item.id);
+                                                        }
+                                                    }}
+                                                />
+                                            ) : (
+                                                item.name
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <IconButton onClick={() => handlePositionChange(item.id, -1)}>expand_less</IconButton>
+                                        <IconButton onClick={() => handlePositionChange(item.id, 1)}>expand_more</IconButton>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    </Card>
 
                     {props.shoppingList.length >= 1 &&
-                        <div className="flex flex-col items-end justify-end gap-4 mt-auto pt-6 pb-20 md:pb-0">
+                        <div className="flex flex-col items-end justify-end gap-4 mt-auto pt-6 pb-20 md:pb-0 mx-4 md:mx-0">
                             {props.settings.showPantry && props.pantry.length > 0 &&
                                 <Button
                                     onClick={handlePantryCombine}

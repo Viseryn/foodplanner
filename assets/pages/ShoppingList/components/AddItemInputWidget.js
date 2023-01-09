@@ -64,12 +64,11 @@ import loadShoppingList from "../../../util/loadShoppingList";
      * Render
      */
     return (
-        // <div className="rounded-full bg-white border border-gray-100 dark:border-none dark:bg-[#1D252C] shadow-md h-16 flex items-center pl-6 pr-4 mb-10">
-        <div className="rounded-full font-semibold bg-blue-100 -border -border-gray-100 dark:border-none dark:bg-[#1D252C] -shadow-md h-14 flex items-center pl-6 pr-4 mb-10">
-            <span className="text-blue-600 dark:text-gray-100 material-symbols-rounded mr-2 cursor-default">add</span>
+        <div className="rounded-full font-semibold bg-secondary-200 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
+            <span className="material-symbols-rounded mr-2 cursor-default">add</span>
 
             <input 
-                className="text-blue-600 placeholder-blue-500 dark:text-gray-100 bg-blue-100 dark:bg-[#1D252C] dark:placeholder-gray-400 w-full border-transparent focus:border-transparent focus:ring-0"
+                className="bg-secondary-200 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
                 placeholder="Tippe eine neue Zutat ein ..."
                 type="text"
                 value={inputValue}
@@ -79,7 +78,7 @@ import loadShoppingList from "../../../util/loadShoppingList";
 
             {inputValue !== '' &&
                 <span 
-                    className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-blue-300 dark:hover:bg-[#29353f] p-2 rounded-full"
+                    className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300 p-2 rounded-full"
                     onClick={() => setInputValue('')}
                 >
                     close
