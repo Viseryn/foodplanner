@@ -155,7 +155,7 @@ function SidebarDrawerContent(props) {
                 }
             </ul>
 
-            <hr className="my-4" />
+            <hr className="my-4 border-t-secondary-dark-300" />
 
             <ul className="flex flex-col space-y-2">
                 <SidebarItem 
