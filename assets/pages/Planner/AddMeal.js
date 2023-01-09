@@ -31,6 +31,8 @@ import Spacer from '../../components/ui/Spacer';
  * @property {arr} days 
  * @property {boolean} isLoadingDays
  * @property {function} setLoadingDays
+ * 
+ * @todo Skeleton colors
  */
 export default function AddMeal(props) {
     /**
@@ -77,7 +79,7 @@ export default function AddMeal(props) {
      * Render
      */
     return (
-        <div className="pb-[6.5rem] w-full md:w-[450px] rounded-xl">
+        <div className="pb-[6.5rem] w-full md:w-[450px]">
             {isSubmitted && <Navigate to={'/planner'} />}
 
             <div className="p-4 md:px-0 md:pt-9 mb-6">
