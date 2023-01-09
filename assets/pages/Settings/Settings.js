@@ -254,7 +254,7 @@ export default function Settings(props) {
                             <div className="flex justify-end">
                                 <Button
                                     role="secondary"
-                                    to="/settings/groups/add"
+                                    location="/settings/groups/add"
                                     label="Neue Gruppe hinzufügen"
                                     icon="add"
                                     small={true}
