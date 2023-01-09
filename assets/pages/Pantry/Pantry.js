@@ -13,6 +13,8 @@ import Spinner from '../../components/ui/Spinner';
 import IconButton from '../../components/ui/Buttons/IconButton';
 import Button from '../../components/ui/Buttons/Button';
 import { floatToFraction, fractionToFloat } from '../../util/fractions';
+import Spacer from '../../components/ui/Spacer';
+import Card from '../../components/ui/Card';
 
 /**
  * Pantry
@@ -342,9 +344,9 @@ export default function Pantry(props) {
      * Render
      */
     return (
-        <div className="flex flex-col px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
-            <div className="flex justify-between items-start">
-                <Heading>Vorratskammer</Heading>
+        <div className="flex flex-col pb-[6.5rem] pt-4 md:pt-9 w-full min-h-screen md:min-h-fit md:w-[450px]">
+            <div className="flex justify-between items-start pr-4 md:pr-0">
+                <Heading style="px-6 md:px-4">Vorratskammer</Heading>
 
                 {/* Delete and update buttons */}
                 <div>
@@ -354,66 +356,84 @@ export default function Pantry(props) {
                     <IconButton onClick={() => props.setLoadingPantry(true)}>sync</IconButton>
                 </div>
             </div>
-            
-            <AddItemInputWidget
-                items={props.pantry}
-                {...props}
-            />
+
+            <Spacer height="10" />
+
+            <div className="mx-4 md:mx-0">
+                <AddItemInputWidget
+                    items={props.pantry}
+                    {...props}
+                />
+            </div>
+
+            <Spacer height="10" />
 
             {props.isLoadingPantry ? (
                 <Spinner /> /** @todo Add Skeleton here */
             ) : (
                 <>
-                    <div className="space-y-2 max-w-[400px] justify-center">
-                        {props.pantry.length === 0 &&
-                            <div className="rounded-full p-2 h-14 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                <div className="pl-4 flex items-center">
-                                    <span className="material-symbols-rounded outlined mr-4">info</span>
-                                    Die Vorratskammer ist leer.
-                                </div>
-                            </div>
-                        }
-
-                        {props.pantry.map(item =>
-                            <div key={item.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                <div className="pl-4 flex items-center">
-                                    <div 
-                                        className={'md:max-w-[220px] break-words' + (item.checked ? ' line-through text-gray-400' : '')} 
-                                        onClick={event => handleItemClick(event, item.id, item.editable)} /** @todo Move that to parent */
-                                    >
-                                        {item.editable ? (
-                                            <input 
-                                                className="bg-transparent border rounded-md"
-                                                defaultValue={item.name}
-                                                onBlur={event => handleItemNameChange(event, item.id)}
-                                                onKeyDown={event => { 
-                                                    if (event.key === 'Enter') {
-                                                        handleItemNameChange(event, item.id);
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            item.name
-                                        )}
+                    <Card style="mx-4 md:mx-0">
+                        <div className="space-y-2 justify-center">
+                            {props.pantry.length === 0 &&
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center">
+                                        <span className="material-symbols-rounded outlined mr-4">info</span>
+                                        Die Vorratskammer ist leer.
                                     </div>
                                 </div>
+                            }
 
-                                <div className="flex gap-2">
-                                    <IconButton onClick={() => handleDeleteItem(item.id)} outlined={true}>delete_sweep</IconButton>
+                            {props.pantry.length > 0 &&
+                                <>
+                                    <Button
+                                        onClick={handleSort}
+                                        label="Sortieren"
+                                        icon="sort"
+                                        role="secondary"
+                                        small={true}
+                                    />
+                                    <Spacer height="2" />
+                                </>
+                            }
+
+                            {props.pantry.map(item =>
+                                <div key={item.id} className="flex justify-between items-center">
+                                    <div class="flex justify-start">
+                                        <div className="mr-2">
+                                            <IconButton onClick={() => handleDeleteItem(item.id)} outlined={true}>delete_sweep</IconButton>
+                                        </div>
+
+                                        <div className="flex items-center">
+                                            <div onClick={event => handleItemClick(event, item.id, item.editable)}>
+                                                {item.editable ? (
+                                                    <input 
+                                                        className="bg-transparent border rounded-md"
+                                                        defaultValue={item.name}
+                                                        onBlur={event => handleItemNameChange(event, item.id)}
+                                                        onKeyDown={event => { 
+                                                            if (event.key === 'Enter') {
+                                                                handleItemNameChange(event, item.id);
+                                                            }
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    item.name
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <IconButton onClick={() => handlePositionChange(item.id, -1)}>expand_less</IconButton>
+                                        <IconButton onClick={() => handlePositionChange(item.id, 1)}>expand_more</IconButton>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    </Card>
 
                     {props.pantry.length > 0 &&
-                        <div className="flex flex-col items-end justify-end gap-4 mt-auto pt-6 -pb-20 md:pb-0">
-                            <Button
-                                onClick={handleSort}
-                                label="Sortieren"
-                                icon="sort"
-                                role="tertiary"
-                                small={true}
-                            />
+                        <div className="flex flex-col items-end justify-end gap-4 mt-auto pt-6 md:pb-0 mx-4 md:mx-0">
                             <Button
                                 onClick={handleCombine}
                                 label="Zutaten sammenfassen"
