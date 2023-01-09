@@ -12,6 +12,9 @@ import { SliderRow } from '../../components/form/Slider';
 import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
 import Spinner from '../../components/ui/Spinner';
 import Button from '../../components/ui/Buttons/Button';
+import Card from '../../components/ui/Card';
+import Spacer from '../../components/ui/Spacer';
+import Switch from '../../components/form/Switch';
 
 /**
  * EditRecipe
@@ -262,7 +265,7 @@ export default function EditRecipe(props) {
      * Render
      */
     return (
-        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:max-w-[900px]">
+        <div className="pb-[6.5rem] w-full md:max-w-[900px]">
             {isSubmittedSuccessfully &&
                 <Navigate to={'/recipe/' + newId} />
             }
@@ -277,15 +280,13 @@ export default function EditRecipe(props) {
                 </>
             ) : (
                 <>
-                    <HeadingAndBackButton location={'/recipe/' + recipe?.id}>{recipe?.title}</HeadingAndBackButton>
+                    <div className="p-4 md:px-0 md:pt-9 mb-6">
+                        <HeadingAndBackButton location={'/recipe/' + recipe?.id}>{recipe?.title}</HeadingAndBackButton>
+                    </div>
 
-                    <form 
-                        className="max-w-[400px] md:max-w-[900px]"
-                        onSubmit={handleSubmit}
-                    >
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
-                            <div>
+                    <form onSubmit={handleSubmit}>
+                        <div className="px-4 md:pl-0 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                            <Card>
                                 <InputRow
                                     id="recipe_title"
                                     label="Titel"
@@ -294,7 +295,10 @@ export default function EditRecipe(props) {
                                         maxLength: 255,
                                         defaultValue: recipe?.title
                                     }}
+                                    className=""
                                 />
+
+                                <Spacer height="6" />
 
                                 <SliderRow
                                     key={recipe?.id}
@@ -307,7 +311,37 @@ export default function EditRecipe(props) {
                                         marks: marks,
                                         defaultValue: recipe?.portion_size
                                     }}
+                                    className=""
                                 />
+
+                                <Spacer height="6" />
+
+                                <div className="">
+                                    <div className="text-sm font-semibold block mb-2">Aktuelles Bild</div>
+                                    {recipe?.image != null 
+                                        ? <>
+                                            {isUploadButtonVisible
+                                                ? <img 
+                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300" 
+                                                    src={recipe?.image.directory + recipe?.image.filename}
+                                                    alt={recipe}
+                                                />
+                                                : <img 
+                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-25" 
+                                                    src={recipe?.image.directory + recipe?.image.filename}
+                                                    alt={recipe}
+                                                />
+                                            }
+                                        </>
+                                        : <img 
+                                            className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10 dark:opacity-100 dark:brightness-50" 
+                                            src="/img/default.jpg"
+                                            alt={recipe}
+                                        />
+                                    }
+                                </div>
+
+                                <Spacer height="6" />
 
                                 <div className="text-sm font-semibold block mb-2">Bild bearbeiten</div>
 
@@ -315,7 +349,7 @@ export default function EditRecipe(props) {
                                     <div className="overflow-hidden w-full">
                                         {isUploadButtonVisible 
                                             ? <>
-                                                <label htmlFor="recipe_image" className="file-label cursor-pointer rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center active:scale-95 text-blue-600 dark:text-blue-300 bg-gray-100 dark:bg-[#1D252C] hover:bg-blue-200 dark:hover:bg-[#1D252C]/[.6] active:bg-blue-300 active:text-blue-800">
+                                                <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300">
                                                     <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                                     <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">{filename}</span>
                                                 </label>
@@ -326,7 +360,7 @@ export default function EditRecipe(props) {
                                                 />
                                             </>
                                             : <>
-                                                <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-[#1D252C]">
+                                                <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-[#43483e] dark:text-[#c3c8bb] bg-[#e0e4d6] dark:bg-[#43483e]">
                                                     <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
                                                     <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">Datei auswählen</span>
                                                 </label>
@@ -343,63 +377,44 @@ export default function EditRecipe(props) {
                                     {recipe?.image != null &&
                                         <label htmlFor="recipe_image_remove" className="inline-flex relative items-center cursor-pointer">
                                             <input type="checkbox" value="" id="recipe_image_remove" name="recipe[image_remove]" className="sr-only peer" onChange={handleFileRemove} />
-                                            <div className="w-11 h-6 bg-gray-100 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                            <span className="ml-3 text-sm text-gray-500 dark:text-gray-200 font-semibold">Entfernen</span>
+                                            <Switch />
+                                            <span className="ml-3 text-sm font-semibold">Entfernen</span>
                                         </label>
                                     }
                                 </div>
-                            </div>
+                            </Card>
 
-                            <div className="">
-                                <div className="text-sm font-semibold block mb-2">Aktuelles Bild</div>
-                                {recipe?.image != null 
-                                    ? <>
-                                        {isUploadButtonVisible
-                                            ? <img 
-                                                className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300" 
-                                                src={recipe?.image.directory + recipe?.image.filename}
-                                                alt={recipe}
-                                            />
-                                            : <img 
-                                                className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-25" 
-                                                src={recipe?.image.directory + recipe?.image.filename}
-                                                alt={recipe}
-                                            />
-                                        }
-                                    </>
-                                    : <img 
-                                        className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10 dark:opacity-100 dark:brightness-50" 
-                                        src="/img/default.jpg"
-                                        alt={recipe}
-                                    />
-                                }
-                            </div>
+                            <Card>
+                                <TextareaRow
+                                    id="recipe_ingredients"
+                                    label="Zutaten"
+                                    textareaProps={{
+                                        rows: 10, 
+                                        placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
+                                        defaultValue: getIngredients(recipe?.ingredients)
+                                    }}
+                                    className=""
+                                />
+
+                                <Spacer height="6" />
+
+                                <TextareaRow 
+                                    id="recipe_instructions"
+                                    label="Zubereitung"
+                                    textareaProps={{
+                                        rows: 10,
+                                        placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
+                                        defaultValue: getInstructions(recipe?.instructions)
+                                    }}
+                                    className=""
+                                />
+                            </Card>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 gap-y-6 mb-6">
-                            <TextareaRow
-                                id="recipe_ingredients"
-                                label="Zutaten"
-                                textareaProps={{
-                                    rows: 10, 
-                                    placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
-                                    defaultValue: getIngredients(recipe?.ingredients)
-                                }}
-                                className=""
-                            />
-                            <TextareaRow 
-                                id="recipe_instructions"
-                                label="Zubereitung"
-                                textareaProps={{
-                                    rows: 10,
-                                    placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
-                                    defaultValue: getInstructions(recipe?.instructions)
-                                }}
-                                className=""
-                            />
-                        </div>
+                        {/* <div className="flex justify-end md:justify-start mb-4 md:mb-0">
+                        </div> */}
 
-                        <div className="flex justify-between">
+                        <div className="flex justify-between px-4 md:pl-0">
                             <Button
                                 onClick={() => deleteRecipe(recipe?.id)}
                                 icon="delete"
@@ -417,7 +432,7 @@ export default function EditRecipe(props) {
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-4 md:hidden">
+                        <div className="flex justify-end md:hidden pr-4">
                             <Button
                                 type="submit"
                                 icon="save" 
