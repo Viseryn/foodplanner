@@ -6,9 +6,13 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Heading, { SubHeading } from '../../components/ui/Heading';
+import Heading, { SecondHeading } from '../../components/ui/Heading';
 import Spinner from '../../components/ui/Spinner';
 import IconButton from '../../components/ui/Buttons/IconButton';
+import Spacer from '../../components/ui/Spacer';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Buttons/Button';
+import Switch from '../../components/form/Switch';
  
 /**
  * Settings
@@ -191,88 +195,104 @@ export default function Settings(props) {
      * @todo UserGroup - Avatars?
      */
     return (
-        <div className="px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-white dark:bg-[#29353f] md:rounded-3xl md:w-[450px]">
-            <Heading>Einstellungen</Heading>
+        <div className="pb-[6.5rem] px-4 md:pl-0 pt-4 md:pt-9 w-full md:w-[450px]">
+            <div className="px-2 md:px-4">
+                <Heading>Einstellungen</Heading>
+            </div>
 
-            <SubHeading>Vorratskammer anzeigen</SubHeading>
-            <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene
-                Funktionen werden dann ebenfalls ein- oder ausgeblendet.
-            </p>
+            <Spacer height="10" />
 
-            <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
-                <input type="checkbox" value={props.settings.showPantry} checked={props.settings.showPantry ? 'checked' : ''} id="showPantry" name="showPantry" className="sr-only peer" onChange={handlePantrySettings} />
+            <SecondHeading style="mx-2 md:mx-4 mb-4">Vorratskammer anzeigen</SecondHeading>
+            <Card>
+                <p className="mb-4 text-sm">
+                    Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene
+                    Funktionen werden dann ebenfalls ein- oder ausgeblendet.
+                </p>
 
-                <div className="w-11 h-6 bg-gray-100 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all transition duration-300 dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
+                    <input type="checkbox" value={props.settings.showPantry} checked={props.settings.showPantry ? 'checked' : ''} id="showPantry" name="showPantry" className="sr-only peer" onChange={handlePantrySettings} />
+                    <Switch />
 
-                <span className="ml-3 text-sm text-gray-500 dark:text-gray-200 font-semibold">
-                    Vorratskammer wird {!props.settings.showPantry && ' nicht '} angezeigt
-                </span>
-            </label>
+                    <span className="ml-3 text-sm font-semibold">
+                        Vorratskammer wird {!props.settings.showPantry && ' nicht '} angezeigt
+                    </span>
+                </label>
+            </Card>
 
-            <div className="mb-10"></div>
+            <Spacer height="10" />
 
-            <SubHeading>Benutzergruppen verwalten</SubHeading>
-            <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen entfernen und eine Standardgruppe für neue Mahlzeiten festlegen.
-            </p>
+            <SecondHeading style="mx-2 md:mx-4 mb-4">Benutzergruppen verwalten</SecondHeading>
+            <Card>
+                <p className="mb-4 text-sm">
+                    Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen entfernen und eine Standardgruppe für neue Mahlzeiten festlegen.
+                </p>
 
-            {props.isLoadingUser ? (
-                <Spinner />
-            ) : (
-                (props.isLoadingUserGroups ? (
+                {props.isLoadingUser ? (
                     <Spinner />
                 ) : (
-                    <div className="space-y-2">
-                        {props.userGroups.map((group, index) => 
-                            <div key={index} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                <div className="pl-4 flex items-center">
-                                    <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                    {group.name} ({group.users.join(', ')})
-                                </div>
-                                <div className="flex gap-2">
-                                    <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
-                                    <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
-                                </div>
+                    (props.isLoadingUserGroups ? (
+                        <Spinner />
+                    ) : (
+                        <>
+                            <div className="space-y-2">
+                                {props.userGroups.map((group, index) => 
+                                    <div key={index} className="flex justify-between items-center">
+                                        <div className="flex items-center">
+                                            <span className="material-symbols-rounded mr-4">{group.icon}</span>
+                                            {group.name} ({group.users.join(', ')})
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
+                                            <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                        <Link 
-                            className="rounded-full p-2 pl-6 h-14 w-full flex items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]" 
-                            to="/settings/groups/add"
-                        >
-                            <span className="material-symbols-rounded mr-4">add</span>
-                            <span>Neue Gruppe hinzufügen</span>
-                        </Link>
-                    </div>
-                ))
-            )}
+                            
+                            <Spacer height="6" />
 
-            <div className="mb-10"></div>
+                            <div className="flex justify-end">
+                                <Button
+                                    role="secondary"
+                                    to="/settings/groups/add"
+                                    label="Neue Gruppe hinzufügen"
+                                    icon="add"
+                                    small={true}
+                                />
+                            </div>
+                        </>
+                    ))
+                )}
+            </Card>
 
-            <SubHeading>Standardzeit für Mahlzeiten einstellen</SubHeading>
-            <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
-            </p>
+            <Spacer height="10" />
 
-            {props.isLoadingUser ? (
-                <Spinner />
-            ) : (
-                (props.isLoadingMealCategories ? (
+            <SecondHeading style="mx-2 md:mx-4 mb-4">Standardzeit für Mahlzeiten</SecondHeading>
+            <Card>
+                <p className="mb-4 text-sm">
+                    Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
+                </p>
+
+                {props.isLoadingUser ? (
                     <Spinner />
                 ) : (
-                    <div className="space-y-2">
-                        {props.mealCategories.map((category, index) => 
-                            <div key={category.id} className="rounded-full p-2 flex justify-between items-center transition duration-300 hover:bg-gray-100 dark:hover:bg-[#252f38]">
-                                <div className="pl-4 flex items-center">
-                                    <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
-                                    {category.name}
+                    (props.isLoadingMealCategories ? (
+                        <Spinner />
+                    ) : (
+                        <div className="space-y-2">
+                            {props.mealCategories.map((category, index) => 
+                                <div key={category.id} className="flex justify-between items-center">
+                                    <div className="flex items-center">
+                                        <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
+                                        {category.name}
+                                    </div>
+                                        <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
                                 </div>
-                                    <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
-                            </div>
-                        )}
-                    </div>
-                ))
-            )}
+                            )}
+                        </div>
+                    ))
+                )}
+            </Card>
         </div>
     );
 }
