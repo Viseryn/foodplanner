@@ -448,7 +448,7 @@ export default function ShoppingList(props) {
                                         <input 
                                             id={item.id} 
                                             type="checkbox" 
-                                            className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border-2 border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
+                                            className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
                                             onChange={() => handleCheckboxChange(item.id)} 
                                             checked={item.checked}
                                         />
