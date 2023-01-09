@@ -10,14 +10,15 @@ import React from 'react';
  * A component that renders a huge heading.
  * 
  * @component
+ * @property {String} style Additional styling classes.
  * @property {*} children 
  * 
  * @example
  * <Heading>This is a title</Heading>
  */
-export default function Heading(props) {
+export default function Heading({ style = '', ...props }) {
     return (
-        <div className="text-3xl font-semibold text-primary-200 dark:text-secondary-dark-900">
+        <div className={'text-3xl font-semibold text-primary-200 dark:text-secondary-dark-900 ' + style}>
             {props.children}
         </div>
     );
@@ -29,14 +30,15 @@ export default function Heading(props) {
  * A component that renders a large heading.
  * 
  * @component
+ * @property {String} style Additional styling classes.
  * @property {*} children 
  * 
  * @example
  * <SubHeading>This is a title</SubHeading>
  */
-export function SubHeading(props) {
+export function SubHeading({ style = '', ...props }) {
     return (
-        <div className="text-lg font-semibold text-primary-200 dark:text-secondary-dark-900">
+        <div className={'text-lg font-semibold text-primary-200 dark:text-secondary-dark-900 ' + style}>
             {props.children}
         </div>
     );
@@ -48,14 +50,15 @@ export function SubHeading(props) {
  * A component that renders a very large heading.
  * 
  * @component
+ * @property {String} style Additional styling classes.
  * @property {*} children 
  * 
  * @example
  * <SecondHeading>This is a title</SecondHeading>
  */
-export function SecondHeading(props) {
+export function SecondHeading({ style = '', ...props }) {
     return (
-        <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900">
+        <div className={'text-xl font-semibold text-primary-200 dark:text-secondary-dark-900 ' + style}>
             {props.children}
         </div>
     );
