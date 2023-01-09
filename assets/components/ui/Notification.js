@@ -22,17 +22,18 @@ import React from 'react';
  * </Notification>
  */
 export default function Notification(props) {
-    let notificationStyle = 'p-6 space-x-4 text-sm rounded-3xl w-full';
+    let notificationStyle = 'p-6 space-x-4 text-sm rounded-xl w-full';
 
-    if (props.color !== undefined) {
-        notificationStyle += ' text-' + props.color + '-700 dark:text-gray-200 bg-' + props.color + '-200 dark:bg-' + props.color + '-900';
+    if (props.color === 'red') {
+        notificationStyle += ' text-notification-200 dark:text-notification-400 bg-notification-100 dark:bg-notification-300';
+    } else if(props.color === 'green') {
+        notificationStyle += ' text-tertiary-900 dark:text-tertiary-dark-900 bg-tertiary-100 dark:bg-tertiary-dark-100';
     } else {
-        notificationStyle += ' text-gray-900 dark:text-gray-100 bg-gray-200 dark:bg-gray-900';
+        notificationStyle += ' text-notification-600 dark:text-notification-800 bg-notification-500 dark:bg-notification-700';
     }
 
     return (
         <div className={notificationStyle}>
-            {/* <div className="text-red-700 text-green-700 text-yellow-700 text-blue-700 bg-red-200 bg-green-200 bg-yellow-200 bg-blue-200 dark:bg-red-900 dark:bg-green-900 dark:bg-yellow-900 dark:bg-blue-900"></div> */}
             <div className="flex items-center">
                 <span className="material-symbols-rounded mr-6">
                     {props.icon || 'info'}
