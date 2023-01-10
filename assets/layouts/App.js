@@ -57,6 +57,16 @@ export default function App() {
     }); 
 
     /**
+     * Topbar configuration is kept in global state.
+     * The topbar action buttons can move! On mobile screens,
+     * there is a dedicated top bar container. On larger screens,
+     * these buttons may move next to the Heading.
+     * 
+     * @todo
+     */
+    const [topbarActionButtons, setTopbarActionButtons] = useState({});
+
+    /**
      * Keep data in global state variables
      * and pass them as props to subcomponents.
      */
@@ -160,6 +170,9 @@ export default function App() {
         // Sidebar
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
+
+        // Topbar
+        'setTopbarActionButtons': setTopbarActionButtons,
     };
 
     /**
@@ -325,6 +338,7 @@ export default function App() {
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
+                    topbarActionButtons={topbarActionButtons}
                     {...props}
                 />
 
