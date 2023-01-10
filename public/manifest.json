@@ -4,6 +4,8 @@
     "name": "FoodPlanner",
     "short_name": "FoodPlanner",
     "orientation": "portrait",
+    "theme_color": "#fdfdf5",
+    "background_color": "#fdfdf5",
     "icons": [
         {
             "src": "/img/snom-192.png",
