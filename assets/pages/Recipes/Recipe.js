@@ -198,8 +198,8 @@ export default function Recipe(props) {
         <div className="">
             {/* Title and close button */}
             {props.isLoadingRecipes || props.recipeIndex < 0
-                ? <div className="animate-pulse mb-10 p-4 md:px-0 md:pt-9">
-                    <div className="h-9 bg-gray-200 dark:bg-gray-800 rounded-full w-1/2"></div>
+                ? <div className="animate-pulse p-4 md:px-0 md:pt-9">
+                    <div className="h-9 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
                 </div>
                 : <div className="flex justify-between items-start p-4 md:px-0 md:pt-9 lg:px-4">
                     <div className="hidden lg:block">
@@ -242,10 +242,15 @@ export default function Recipe(props) {
 
             {/* Ingredients, instructions and buttons */}
             {props.isLoadingRecipes || props.recipeIndex < 0
-                // ? <Card>
-                //     <TextParagraph />
-                // </Card>
-                ? <Spinner />
+                ? <>
+                    <Spacer height="8" />
+                    <div className="animate-pulse p-4 md:px-0 md:pt-9">
+                        <div className="h-9 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
+                    </div>
+                    <Card style="mx-4 md:ml-0 lg:ml-4">
+                        <TextParagraph />
+                    </Card>
+                </>
                 : <>
                     {/* Ingredients */}
                     {recipe?.ingredients?.length > 0 &&
