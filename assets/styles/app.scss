@@ -249,6 +249,11 @@ $rose-900: #881337;
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Remove scroll bouncing effect */
+html, body {
+    overscroll-behavior-y: none;
+}
+
 /* Remove scrollbars */
 body::-webkit-scrollbar {
     display: none;
