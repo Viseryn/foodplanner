@@ -185,7 +185,7 @@ function SidebarDrawerContent(props) {
             </ul>
 
             <div className="text-xs flex justify-end absolute bottom-5 right-5">
-                v1.2.0-pre
+                v1.2.0
             </div>
         </>
     );
