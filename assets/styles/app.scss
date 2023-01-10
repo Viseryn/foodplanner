@@ -312,8 +312,32 @@ body::-webkit-scrollbar {
 /* Slider */
 @media (prefers-color-scheme: dark) {
     .MuiSlider-markLabel {
-        color: white !important;
+        color: #d9e7cb !important;
     }
+}
+
+.MuiSlider-rail.css-14pt78w-MuiSlider-rail {
+    background-color: #bdcbaf;
+}
+
+.MuiSlider-track.css-1gv0vcd-MuiSlider-track {
+    background-color: #2a6c00;
+}
+
+.MuiSlider-mark {
+    display: none;
+}
+
+.MuiSlider-thumb.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeMedium.css-eg0mwd-MuiSlider-thumb {
+    background-color: #2a6c00;
+}
+
+.css-53k5tl-MuiSlider-root.MuiSlider-root.MuiSlider-colorPrimary.MuiSlider-sizeMedium.MuiSlider-marked.css-53k5tl-MuiSlider-root {
+    color: #2a6c00;
+}
+
+.css-eg0mwd-MuiSlider-thumb:hover, .css-eg0mwd-MuiSlider-thumb.Mui-focusVisible, .Mui-active {
+    box-shadow: none !important;
 }
 
 /* Icons */
