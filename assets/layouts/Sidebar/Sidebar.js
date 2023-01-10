@@ -61,7 +61,7 @@ export default function Sidebar(props) {
                 'z-[9000] fixed h-full ease-in-out duration-300' 
                 + (isDrawerVisible ? '' : ' -translate-x-full')
             }>
-                <div className="flex flex-col justify-start bg-white dark:bg-bg-dark rounded-r-3xl h-full w-80 px-6 pt-7 pb-3">
+                <div className="flex flex-col justify-start bg-bg dark:bg-bg-dark h-full w-80 px-6 pt-7 pb-3">
                     <SidebarDrawerContent
                         isDrawerVisible={isDrawerVisible}
                         setDrawerVisible={setDrawerVisible}
