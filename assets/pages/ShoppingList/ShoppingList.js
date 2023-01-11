@@ -424,7 +424,7 @@ export default function ShoppingList(props) {
      * Render
      */
     return (
-        <div className="flex flex-col pb-[6.5rem] pt-4 md:pt-9 w-full min-h-screen md:min-h-fit md:w-[450px]">
+        <div className="pb-[6.5rem] pt-4 md:pt-9 w-full md:w-[450px]">
             <div className="flex justify-between items-start pr-4 md:pr-0">
                 <Heading style="px-6 md:px-4">Einkaufsliste</Heading>
 
@@ -505,7 +505,7 @@ export default function ShoppingList(props) {
                     </Card>
 
                     {props.shoppingList.length >= 1 &&
-                        <div className="flex flex-col items-end justify-end gap-4 mt-auto pt-6 pb-20 md:pb-0 mx-4 md:mx-0">
+                        <div className="flex flex-col items-end justify-end gap-4 pt-6 pb-20 md:pb-0 mx-4 md:mx-0">
                             {props.settings.showPantry && props.pantry.length > 0 &&
                                 <Button
                                     onClick={handlePantryCombine}
