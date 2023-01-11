@@ -204,12 +204,12 @@ export default function App() {
                 .get('/api/refresh-data-timestamp')
                 .then(response => {
                     const timestamp = JSON.parse(response.data)
-                    console.log(timestamp)
+                    // console.log(timestamp)
 
                     // Check if timestamp has changed.
                     // If yes, trigger a reload of everything.
                     if (timestamp !== refreshDataTimestamp) {
-                        console.log('Trigger reload')
+                        // console.log('Trigger reload')
                         setRefreshDataTimestamp(timestamp)
 
                         // Settings isLoadingAnonymously to true will
