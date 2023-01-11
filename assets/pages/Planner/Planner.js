@@ -134,7 +134,6 @@ export default function Planner(props) {
         <div className="pb-[6.5rem] w-full md:w-fit md:min-w-[450px] md:max-w-[900px]">
             <div className="p-4 px-6 md:px-4 md:pt-9 flex items-start justify-between">
                 <Heading>Wochenplan</Heading>
-                {!props.isLoadingDays && <IconButton onClick={() => props.setLoadingDays(true)}>sync</IconButton>}
             </div>
             {props.isLoadingDays ? (
                 <Spinner /> /** @todo Add skeletons */
