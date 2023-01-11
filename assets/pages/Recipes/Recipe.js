@@ -65,6 +65,9 @@ export default function Recipe(props) {
         setButtonCounter(buttonCounter => {
             return buttonCounter + 1;
         });
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -79,6 +82,9 @@ export default function Recipe(props) {
         ;
         
         setShowPantryButton(false);
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -122,6 +128,9 @@ export default function Recipe(props) {
                 loadShoppingList(props.setShoppingList);
             })
         ;
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     }
 
     /**
@@ -142,6 +151,9 @@ export default function Recipe(props) {
                 loadPantry(props.setPantry);
             })
         ;
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     }
 
     /** 
