@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Heading, { SubHeading, SecondHeading } from '../../components/ui/Heading';
+import Heading, { SecondHeading } from '../../components/ui/Heading';
 import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
 import TextParagraph from '../../components/skeleton/TextParagraph';
 import IconButton from '../../components/ui/Buttons/IconButton';
@@ -17,7 +17,6 @@ import loadPantry from '../../util/loadPantry';
 import { floatToFraction, fractionToFloat } from '../../util/fractions';
 import Spacer from '../../components/ui/Spacer';
 import Card from '../../components/ui/Card';
-import Spinner from '../../components/ui/Spinner';
 
 /**
  * Recipe
