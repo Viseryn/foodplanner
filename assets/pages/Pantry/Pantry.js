@@ -416,7 +416,7 @@ export default function Pantry(props) {
 
                             {props.pantry.map(item =>
                                 <div key={item.id} className="flex justify-between items-center">
-                                    <div class="flex justify-start">
+                                    <div className="flex justify-start">
                                         <div className="mr-2">
                                             <IconButton onClick={() => handleDeleteItem(item.id)} outlined={true}>delete_sweep</IconButton>
                                         </div>
