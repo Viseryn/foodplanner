@@ -70,6 +70,10 @@ export default function App() {
      * Keep data in global state variables
      * and pass them as props to subcomponents.
      */
+    // RefreshDataTimestamp
+    const [refreshDataTimestamp, setRefreshDataTimestamp] = useState(null);
+    const [isLoadingAnonymously, setLoadingAnonymously] = useState(false);
+
     // User
     const [user, setUser] = useState([]);
     const [isLoadingUser, setLoadingUser] = useState(true);
@@ -116,6 +120,11 @@ export default function App() {
      * Props for subcomponents
      */
     const props = {
+        // RefreshDataTimestamp
+        'refreshDataTimestamp': refreshDataTimestamp,
+        'setRefreshDataTimestamp': setRefreshDataTimestamp,
+        'setLoadingAnonymously': setLoadingAnonymously,
+
         // User
         'user': user,
         'setUser': setUser,
@@ -176,6 +185,53 @@ export default function App() {
     };
 
     /**
+     * Load current RefreshDataTimestamp from database
+     * and trigger rerenders if the timestamp has changed.
+     */
+    useEffect(() => {
+        // Set initial timestamp
+        if (refreshDataTimestamp === null) {
+            axios
+                .get('/api/refresh-data-timestamp')
+                .then(response => {
+                    setRefreshDataTimestamp(JSON.parse(response.data))
+                })
+        }
+
+        // Create a repeating 5 seconds interval
+        const interval = setInterval(() => {
+            axios
+                .get('/api/refresh-data-timestamp')
+                .then(response => {
+                    const timestamp = JSON.parse(response.data)
+                    console.log(timestamp)
+
+                    // Check if timestamp has changed.
+                    // If yes, trigger a reload of everything.
+                    if (timestamp !== refreshDataTimestamp) {
+                        console.log('Trigger reload')
+                        setRefreshDataTimestamp(timestamp)
+
+                        // Settings isLoadingAnonymously to true will
+                        // trigger a reload of Days, Recipes, UserGroups,
+                        // Pantry, ShoppingList, MealCategories and Settings 
+                        // without activating any spinners or loading screens.
+                        setLoadingAnonymously(true)
+                    }
+                })
+
+            // If reload was triggered, set isLoadingAnonymously to false
+            if (isLoadingAnonymously) {
+                setLoadingAnonymously(false)
+            }
+        }, 5000)
+
+        return () => { 
+            clearInterval(interval)
+        }
+    })
+
+    /**
      * Load user data into global state when isLoadingUser
      * is true, e.g. on first render or after login/logout.
      */
@@ -211,7 +267,7 @@ export default function App() {
      * is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingUserGroups && !isLoadingUser) return;
+        if (!isLoadingUserGroups && !isLoadingUser && !isLoadingAnonymously) return;
         if (!isAuthenticated()) return;
 
         axios
@@ -221,14 +277,14 @@ export default function App() {
                 setLoadingUserGroups(false);
             })
         ;
-    }, [isLoadingUserGroups, isLoadingUser, user]);
+    }, [isLoadingUserGroups, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
      * Load MealCategory data into global state when isLoadingMealCategories
      * is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingMealCategories && !isLoadingUser) return;
+        if (!isLoadingMealCategories && !isLoadingUser && !isLoadingAnonymously) return;
         if (!isAuthenticated()) return;
 
         axios
@@ -238,14 +294,14 @@ export default function App() {
                 setLoadingMealCategories(false);
             })
         ;
-    }, [isLoadingMealCategories, isLoadingUser, user]);
+    }, [isLoadingMealCategories, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
      * Load Settings data into global state when isLoadingSettings
      * is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingSettings && !isLoadingUser) return;
+        if (!isLoadingSettings && !isLoadingUser && !isLoadingAnonymously) return;
         if (!isAuthenticated()) return;
 
         axios
@@ -255,7 +311,7 @@ export default function App() {
                 setLoadingSettings(false);
             })
         ;
-    }, [isLoadingSettings, isLoadingUser, user]);
+    }, [isLoadingSettings, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
      * Load recipes into global state when isLoadingRecipes 
@@ -263,7 +319,7 @@ export default function App() {
      * a recipe.
      */
     useEffect(() => {
-        if (!isLoadingRecipes && !isLoadingUser) return;
+        if (!isLoadingRecipes && !isLoadingUser && !isLoadingAnonymously) return;
         if (!isAuthenticated()) return;
 
         axios
@@ -273,7 +329,7 @@ export default function App() {
                 setLoadingRecipes(false);
             })
         ;
-    }, [isLoadingRecipes, isLoadingUser, user]);
+    }, [isLoadingRecipes, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
      * Calls the Update Days API, which removes all 
@@ -284,7 +340,7 @@ export default function App() {
      * a meal.
      */
     useEffect(() => {
-        if (!isLoadingDays && !isLoadingUser) return;
+        if (!isLoadingDays && !isLoadingUser && !isLoadingAnonymously) return;
         if (!isAuthenticated()) return;
 
         axios
@@ -299,35 +355,35 @@ export default function App() {
                 ;
             })
         ;
-    }, [isLoadingDays, isLoadingUser, user]);
+    }, [isLoadingDays, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
      * Load shopping list into global state when 
      * isLoadingShoppingList is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingShoppingList && !isLoadingUser) return;
+        if (!isLoadingShoppingList && !isLoadingUser && !isLoadingAnonymously) return;
         if (!isAuthenticated()) return;
 
         loadShoppingList(setShoppingList, () => {
             // Disable loading screen
             setLoadingShoppingList(false);
         });
-    }, [isLoadingShoppingList, isLoadingUser, user]);
+    }, [isLoadingShoppingList, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
      * Load pantry into global state when 
      * isLoadingPantry is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingPantry && !isLoadingUser) return;
+        if (!isLoadingPantry && !isLoadingUser && !isLoadingAnonymously) return;
         if (!isAuthenticated()) return;
 
         loadPantry(setPantry, () => {
             // Disable loading screen
             setLoadingPantry(false);
         });
-    }, [isLoadingPantry, isLoadingUser, user]);
+    }, [isLoadingPantry, isLoadingUser, user, isLoadingAnonymously]);
 
     /** 
      * Render
