@@ -164,6 +164,7 @@ export default function AddMeal(props) {
                                 icon="save" 
                                 label="Speichern" 
                                 outlined={true}
+                                floating={true}
                             />
                         }
                     </div> 
