@@ -212,7 +212,7 @@ export default function Recipe(props) {
         <div className="">
             {/* Title and close button */}
             {props.isLoadingRecipes || props.recipeIndex < 0
-                ? <div className="animate-pulse p-4 md:px-0 md:pt-9">
+                ? <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
                     <div className="h-9 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
                 </div>
                 : <div className="flex justify-between items-start p-4 md:px-0 md:pt-9 lg:px-4">
@@ -258,7 +258,7 @@ export default function Recipe(props) {
             {props.isLoadingRecipes || props.recipeIndex < 0
                 ? <>
                     <Spacer height="8" />
-                    <div className="animate-pulse p-4 md:px-0 md:pt-9">
+                    <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
                         <div className="h-9 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
                     </div>
                     <Card style="mx-4 md:ml-0 lg:ml-4">
