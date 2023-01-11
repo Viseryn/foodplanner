@@ -28,7 +28,9 @@ class SettingsController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch settings from database
-        $settings = $settingsRepository->find(1);
+        $settings = $settingsRepository->findOneBy([
+            'user' => $this->getUser()?->getId()
+        ]);
 
         // Prepare response
         $response = json_encode([
@@ -60,7 +62,9 @@ class SettingsController extends AbstractController
         $requestContent = json_decode($request->getContent(), true);
 
         // Update pantry settings
-        $settings = $settingsRepository->find(1);
+        $settings = $settingsRepository->findOneBy([
+            'user' => $this->getUser()?->getId()
+        ]);
         $settings->setShowPantry($requestContent['showPantry']);
         $settingsRepository->save($settings, true);
 
