@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Settings;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\SettingsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +19,8 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request, 
         UserPasswordHasherInterface $userPasswordHasher, 
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        SettingsRepository $settingsRepository,
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -34,7 +37,14 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
+            
+            // Add user specific settings
+            $settings = new Settings();
+            $settings
+                ->setUser($user)
+                ->setShowPantry(true)
+            ;
+            $settingsRepository->save($settings, true);
 
             return new Response();
         }
