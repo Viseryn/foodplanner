@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useScrollDirection from '../../../hooks/useScrollDirection';
+import useScrollPosition from '../../../hooks/useScrollPosition';
 
 /**
  * SidebarActionButton
@@ -24,10 +25,13 @@ import useScrollDirection from '../../../hooks/useScrollDirection';
  */
 export default function SidebarActionButton(props) {
     /**
-     * Make the SAB label visible when the user scrolls up or is at top of page
+     * Make the SAB label visible when the user scrolls up or is at top/bottom of page
      */
     const scrollDirection = useScrollDirection();
-    const isLabelVisible = scrollDirection === 'up' || window.pageYOffset === 0;
+    const scrollPosition = useScrollPosition();
+    const isAtBottom = scrollPosition >= document.body.scrollHeight - 50 // For some reason, on mobile the scrollHeight 
+                                                                         // is bigger than on desktop, so add some puffer.
+    const isLabelVisible = scrollDirection === 'up' || window.pageYOffset === 0 || (scrollDirection === 'down' && isAtBottom);
 
     /**
      * SAB styling classes
