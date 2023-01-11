@@ -136,6 +136,9 @@ export default function Pantry(props) {
 
         // Update the state variable
         props.setPantry(appearedItems);
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -210,6 +213,9 @@ export default function Pantry(props) {
                 name: event.target.value.trim(),
                 editable: false,
             })
+                
+            // Refresh Data Timestamp
+            axios.get('/api/refresh-data-timestamp/set')
         }
     };
 
@@ -241,6 +247,9 @@ export default function Pantry(props) {
     
             // Update list
             props.setPantry(items);
+                
+            // Refresh Data Timestamp
+            axios.get('/api/refresh-data-timestamp/set')
         }
     };
 
@@ -262,6 +271,9 @@ export default function Pantry(props) {
         }).then((confirm) => {
             if (confirm) {
                 props.setPantry([]);
+                
+                // Refresh Data Timestamp
+                axios.get('/api/refresh-data-timestamp/set')
             }
         });
     }
@@ -282,6 +294,9 @@ export default function Pantry(props) {
 
         // Update list
         props.setPantry(items);
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -311,6 +326,9 @@ export default function Pantry(props) {
 
         // Update list
         props.setPantry(items);
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**

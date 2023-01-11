@@ -66,6 +66,9 @@ export default function AddGroup(props) {
             .then(() => {
                 setSubmitted(true); 
                 props.setLoadingUserGroups(true); 
+                
+                // Refresh Data Timestamp
+                axios.get('/api/refresh-data-timestamp/set')
             })
         ;
     };

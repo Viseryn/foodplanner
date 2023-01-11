@@ -212,6 +212,9 @@ export default function EditRecipe(props) {
 
                 props.setLoadingRecipes(true);
                 props.setLoadingDays(true);
+                
+                // Refresh Data Timestamp
+                axios.get('/api/refresh-data-timestamp/set')
             })
         ;
     };
@@ -244,6 +247,9 @@ export default function EditRecipe(props) {
                         setDeleted(true);
                         props.setLoadingRecipes(true);
                         props.setLoadingDays(true);
+                
+                        // Refresh Data Timestamp
+                        axios.get('/api/refresh-data-timestamp/set')
                     })
                 ;
             }

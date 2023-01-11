@@ -132,6 +132,9 @@ export default function ShoppingList(props) {
 
         // Update the state variable
         props.setShoppingList(appearedItems);
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -200,6 +203,9 @@ export default function ShoppingList(props) {
 
         // Update the state variable
         props.setShoppingList(appearedItems);
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -215,6 +221,9 @@ export default function ShoppingList(props) {
             'checked': !props.shoppingList[findItemById(id)].checked,
             'editable': false,
         });
+                
+        // WORKAROUND FOR @todo IN CONTROLLER
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -229,6 +238,9 @@ export default function ShoppingList(props) {
         })
 
         props.setShoppingList(newList);
+                
+        // WORKAROUND FOR @todo IN CONTROLLER
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -307,6 +319,9 @@ export default function ShoppingList(props) {
                 name: event.target.value.trim(),
                 editable: false,
             })
+                
+            // Refresh Data Timestamp
+            axios.get('/api/refresh-data-timestamp/set')
         }
     };
 
@@ -338,6 +353,9 @@ export default function ShoppingList(props) {
     
             // Update list
             props.setShoppingList(items);
+                
+            // Refresh Data Timestamp
+            axios.get('/api/refresh-data-timestamp/set')
         }
     };
 
@@ -359,6 +377,9 @@ export default function ShoppingList(props) {
         }).then((confirm) => {
             if (confirm) {
                 props.setShoppingList([]);
+                
+                // Refresh Data Timestamp
+                axios.get('/api/refresh-data-timestamp/set')
             }
         });
     }

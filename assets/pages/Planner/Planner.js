@@ -42,9 +42,10 @@ export default function Planner(props) {
      * then the Meal Delete API is called and the days are 
      * updated. If cancelled, nothing happens.
      * 
-     * @param {int} id 
+     * @param {object} day
+     * @param {object} meal 
      */
-    const deleteMeal = (id) => {
+    const deleteMeal = (day, meal) => {
         swal({
             dangerMode: true,
             icon: 'error',
@@ -56,8 +57,11 @@ export default function Planner(props) {
         }).then(confirm => {
             if (confirm) {
                 axios
-                    .get('/api/meals/delete/' + id)
-                    .then(() => props.setLoadingDays(true))
+                    .get('/api/meals/delete/' + meal.id)
+                    .then(() => {
+                        // Refresh Data Timestamp
+                        axios.get('/api/refresh-data-timestamp/set')
+                    })
                 ;
             }
         });
@@ -175,7 +179,7 @@ export default function Planner(props) {
                                                 </div>
                                             </Link>
                                             <span 
-                                                onClick={() => deleteMeal(meal.id)}
+                                                onClick={() => deleteMeal(day, meal)}
                                                 className="cursor-pointer transition duration-300 group-hover:block material-symbols-rounded text-white absolute top-2 right-2
                                                 hover:bg-gray-600/40 p-1 rounded-full"
                                             >

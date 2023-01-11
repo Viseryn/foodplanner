@@ -67,6 +67,9 @@ export default function Settings(props) {
 
         props.setUserGroups(groups);
         axios.post('/api/usergroups/standard', JSON.stringify(groups));
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -93,6 +96,9 @@ export default function Settings(props) {
 
         props.setMealCategories(categories);
         axios.post('/api/mealcategories/standard', JSON.stringify(categories));
+                
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
     };
 
     /**
@@ -164,6 +170,9 @@ export default function Settings(props) {
                 .then(() => {
                     props.setLoadingUserGroups(true);
                     props.setLoadingDays(true);
+                
+                    // Refresh Data Timestamp
+                    axios.get('/api/refresh-data-timestamp/set')
                 })
             ;
         });

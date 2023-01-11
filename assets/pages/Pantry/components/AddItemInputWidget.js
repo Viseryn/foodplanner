@@ -55,6 +55,9 @@ import loadPantry from "../../../util/loadPantry";
 
                     // Load new pantry
                     loadPantry(props.setPantry);
+                
+                    // Refresh Data Timestamp
+                    axios.get('/api/refresh-data-timestamp/set')
                 })
             ;
         }

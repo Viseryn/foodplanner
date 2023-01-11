@@ -60,6 +60,9 @@ export default function AddMeal(props) {
             .then(() => {
                 setSubmitted(true); 
                 props.setLoadingDays(true);
+                
+                // Refresh Data Timestamp
+                axios.get('/api/refresh-data-timestamp/set')
             })
         ;
     };

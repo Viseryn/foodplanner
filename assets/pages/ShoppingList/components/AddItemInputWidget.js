@@ -55,6 +55,9 @@ import loadShoppingList from "../../../util/loadShoppingList";
 
                     // Load new shopping list
                     loadShoppingList(props.setShoppingList);
+                
+                    // Refresh Data Timestamp
+                    axios.get('/api/refresh-data-timestamp/set')
                 })
             ;
         }

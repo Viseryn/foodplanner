@@ -87,6 +87,9 @@ export default function AddRecipe(props) {
                 setSubmittedSuccessfully(true);
                 props.setLoadingRecipes(true);
                 setNewId(response.data.id);
+                
+                // Refresh Data Timestamp
+                axios.get('/api/refresh-data-timestamp/set')
             })
         ;
     };
