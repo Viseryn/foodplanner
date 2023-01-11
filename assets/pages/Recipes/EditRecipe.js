@@ -271,7 +271,7 @@ export default function EditRecipe(props) {
      * Render
      */
     return (
-        <div className="pb-[6.5rem] w-full md:max-w-[900px]">
+        <div className="pb-[6.75rem] md:pb-0 w-full md:max-w-[900px]">
             {isSubmittedSuccessfully &&
                 <Navigate to={'/recipe/' + newId} />
             }
@@ -420,7 +420,7 @@ export default function EditRecipe(props) {
                         {/* <div className="flex justify-end md:justify-start mb-4 md:mb-0">
                         </div> */}
 
-                        <div className="flex justify-between px-4 md:pl-0">
+                        <div className="flex justify-between items-center px-4 md:pl-0">
                             <Button
                                 onClick={() => deleteRecipe(recipe?.id)}
                                 icon="delete"
@@ -434,6 +434,7 @@ export default function EditRecipe(props) {
                                     label="Speichern" 
                                     elevated={true}
                                     outlined={true}
+                                    floating={true}
                                 />
                             </div>
                         </div>

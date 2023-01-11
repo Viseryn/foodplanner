@@ -109,7 +109,7 @@ export default function AddRecipe(props) {
      * Render
      */
     return (
-        <div className="pb-[6.5rem] w-full md:max-w-[900px]">
+        <div className="pb-[6.5rem] md:pb-0 w-full md:max-w-[900px]">
             {/* If the form is submitted, redirect to the new recipe */}
             {isSubmittedSuccessfully && !props.isLoadingRecipes &&
                 <Navigate to={'/recipe/' + newId} />
