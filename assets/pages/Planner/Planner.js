@@ -193,7 +193,7 @@ export default function Planner(props) {
                                     className={(day.meals.length > 0 ? 'h-14 md:h-40' : 'h-40') + ' w-full rounded-2xl transition duration-300 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300 font-semibold text-lg flex justify-center items-center flex-row md:flex-col gap-4'}
                                 >
                                     <span className="material-symbols-rounded">add</span>
-                                    <span>Neue Mahlzeit</span>
+                                    <span className="mx-6">Neue Mahlzeit</span>
                                 </Link>
                             </div>
                         </Card>
