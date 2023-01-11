@@ -227,6 +227,7 @@ export default function Recipes(props) {
                         id={id} 
                         setTwoColumns={() => {
                             setTwoColumns(false);
+                            props.setRecipeIndex(-1);
                             resetSAB();
                         }} 
                         {...props}

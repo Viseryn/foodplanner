@@ -191,6 +191,9 @@ export default function Recipe(props) {
      * Put the selected recipe in a local state 
      * variable as an abbreviation. A copy is also 
      * stored in tmpRecipe.
+     * 
+     * These will be updated whenever the global
+     * recipes state variable changes, e.g. on recipe edit.
      */
     useEffect(() => {
         setRecipe(props.recipes[props.recipeIndex]);
@@ -198,7 +201,7 @@ export default function Recipe(props) {
         
         // Set initial portion size
         setPortionSize(recipe?.portion_size);
-    }, [props.recipeIndex, recipe]);
+    }, [props.recipeIndex, recipe, props.recipes]);
 
     /**
      * Render
