@@ -22,6 +22,7 @@ class UserController extends AbstractController
     {
         $serializer = SerializerBuilder::create()->build();
         $jsonContent = $serializer->serialize([
+            'id' => $this->getUser()?->getId(),
             'username' => $this->getUser()?->getUsername(),
             'roles' => $this->getUser()?->getRoles(),
         ], 'json');
