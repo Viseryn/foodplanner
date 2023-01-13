@@ -3,19 +3,16 @@
  ************************************/
 
 import React, { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 
-import { InputRow } from '../../components/form/Input';
-import { TextareaRow } from '../../components/form/Textarea';
-import { SliderRow } from '../../components/form/Slider';
-import Button from '../../components/ui/Buttons/Button';
-import Heading from '../../components/ui/Heading';
-import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/Buttons/IconButton';
-import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
-import Card from '../../components/ui/Card';
-import Spacer from '../../components/ui/Spacer';
+import { InputRow }     from '../../components/form/Input';
+import { SliderRow }    from '../../components/form/Slider';
+import { TextareaRow }  from '../../components/form/Textarea';
+import Button           from '../../components/ui/Buttons/Button';
+import Card             from '../../components/ui/Card';
+import Spacer           from '../../components/ui/Spacer';
+import Spinner          from '../../components/ui/Spinner';
 
 /**
  * AddRecipe
