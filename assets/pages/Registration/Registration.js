@@ -1,18 +1,17 @@
-/*********************************
- * ./assets/pages/Login/Login.js *
- *********************************/
+/***********************************************
+ * ./assets/pages/Registration/Registration.js *
+ ***********************************************/
 
-import React, { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { Link, Navigate } from 'react-router-dom'
+import axios from 'axios'
 
-import { InputRow } from '../../components/form/Input';
-import Button from '../../components/ui/Buttons/Button';
-import Heading from '../../components/ui/Heading';
-import Notification from '../../components/ui/Notification';
-import Spinner from '../../components/ui/Spinner';
-import Card from '../../components/ui/Card';
-import Spacer from '../../components/ui/Spacer';
+import { InputRow } from '../../components/form/Input'
+import Button       from '../../components/ui/Buttons/Button'
+import Card         from '../../components/ui/Card'
+import Notification from '../../components/ui/Notification'
+import Spacer       from '../../components/ui/Spacer'
+import Spinner      from '../../components/ui/Spinner'
 
 /**
  * Registration
@@ -29,16 +28,22 @@ export default function Registration(props) {
     /**
      * State variables
      */
-    const [isLoadingSubmit, setLoadingSubmit] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [isLoadingSubmit, setLoadingSubmit] = useState(false)
+    const [success, setSuccess] = useState(false)
 
     /**
-     * Load sidebar and user data
+     * Load layout
      */
     useEffect(() => {
-        props.setSidebarActiveItem();
-        props.setSidebarActionButton();
-    }, []);
+        // Load sidebar
+        props.setSidebarActiveItem()
+        props.setSidebarActionButton()
+
+        // Load topbar
+        props.setTopbar({
+            title: 'Registrierung',
+        })
+    }, [])
 
     /**
      * handleSubmit
@@ -48,31 +53,26 @@ export default function Registration(props) {
      * @param {*} event
      */
     const handleSubmit = (event) => {
-        const formData = new FormData(event.target);
-        event.preventDefault();
+        const formData = new FormData(event.target)
+        event.preventDefault()
 
-        setLoadingSubmit(true);
+        setLoadingSubmit(true)
 
         axios
             .post('/api/register', formData)
             .then(() => {
-                setSuccess(true);
+                setSuccess(true)
             })
-        ;
-    };
+    }
 
     /**
      * Render
      */
     return (
-        <div className="pb-[6.5rem] md:pb-6 w-full md:w-[400px]">
-            <div className="pt-4 md:pt-9 px-4">
-                <Heading>Registrierung</Heading>
-            </div>
+        <div className="pb-24 md:pb-4 md:w-[400px]">
+            <Spacer height="6" />
 
-            <Spacer height="10" />
-
-            <div className="">
+            <div className="mx-4 md:mx-0">
                 {isLoadingSubmit && success && 
                     <Notification color="green" title="Registrierung erfolgreich!">
                         Du kannst dich nun <Link to="/login">einloggen</Link>.
@@ -89,7 +89,7 @@ export default function Registration(props) {
 
                 {props.user?.username === undefined && !props.isLoadingUser && !isLoadingSubmit &&
                     <form onSubmit={handleSubmit} autoComplete="off">
-                        <Card style="mx-4 md:mx-0">
+                        <Card>
                             <InputRow 
                                 id="registration_form_username"
                                 label="Dein Benutzername"
@@ -97,6 +97,7 @@ export default function Registration(props) {
                                     required: 'required', 
                                 }}
                             />
+
                             <InputRow 
                                 id="registration_form_plainPassword"
                                 label="Dein Passwort"
@@ -105,29 +106,30 @@ export default function Registration(props) {
                                     type: 'password',
                                 }}
                             />
-                            <div className="mb-6 flex items-center">
+
+                            <div className="flex items-center">
                                 <input 
                                     id="registration_form_agreeTerms"
                                     name="registration_form[agreeTerms]"
                                     type="checkbox" 
                                     required="required"
-                                    className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border-2 border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
+                                    className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
                                 />
                                 <label htmlFor="registration_form_agreeTerms">Ich stimme den Nutzungsbedingungen und den Datenschutzbestimmungen zu.</label>
                             </div>
 
-                            <hr className="border-t-secondary-200 dark:border-t-secondary-dark-200" />
+                            <hr className="my-6 border-t-secondary-200 dark:border-t-secondary-dark-200" />
 
-                            <p className="mt-6 text-justify">
+                            <p className="text-justify">
                                 Nach der Registrierung muss deinem Account manuell
                                 der Admin-Status verliehen werden, ehe du FoodPlanner
                                 nutzen kannst.
                             </p>
                         </Card>
 
-                        <Spacer height="6" />
+                        <Spacer height="4" />
 
-                        <div className="flex justify-end mx-4 md:mx-0">
+                        <div className="flex justify-end">
                             <Button
                                 type="submit"
                                 icon="login"
@@ -139,5 +141,5 @@ export default function Registration(props) {
                 }
             </div>
         </div>
-    );
+    )
 }

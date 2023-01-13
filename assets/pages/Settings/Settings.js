@@ -2,17 +2,16 @@
  * ./assets/pages/Settings/Settings.js *
  ***************************************/
 
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect } from 'react'
+import axios from 'axios'
 
-import Heading, { SecondHeading } from '../../components/ui/Heading';
-import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/Buttons/IconButton';
-import Spacer from '../../components/ui/Spacer';
-import Card from '../../components/ui/Card';
-import Button from '../../components/ui/Buttons/Button';
-import Switch from '../../components/form/Switch';
+import Switch               from '../../components/form/Switch'
+import Button               from '../../components/ui/Buttons/Button'
+import IconButton           from '../../components/ui/Buttons/IconButton'
+import Card                 from '../../components/ui/Card'
+import { SecondHeading }    from '../../components/ui/Heading'
+import Spacer               from '../../components/ui/Spacer'
+import Spinner              from '../../components/ui/Spinner'
  
 /**
  * Settings
@@ -33,17 +32,6 @@ import Switch from '../../components/form/Switch';
  */
 export default function Settings(props) {
     /**
-     * Load sidebar
-     */
-    useEffect(() => {
-        props.setSidebarActiveItem();
-        props.setSidebarActionButton();
-
-        // Scroll to top
-        window.scrollTo(0, 0);
-    }, []);
-
-    /**
      * handleSetStandardGroup
      * 
      * Changes the standard UserGroup to the one selected 
@@ -53,24 +41,24 @@ export default function Settings(props) {
      * @param {number} index The index of the group that shall be the standard group.
      */
     const handleSetStandardGroup = (index) => {
-        let groups = [...props.userGroups];
+        let groups = [...props.userGroups]
 
         groups.forEach((group, i) => {
             if (index === i) {
-                group.isStandard = true;
-                group.checked = 'checked';
+                group.isStandard = true
+                group.checked = 'checked'
             } else {
-                group.isStandard = false;
-                group.checked = '';
+                group.isStandard = false
+                group.checked = ''
             }
-        });
+        })
 
-        props.setUserGroups(groups);
-        axios.post('/api/usergroups/standard', JSON.stringify(groups));
+        props.setUserGroups(groups)
+        axios.post('/api/usergroups/standard', JSON.stringify(groups))
                 
         // Refresh Data Timestamp
         axios.get('/api/refresh-data-timestamp/set')
-    };
+    }
 
     /**
      * handleSetStandardMealCategory
@@ -82,24 +70,24 @@ export default function Settings(props) {
      * @param {number} index The index of the category that shall be the standard category.
      */
     const handleSetStandardMealCategory = (index) => {
-        let categories = [...props.mealCategories];
+        let categories = [...props.mealCategories]
 
         categories.forEach((category, i) => {
             if (index === i) {
-                category.isStandard = true;
-                category.checked = 'checked';
+                category.isStandard = true
+                category.checked = 'checked'
             } else {
-                category.isStandard = false;
-                category.checked = '';
+                category.isStandard = false
+                category.checked = ''
             }
-        });
+        })
 
-        props.setMealCategories(categories);
-        axios.post('/api/mealcategories/standard', JSON.stringify(categories));
+        props.setMealCategories(categories)
+        axios.post('/api/mealcategories/standard', JSON.stringify(categories))
                 
         // Refresh Data Timestamp
         axios.get('/api/refresh-data-timestamp/set')
-    };
+    }
 
     /**
      * handleDeleteGroup
@@ -112,13 +100,13 @@ export default function Settings(props) {
      */
     const handleDeleteGroup = (index) => {
         // Get id
-        let id = 0;
+        let id = 0
 
         props.userGroups.forEach((group, i) => {
             if (index === i) {
-                id = props.userGroups[i].value;
+                id = props.userGroups[i].value
             }
-        });
+        })
 
         // Show warning with confirm and cancel buttons
         swal({
@@ -131,7 +119,7 @@ export default function Settings(props) {
             },
         }).then(confirm => {
             // Cancel if not confirmed
-            if (!confirm) return;
+            if (!confirm) return
 
             // Cancel if there is only one UserGroup left
             if (props.userGroups.length <= 1) {
@@ -143,9 +131,9 @@ export default function Settings(props) {
                     buttons: {
                         confirm: 'Okay',
                     },
-                });
+                })
 
-                return;
+                return
             }
 
             // Cancel if the given group is standard
@@ -158,9 +146,9 @@ export default function Settings(props) {
                     buttons: {
                         confirm: 'Okay',
                     },
-                });
+                })
 
-                return;
+                return
             }
 
             // Call UserGroup Delete API if alert was confirmed and 
@@ -168,15 +156,14 @@ export default function Settings(props) {
             axios
                 .get('/api/usergroups/delete/' + id)
                 .then(() => {
-                    props.setLoadingUserGroups(true);
-                    props.setLoadingDays(true);
+                    props.setLoadingUserGroups(true)
+                    props.setLoadingDays(true)
                 
                     // Refresh Data Timestamp
                     axios.get('/api/refresh-data-timestamp/set')
                 })
-            ;
-        });
-    };
+        })
+    }
 
     /**
      * handlePantrySettings
@@ -189,14 +176,31 @@ export default function Settings(props) {
         props.setSettings({ 
             ...props.settings,
             showPantry: !props.settings.showPantry,
-        });
-    };
+        })
+    }
 
     useEffect(() => {
-        if (props.isLoadingSettings) return;
+        if (props.isLoadingSettings) return
 
-        axios.post('/api/settings/pantry', JSON.stringify(props.settings));
-    }, [props.settings]);
+        axios.post('/api/settings/pantry', JSON.stringify(props.settings))
+    }, [props.settings])
+
+    /**
+     * Load layout
+     */
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebarActiveItem()
+        props.setSidebarActionButton()
+
+        // Load Topbar
+        props.setTopbar({
+            title: 'Einstellungen',
+        })
+
+        // Scroll to top
+        window.scrollTo(0, 0)
+    }, [])
 
     /** 
      * Render
@@ -204,104 +208,108 @@ export default function Settings(props) {
      * @todo UserGroup - Avatars?
      */
     return (
-        <div className="pb-[6.5rem] px-4 md:pl-0 pt-4 md:pt-9 w-full md:w-[450px]">
-            <div className="px-2 md:px-4">
-                <Heading>Einstellungen</Heading>
-            </div>
+        <div className="pb-24 md:pb-4 md:w-[450px]">
+            <Spacer height="6" />
 
-            <Spacer height="10" />
+            <div className="mx-4 md:mx-0">
+                <SecondHeading style="pl-2 mb-2">Vorratskammer anzeigen</SecondHeading>
+                <Card>
+                    <p className="text-sm">
+                        Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene
+                        Funktionen werden dann ebenfalls ein- oder ausgeblendet.
+                    </p>
 
-            <SecondHeading style="mx-2 md:mx-4 mb-4">Vorratskammer anzeigen</SecondHeading>
-            <Card>
-                <p className="mb-4 text-sm">
-                    Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene
-                    Funktionen werden dann ebenfalls ein- oder ausgeblendet.
-                </p>
+                    <Spacer height="4" />
 
-                <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
-                    <input type="checkbox" value={props.settings.showPantry} checked={props.settings.showPantry ? 'checked' : ''} id="showPantry" name="showPantry" className="sr-only peer" onChange={handlePantrySettings} />
-                    <Switch />
+                    <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
+                        <input type="checkbox" value={props.settings.showPantry} checked={props.settings.showPantry ? 'checked' : ''} id="showPantry" name="showPantry" className="sr-only peer" onChange={handlePantrySettings} />
+                        <Switch />
 
-                    <span className="ml-3 text-sm font-semibold">
-                        Vorratskammer wird {!props.settings.showPantry && ' nicht '} angezeigt
-                    </span>
-                </label>
-            </Card>
+                        <span className="ml-3 text-sm font-semibold">
+                            Vorratskammer wird {!props.settings.showPantry && ' nicht '} angezeigt
+                        </span>
+                    </label>
+                </Card>
 
-            <Spacer height="10" />
+                <Spacer height="10" />
 
-            <SecondHeading style="mx-2 md:mx-4 mb-4">Benutzergruppen verwalten</SecondHeading>
-            <Card>
-                <p className="mb-4 text-sm">
-                    Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen entfernen und eine Standardgruppe für neue Mahlzeiten festlegen.
-                </p>
+                <SecondHeading style="pl-2 mb-2">Benutzergruppen verwalten</SecondHeading>
+                <Card>
+                    <p className="text-sm">
+                        Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen entfernen und eine Standardgruppe für neue Mahlzeiten festlegen.
+                    </p>
 
-                {props.isLoadingUser ? (
-                    <Spinner />
-                ) : (
-                    (props.isLoadingUserGroups ? (
+                    <Spacer height="4" />
+
+                    {props.isLoadingUser ? (
                         <Spinner />
                     ) : (
-                        <>
+                        (props.isLoadingUserGroups ? (
+                            <Spinner />
+                        ) : (
+                            <>
+                                <div className="space-y-2">
+                                    {props.userGroups.map((group, index) => 
+                                        <div key={index} className="flex justify-between items-center">
+                                            <div className="flex items-center">
+                                                <span className="material-symbols-rounded mr-4">{group.icon}</span>
+                                                {group.name} ({group.users.join(', ')})
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
+                                                <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                <Spacer height="4" />
+
+                                <div className="flex justify-end">
+                                    <Button
+                                        role="secondary"
+                                        location="/settings/groups/add"
+                                        label="Neue Gruppe hinzufügen"
+                                        icon="add"
+                                        small={true}
+                                    />
+                                </div>
+                            </>
+                        ))
+                    )}
+                </Card>
+
+                <Spacer height="10" />
+
+                <SecondHeading style="pl-2 mb-2">Standardzeit für Mahlzeiten</SecondHeading>
+                <Card>
+                    <p className="text-sm">
+                        Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
+                    </p>
+
+                    <Spacer height="4" />
+
+                    {props.isLoadingUser ? (
+                        <Spinner />
+                    ) : (
+                        (props.isLoadingMealCategories ? (
+                            <Spinner />
+                        ) : (
                             <div className="space-y-2">
-                                {props.userGroups.map((group, index) => 
-                                    <div key={index} className="flex justify-between items-center">
+                                {props.mealCategories.map((category, index) => 
+                                    <div key={category.id} className="flex justify-between items-center">
                                         <div className="flex items-center">
-                                            <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                            {group.name} ({group.users.join(', ')})
+                                            <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
+                                            {category.name}
                                         </div>
-                                        <div className="flex gap-2">
-                                            <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
-                                            <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
-                                        </div>
+                                            <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
                                     </div>
                                 )}
                             </div>
-                            
-                            <Spacer height="6" />
-
-                            <div className="flex justify-end">
-                                <Button
-                                    role="secondary"
-                                    location="/settings/groups/add"
-                                    label="Neue Gruppe hinzufügen"
-                                    icon="add"
-                                    small={true}
-                                />
-                            </div>
-                        </>
-                    ))
-                )}
-            </Card>
-
-            <Spacer height="10" />
-
-            <SecondHeading style="mx-2 md:mx-4 mb-4">Standardzeit für Mahlzeiten</SecondHeading>
-            <Card>
-                <p className="mb-4 text-sm">
-                    Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
-                </p>
-
-                {props.isLoadingUser ? (
-                    <Spinner />
-                ) : (
-                    (props.isLoadingMealCategories ? (
-                        <Spinner />
-                    ) : (
-                        <div className="space-y-2">
-                            {props.mealCategories.map((category, index) => 
-                                <div key={category.id} className="flex justify-between items-center">
-                                    <div className="flex items-center">
-                                        <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
-                                        {category.name}
-                                    </div>
-                                        <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
-                                </div>
-                            )}
-                        </div>
-                    ))
-                )}
-            </Card>
+                        ))
+                    )}
+                </Card>
+            </div>
         </div>
-    );
+    )
 }

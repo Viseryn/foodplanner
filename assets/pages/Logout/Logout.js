@@ -2,11 +2,12 @@
  * ./assets/pages/Logout/Logout.js *
  ***********************************/
 
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import axios from "axios";
-import Spinner from "../../components/ui/Spinner";
-import Heading from "../../components/ui/Heading";
+import React, { useEffect, useState } from "react"
+import { Navigate } from "react-router-dom"
+import axios from "axios"
+
+import Spacer  from "../../components/ui/Spacer"
+import Spinner from "../../components/ui/Spinner"
 
 /**
  * Logout
@@ -27,35 +28,48 @@ export default function Logout(props) {
     /**
      * State variables
      */
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setLoading] = useState(true)
 
     /**
      * Call Logout API
      */
     useEffect(() => {
-        if (!isLoading) return;
+        if (!isLoading) return
 
         // Remove user data from state
-        props.setUser([]);
+        props.setUser([])
 
         // Remove other sensitive data
-        props.setShoppingList([]);
-        props.setPantry([]);
-        props.setDays([]);
-        props.setRecipes([]);
-        props.setSettings([]);
+        props.setShoppingList([])
+        props.setPantry([])
+        props.setDays([])
+        props.setRecipes([])
+        props.setSettings([])
 
         // Call Logout API
         axios
             .get('/api/logout')
             .then(() => {
-                setLoading(false);
+                setLoading(false)
 
                 // Trigger reload of user data
-                props.setLoadingUser(true);
+                props.setLoadingUser(true)
             })
-        ;
-    }, [isLoading]);
+    }, [isLoading])
+
+    /**
+     * Load layout
+     */
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebarActiveItem()
+        props.setSidebarActionButton()
+
+        // Load topbar
+        props.setTopbar({
+            title: 'Logout',
+        })
+    }, [])
 
     /**
      * Redirect to login page
@@ -65,14 +79,11 @@ export default function Logout(props) {
             {props.isLoadingUser || !isLoading ? (
                 <Navigate to="/login" />
             ) : (
-                <div className="pb-[6.5rem] md:pb-6 pt-4 md:pt-9 px-4 md:pl-0 w-full md:w-[450px]">
-                    <div className="px-4">
-                        <Heading>Login</Heading>
-                    </div>
-                    
+                <div className="pb-24 md:pb-4 md:w-[450px]">
+                    <Spacer height="6" />
                     <Spinner />
                 </div>
             )}
         </>
-    );
+    )
 }

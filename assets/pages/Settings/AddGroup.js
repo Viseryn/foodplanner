@@ -2,18 +2,15 @@
  * ./assets/pages/Settings/AddGroup.js *
  ***************************************/
 
-import React, { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import axios from 'axios'
 
-import Heading, { SubHeading } from '../../components/ui/Heading';
-import Spinner from '../../components/ui/Spinner';
-import { InputLabel, InputRow } from '../../components/form/Input';
-import Button from '../../components/ui/Buttons/Button';
-import IconButton from '../../components/ui/Buttons/IconButton';
-import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
-import Spacer from '../../components/ui/Spacer';
-import Card from '../../components/ui/Card';
+import { InputLabel, InputRow } from '../../components/form/Input'
+import Button                   from '../../components/ui/Buttons/Button'
+import Card                     from '../../components/ui/Card'
+import Spacer                   from '../../components/ui/Spacer'
+import Spinner                  from '../../components/ui/Spinner'
 
 /**
  * AddGroup
@@ -27,26 +24,26 @@ export default function AddGroup(props) {
     /**
      * State variables
      */
-    const [users, setUsers] = useState([]);
-    const [isLoadingUsers, setLoadingUsers] = useState(true);
-    const [isLoadingSubmit, setLoadingSubmit] = useState(false);
-    const [isSubmitted, setSubmitted] = useState(false);
+    const [users, setUsers] = useState([])
+    const [isLoadingUsers, setLoadingUsers] = useState(true)
+    const [isLoadingSubmit, setLoadingSubmit] = useState(false)
+    const [isSubmitted, setSubmitted] = useState(false)
 
     /**
      * Load User data into state when isLoadingUsers
      * is true, e.g. on first render.
      */
     useEffect(() => {
-        if (!isLoadingUsers) return;
+        if (!isLoadingUsers) return
 
         axios
             .get('/api/user/list')
             .then(response => {
-                setUsers(JSON.parse(response.data));
-                setLoadingUsers(false);
+                setUsers(JSON.parse(response.data))
+                setLoadingUsers(false)
             })
-        ;
-    }, [isLoadingUsers]);
+        
+    }, [isLoadingUsers])
 
     /**
      * handleSubmit
@@ -56,30 +53,41 @@ export default function AddGroup(props) {
      * @param {*} event
      */
     const handleSubmit = (event) => {
-        const formData = new FormData(event.target);
-        event.preventDefault();
+        const formData = new FormData(event.target)
+        event.preventDefault()
 
-        setLoadingSubmit(true);
+        setLoadingSubmit(true)
 
         axios
             .post('/api/usergroups/add', formData)
             .then(() => {
-                setSubmitted(true); 
-                props.setLoadingUserGroups(true); 
+                setSubmitted(true) 
+                props.setLoadingUserGroups(true) 
                 
                 // Refresh Data Timestamp
                 axios.get('/api/refresh-data-timestamp/set')
             })
-        ;
-    };
+        
+    }
 
     /**
-     * Load sidebar
+     * Load layout
      */
     useEffect(() => {
-        props.setSidebarActiveItem();
-        props.setSidebarActionButton();
-    }, []);
+        // Load sidebar
+        props.setSidebarActiveItem()
+        props.setSidebarActionButton()
+
+        // Load Topbar
+        props.setTopbar({
+            title: 'Neue Benutzergruppe',
+            showBackButton: true,
+            backButtonPath: '/settings',
+        })
+
+        // Scroll to top
+        window.scrollTo(0, 0)
+    }, [])
 
     /** 
      * Render
@@ -90,22 +98,22 @@ export default function AddGroup(props) {
         <>
             {isSubmitted && <Navigate to={'/settings'} />}
 
-            <div className="pb-[6.5rem] px-4 md:pl-0 pt-4 md:pt-9 w-full md:w-[450px]">
+            <div className="pb-24 md:pb-4 md:w-[450px]">
+                <Spacer height="6" />
+
                 {isLoadingSubmit ? (
                     <Spinner />
                 ) : (
-                    <>
-                        <HeadingAndBackButton location="/settings">Neue Benutzergruppe hinzufügen</HeadingAndBackButton>
-
-                        <Spacer height="10" />
-
-
+                    <div className="mx-4 md:mx-0">
                         <form name="user_group" onSubmit={handleSubmit}>
                             <Card>
-                                <p className="mb-6 text-sm">
+                                <p className="text-sm">
                                     Hier kannst du eine neue Benutzergruppen hinzufügen. Die Liste von 
                                     Material Symbols findest du <a target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 transition duration-300" href="https://fonts.google.com/icons?icon.style=Rounded&icon.set=Material+Symbols">hier</a>.
                                 </p>
+
+                                <Spacer height="6" />
+
                                 <InputRow
                                     id="user_group_name"
                                     label="Name der Benutzergruppe"
@@ -147,9 +155,7 @@ export default function AddGroup(props) {
                                 </div>
                             </Card>
 
-                            <Spacer height="6" />
-
-                            <div className="flex justify-end">
+                            <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
                                 <Button
                                     type="submit" 
                                     icon="save" 
@@ -160,9 +166,9 @@ export default function AddGroup(props) {
                                 />
                             </div>
                         </form>
-                    </>
+                    </div>
                 )}
             </div>
         </>
-    );
+    )
 }

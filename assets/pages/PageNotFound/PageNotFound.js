@@ -2,9 +2,10 @@
  * ./assets/pages/PageNotFound/PageNotFound.js *
  ***********************************************/
 
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react'
 
-import Notification from '../../components/ui/Notification';
+import Notification from '../../components/ui/Notification'
+import Spacer       from '../../components/ui/Spacer'
 
 /**
  * PageNotFound
@@ -17,25 +18,33 @@ import Notification from '../../components/ui/Notification';
  */
 export default function PageNotFound(props) {
     /**
-     * Load sidebar
+     * Load layout
      */
     useEffect(() => {
-        props.setSidebarActiveItem();
-        props.setSidebarActionButton();
-    }, []);
+        // Load sidebar
+        props.setSidebarActiveItem()
+        props.setSidebarActionButton()
+
+        // Load topbar
+        props.setTopbar({})
+    }, [])
 
     /** 
      * Render
      */
     return (
-        <div className="mx-6 mt-6 md:ml-0 w-full md:rounded-3xl md:max-w-[450px]">
-            <Notification
-                icon="error"
-                color="red"
-                title="Fehler 404"
-            >
-                Die angeforderte Seite konnte nicht gefunden werden. Bitte wende dich an den Administrator, falls der Fehler weiterhin auftreten sollte.
-            </Notification>
+        <div className="pb-24 md:pb-4 md:max-w-[450px]">
+            <Spacer height="6" />
+
+            <div className="mx-4 md:mx-0">
+                <Notification
+                    icon="error"
+                    color="red"
+                    title="Fehler 404"
+                >
+                    Die angeforderte Seite konnte nicht gefunden werden. Bitte wende dich an den Administrator, falls der Fehler weiterhin auftreten sollte.
+                </Notification>
+            </div>
         </div>
-    );
+    )
 }
