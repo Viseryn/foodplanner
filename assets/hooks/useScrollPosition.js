@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 /**
  * useScrollPosition
  * 
- * @returns {number} Returns the current scroll position (on the vertical axis).
+ * @param {boolean} withoutInnerHeight If set to false (default), the inner height of the window is added to the scroll value.
+ * @returns {number} Returns the current scroll position (on the vertical axis) plus maybe the inner height of the window.
  */
 
-const useScrollPosition = () => {
+const useScrollPosition = (withoutInnerHeight = false) => {
     const [scrollPosition, setScrollPosition] = useState(0);
 
     useEffect(() => {
@@ -24,7 +25,7 @@ const useScrollPosition = () => {
         return () => window.removeEventListener("scroll", updatePosition);
     }, []);
 
-    return scrollPosition + window.innerHeight;
+    return withoutInnerHeight ? scrollPosition : scrollPosition + window.innerHeight;
 };
 
 /** Export */
