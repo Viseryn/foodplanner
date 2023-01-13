@@ -139,7 +139,7 @@ export default function Planner(props) {
                 <Spinner /> /** @todo Add skeletons */
             ) : (
                 <>
-                    <Spacer height="6" />
+                    <Spacer height="7" />
 
                     {props.days.map((day, index) =>
                         <Card 

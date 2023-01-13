@@ -157,7 +157,7 @@ export default function Recipes(props) {
                 </div>
 
                 {/* Search bar */}
-                <div className="mb-4 md:mt-7 rounded-full font-semibold bg-secondary-100 dark:bg-secondary-dark-100 h-14 flex items-center pl-6 pr-4">
+                <div className="mb-4 mt-5 md:mt-7 rounded-full font-semibold bg-secondary-100 dark:bg-secondary-dark-100 h-14 flex items-center pl-6 pr-4">
                     <span className="material-symbols-rounded mr-2 cursor-default">search</span>
                     <input 
                         className="bg-secondary-100 dark:bg-secondary-dark-100 placeholder-[#55624c] dark:placeholder-secondary-dark-300 w-full border-transparent focus:border-transparent focus:ring-0"
