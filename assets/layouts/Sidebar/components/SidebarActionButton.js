@@ -2,10 +2,11 @@
  * ./assets/layouts/Sidebar/components/SidebarActionButton.js *
  **************************************************************/
 
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
 import useScrollDirection from '../../../hooks/useScrollDirection';
-import useScrollPosition from '../../../hooks/useScrollPosition';
+import useScrollPosition  from '../../../hooks/useScrollPosition';
 
 /**
  * SidebarActionButton
