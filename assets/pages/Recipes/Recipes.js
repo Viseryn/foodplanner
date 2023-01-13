@@ -2,35 +2,25 @@
  * ./assets/pages/Recipes/Recipes.js *
  *************************************/
 
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import React, { useEffect, useState }   from 'react';
+import { Link }                         from 'react-router-dom';
 
-import Notification from '../../components/ui/Notification';
-import Recipe from './Recipe';
-import RecipeListSkeleton from './components/RecipeListSkeleton';
-import Heading from '../../components/ui/Heading';
+import Notification                     from '../../components/ui/Notification';
+import RecipeListSkeleton               from './components/RecipeListSkeleton';
 import Spacer                           from '../../components/ui/Spacer';
 
 /**
  * Recipes
  * 
  * A Component for showing a list of all Recipes.
- * Collects the Recipe data from the Recipe List API
- * in the /src/Controller/RecipeController.php.
+ * Collects the Recipe data from the Recipe List API.
  * 
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
+ * @property {function} setTopbar
  * @property {arr} recipes 
- * @property {function} setRecipes
  * @property {boolean} isLoadingRecipes
- * @property {function} setLoadingRecipes
- * @property {number} recipeIndex
- * @property {function} setRecipeIndex
- * @property {arr} shoppingList 
- * @property {function} setShoppingList
- * @property {boolean} isLoadingShoppingList
- * @property {function} setLoadingShoppingList
  */
 export default function Recipes(props) {
     /**
