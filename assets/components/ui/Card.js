@@ -18,7 +18,10 @@ import React from 'react';
  */
 export default function Card({ style = '', ...props }) {
     return (
-        <div className={'bg-secondary-100 dark:bg-secondary-dark-100 rounded-xl p-4 md:p-6 ' + style}>
+        <div className={
+            'bg-secondary-100 dark:bg-secondary-dark-100 rounded-xl p-4 ' 
+            + style
+        }>
             {props.children}
         </div>
     );
