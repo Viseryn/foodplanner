@@ -384,15 +384,24 @@ export default function ShoppingList(props) {
     }
 
     /**
-     * Load sidebar
+     * Load layout
      */ 
     useEffect(() => {
-        props.setSidebarActiveItem('shoppinglist');
-        props.setSidebarActionButton();
+        // Load sidebar
+        props.setSidebarActiveItem('shoppinglist')
+        props.setSidebarActionButton()
+
+        // Load topbar
+        props.setTopbar({
+            title: 'Einkaufsliste',
+            actionButtons: [
+                { icon: 'delete_forever', onClick: handleDeleteAll },
+            ],
+        })
 
         // Scroll to top
-        window.scrollTo(0, 0);
-    }, []);
+        window.scrollTo(0, 0)
+    }, [])
 
     useEffect(() => {
         props.setSidebarActionButton({
@@ -423,20 +432,8 @@ export default function ShoppingList(props) {
      * Render
      */
     return (
-        <div className="pb-[6.5rem] pt-4 md:pt-9 w-full md:w-[450px]">
-            <div className="flex justify-between items-start pr-4 md:pr-0">
-                <Heading style="px-6 md:px-4">Einkaufsliste</Heading>
-
-                {/* Delete and update buttons */}
-                <div>
-                    {props.shoppingList.length > 0 && 
-                        <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
-                    }
-                    <IconButton onClick={() => props.setLoadingShoppingList(true)}>sync</IconButton>
-                </div>
-            </div>
-
-            <Spacer height="10" />
+        <div className="pb-24 md:pb-4 w-full md:w-[450px]">
+            <Spacer height="6" />
             
             <div className="mx-4 md:mx-0">
                 <AddItemInputWidget
@@ -504,7 +501,7 @@ export default function ShoppingList(props) {
                     </Card>
 
                     {props.shoppingList.length >= 1 &&
-                        <div className="flex flex-col items-end justify-end gap-4 pt-6 pb-20 md:pb-0 mx-4 md:mx-0">
+                        <div className="flex flex-col items-end justify-end gap-4 mt-4 mx-4 md:mx-0 pb-[5.5rem] md:pb-0">
                             {props.settings.showPantry && props.pantry.length > 0 &&
                                 <Button
                                     onClick={handlePantryCombine}
