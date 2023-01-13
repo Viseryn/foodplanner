@@ -331,15 +331,24 @@ export default function Pantry(props) {
     };
 
     /**
-     * Load sidebar
+     * Load layout
      */ 
     useEffect(() => {
-        props.setSidebarActiveItem('pantry');
-        props.setSidebarActionButton();
+        // Load sidebar
+        props.setSidebarActiveItem('pantry')
+        props.setSidebarActionButton()
+
+        // Load Topbar
+        props.setTopbar({
+            title: 'Vorratskammer',
+            actionButtons: [
+                { icon: 'delete_forever', onClick: handleDeleteAll },
+            ],
+        })
 
         // Scroll to top
-        window.scrollTo(0, 0);
-    }, []);
+        window.scrollTo(0, 0)
+    }, [])
 
     /**
      * Update pantry items from state to database
@@ -361,20 +370,8 @@ export default function Pantry(props) {
      * Render
      */
     return (
-        <div className="pb-[6.5rem] pt-4 md:pt-9 w-full md:w-[450px]">
-            <div className="flex justify-between items-start pr-4 md:pr-0">
-                <Heading style="px-6 md:px-4">Vorratskammer</Heading>
-
-                {/* Delete and update buttons */}
-                <div>
-                    {props.pantry.length > 0 && 
-                        <IconButton onClick={handleDeleteAll}>delete_forever</IconButton>
-                    }
-                    <IconButton onClick={() => props.setLoadingPantry(true)}>sync</IconButton>
-                </div>
-            </div>
-
-            <Spacer height="10" />
+        <div className="pb-24 md:pb-4 w-full md:w-[450px]">
+            <Spacer height="6" />
 
             <div className="mx-4 md:mx-0">
                 <AddItemInputWidget
@@ -450,7 +447,7 @@ export default function Pantry(props) {
                     </Card>
 
                     {props.pantry.length > 0 &&
-                        <div className="flex justify-end -mt-auto pt-6 md:pb-0 mx-4 md:mx-0">
+                        <div className="flex justify-end mt-4 mx-4 md:mx-0">
                             <Button
                                 onClick={handleCombine}
                                 label="Zutaten sammenfassen"
