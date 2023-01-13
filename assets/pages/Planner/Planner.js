@@ -96,16 +96,26 @@ export default function Planner(props) {
     };
 
     /**
-     * Load sidebar
+     * Load layout
      */
     useEffect(() => {
-        props.setSidebarActiveItem('planner');
-        props.setSidebarActionButton();
+        // Load sidebar
+        props.setSidebarActiveItem('planner')
+        props.setSidebarActionButton()
+
+        // Load topbar
+        props.setTopbar({
+            title: 'Wochenplan',
+        })
 
         // Scroll to top
-        window.scrollTo(0, 0);
-    }, []);
+        window.scrollTo(0, 0)
+    }, [])
 
+    /**
+     * Update sidebar action button when 
+     * shopping list changes or when pressed
+     */
     useEffect(() => {
         if (!props.isLoadingDays) {
             props.setSidebarActionButton({
@@ -128,25 +138,21 @@ export default function Planner(props) {
      * Render
      */
     return (
-        <div className="pb-[6.5rem] w-full md:w-fit md:min-w-[450px] md:max-w-[900px]">
-            <div className="p-4 px-6 md:px-4 md:pt-9 flex items-start justify-between">
-                <Heading>Wochenplan</Heading>
-            </div>
+        <div className="pb-24 md:pb-4 w-full md:w-fit md:min-w-[450px] md:max-w-[900px]">
+            <Spacer height="6" />
+
             {props.isLoadingDays ? (
                 <Spinner /> /** @todo Add skeletons */
             ) : (
-                <>
-                    <Spacer height="7" />
-
-                    {props.days.map((day, index) =>
-                        <Card 
-                            style={'mx-4 md:ml-0'
-                                + (index === props.days.length - 1 ? ' mb-4' : ' mb-4 md:mb-6')}
-                            key={day.id}
-                        >
-                            <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900 mb-4 md:mb-6">
+                <div className="pb-[5.5rem] md:pb-0 mx-4 md:ml-0 flex flex-col gap-4">
+                {/* The container might be bigger than the screen (md+), so leave extra margin to the right. */}
+                    {props.days.map(day =>
+                        <Card key={day.id}>
+                            <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900">
                                 <span>{day.weekday}, {day.date}</span>
                             </div>
+
+                            <Spacer height="4" />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {day.meals.map(meal =>
@@ -195,9 +201,7 @@ export default function Planner(props) {
                             </div>
                         </Card>
                     )}
-
-                    <div className="pb-20 md:pb-0" />
-                </>
+                </div>
             )}
         </div>
     );
