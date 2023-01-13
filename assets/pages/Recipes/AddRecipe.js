@@ -38,16 +38,6 @@ export default function AddRecipe(props) {
     const [newId, setNewId] = useState(0);
 
     /**
-     * Load sidebar and scroll to top
-     */
-    useEffect(() => {
-        props.setSidebarActiveItem('recipes');
-        props.setSidebarActionButton();
-
-        window.scrollTo(0, 0)
-    }, []);
-
-    /**
      * handleFilePick
      * 
      * Changes the label of the upload button to the selected 
@@ -101,12 +91,33 @@ export default function AddRecipe(props) {
             value: i, label: i
         });
     }
+
+    /**
+     * Load layout
+     */
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebarActiveItem('recipes')
+        props.setSidebarActionButton()
+
+        // Load Topbar
+        props.setTopbar({
+            title: 'Neues Rezept',
+            showBackButton: true,
+            backButtonPath: '/recipes',
+        })
+
+        // Scroll to top
+        window.scrollTo(0, 0)
+    }, [])
     
     /**
      * Render
      */
     return (
-        <div className="pb-[6.5rem] md:pb-0 w-full md:max-w-[900px]">
+        <div className="pb-24 md:pb-4 w-full md:max-w-[900px]">
+            <Spacer height="6" />
+
             {/* If the form is submitted, redirect to the new recipe */}
             {isSubmittedSuccessfully && !props.isLoadingRecipes &&
                 <Navigate to={'/recipe/' + newId} />
@@ -115,80 +126,73 @@ export default function AddRecipe(props) {
             {isLoading || props.isLoadingRecipes ? (
                 <Spinner />
             ) : (
-                <>
-                    <div className="p-4 md:px-0 md:pt-9 mb-6">
-                        <HeadingAndBackButton location="/recipes">Rezept hinzufügen</HeadingAndBackButton>
-                    </div>
-
-                    <form 
-                        className="px-4 md:pl-0 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6"
-                        onSubmit={handleSubmit}
-                    >
-                        <Card>
-                            <InputRow
-                                id="recipe_title"
-                                label="Titel"
-                                inputProps={{required: 'required', maxLength: 255}}
-                                className=""
-                            />
-
-                            <Spacer height="6" />
-
-                            <SliderRow
-                                id="recipe_portionSize"
-                                label="Wie viele Portionen?"
-                                sliderProps={{
-                                    min: 1,
-                                    max: 10,
-                                    step: 1,
-                                    marks: marks
-                                }}
-                                className=""
-                            />
-
-                            <Spacer height="6" />
-
-                            <div>
-                                <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
-                                <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300">
-                                    <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                    <span className="label-content mr-2 ml-3">{filename}</span>
-                                </label>
-                                <input 
-                                    type="file" id="recipe_image" name="recipe[image]" 
-                                    className="file-input hidden" 
-                                    onChange={(e) => handleFilePick(e)}
+                <div className="mx-4 md:ml-0 ">
+                    <form onSubmit={handleSubmit}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Card>
+                                <InputRow
+                                    id="recipe_title"
+                                    label="Titel"
+                                    inputProps={{required: 'required', maxLength: 255}}
+                                    className=""
                                 />
-                            </div>
-                        </Card>
 
-                        <Card>
-                            <TextareaRow
-                                id="recipe_ingredients"
-                                label="Zutaten"
-                                textareaProps={{
-                                    rows: 10, 
-                                    placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"
-                                }}
-                                className=""
-                            />
+                                <Spacer height="6" />
 
-                            <Spacer height="6" />
+                                <SliderRow
+                                    id="recipe_portionSize"
+                                    label="Wie viele Portionen?"
+                                    sliderProps={{
+                                        min: 1,
+                                        max: 10,
+                                        step: 1,
+                                        marks: marks
+                                    }}
+                                    className=""
+                                />
 
-                            <TextareaRow 
-                                id="recipe_instructions"
-                                label="Zubereitung"
-                                textareaProps={{
-                                    rows: 10,
-                                    placeholder: "Schreibe jeden Schritt in eine eigene Zeile."
-                                }}
-                                className=""
-                            />
-                        </Card>
+                                <Spacer height="6" />
 
-                        <div></div>
+                                <div>
+                                    <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
+                                    <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300">
+                                        <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
+                                        <span className="label-content mr-2 ml-3">{filename}</span>
+                                    </label>
+                                    <input 
+                                        type="file" id="recipe_image" name="recipe[image]" 
+                                        className="file-input hidden" 
+                                        onChange={(e) => handleFilePick(e)}
+                                    />
+                                </div>
+                            </Card>
 
-                        <div className="flex justify-end gap-4 mb-10 md:mb-0">
+                            <Card>
+                                <TextareaRow
+                                    id="recipe_ingredients"
+                                    label="Zutaten"
+                                    textareaProps={{
+                                        rows: 10, 
+                                        placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"
+                                    }}
+                                    className=""
+                                />
+
+                                <Spacer height="6" />
+
+                                <TextareaRow 
+                                    id="recipe_instructions"
+                                    label="Zubereitung"
+                                    textareaProps={{
+                                        rows: 10,
+                                        placeholder: "Schreibe jeden Schritt in eine eigene Zeile."
+                                    }}
+                                    className=""
+                                />
+                            </Card>
+                        </div>
+
+                        <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
                             <Button
                                 type="submit"
                                 icon="save" 
@@ -199,7 +203,7 @@ export default function AddRecipe(props) {
                             />
                         </div>
                     </form>
-                </>
+                </div>
             )}
         </div>
     );

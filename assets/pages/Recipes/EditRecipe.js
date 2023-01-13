@@ -48,16 +48,6 @@ export default function EditRecipe(props) {
     const [newId, setNewId] = useState(0);
 
     /**
-     * Load sidebar and scroll to top
-     */
-    useEffect(() => {
-        props.setSidebarActiveItem('recipes');
-        props.setSidebarActionButton();
-
-        window.scrollTo(0, 0);
-    }, []);
-
-    /**
      * When recipes are loaded, on each re-render, 
      * check if there is a recipe with the id parameter.
      * If yes, set the index of that recipe to the 
@@ -267,10 +257,35 @@ export default function EditRecipe(props) {
     }
 
     /**
+     * Load layout
+     */
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebarActiveItem('recipes')
+        props.setSidebarActionButton()
+
+        // Load Topbar
+        props.setTopbar({
+            title: recipe?.title,
+            showBackButton: true,
+            backButtonPath: '/recipe/' + recipe?.id,
+            actionButtons: [
+                { icon: 'delete', onClick: () => deleteRecipe(recipe?.id) }
+            ],
+            style: 'max-w-[900px] pr-4'
+        })
+
+        // Scroll to top
+        window.scrollTo(0, 0)
+    }, [recipe])
+
+    /**
      * Render
      */
     return (
-        <div className="pb-[6.75rem] md:pb-0 w-full md:max-w-[900px]">
+        <div className="pb-24 md:pb-4 w-full md:max-w-[900px]">
+            <Spacer height="6" />
+
             {isSubmittedSuccessfully &&
                 <Navigate to={'/recipe/' + newId} />
             }
@@ -284,13 +299,9 @@ export default function EditRecipe(props) {
                     <Spinner />
                 </>
             ) : (
-                <>
-                    <div className="p-4 md:px-0 md:pt-9 mb-6">
-                        <HeadingAndBackButton location={'/recipe/' + recipe?.id}>{recipe?.title}</HeadingAndBackButton>
-                    </div>
-
+                <div className="mx-4 md:ml-0">
                     <form onSubmit={handleSubmit}>
-                        <div className="px-4 md:pl-0 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Card>
                                 <InputRow
                                     id="recipe_title"
@@ -416,40 +427,18 @@ export default function EditRecipe(props) {
                             </Card>
                         </div>
 
-                        {/* <div className="flex justify-end md:justify-start mb-4 md:mb-0">
-                        </div> */}
-
-                        <div className="flex justify-between items-center px-4 md:pl-0">
-                            <Button
-                                onClick={() => deleteRecipe(recipe?.id)}
-                                icon="delete"
-                                label="Rezept löschen"
-                                role="tertiary"
-                            />
-                            <div className="hidden md:block">
-                                <Button
-                                    type="submit"
-                                    icon="save" 
-                                    label="Speichern" 
-                                    elevated={true}
-                                    outlined={true}
-                                    floating={true}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex justify-end md:hidden pr-4">
+                        <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
                             <Button
                                 type="submit"
                                 icon="save" 
                                 label="Speichern" 
                                 elevated={true}
-                                floating={true}
                                 outlined={true}
+                                floating={true}
                             />
                         </div>
                     </form>
-                </>
+                </div>
             )}
         </div>
     );
