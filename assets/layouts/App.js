@@ -9,7 +9,8 @@ import axios from "axios";
 import loadShoppingList from "../util/loadShoppingList";
 import loadPantry from "../util/loadPantry.js";
 
-import Sidebar from './Sidebar/Sidebar';
+import Sidebar, { SidebarDrawerButton } from './Sidebar/Sidebar';
+import Topbar from "./Topbar/Topbar";
 import AuthChecker from "./AuthChecker";
 
 import Planner from '../pages/Planner/Planner';
@@ -47,6 +48,7 @@ export default function App() {
      * Sidebar setters will be passed as props to subcomponents, so 
      * that each subcomponent can alter the sidebar state variables.
      */
+    const [isDrawerVisible, setDrawerVisible] = useState(false);
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
     const [sidebarActionButton, setSidebarActionButton] = useState({
         visible: false,
@@ -62,9 +64,20 @@ export default function App() {
      * there is a dedicated top bar container. On larger screens,
      * these buttons may move next to the Heading.
      * 
-     * @todo
+     * The format for the array of action buttons is as following.
+     * 
+     * @example 
+     * const actionButtons = [
+     *     { icon: 'sync',   alt: 'Synchronize', onClick: () => { ... } },
+     *     { icon: 'delete', alt: 'Delete',      onClick: () => { ... } },
+     * ]
      */
-    const [topbarActionButtons, setTopbarActionButtons] = useState({});
+    const [topbar, setTopbar] = useState({
+        title: '',
+        showBackButton: false,
+        backButtonPath: '/',
+        actionButtons: [],
+    });
 
     /**
      * Keep data in global state variables
@@ -181,7 +194,8 @@ export default function App() {
         'setSidebarActionButton': setSidebarActionButton,
 
         // Topbar
-        'setTopbarActionButtons': setTopbarActionButtons,
+        'topbar': topbar,
+        'setTopbar': setTopbar,
     };
 
     /**
@@ -394,28 +408,43 @@ export default function App() {
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
-                    topbarActionButtons={topbarActionButtons}
+                    isDrawerVisible={isDrawerVisible}
+                    setDrawerVisible={setDrawerVisible} 
                     {...props}
                 />
+                
+                <div className="flex flex-col w-full md:w-auto">
+                    {/* Topbar */}
+                    <Topbar 
+                        SidebarDrawerButton={
+                            <SidebarDrawerButton
+                                isDrawerVisible={isDrawerVisible}
+                                setDrawerVisible={setDrawerVisible} 
+                            />
+                        }
+                        {...props}
+                    />
 
-                <Routes>
-                    <Route path="/"                     element={<AuthChecker component={<Planner {...props} />} {...props} />} />
-                    <Route path="/planner"              element={<AuthChecker component={<Planner {...props} />} {...props} />} />
-                    <Route path="/planner/add"          element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
-                    <Route path="/planner/add/:id"      element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
-                    <Route path="/shoppinglist"         element={<AuthChecker component={<ShoppingList {...props} />} {...props} />} />
-                    <Route path="/recipes"              element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
-                    <Route path="/recipe/add"           element={<AuthChecker component={<AddRecipe {...props} />} {...props} />} />
-                    <Route path="/recipe/:id"           element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
-                    <Route path="/recipe/:id/edit"      element={<AuthChecker component={<EditRecipe {...props} />} {...props} />} />
-                    <Route path="/pantry"               element={<AuthChecker component={<Pantry {...props} />} {...props} />} />
-                    <Route path="/settings"             element={<AuthChecker component={<Settings {...props} />} {...props} />} />
-                    <Route path="/settings/groups/add"  element={<AuthChecker component={<AddGroup {...props} />} {...props} />} />
-                    <Route path="/login"                element={<Login {...props} />} />
-                    <Route path="/logout"               element={<Logout {...props} />} />
-                    <Route path="/register"             element={<Registration {...props} />} />
-                    <Route path="*"                     element={<PageNotFound {...props} />} />
-                </Routes>
+                    {/* Main Content */}
+                    <Routes>
+                        <Route path="/"                     element={<AuthChecker component={<Planner {...props} />} {...props} />} />
+                        <Route path="/planner"              element={<AuthChecker component={<Planner {...props} />} {...props} />} />
+                        <Route path="/planner/add"          element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
+                        <Route path="/planner/add/:id"      element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
+                        <Route path="/shoppinglist"         element={<AuthChecker component={<ShoppingList {...props} />} {...props} />} />
+                        <Route path="/recipes"              element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
+                        <Route path="/recipe/add"           element={<AuthChecker component={<AddRecipe {...props} />} {...props} />} />
+                        <Route path="/recipe/:id"           element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
+                        <Route path="/recipe/:id/edit"      element={<AuthChecker component={<EditRecipe {...props} />} {...props} />} />
+                        <Route path="/pantry"               element={<AuthChecker component={<Pantry {...props} />} {...props} />} />
+                        <Route path="/settings"             element={<AuthChecker component={<Settings {...props} />} {...props} />} />
+                        <Route path="/settings/groups/add"  element={<AuthChecker component={<AddGroup {...props} />} {...props} />} />
+                        <Route path="/login"                element={<Login {...props} />} />
+                        <Route path="/logout"               element={<Logout {...props} />} />
+                        <Route path="/register"             element={<Registration {...props} />} />
+                        <Route path="*"                     element={<PageNotFound {...props} />} />
+                    </Routes>
+                </div>
             </div>
         </BrowserRouter>
     );
