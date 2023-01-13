@@ -91,7 +91,7 @@ export default function Topbar(props) {
                 <div>
                     {props.topbar?.showBackButton 
                         ? <HeadingAndBackButton location={props.topbar?.backButtonPath}>{props.topbar?.title}</HeadingAndBackButton>
-                        : <Heading style="ml-3">{props.topbar?.title}</Heading>
+                        : <Heading style="ml-2">{props.topbar?.title}</Heading>
                     }
                 </div>
                 <div>
