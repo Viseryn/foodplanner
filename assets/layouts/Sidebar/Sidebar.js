@@ -2,7 +2,7 @@
  * ./assets/layouts/Sidebar/Sidebar.js *
  ***************************************/
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import SidebarActionButton from './components/SidebarActionButton';
@@ -37,12 +37,11 @@ import SidebarActionButton from './components/SidebarActionButton';
  *     }}
  * />
  */
-export default function Sidebar(props) {
+export default function Sidebar({ isDrawerVisible, setDrawerVisible, ...props }) {
     /**
      * State variables
      */
     const location = useLocation();
-    const [isDrawerVisible, setDrawerVisible] = useState(false);
  
     /**
      * Close drawer and load user data when route changes.
@@ -81,7 +80,7 @@ export default function Sidebar(props) {
 
             {/* Sidebar */}
             <aside className="z-30 bg-bg dark:bg-bg-dark shrink-0 h-20 w-full md:w-24 md:min-w-24 md:min-h-screen xl:w-64 fixed bottom-0 md:static md:flex md:justify-center xl:justify-start">
-                <div className="px-6 py-3 w-full fixed flex justify-between md:px-6 md:py-7 md:max-w-fit md:block xl:w-64 xl:max-w-none">
+                <div className="px-6 py-3 w-full fixed flex justify-between md:p-6 md:max-w-fit md:block xl:w-64 xl:max-w-none">
                     <SidebarContent 
                         isDrawerVisible={isDrawerVisible}
                         setDrawerVisible={setDrawerVisible} 
@@ -89,16 +88,6 @@ export default function Sidebar(props) {
                     />
                 </div>
             </aside>
-
-            {/* Top bar for mobile screens */}
-            <div className="pt-2 pl-2 -bg-blue-500 w-full md:hidden">
-                <ul className="flex justify-start">
-                    <SidebarDrawerButton
-                        isDrawerVisible={isDrawerVisible}
-                        setDrawerVisible={setDrawerVisible} 
-                    />
-                </ul>
-            </div>
         </>
     );
 }
@@ -323,7 +312,7 @@ function SidebarContent(props) {
  *     className="md:hidden"
  * />
  */
-function SidebarDrawerButton(props) {
+export function SidebarDrawerButton(props) {
     return (
         <li className={'xl:w-min ' + props?.className}>
             <div 
