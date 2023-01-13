@@ -2,19 +2,18 @@
  * ./assets/pages/ShoppingList/ShoppingList.js *
  ***********************************************/
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import axios from 'axios';
 
-import generateDisplayName from '../../util/generateDisplayName';
+import { floatToFraction, fractionToFloat } from '../../util/fractions';
+import generateDisplayName                  from '../../util/generateDisplayName';
 
 import AddItemInputWidget from './components/AddItemInputWidget'
-import Heading from '../../components/ui/Heading';
-import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/Buttons/IconButton';
-import Button from '../../components/ui/Buttons/Button';
-import { floatToFraction, fractionToFloat } from '../../util/fractions';
-import Spacer from '../../components/ui/Spacer';
-import Card from '../../components/ui/Card';
+import Button             from '../../components/ui/Buttons/Button';
+import IconButton         from '../../components/ui/Buttons/IconButton';
+import Card               from '../../components/ui/Card';
+import Spacer             from '../../components/ui/Spacer';
+import Spinner            from '../../components/ui/Spinner';
 
 /**
  * ShoppingList
