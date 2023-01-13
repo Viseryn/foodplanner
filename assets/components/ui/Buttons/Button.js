@@ -111,8 +111,8 @@ const buttonStyle = ({
         noLabel: 'p-2',
         elevated: 'shadow-xl active:shadow-xl',
         elevatedTertiary: 'border border-gray-100 dark:border-[#252f38]',
-        floating: 'fixed bottom-[6.5rem] z-[60] md:relative md:bottom-0 !text-primary-100 !dark:text-primary-dark-100 !bg-secondary-200 !dark:bg-secondary-dark-200 !hover:bg-secondary-300 !dark:hover:bg-secondary-dark-300 !rounded-2xl !h-14 !shadow-xl mr-2',
-        small: 'h-10 px-3 -text-sm',
+        floating: 'fixed bottom-[6.5rem] right-6 md:right-0 z-[60] md:relative md:bottom-0 !text-primary-100 !dark:text-primary-dark-100 !bg-secondary-200 !dark:bg-secondary-dark-200 !hover:bg-secondary-300 !dark:hover:bg-secondary-dark-300 !rounded-2xl !h-14 !shadow-xl',
+        small: 'h-10 px-3',
     };
 
     let style = styles.base + ' ' + styles[role];
