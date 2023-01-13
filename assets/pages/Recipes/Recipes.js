@@ -9,6 +9,7 @@ import Notification from '../../components/ui/Notification';
 import Recipe from './Recipe';
 import RecipeListSkeleton from './components/RecipeListSkeleton';
 import Heading from '../../components/ui/Heading';
+import Spacer                           from '../../components/ui/Spacer';
 
 /**
  * Recipes
@@ -35,11 +36,7 @@ export default function Recipes(props) {
     /**
      * State variables
      */
-    const { id } = useParams();
-    const location = useLocation();
-
     const [searchValue, setSearchValue] = useState('');
-    const [isTwoColumns, setTwoColumns] = useState(id > 0);
     
     /**
      * Search for user input in recipe list
@@ -68,96 +65,40 @@ export default function Recipes(props) {
             // Return true if searchValue appeared in an ingredient
             return returnValue;
         }
-    });
+    })
 
     /**
-     * resetSAB
-     * 
-     * A function for resetting the standard SAB for this page.
+     * Load layout
      */
-    const resetSAB = () => {
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebarActiveItem('recipes')
         props.setSidebarActionButton({
-            visible: true, 
-            icon: 'add', 
+            visible: true,
+            icon: 'add',
             path: '/recipe/add',
             label: 'Neues Rezept',
-        }); 
-    };
- 
-    /**
-     * When route changes to /recipes, close currently opened recipe
-     */
-    useEffect(() => {
-        if (location.pathname === '/recipes') {
-            setTwoColumns(false);
-            resetSAB();
-        } 
-    }, [location]);
+        })
 
-    /**
-     * On first render, load sidebar and 
-     * reset SAB if no recipe is chosen.
-     */
-    useEffect(() => {
-        // Load Sidebar
-        props.setSidebarActiveItem('recipes');
-
-        // Only load SAB if no Recipe is chosen
-        if (!id) { 
-            resetSAB();
-        }
+        // Load topbar
+        props.setTopbar({
+            title: 'Rezepte',
+        })
 
         // Scroll to top
-        window.scrollTo(0, 0);
-    }, []);
-
-    /**
-     * When recipes are loaded, on each re-render, 
-     * check if there is a recipe with the id parameter.
-     * If yes, set the index of that recipe to the 
-     * global state variable recipeIndex, which is 
-     * passed to <Recipe />. If no, redirect to an
-     * Error 404 page.
-     */
-    useEffect(() => {
-        if (!props.isLoadingRecipes) {
-            let returnVal;
-
-            props.recipes.forEach((recipe, index) => {
-                if (recipe.id == id) {
-                    returnVal = index;
-                }
-            });
-
-            if (returnVal >= 0) {
-                props.setRecipeIndex(returnVal);
-            } else if (id) {
-                window.location = "/error/404";
-            }
-        }
-    }, [props.isLoadingRecipes, id]);
+        window.scrollTo(0, 0)
+    }, [])
     
     /**
      * Render
      */
     return (
-        <>
-            {/* The first column is always shown when no Recipe is chosen.
-                If a Recipe is chosen, it is only shown on lg-screens or larger. */}
-            <div className={
-                'pb-[11.5rem] md:pb-4 px-4 md:pl-0 lg:mr-2 w-full min-h-screen '
-                + (isTwoColumns
-                    ? 'hidden lg:block max-w-[400px] md:pr-0'
-                    : 'max-w-[900px]'
-                )
-            }>
-                {/* Heading on smaller screens */}
-                <div className="md:hidden px-2 pt-4 pb-6">
-                    <Heading>Rezepte</Heading>
-                </div>
+        <div className="pb-24 md:pb-4 max-w-[900px]">
+            <div className="mx-4 md:ml-0">
+                <Spacer height="6" />
 
                 {/* Search bar */}
-                <div className="mb-4 mt-5 md:mt-7 rounded-full font-semibold bg-secondary-100 dark:bg-secondary-dark-100 h-14 flex items-center pl-6 pr-4">
+                <div className="rounded-full flex items-center h-14 pl-6 pr-4 font-semibold bg-secondary-100 dark:bg-secondary-dark-100">
                     <span className="material-symbols-rounded mr-2 cursor-default">search</span>
                     <input 
                         className="bg-secondary-100 dark:bg-secondary-dark-100 placeholder-[#55624c] dark:placeholder-secondary-dark-300 w-full border-transparent focus:border-transparent focus:ring-0"
@@ -177,24 +118,21 @@ export default function Recipes(props) {
                         >close</span>
                     }
                 </div>
+                
+                <Spacer height="10" />
 
                 {/* Recipe List */}
                 {props.isLoadingRecipes
-                    ? <RecipeListSkeleton isTwoColumns={isTwoColumns} />
+                    ? <RecipeListSkeleton />
                     : <>
                         {recipesFiltered.length === 0 &&
                             <Notification color="red" title="Keine Rezepte gefunden." />
                         }
 
-                        <div className={
-                            'grid grid-cols-1 gap-2 ' 
-                            + (!isTwoColumns && 'sm:grid-cols-3 md:grid-cols-3')
-                        }>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             {recipesFiltered.map(recipe => 
                                 <div key={recipe.id} className="h-36 w-full rounded-xl transition duration-300">
-                                    <div className="relative group cursor-pointer" onClick={() => {
-                                        setTwoColumns(true);
-                                    }}>
+                                    <div className="relative group cursor-pointer">
                                         <Link to={'/recipe/' + recipe.id}>
                                             <img 
                                                 className="rounded-xl h-36 w-full object-cover brightness-[.7]" 
@@ -214,26 +152,9 @@ export default function Recipes(props) {
                         </div>
                     </>
                 }
-            </div>
 
-            {/* Second column is always shown when a Recipe is chosen. */}
-            {isTwoColumns && 
-                // <div className="flex flex-col px-6 pb-[6.5rem] pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-secondary-100 dark:bg-[#29353f] md:rounded-xl md:max-w-[900px]"></div>
-                <div className="flex flex-col pb-[11.5rem] w-full min-h-screen md:min-h-fit md:max-w-[900px]">
-                    {/* Pass a function setTwoColumns to the Recipe, so that it 
-                        can deactive the two-column mode. Resets the SAB afterwards. */}
-                    <Recipe 
-                        key={id}
-                        id={id} 
-                        setTwoColumns={() => {
-                            setTwoColumns(false);
-                            props.setRecipeIndex(-1);
-                            resetSAB();
-                        }} 
-                        {...props}
-                    />
-                </div>
-            }
-        </>
-    );
+                <div className="mb-[5.5rem] md:mb-0"></div>
+            </div>
+        </div>
+    )
 }
