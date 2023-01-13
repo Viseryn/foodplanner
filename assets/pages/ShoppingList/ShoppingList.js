@@ -397,6 +397,7 @@ export default function ShoppingList(props) {
             actionButtons: [
                 { icon: 'delete_forever', onClick: handleDeleteAll },
             ],
+            style: 'md:w-[450px]',
         })
 
         // Scroll to top

@@ -344,6 +344,7 @@ export default function Pantry(props) {
             actionButtons: [
                 { icon: 'delete_forever', onClick: handleDeleteAll },
             ],
+            style: 'md:w-[450px]',
         })
 
         // Scroll to top

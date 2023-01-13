@@ -413,7 +413,7 @@ export default function App() {
                     {...props}
                 />
                 
-                <div className="flex flex-col w-full md:w-auto">
+                <div className="flex flex-col w-full">
                     {/* Topbar */}
                     <Topbar 
                         SidebarDrawerButton={

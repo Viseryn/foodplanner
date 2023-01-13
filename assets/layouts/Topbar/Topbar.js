@@ -85,8 +85,9 @@ export default function Topbar(props) {
              * Topbar for larger screens (md+)
              */}
             <div className={
-                'justify-between items-center h-14 mt-6 --fixed z-20 --left-24 hidden' 
-                + (props.topbar?.onlyMobile ? '' : ' md:flex')
+                'justify-between items-center h-14 mt-6 --fixed z-20 --left-24 hidden ' 
+                + (props.topbar?.onlyMobile ? ' ' : 'md:flex ')
+                + props.topbar?.style
             }>
                 <div>
                     {props.topbar?.showBackButton 
