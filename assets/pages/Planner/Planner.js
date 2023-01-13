@@ -6,12 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import Heading from '../../components/ui/Heading';
-import Spinner from '../../components/ui/Spinner';
-import IconButton from '../../components/ui/Buttons/IconButton';
-import Button from '../../components/ui/Buttons/Button';
-import Card from '../../components/ui/Card';
-import Spacer from '../../components/ui/Spacer';
+import Card     from '../../components/ui/Card';
+import Spacer   from '../../components/ui/Spacer';
+import Spinner  from '../../components/ui/Spinner';
 
 /**
  * Planner
