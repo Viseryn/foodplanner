@@ -22,7 +22,7 @@ import Heading from './Heading';
  */
 export default function HeadingAndBackButton(props) {
     return (
-        <div className="flex justify-start items-start">
+        <div className="flex justify-start items-center">
             <div className="flex justify-between">
                 <Link to={props.location} className="mr-4 text-primary-200 dark:text-secondary-dark-900">
                     <IconButton>
