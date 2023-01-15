@@ -3,7 +3,7 @@
  ***********************************/
 
 import React from "react";
-import { Navigate } from 'react-router-dom';
+import { useNavigate }                  from 'react-router-dom'
 
 import Heading from "../components/ui/Heading";
 import Spinner from "../components/ui/Spinner";
@@ -23,22 +23,46 @@ import Spinner from "../components/ui/Spinner";
  * @property {function} isAuthenticated A function that checks whether the user is authenticated.
  * @property {boolean} isLoadingUser A bool that is true while the user data is loading.
  */
-export default function AuthChecker({ component, ...props }) {
-    return (
-        !props.isAuthenticated() ? (
-            props.isLoadingUser ? (
-                <div className="px-6 pb-24 pt-6 md:pb-6 md:my-6 md:mr-6 w-full min-h-screen md:min-h-fit bg-bg dark:bg-bg-dark md:rounded-3xl md:w-fit">
-                    <div className="min-w-[400px]"></div>
-                    <Heading>&emsp;</Heading>
-                    <Spinner /> 
-                </div>
-            ) : (
-                <Navigate to="/login" />
-            )
-        ) : (
-            <>
-                {component}
-            </>
-        )
-    );
+export default function AuthChecker({ authentication, component = <></> }) {
+    /**
+     * Whether the AuthChecker is loading.
+     * 
+     * @type {[boolean, function]}
+     */
+    const [isLoading, setLoading] = useState(true)
+
+    /**
+     * A NavigateFunction for navigating to the login page.
+     * 
+     * @type {NavigateFunction}
+     */
+    const navigate = useNavigate()
+
+    // Detect changes is authentication.isLoading
+    useEffect(() => {
+        // Wait if authentication is still loading
+        if (authentication.isLoading) return
+
+        // Navigate to login page if not authenticated
+        // and show component else
+        if (!authentication.isAuthenticated) {
+            navigate('/login')
+        } else {
+            setLoading(false)
+        }
+    }, [authentication.isLoading])
+
+    /**
+     * Render AuthChecker
+     */
+    return isLoading ? (
+        <div className="pb-24 md:pb-4">
+            <div className="min-w-[400px]"></div>
+            <Spinner /> 
+        </div>
+    ) : (
+        <>
+            {component}
+        </>
+    )
 }
