@@ -373,7 +373,7 @@ export default function App() {
     }
 
     /** 
-     * Render
+     * Render App
      */
     return (
         <BrowserRouter>
@@ -386,8 +386,8 @@ export default function App() {
                     {...props}
                 />
                 
+                {/* Main Container */}
                 <div className="flex flex-col w-full">
-                    {/* Topbar */}
                     <Topbar 
                         topbar={topbar}
                         SidebarDrawerButton={
@@ -398,27 +398,75 @@ export default function App() {
                         }
                     />
 
-                    {/* Main Content */}
+                    {/* Routing */}
                     <Routes>
-                        <Route path="/"                     element={<AuthChecker component={<Planner {...props} />} {...props} />} />
-                        <Route path="/planner"              element={<AuthChecker component={<Planner {...props} />} {...props} />} />
-                        <Route path="/planner/add"          element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
-                        <Route path="/planner/add/:id"      element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
-                        <Route path="/shoppinglist"         element={<AuthChecker component={<ShoppingList {...props} />} {...props} />} />
-                        <Route path="/recipes"              element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
-                        <Route path="/recipe/add"           element={<AuthChecker component={<AddRecipe {...props} />} {...props} />} />
-                        <Route path="/recipe/:id"           element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
-                        <Route path="/recipe/:id/edit"      element={<AuthChecker component={<EditRecipe {...props} />} {...props} />} />
-                        <Route path="/pantry"               element={<AuthChecker component={<Pantry {...props} />} {...props} />} />
-                        <Route path="/settings"             element={<AuthChecker component={<Settings {...props} />} {...props} />} />
-                        <Route path="/settings/groups/add"  element={<AuthChecker component={<AddGroup {...props} />} {...props} />} />
-                        <Route path="/login"                element={<Login {...props} />} />
-                        <Route path="/logout"               element={<Logout {...props} />} />
-                        <Route path="/register"             element={<Registration {...props} />} />
-                        <Route path="*"                     element={<PageNotFound {...props} />} />
+                        <Route 
+                            path="/"                     
+                            element={<AuthChecker authentication={authentication} component={<Planner {...props} />} />} 
+                        />
+                        <Route 
+                            path="/planner"              
+                            element={<AuthChecker authentication={authentication} component={<Planner {...props} />} />} 
+                        />
+                        <Route 
+                            path="/planner/add"          
+                            element={<AuthChecker authentication={authentication} component={<AddMeal {...props} />} />} 
+                        />
+                        <Route 
+                            path="/planner/add/:id"      
+                            element={<AuthChecker authentication={authentication} component={<AddMeal {...props} />} />} 
+                        />
+                        <Route 
+                            path="/shoppinglist"         
+                            element={<AuthChecker authentication={authentication} component={<ShoppingList {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipes"              
+                            element={<AuthChecker authentication={authentication} component={<Recipes {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipe/add"           
+                            element={<AuthChecker authentication={authentication} component={<AddRecipe {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipe/:id"           
+                            element={<AuthChecker authentication={authentication} component={<Recipe {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipe/:id/edit"      
+                            element={<AuthChecker authentication={authentication} component={<EditRecipe {...props} />} />} 
+                        />
+                        <Route 
+                            path="/pantry"               
+                            element={<AuthChecker authentication={authentication} component={<Pantry {...props} />} />} 
+                        />
+                        <Route 
+                            path="/settings"             
+                            element={<AuthChecker authentication={authentication} component={<Settings {...props} />} />} 
+                        />
+                        <Route 
+                            path="/settings/groups/add"  
+                            element={<AuthChecker authentication={authentication} component={<AddGroup {...props} />} />} 
+                        />
+                        <Route 
+                            path="/login"                
+                            element={<Login {...props} />} 
+                        />
+                        <Route 
+                            path="/logout"               
+                            element={<Logout {...props} />} 
+                        />
+                        <Route 
+                            path="/register"             
+                            element={<Registration {...props} />} 
+                        />
+                        <Route 
+                            path="*"                     
+                            element={<PageNotFound {...props} />} 
+                        />
                     </Routes>
                 </div>
             </div>
         </BrowserRouter>
-    );
+    )
 }
