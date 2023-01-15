@@ -12,6 +12,7 @@ import Sidebar, { SidebarDrawerButton } from './Sidebar/Sidebar'
 import Topbar                           from './Topbar/Topbar'
 
 import useAuthentication                from '../hooks/useAuthentication'
+import useFetch                         from '../hooks/useFetch'
 import useRefreshDataTimestamp          from '../hooks/useRefreshDataTimestamp'
 
 import Login                            from '../pages/Login/Login'
