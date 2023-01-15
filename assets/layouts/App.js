@@ -51,10 +51,6 @@ import loadPantry                       from '../util/loadPantry.js'
  */
 export default function App() {
     /**
-     * Sidebar configuration (active item, action button) are kept 
-     * in global state variables.
-     * Sidebar setters will be passed as props to subcomponents, so 
-     * that each subcomponent can alter the sidebar state variables.
      * The user and authentication objects.
      * 
      * @type {[object, object]}
@@ -78,19 +74,48 @@ export default function App() {
      */
     const refreshDataTimestamp = useRefreshDataTimestamp(isLoading, setLoading)
 
+    /**
+     * The active item of the sidebar. It will be highlighted
+     * with a darker background color and a filled icon.
+     * Each page MUST set an active item; it can be empty, however.
+     * 
+     * @type {[string?, function]}
      */
-    const [isDrawerVisible, setDrawerVisible] = useState(false);
-    const [sidebarActiveItem, setSidebarActiveItem] = useState('');
+    const [sidebarActiveItem, setSidebarActiveItem] = useState('')
+
+    /**
+     * The configuration of the SidebarActionButton (SAB). 
+     * On larger screens, it is fixed in the top of the sidebar.
+     * On small screens it is a floating action button in the 
+     * bottom-right corner of the screen. By default, it is 
+     * invisible. Each page MUST set a configuration for the SAB;
+     * it can be empty, however.
+     * 
+     * See the documentation of the SidebarActionButton component
+     * for further details on the properties.
+     * 
+     * @type {[object?, function]}
+     * 
+     * @todo The onClickHandler property should be renamed to onClick.
+     */
     const [sidebarActionButton, setSidebarActionButton] = useState({
         visible: false,
         icon: '',
         path: '#',
         label: '',
         onClickHandler: () => {},
-    }); 
+    })
 
     /**
+     * Whether or not the sidebar drawer is visible.
+     * If set to true, the SidebarDrawer will move into 
+     * the view. The setDrawerVisible method can be passed
+     * to any button, preferably to SidebarDrawerButton 
+     * components, e.g. in the sidebar or the topbar.
      * 
+     * @type {[boolean, function]}
+     */
+    const [isDrawerVisible, setDrawerVisible] = useState(false)
 
     /**
      * The configuration of the topbar. On small screens, 
