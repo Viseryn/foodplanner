@@ -171,14 +171,6 @@ export default function App() {
         authentication,
     )
 
-
-    // ShoppingList
-    const [shoppingList, setShoppingList] = useState([]);
-    const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
-
-    // Pantry
-    const [pantry, setPantry] = useState([]);
-    const [isLoadingPantry, setLoadingPantry] = useState(true);
     
     /******************
      * USERGROUPS     *
@@ -191,32 +183,6 @@ export default function App() {
      * @type {object}
      * @property {Array<object>} data
      */
-    const props = {
-        // RefreshDataTimestamp
-
-        // User
-
-        // ShoppingList
-        'shoppingList': shoppingList,
-        'setShoppingList': setShoppingList,
-        'isLoadingShoppingList': isLoadingShoppingList,
-        'setLoadingShoppingList': setLoadingShoppingList,
-
-        // Pantry
-        'pantry': pantry,
-        'setPantry': setPantry,
-        'isLoadingPantry': isLoadingPantry,
-        'setLoadingPantry': setLoadingPantry,
-
-        // Sidebar
-        'setSidebarActiveItem': setSidebarActiveItem, 
-        'setSidebarActionButton': setSidebarActionButton,
-
-        // Topbar
-        'topbar': topbar,
-        'setTopbar': setTopbar,
-    };
-
     const userGroups = useFetch(
         '/api/usergroups/list',
         authentication,
@@ -320,33 +286,11 @@ export default function App() {
     /* ***************** */
 
 
-    /**
-     * Load shopping list into global state when 
-     * isLoadingShoppingList is true, e.g. on first render.
-     */
-    useEffect(() => {
-        if (!isLoadingShoppingList && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
 
-        loadShoppingList(setShoppingList, () => {
-            // Disable loading screen
-            setLoadingShoppingList(false);
-        });
-    }, [isLoadingShoppingList, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
-     * Load pantry into global state when 
-     * isLoadingPantry is true, e.g. on first render.
+     * Props for subcomponents
      */
-    useEffect(() => {
-        if (!isLoadingPantry && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
-
-        loadPantry(setPantry, () => {
-            // Disable loading screen
-            setLoadingPantry(false);
-        });
-    }, [isLoadingPantry, isLoadingUser, user, isLoadingAnonymously]);
     const props = {
         user,
         authentication,
@@ -355,6 +299,8 @@ export default function App() {
         mealCategories,
         recipes,
         days,
+        // shoppingList,
+        // pantry,
         setSidebarActiveItem, 
         setSidebarActionButton,
         topbar, 
