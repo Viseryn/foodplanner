@@ -2,30 +2,32 @@
  * ./assets/layouts/App.js *
  ***************************/
 
-import React, { useEffect, useState } from "react";
-import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
-import axios from "axios";
+import React, { useEffect, useState }   from 'react'
+import { Route, Routes, BrowserRouter } from 'react-router-dom'
 
-import loadShoppingList from "../util/loadShoppingList";
-import loadPantry from "../util/loadPantry.js";
+import axios                            from 'axios'
 
-import Sidebar, { SidebarDrawerButton } from './Sidebar/Sidebar';
-import Topbar from "./Topbar/Topbar";
-import AuthChecker from "./AuthChecker";
+import AuthChecker                      from './AuthChecker/AuthChecker'
+import Sidebar, { SidebarDrawerButton } from './Sidebar/Sidebar'
+import Topbar                           from './Topbar/Topbar'
 
-import Planner from '../pages/Planner/Planner';
-import AddMeal from '../pages/Planner/AddMeal';
-import Recipes from '../pages/Recipes/Recipes';
-import AddRecipe from '../pages/Recipes/AddRecipe';
-import EditRecipe from '../pages/Recipes/EditRecipe';
-import ShoppingList from '../pages/ShoppingList/ShoppingList';
-import Login from '../pages/Login/Login';
-import Logout from '../pages/Logout/Logout';
-import PageNotFound from '../pages/PageNotFound/PageNotFound';
-import Settings from '../pages/Settings/Settings';
-import AddGroup from "../pages/Settings/AddGroup";
-import Registration from "../pages/Registration/Registration";
-import Pantry from "../pages/Pantry/Pantry";
+import Login                            from '../pages/Login/Login'
+import Logout                           from '../pages/Logout/Logout'
+import PageNotFound                     from '../pages/PageNotFound/PageNotFound'
+import Pantry                           from '../pages/Pantry/Pantry'
+import AddMeal                          from '../pages/Planner/AddMeal'
+import Planner                          from '../pages/Planner/Planner'
+import AddRecipe                        from '../pages/Recipes/AddRecipe'
+import EditRecipe                       from '../pages/Recipes/EditRecipe'
+import Recipes                          from '../pages/Recipes/Recipes'
+import Recipe                           from '../pages/Recipes/Recipe'
+import Registration                     from '../pages/Registration/Registration'
+import AddGroup                         from '../pages/Settings/AddGroup'
+import Settings                         from '../pages/Settings/Settings'
+import ShoppingList                     from '../pages/ShoppingList/ShoppingList'
+
+import loadShoppingList                 from '../util/loadShoppingList'
+import loadPantry                       from '../util/loadPantry.js'
 
 /**
  * App
