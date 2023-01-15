@@ -90,25 +90,30 @@ export default function App() {
     }); 
 
     /**
-     * Topbar configuration is kept in global state.
-     * The topbar action buttons can move! On mobile screens,
-     * there is a dedicated top bar container. On larger screens,
-     * these buttons may move next to the Heading.
      * 
-     * The format for the array of action buttons is as following.
+
+    /**
+     * The configuration of the topbar. On small screens, 
+     * the topbar consists of two rows, one of which has a
+     * SidebarDrawerButton and Topbar Action Buttons, while
+     * the other one has a back button and the title. By 
+     * scrolling, it will collapse into one row. On large 
+     * screens, the topbar will be shown in the main container.
      * 
-     * @example 
-     * const actionButtons = [
-     *     { icon: 'sync',   alt: 'Synchronize', onClick: () => { ... } },
-     *     { icon: 'delete', alt: 'Delete',      onClick: () => { ... } },
-     * ]
+     * See the documentation of the Topbar component 
+     * for further details on the properties.
      */
     const [topbar, setTopbar] = useState({
         title: '',
         showBackButton: false,
         backButtonPath: '/',
+        onBackButtonClick: () => {},
         actionButtons: [],
-    });
+        truncate: false,
+        isLoading: false,
+        style: '',
+    })
+
 
     /**
      * Keep data in global state variables
@@ -349,13 +354,13 @@ export default function App() {
                 <div className="flex flex-col w-full">
                     {/* Topbar */}
                     <Topbar 
+                        topbar={topbar}
                         SidebarDrawerButton={
                             <SidebarDrawerButton
                                 isDrawerVisible={isDrawerVisible}
                                 setDrawerVisible={setDrawerVisible} 
                             />
                         }
-                        {...props}
                     />
 
                     {/* Main Content */}
