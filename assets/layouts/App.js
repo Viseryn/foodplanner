@@ -55,6 +55,24 @@ export default function App() {
      * in global state variables.
      * Sidebar setters will be passed as props to subcomponents, so 
      * that each subcomponent can alter the sidebar state variables.
+
+    /**
+     * Whether or not dependent data should be reloaded
+     * without loading screens. Will be updated by the
+     * useRefreshDataTimestamp hook.
+     * 
+     * @type {[boolean, function]}
+     */
+    const [isLoading, setLoading] = useState(false)
+
+    /**
+     * The RefreshDataTimestamp. This hook will keep
+     * updating isLoading if the timestamp changes.
+     * 
+     * @type {number}
+     */
+    const refreshDataTimestamp = useRefreshDataTimestamp(isLoading, setLoading)
+
      */
     const [isDrawerVisible, setDrawerVisible] = useState(false);
     const [sidebarActiveItem, setSidebarActiveItem] = useState('');
@@ -91,9 +109,6 @@ export default function App() {
      * Keep data in global state variables
      * and pass them as props to subcomponents.
      */
-    // RefreshDataTimestamp
-    const [refreshDataTimestamp, setRefreshDataTimestamp] = useState(null);
-    const [isLoadingAnonymously, setLoadingAnonymously] = useState(false);
 
     // User
     const [user, setUser] = useState([]);
@@ -142,9 +157,6 @@ export default function App() {
      */
     const props = {
         // RefreshDataTimestamp
-        'refreshDataTimestamp': refreshDataTimestamp,
-        'setRefreshDataTimestamp': setRefreshDataTimestamp,
-        'setLoadingAnonymously': setLoadingAnonymously,
 
         // User
         'user': user,
@@ -206,52 +218,6 @@ export default function App() {
         'setTopbar': setTopbar,
     };
 
-    /**
-     * Load current RefreshDataTimestamp from database
-     * and trigger rerenders if the timestamp has changed.
-     */
-    useEffect(() => {
-        // Set initial timestamp
-        if (refreshDataTimestamp === null) {
-            axios
-                .get('/api/refresh-data-timestamp')
-                .then(response => {
-                    setRefreshDataTimestamp(JSON.parse(response.data))
-                })
-        }
-
-        // Create a repeating 5 seconds interval
-        const interval = setInterval(() => {
-            axios
-                .get('/api/refresh-data-timestamp')
-                .then(response => {
-                    const timestamp = JSON.parse(response.data)
-                    // console.log(timestamp)
-
-                    // Check if timestamp has changed.
-                    // If yes, trigger a reload of everything.
-                    if (timestamp !== refreshDataTimestamp) {
-                        // console.log('Trigger reload')
-                        setRefreshDataTimestamp(timestamp)
-
-                        // Settings isLoadingAnonymously to true will
-                        // trigger a reload of Days, Recipes, UserGroups,
-                        // Pantry, ShoppingList, MealCategories and Settings 
-                        // without activating any spinners or loading screens.
-                        setLoadingAnonymously(true)
-                    }
-                })
-
-            // If reload was triggered, set isLoadingAnonymously to false
-            if (isLoadingAnonymously) {
-                setLoadingAnonymously(false)
-            }
-        }, 5000)
-
-        return () => { 
-            clearInterval(interval)
-        }
-    })
 
     /**
      * Load user data into global state when isLoadingUser
