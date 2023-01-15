@@ -318,7 +318,8 @@ export default function App() {
                     sidebarActionButton={sidebarActionButton}
                     isDrawerVisible={isDrawerVisible}
                     setDrawerVisible={setDrawerVisible} 
-                    {...props}
+                    authentication={authentication}
+                    settings={settings}
                 />
                 
                 {/* Main Container */}
