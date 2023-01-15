@@ -57,13 +57,14 @@ function useAuthentication() {
     useEffect(() => {
         const authenticated = user.data?.roles?.includes('ROLE_ADMIN') ?? false
         setAuthenticated(authenticated)
+        setLoading(true)
 
         // The loading of the authentication process will
         // only be stopped once the user data has loaded
         if (!user.isLoading) {
             setLoading(false)
         }
-    }, [user.data])
+    }, [user.data, user.isLoading])
 
     // Return the user object and an authentication object
     return [user, authentication]
