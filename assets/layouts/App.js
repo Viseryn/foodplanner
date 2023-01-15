@@ -188,19 +188,17 @@ export default function App() {
     const [recipes, setRecipes] = useState([]);
     const [isLoadingRecipes, setLoadingRecipes] = useState(true);
     const [recipeIndex, setRecipeIndex] = useState(-1);
-
-    // UserGroups
-    const [userGroups, setUserGroups] = useState([]);
-    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
-
-    // MealCategories
-    const [mealCategories, setMealCategories] = useState([]);
-    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
-
-
+    
+    /******************
+     * USERGROUPS     *
+     ******************/
 
     /**
-     * Props for subcomponents
+     * The list of UserGroups. The data object 
+     * is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
     const props = {
         // RefreshDataTimestamp
@@ -233,18 +231,6 @@ export default function App() {
         'recipeIndex': recipeIndex,
         'setRecipeIndex': setRecipeIndex,
 
-        // UserGroups
-        'userGroups': userGroups,
-        'setUserGroups': setUserGroups,
-        'isLoadingUserGroups': isLoadingUserGroups,
-        'setLoadingUserGroups': setLoadingUserGroups,
-
-        // MealCategories
-        'mealCategories': mealCategories,
-        'setMealCategories': setMealCategories,
-        'isLoadingMealCategories': isLoadingMealCategories,
-        'setLoadingMealCategories': setLoadingMealCategories,
-
         // Sidebar
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
@@ -254,41 +240,35 @@ export default function App() {
         'setTopbar': setTopbar,
     };
 
+    const userGroups = useFetch(
+        '/api/usergroups/list',
+        authentication,
+        [isLoading],
+    )
+
+    
+    /******************
+     * MEALCATEGORIES *
+     ******************/
+
+    /**
+     * The list of MealCategories. The data object 
+     * is an array of objects here. They do not have 
+     * to be updated more than once, so the 
+     * isDependencyLoading array can be left empty.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
+     */
+    const mealCategories = useFetch(
+        '/api/mealcategories/list',
+        authentication,
+    )
 
 
     /**
-     * Load UserGroup data into global state when isLoadingUserGroups
-     * is true, e.g. on first render.
      */
-    useEffect(() => {
-        if (!isLoadingUserGroups && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
 
-        axios
-            .get('/api/usergroups/list')
-            .then(response => {
-                setUserGroups(JSON.parse(response.data));
-                setLoadingUserGroups(false);
-            })
-        ;
-    }, [isLoadingUserGroups, isLoadingUser, user, isLoadingAnonymously]);
-
-    /**
-     * Load MealCategory data into global state when isLoadingMealCategories
-     * is true, e.g. on first render.
-     */
-    useEffect(() => {
-        if (!isLoadingMealCategories && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
-
-        axios
-            .get('/api/mealcategories/list')
-            .then(response => {
-                setMealCategories(JSON.parse(response.data));
-                setLoadingMealCategories(false);
-            })
-        ;
-    }, [isLoadingMealCategories, isLoadingUser, user, isLoadingAnonymously]);
 
 
     /**
@@ -366,6 +346,8 @@ export default function App() {
         user,
         authentication,
         settings,
+        userGroups,
+        mealCategories,
         setSidebarActiveItem, 
         setSidebarActionButton,
         topbar, 
