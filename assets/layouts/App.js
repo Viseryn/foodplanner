@@ -51,9 +51,9 @@ import loadPantry                       from '../util/loadPantry.js'
  * @component
  */
 export default function App() {
-    /****************
-     * GENERAL      *
-     ****************/
+    /******************
+     * GENERAL        *
+     ******************/
 
     /**
      * The user and authentication objects.
@@ -80,9 +80,9 @@ export default function App() {
     const refreshDataTimestamp = useRefreshDataTimestamp(isLoading, setLoading)
 
     
-    /****************
-     * SIDEBAR      *
-     ****************/
+    /******************
+     * SIDEBAR        *
+     ******************/
 
     /**
      * The active item of the sidebar. It will be highlighted
@@ -128,9 +128,9 @@ export default function App() {
     const [isDrawerVisible, setDrawerVisible] = useState(false)
 
     
-    /****************
-     * TOPBAR       *
-     ****************/
+    /******************
+     * TOPBAR         *
+     ******************/
 
     /**
      * The configuration of the topbar. On small screens, 
@@ -155,9 +155,9 @@ export default function App() {
     })
 
     
-    /****************
-     * SETTINGS     *
-     ****************/
+    /******************
+     * SETTINGS       *
+     ******************/
 
     /**
      * The user-specific settings. Since these do not
