@@ -3,13 +3,16 @@
  ***************************/
 
 import React, { useEffect, useState }   from 'react'
-import { Route, Routes, BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import axios                            from 'axios'
 
 import AuthChecker                      from './AuthChecker/AuthChecker'
 import Sidebar, { SidebarDrawerButton } from './Sidebar/Sidebar'
 import Topbar                           from './Topbar/Topbar'
+
+import useAuthentication                from '../hooks/useAuthentication'
+import useRefreshDataTimestamp          from '../hooks/useRefreshDataTimestamp'
 
 import Login                            from '../pages/Login/Login'
 import Logout                           from '../pages/Logout/Logout'
@@ -37,9 +40,12 @@ import loadPantry                       from '../util/loadPantry.js'
  * various global components, such as the sidebar or 
  * the shopping list.
  * 
- * Renders a flex container consisting of two columns; 
+ * Renders a flex container consisting of two columns/rows:
  * the sidebar, rendered by the Sidebar component, and 
- * the content, which is handled by the BrowserRouter.
+ * the main container, which itself consists of the topbar,
+ * rendered by the Topbar component, and the actual content
+ * container, where the BrowserRouter decides which page to 
+ * load depending on the URL.
  * 
  * @component
  */
