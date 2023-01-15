@@ -179,15 +179,6 @@ export default function App() {
     // Pantry
     const [pantry, setPantry] = useState([]);
     const [isLoadingPantry, setLoadingPantry] = useState(true);
-
-    // Days
-    const [days, setDays] = useState([]);
-    const [isLoadingDays, setLoadingDays] = useState(true);
-
-    // Recipes
-    const [recipes, setRecipes] = useState([]);
-    const [isLoadingRecipes, setLoadingRecipes] = useState(true);
-    const [recipeIndex, setRecipeIndex] = useState(-1);
     
     /******************
      * USERGROUPS     *
@@ -216,20 +207,6 @@ export default function App() {
         'setPantry': setPantry,
         'isLoadingPantry': isLoadingPantry,
         'setLoadingPantry': setLoadingPantry,
-
-        // Days
-        'days': days,
-        'setDays': setDays,
-        'isLoadingDays': isLoadingDays,
-        'setLoadingDays': setLoadingDays,
-
-        // Recipes
-        'recipes': recipes,
-        'setRecipes': setRecipes,
-        'isLoadingRecipes': isLoadingRecipes,
-        'setLoadingRecipes': setLoadingRecipes,
-        'recipeIndex': recipeIndex,
-        'setRecipeIndex': setRecipeIndex,
 
         // Sidebar
         'setSidebarActiveItem': setSidebarActiveItem, 
@@ -265,55 +242,83 @@ export default function App() {
         authentication,
     )
 
+    
+    /******************
+     * RECIPES        *
+     ******************/
 
     /**
+     * The complete recipe list. The data object 
+     * is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
+    const recipes = useFetch(
+        '/api/recipes/list',
+        authentication,
+        [isLoading],
+    )
 
 
+    /******************
+     * PLANNER        *
+     ******************/
 
     /**
-     * Load recipes into global state when isLoadingRecipes 
-     * is true, e.g. on first render or after adding/editing
-     * a recipe.
+     * The complete list of Day entities. The data
+     * object is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
-    useEffect(() => {
-        if (!isLoadingRecipes && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
-
-        axios
-            .get('/api/recipes/list')
-            .then(response => {
-                setRecipes(JSON.parse(response.data));
-                setLoadingRecipes(false);
-            })
-        ;
-    }, [isLoadingRecipes, isLoadingUser, user, isLoadingAnonymously]);
+    const days = useFetch(
+        '/api/days/list',
+        authentication,
+        [isLoading],
+    )
 
     /**
      * Calls the Update Days API, which removes all 
      * unnecessary Days (past days and days further away
-     * than ten), and calls getDays() after.
-     * Loads days data into global state when isLoadingDays
-     * is true, e.g. on first render or after adding/deleting 
-     * a meal.
+     * than ten).
      */
     useEffect(() => {
-        if (!isLoadingDays && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+        if (days.isLoading) return
 
-        axios
-            .get('/api/days/update')
-            .then(() => {
-                axios
-                    .get('/api/days/list')
-                    .then(response => {
-                        setDays(JSON.parse(response.data));
-                        setLoadingDays(false);
-                    })
-                ;
-            })
-        ;
-    }, [isLoadingDays, isLoadingUser, user, isLoadingAnonymously]);
+        axios.get('/api/days/update')
+    }, [days.isLoading])
+
+
+
+    /* ***************** */
+
+
+
+    // useEffect(() => {
+    //     if (!isLoadingShoppingList && !user?.isLoading && !isLoading) return
+    //     if (!authentication.isAuthenticated) return
+
+    //     loadShoppingList(setShoppingList, () => {
+    //         // Disable loading screen
+    //         setLoadingShoppingList(false)
+    //     })
+    // }, [isLoadingShoppingList, user?.isLoading, user, isLoading])
+
+    // useEffect(() => {
+    //     if (!isLoadingPantry && !user?.isLoading && !isLoading) return
+    //     if (!authentication.isAuthenticated) return
+
+    //     loadPantry(setPantry, () => {
+    //         // Disable loading screen
+    //         setLoadingPantry(false)
+    //     })
+    // }, [isLoadingPantry, user?.isLoading, user, isLoading])
+
+
+
+    /* ***************** */
+
 
     /**
      * Load shopping list into global state when 
@@ -348,6 +353,8 @@ export default function App() {
         settings,
         userGroups,
         mealCategories,
+        recipes,
+        days,
         setSidebarActiveItem, 
         setSidebarActionButton,
         topbar, 
