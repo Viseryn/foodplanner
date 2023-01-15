@@ -55,6 +55,11 @@ export default function App() {
      * in global state variables.
      * Sidebar setters will be passed as props to subcomponents, so 
      * that each subcomponent can alter the sidebar state variables.
+     * The user and authentication objects.
+     * 
+     * @type {[object, object]}
+     */
+    const [user, authentication] = useAuthentication()
 
     /**
      * Whether or not dependent data should be reloaded
@@ -110,9 +115,6 @@ export default function App() {
      * and pass them as props to subcomponents.
      */
 
-    // User
-    const [user, setUser] = useState([]);
-    const [isLoadingUser, setLoadingUser] = useState(true);
 
     // ShoppingList
     const [shoppingList, setShoppingList] = useState([]);
@@ -143,14 +145,6 @@ export default function App() {
     const [settings, setSettings] = useState([]);
     const [isLoadingSettings, setLoadingSettings] = useState(true);
 
-    /**
-     * isAuthenticated
-     * 
-     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
-     */
-    const isAuthenticated = () => {
-        return user?.roles?.includes('ROLE_ADMIN');
-    };
 
     /**
      * Props for subcomponents
@@ -159,11 +153,6 @@ export default function App() {
         // RefreshDataTimestamp
 
         // User
-        'user': user,
-        'setUser': setUser,
-        'isLoadingUser': isLoadingUser,
-        'setLoadingUser': setLoadingUser,
-        'isAuthenticated': isAuthenticated,
 
         // ShoppingList
         'shoppingList': shoppingList,
@@ -219,36 +208,6 @@ export default function App() {
     };
 
 
-    /**
-     * Load user data into global state when isLoadingUser
-     * is true, e.g. on first render or after login/logout.
-     */
-    useEffect(() => {
-        if (!isLoadingUser) return;
-
-        axios
-            .get('/api/user')
-            .then(response => {
-                // Load user data
-                setUser(JSON.parse(response.data));
-                setLoadingUser(false);
-
-                // Remove user-sensitive data
-                setUserGroups([]);
-                setMealCategories([]);
-                setSettings([]);
-                setLoadingUserGroups(true);
-                setLoadingMealCategories(true);
-                setLoadingSettings(true);
-
-                // Update state variables
-                setLoadingDays(true);
-                setLoadingRecipes(true);
-                setLoadingShoppingList(true);
-                setLoadingPantry(true);
-            })
-        ;
-    }, [isLoadingUser]);
 
     /**
      * Load UserGroup data into global state when isLoadingUserGroups
