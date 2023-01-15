@@ -272,7 +272,8 @@ export default function EditRecipe(props) {
             actionButtons: [
                 { icon: 'delete', onClick: () => deleteRecipe(recipe?.id) }
             ],
-            style: 'max-w-[900px] pr-4'
+            truncate: true,
+            style: 'max-w-[900px] pr-4',
         })
 
         // Scroll to top
