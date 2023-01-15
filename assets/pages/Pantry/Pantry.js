@@ -342,6 +342,7 @@ export default function Pantry(props) {
         props.setTopbar({
             title: 'Vorratskammer',
             actionButtons: [
+                { icon: 'sort', onClick: handleSort },
                 { icon: 'delete_forever', onClick: handleDeleteAll },
             ],
             style: 'md:w-[450px]',
@@ -349,7 +350,7 @@ export default function Pantry(props) {
 
         // Scroll to top
         window.scrollTo(0, 0)
-    }, [])
+    }, [props.pantry])
 
     /**
      * Update pantry items from state to database
