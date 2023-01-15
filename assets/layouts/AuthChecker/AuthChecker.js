@@ -2,26 +2,24 @@
  * ./assets/layouts/AuthChecker.js *
  ***********************************/
 
-import React from "react";
+import React, { useEffect, useState }   from 'react'
 import { useNavigate }                  from 'react-router-dom'
 
-import Heading from "../components/ui/Heading";
-import Spinner from "../components/ui/Spinner";
+import Spinner                          from '../../components/ui/Spinner'
 
 /**
  * AuthChecker
  * 
  * A wrapper component that can be used to hide a component
  * behind authentication (i.e., having the admin role).
- * First checks if the user is authenticated and if yes, 
- * renders the component. If not, the user is redirected 
- * to the login page. While loading the user data, a 
- * Spinner is shown.
+ * Shows a spinner while the authentication is loading
+ * and will then redirect the user to either the login 
+ * screen if not authenticated or the component if 
+ * authenticated.
  * 
  * @component
- * @property {function} component A React component.
- * @property {function} isAuthenticated A function that checks whether the user is authenticated.
- * @property {boolean} isLoadingUser A bool that is true while the user data is loading.
+ * @property {object} authentication The authentication object from useAuthentication().
+ * @property {function} component A React component that should be locked behind authentication.
  */
 export default function AuthChecker({ authentication, component = <></> }) {
     /**
