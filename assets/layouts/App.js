@@ -154,11 +154,22 @@ export default function App() {
         style: '',
     })
 
+    
+    /****************
+     * SETTINGS     *
+     ****************/
 
     /**
-     * Keep data in global state variables
-     * and pass them as props to subcomponents.
+     * The user-specific settings. Since these do not
+     * have to be loaded more than once, the 
+     * isDependencyLoading array can be left empty.
+     * 
+     * @type {object}
      */
+    const settings = useFetch(
+        '/api/settings', 
+        authentication,
+    )
 
 
     // ShoppingList
@@ -186,9 +197,6 @@ export default function App() {
     const [mealCategories, setMealCategories] = useState([]);
     const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
 
-    // Settings
-    const [settings, setSettings] = useState([]);
-    const [isLoadingSettings, setLoadingSettings] = useState(true);
 
 
     /**
@@ -237,12 +245,6 @@ export default function App() {
         'isLoadingMealCategories': isLoadingMealCategories,
         'setLoadingMealCategories': setLoadingMealCategories,
 
-        // Settings
-        'settings': settings,
-        'setSettings': setSettings,
-        'isLoadingSettings': isLoadingSettings,
-        'setLoadingSettings': setLoadingSettings,
-
         // Sidebar
         'setSidebarActiveItem': setSidebarActiveItem, 
         'setSidebarActionButton': setSidebarActionButton,
@@ -288,22 +290,6 @@ export default function App() {
         ;
     }, [isLoadingMealCategories, isLoadingUser, user, isLoadingAnonymously]);
 
-    /**
-     * Load Settings data into global state when isLoadingSettings
-     * is true, e.g. on first render.
-     */
-    useEffect(() => {
-        if (!isLoadingSettings && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
-
-        axios
-            .get('/api/settings')
-            .then(response => {
-                setSettings(JSON.parse(response.data));
-                setLoadingSettings(false);
-            })
-        ;
-    }, [isLoadingSettings, isLoadingUser, user, isLoadingAnonymously]);
 
     /**
      * Load recipes into global state when isLoadingRecipes 
@@ -376,6 +362,15 @@ export default function App() {
             setLoadingPantry(false);
         });
     }, [isLoadingPantry, isLoadingUser, user, isLoadingAnonymously]);
+    const props = {
+        user,
+        authentication,
+        settings,
+        setSidebarActiveItem, 
+        setSidebarActionButton,
+        topbar, 
+        setTopbar,
+    }
 
     /** 
      * Render
