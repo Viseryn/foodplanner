@@ -190,7 +190,7 @@ export default function Planner({ days, ...props }) {
                                                 </div>
                                             </Link>
                                             <span 
-                                                onClick={() => deleteMeal(day, meal)}
+                                                onClick={() => deleteMeal(meal)}
                                                 className="cursor-pointer transition duration-300 group-hover:block material-symbols-rounded text-white absolute top-2 right-2
                                                 hover:bg-gray-600/40 p-1 rounded-full"
                                             >
