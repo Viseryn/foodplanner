@@ -28,7 +28,7 @@ import SidebarItem          from './components/SidebarItem'
  * @component
  * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
  * @property {object} sidebarActionButton An object that contains the sidebar action button configuration. See example for properties.
- * @property {boolean} isDrawerVisible A state variable that describes hether or not the sidebar drawer is visible.
+ * @property {boolean} isDrawerVisible A state variable that describes whether or not the sidebar drawer is visible.
  * @property {React.Dispatch<ReactSetStateAction<boolean>>} setDrawerVisible The setter method of isDrawerVisible.
  * @property {object} authentication An authentication object.
  * @property {object} settings A settings object.
