@@ -6,6 +6,7 @@ import React, { useEffect, useState }   from 'react'
 import { useNavigate }                  from 'react-router-dom'
 import axios                            from 'axios'
 
+import FilePicker                       from '../../components/form/FilePicker'
 import { InputRow }                     from '../../components/form/Input'
 import { SliderRow }                    from '../../components/form/Slider'
 import { TextareaRow }                  from '../../components/form/Textarea'
@@ -24,9 +25,10 @@ import Spinner                          from '../../components/ui/Spinner'
  * forwarded to its detail page.
  * 
  * @component
- * @property {function} setSidebar
- * @property {function} setTopbar
- * @property {object} recipes
+ * @param {object} props
+ * @param {function} props.setSidebar
+ * @param {function} props.setTopbar
+ * @param {object} props.recipes
  */
 export default function AddRecipe({ recipes, ...props }) {
     /**
@@ -178,14 +180,10 @@ export default function AddRecipe({ recipes, ...props }) {
 
                                 <div>
                                     <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
-                                    <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300">
-                                        <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                        <span className="label-content mr-2 ml-3">{filename}</span>
-                                    </label>
-                                    <input 
-                                        type="file" id="recipe_image" name="recipe[image]" 
-                                        className="file-input hidden" 
-                                        onChange={(e) => handleFilePick(e)}
+                                    <FilePicker
+                                        id="recipe_image"
+                                        label={filename}
+                                        onChange={handleFilePick}
                                     />
                                 </div>
                             </Card>
