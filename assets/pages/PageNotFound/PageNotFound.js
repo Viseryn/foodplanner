@@ -40,7 +40,7 @@ export default function PageNotFound(props) {
                 <Notification
                     icon="error"
                     color="red"
-                    title="Fehler 404"
+                    title="Fehler 404 ¯\_(ツ)_/¯"
                 >
                     Die angeforderte Seite konnte nicht gefunden werden. Bitte wende dich an den Administrator, falls der Fehler weiterhin auftreten sollte.
                 </Notification>
