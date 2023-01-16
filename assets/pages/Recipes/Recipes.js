@@ -2,34 +2,44 @@
  * ./assets/pages/Recipes/Recipes.js *
  *************************************/
 
-import React, { useEffect, useState }   from 'react';
-import { Link }                         from 'react-router-dom';
+import React, { useEffect, useState }   from 'react'
+import { Link }                         from 'react-router-dom'
 
-import Notification                     from '../../components/ui/Notification';
-import RecipeListSkeleton               from './components/RecipeListSkeleton';
-import Spacer                           from '../../components/ui/Spacer';
+import SearchWidget                     from './components/SearchWidget'
+import RecipeListSkeleton               from './components/RecipeListSkeleton'
+import Notification                     from '../../components/ui/Notification'
+import Spacer                           from '../../components/ui/Spacer'
 
 /**
  * Recipes
  * 
- * A Component for showing a list of all Recipes.
- * Collects the Recipe data from the Recipe List API.
+ * A component that renders a list of all recipes.
+ * At the top, a search bar can be used to filter 
+ * the list by recipe title and ingredient names.
  * 
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
  * @property {function} setTopbar
- * @property {arr} recipes 
- * @property {boolean} isLoadingRecipes
+ * @property {object} recipes 
  */
 export default function Recipes({ recipes, ...props }) {
     /**
-     * State variables
+     * The current input in the search input field.
+     * 
+     * @type {[string, function]}
      */
     const [searchValue, setSearchValue] = useState('')
     
     /**
-     * Search for user input in recipe list
+     * The list of recipes filtered by the searchValue.
+     * Currently, the filter looks for the title of the
+     * recipe and the ingredient names of a recipe.
+     * 
+     * @todo Implement a more intelligent search with 
+     * more filters.
+     * 
+     * @type {Array<object>}
      */
     const recipesFiltered = recipes.isLoading 
         ? []
@@ -83,7 +93,7 @@ export default function Recipes({ recipes, ...props }) {
     }, [])
     
     /**
-     * Render
+     * Render Recipes
      */
     return (
         <div className="pb-24 md:pb-4 max-w-[900px]">
