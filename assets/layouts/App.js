@@ -169,15 +169,14 @@ export default function App({ version }) {
      ******************/
 
     /**
-     * The user-specific settings. Since these do not
-     * have to be loaded more than once, the 
-     * isDependencyLoading array can be left empty.
+     * The user-specific settings.
      * 
      * @type {object}
      */
     const settings = useFetch(
         '/api/settings', 
         authentication,
+        [isLoading],
     )
 
     
@@ -205,9 +204,7 @@ export default function App({ version }) {
 
     /**
      * The list of MealCategories. The data object 
-     * is an array of objects here. They do not have 
-     * to be updated more than once, so the 
-     * isDependencyLoading array can be left empty.
+     * is an array of objects here. 
      * 
      * @type {object}
      * @property {Array<object>} data
@@ -215,6 +212,7 @@ export default function App({ version }) {
     const mealCategories = useFetch(
         '/api/mealcategories/list',
         authentication,
+        [isLoading],
     )
 
     
@@ -406,7 +404,7 @@ export default function App({ version }) {
                         />
                         <Route 
                             path="/login"                
-                            element={<Login {...props} />} 
+                            element={<Login setLoading={setLoading} {...props} />} 
                         />
                         <Route 
                             path="/logout"               

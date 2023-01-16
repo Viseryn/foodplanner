@@ -19,11 +19,12 @@ import Spinner                          from '../../components/ui/Spinner'
  * users or a success/error notification.
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {function} setTopbar
- * @property {object} user
- * @property {object} authentication
+ * @param {object} props
+ * @param {function} props.setSidebar
+ * @param {function} props.setTopbar
+ * @param {function} props.setLoading
+ * @param {object} props.user
+ * @param {object} props.authentication
  */
 export default function Login(props) {
     /**
@@ -62,6 +63,7 @@ export default function Login(props) {
                 setResponse(response.data)
                 setLoading(false)
                 props.user.setLoading(true)
+                props.setLoading(true)
             })
     }
 
@@ -70,8 +72,7 @@ export default function Login(props) {
      */
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem()
-        props.setSidebarActionButton()
+        props.setSidebar()
 
         // Load topbar
         props.setTopbar({
@@ -126,7 +127,7 @@ export default function Login(props) {
                 </div>
             }
 
-            {props.user.data?.username === undefined && !props.user.isLoading && !isLoadingSubmit &&
+            {props.user.data?.username === undefined && !props.user.isLoading && !isLoading &&
                 <div className="mx-4 md:mx-0">
                     <form onSubmit={handleSubmit}>
                         <Card>
