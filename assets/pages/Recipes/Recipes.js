@@ -88,26 +88,11 @@ export default function Recipes(props) {
                 <Spacer height="6" />
 
                 {/* Search bar */}
-                <div className="rounded-full flex items-center h-14 pl-6 pr-4 font-semibold bg-secondary-100 dark:bg-secondary-dark-100">
-                    <span className="material-symbols-rounded mr-2 cursor-default">search</span>
-                    <input 
-                        className="bg-secondary-100 dark:bg-secondary-dark-100 placeholder-[#55624c] dark:placeholder-secondary-dark-300 w-full border-transparent focus:border-transparent focus:ring-0"
-                        placeholder='Suche nach Rezepten ...'
-                        id='search'
-                        name='search'
-                        type='text'
-                        value={searchValue}
-                        onChange={e => {
-                            setSearchValue(e.target.value);
-                        }} 
-                    />
-                    {searchValue !== '' &&
-                        <span 
-                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 p-2 rounded-full"
-                            onClick={() => setSearchValue('')}
-                        >close</span>
-                    }
-                </div>
+                <SearchWidget
+                    inputValue={searchValue}
+                    setInputValue={setSearchValue}
+                    placeholder="Suche nach Rezepten ..."
+                />
                 
                 <Spacer height="10" />
 
