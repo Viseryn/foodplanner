@@ -104,20 +104,25 @@ export default function App({ version }) {
      * invisible. Each page MUST set a configuration for the SAB;
      * it can be empty, however.
      * 
-     * See the documentation of the SidebarActionButton component
-     * for further details on the properties.
-     * 
      * @type {[object?, function]}
-     * 
-     * @todo The onClickHandler property should be renamed to onClick.
      */
-    const [sidebarActionButton, setSidebarActionButton] = useState({
-        visible: false,
-        icon: '',
-        path: '#',
-        label: '',
-        onClickHandler: () => {},
-    })
+    const [sidebarActionButton, setSidebarActionButton] = useState({})
+
+    /**
+     * Updates the active sidebar item and the SidebarActionButton.
+     * 
+     * @param {string} sidebarActiveItem The sidebar item that should be active.
+     * @param {object} sidebarActionButton The configuration for the SidebarActionButton.
+     * @param {boolean} sidebarActionButton.visible Whether the SAB should be visible or not.
+     * @param {string} sidebarActionButton.icon The icon of the SAB.
+     * @param {string} sidebarActionButton.label The label text of the SAB.
+     * @param {string} sidebarActionButton.path An optional path that the SAB redirects to.
+     * @param {function} sidebarActionButton.onClick An optional onClick handler.
+     */
+    const setSidebar = (sidebarActiveItem = '', sidebarActionButton = {}) => {
+        setSidebarActiveItem(sidebarActiveItem)
+        setSidebarActionButton(sidebarActionButton)
+    }
 
     /**
      * Whether or not the sidebar drawer is visible.
@@ -306,6 +311,7 @@ export default function App({ version }) {
         // pantry,
         setSidebarActiveItem, 
         setSidebarActionButton,
+        setSidebar,
         topbar, 
         setTopbar,
     }
