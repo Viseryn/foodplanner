@@ -8,7 +8,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import axios                            from 'axios'
 
 import AuthChecker                      from './AuthChecker/AuthChecker'
-import Sidebar, { SidebarDrawerButton } from './Sidebar/Sidebar'
+import Sidebar                          from './Sidebar/Sidebar'
+import SidebarDrawer                    from './Sidebar/SidebarDrawer'
+import SidebarDrawerButton              from './Sidebar/components/SidebarDrawerButton'
 import Topbar                           from './Topbar/Topbar'
 
 import useAuthentication                from '../hooks/useAuthentication'
@@ -49,8 +51,9 @@ import loadPantry                       from '../util/loadPantry.js'
  * load depending on the URL.
  * 
  * @component
+ * @property {string} version The current version number.
  */
-export default function App() {
+export default function App({ version }) {
     /******************
      * GENERAL        *
      ******************/
@@ -313,6 +316,13 @@ export default function App() {
     return (
         <BrowserRouter>
             <div className="flex flex-col md:flex-row items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900 min-w-[375px]">
+                <SidebarDrawer
+                    isDrawerVisible={isDrawerVisible}
+                    setDrawerVisible={setDrawerVisible} 
+                    version={version}
+                    user={user}
+                />
+
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
