@@ -27,11 +27,11 @@ import SidebarItem          from './components/SidebarItem'
  * 
  * @component
  * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
- * @property {Object} sidebarActionButton An object that contains the sidebar action button configuration. See example for properties.
+ * @property {object} sidebarActionButton An object that contains the sidebar action button configuration. See example for properties.
  * @property {boolean} isDrawerVisible A state variable that describes hether or not the sidebar drawer is visible.
  * @property {React.Dispatch<ReactSetStateAction<boolean>>} setDrawerVisible The setter method of isDrawerVisible.
  * @property {object} authentication An authentication object.
- * @property {settings} settings A settings object.
+ * @property {object} settings A settings object.
  * 
  * @example
  * sidebarActionButton: {
@@ -51,12 +51,14 @@ export default function Sidebar({
     settings, 
 }) {
     /**
+     * The current location, i.e. the relative path.
+     * 
      * @type {Location}
      */
     const location = useLocation()
  
     /**
-     * Close drawer and load user data when route changes.
+     * Close drawer when location changes.
      */
     useEffect(() => {
         setDrawerVisible(false)
@@ -77,7 +79,9 @@ export default function Sidebar({
                                 setDrawerVisible={setDrawerVisible} 
                             />
                             
-                            <SidebarActionButton sidebarActionButton={sidebarActionButton} />
+                            <SidebarActionButton 
+                                sidebarActionButton={sidebarActionButton} 
+                            />
                         </ul>
 
                         {/* Main navigation destinations, for all screen sizes */}
@@ -117,7 +121,10 @@ export default function Sidebar({
 
                         {/* Floating Sidebar Action Button on mobile screens */}
                         <ul className="fixed md:hidden bottom-[6.5rem] right-6">
-                            <SidebarActionButton floating={true} sidebarActionButton={sidebarActionButton} />
+                            <SidebarActionButton 
+                                sidebarActionButton={sidebarActionButton} 
+                                floating={true} 
+                            />
                         </ul>
                     </div>
                 </div>
