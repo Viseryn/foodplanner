@@ -24,16 +24,16 @@ import loadShoppingList                     from '../../util/loadShoppingList'
  * @todo Change the color of the select arrow.
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {function} setTopbar
- * @property {object} recipes 
+ * @param {object} props
+ * @param {function} props.setSidebar
+ * @param {function} props.setTopbar
+ * @param {object} props.recipes 
  */
 export default function Recipe({ recipes, ...props }) {
     /**
      * The id parameter of the route '/recipe/:id'.
      * 
-     * @type {string}
+     * @property {string} id
      */
     const { id } = useParams()
 
@@ -207,8 +207,14 @@ export default function Recipe({ recipes, ...props }) {
             return
         }
 
+        // Find correct recipe
         const queryResult = recipes.data?.filter(recipe => recipe?.id == id)
-        setRecipe(queryResult[0]);
+        setRecipe(queryResult[0])
+
+        // If recipe does not exist, redirect to 404 page
+        if (queryResult.length === 0) {
+            navigate('/error/404')
+        }
     }, [id, recipes.isLoading])
 
     /**
@@ -264,7 +270,7 @@ export default function Recipe({ recipes, ...props }) {
             return
         }
 
-        props.setSidebarActionButton({
+        props.setSidebar('recipes', {
             visible: true, 
             icon: showSabDone ? 'done' : 'add_shopping_cart', 
             label: showSabDone 
@@ -278,9 +284,6 @@ export default function Recipe({ recipes, ...props }) {
      * Load layout
      */
     useEffect(() => {
-        // Load sidebar
-        props.setSidebarActiveItem('recipes')
-
         // Load topbar
         props.setTopbar({
             title: recipe?.title,
