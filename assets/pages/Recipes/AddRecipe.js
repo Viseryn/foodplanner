@@ -18,7 +18,7 @@ import Spinner                          from '../../components/ui/Spinner'
  * AddRecipe
  * 
  * A component that renders a form for 
- * adding a Recipe. After submitting via 
+ * adding a recipe. After submitting via 
  * the submit button, the recipe will be 
  * added by an API and the user gets 
  * forwarded to its detail page.
