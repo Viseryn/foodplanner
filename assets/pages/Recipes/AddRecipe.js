@@ -1,41 +1,66 @@
-/************************************
- * ./assets/components/AddRecipe.js *
- ************************************/
+/***************************************
+ * ./assets/pages/Recipes/AddRecipe.js *
+ ***************************************/
 
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState }   from 'react'
+import { useNavigate }                  from 'react-router-dom'
+import axios                            from 'axios'
 
-import { InputRow }     from '../../components/form/Input';
-import { SliderRow }    from '../../components/form/Slider';
-import { TextareaRow }  from '../../components/form/Textarea';
-import Button           from '../../components/ui/Buttons/Button';
-import Card             from '../../components/ui/Card';
-import Spacer           from '../../components/ui/Spacer';
-import Spinner          from '../../components/ui/Spinner';
+import { InputRow }                     from '../../components/form/Input'
+import { SliderRow }                    from '../../components/form/Slider'
+import { TextareaRow }                  from '../../components/form/Textarea'
+import Button                           from '../../components/ui/Buttons/Button'
+import Card                             from '../../components/ui/Card'
+import Spacer                           from '../../components/ui/Spacer'
+import Spinner                          from '../../components/ui/Spinner'
 
 /**
  * AddRecipe
  * 
- * A Component for adding a Recipe. 
- * Shows a form with which can be submitted to 
- * the Recipe Add API in the 
- * /src/Controller/RecipeController.php.
+ * A component that renders a form for 
+ * adding a Recipe. After submitting via 
+ * the submit button, the recipe will be 
+ * added by an API and the user gets 
+ * forwarded to its detail page.
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {boolean} isLoadingRecipes
- * @property {function} setLoadingRecipes
+ * @property {function} setSidebar
+ * @property {function} setTopbar
+ * @property {object} recipes
  */
-export default function AddRecipe(props) {
+export default function AddRecipe({ recipes, ...props }) {
     /**
-     * State variables
+     * The name of the selected file.
+     * When no file is selected, show a placeholder text.
+     * 
+     * @type {[string, function]}
      */
-    const [filename, setFilename] = useState('Datei auswählen');
-    const [isSubmittedSuccessfully, setSubmittedSuccessfully] = useState(false);
-    const [isLoading, setLoading] = useState(false);
-    const [newId, setNewId] = useState(0);
+    const [filename, setFilename] = useState('Datei auswählen')
+
+    /**
+     * Whether the page is loading. Will be 
+     * true while the form data is processed
+     * by the API.
+     * 
+     * @type {[boolean, function]}
+     */
+    const [isLoading, setLoading] = useState(false)
+
+    /**
+     * The ID of the new recipe. Will be 
+     * provided be the API and can be used
+     * for redirecting.
+     * 
+     * @type {[number, function]}
+     */
+    const [id, setId] = useState(0)
+
+    /**
+     * A function that can change the location.
+     * Needed for the redirect after submit.
+     * @type {NavigateFunction}
+     */
+    const navigate = useNavigate()
 
     /**
      * handleFilePick
@@ -46,61 +71,60 @@ export default function AddRecipe(props) {
      * @param {*} event
      */
     const handleFilePick = (event) => {
-        const val = event.target.value;
+        const value = event.target.value
 
-        setFilename((val != '') ? val : 'Datei auswählen');
-    };
+        setFilename((value != '') ? value : 'Datei auswählen')
+    }
 
     /**
      * handleSubmit
      * 
      * Submits the form data to the Recipe Add API.
-     * Sets the ID of the new recipe to the states
-     * variables so that the Component can redirect 
+     * Sets the ID of the new recipe to the state
+     * variable id so that the component can redirect 
      * there after submitting.
      * 
      * @param {*} event
      */
     const handleSubmit = (event) => {
-        const formData = new FormData(event.target);
-        event.preventDefault();
+        const formData = new FormData(event.target)
+        event.preventDefault()
 
-        setLoading(true);
+        setLoading(true)
 
         axios
             .post('/api/recipes/add', formData)
             .then(response => {
-                setLoading(false);
-                setSubmittedSuccessfully(true);
-                props.setLoadingRecipes(true);
-                setNewId(response.data.id);
+                // Reload recipes and get id
+                recipes.setLoading(true)
+                setId(response.data.id)
                 
                 // Refresh Data Timestamp
                 axios.get('/api/refresh-data-timestamp/set')
+
+                // End loading screen
+                setLoading(false)
             })
-        ;
-    };
+    }
 
     /**
-     * Create an array for the slider marks from 1 to 10
+     * Redirect to the new recipe after 
+     * it has properly loaded.
      */
-    const marks = [];
-
-    for (let i = 1; i <= 10; i++) {
-        marks.push({
-            value: i, label: i
-        });
-    }
+    useEffect(() => {
+        if (id > 0) {
+            navigate('/recipe/' + id)
+        }
+    }, [id])
 
     /**
      * Load layout
      */
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem('recipes')
-        props.setSidebarActionButton()
+        props.setSidebar('recipes')
 
-        // Load Topbar
+        // Load topbar
         props.setTopbar({
             title: 'Neues Rezept',
             showBackButton: true,
@@ -112,18 +136,13 @@ export default function AddRecipe(props) {
     }, [])
     
     /**
-     * Render
+     * Render AddRecipe
      */
     return (
-        <div className="pb-24 md:pb-4 w-full md:max-w-[900px]">
+        <div className="pb-24 md:pb-4 md:max-w-[900px]">
             <Spacer height="6" />
 
-            {/* If the form is submitted, redirect to the new recipe */}
-            {isSubmittedSuccessfully && !props.isLoadingRecipes &&
-                <Navigate to={'/recipe/' + newId} />
-            }
-
-            {isLoading || props.isLoadingRecipes ? (
+            {isLoading || recipes.isLoading ? (
                 <Spinner />
             ) : (
                 <div className="mx-4 md:ml-0 ">
@@ -146,7 +165,10 @@ export default function AddRecipe(props) {
                                         min: 1,
                                         max: 10,
                                         step: 1,
-                                        marks: marks
+                                        marks: [...Array(10)].map((value, index) => ({
+                                            value: index + 1,
+                                            label: index + 1,
+                                        }))
                                     }}
                                     className=""
                                 />
@@ -206,5 +228,5 @@ export default function AddRecipe(props) {
                 </div>
             )}
         </div>
-    );
+    )
 }
