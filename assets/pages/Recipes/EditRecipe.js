@@ -1,85 +1,113 @@
-/*************************************
- * ./assets/components/EditRecipe.js *
- *************************************/
+/****************************************
+ * ./assets/pages/Recipes/EditRecipe.js *
+ ****************************************/
     
-import React, { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import axios from 'axios'
 
-import { InputRow }     from '../../components/form/Input';
-import { SliderRow }    from '../../components/form/Slider';
-import Switch           from '../../components/form/Switch';
-import { TextareaRow }  from '../../components/form/Textarea';
-import Button           from '../../components/ui/Buttons/Button';
-import Card             from '../../components/ui/Card';
-import Spacer           from '../../components/ui/Spacer';
-import Spinner          from '../../components/ui/Spinner';
+import FilePicker       from '../../components/form/FilePicker'
+import { InputRow }     from '../../components/form/Input'
+import { SliderRow }    from '../../components/form/Slider'
+import Switch           from '../../components/form/Switch'
+import { TextareaRow }  from '../../components/form/Textarea'
+import Button           from '../../components/ui/Buttons/Button'
+import Card             from '../../components/ui/Card'
+import Spacer           from '../../components/ui/Spacer'
+import Spinner          from '../../components/ui/Spinner'
 
 /**
  * EditRecipe
  * 
- * A Component for editing a Recipe. 
- * Shows a form with the initial data of a given Recipe
- * (via ID) which can be submitted to the Recipe Edit API
- * in the /src/Controller/RecipeController.php.
+ * A component that renders a form for editing
+ * an existing recipe. After submitting via the 
+ * submit button, the recipe will be updated by
+ * an API and the user gets redirected to its 
+ * detail page.
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {arr} recipes 
- * @property {boolean} isLoadingRecipes
- * @property {function} setLoadingRecipes
- * @property {number} recipeIndex
- * @property {function} setRecipeIndex
- * @property {function} setLoadingDays
+ * @param {object} props
+ * @param {function} props.setSidebar
+ * @param {function} props.setTopbar
+ * @param {object} props.recipes
+ * @param {object} props.days
  */
-export default function EditRecipe(props) {
+export default function EditRecipe({ recipes, days, ...props }) {
     /**
-     * State variables
+     * The id parameter of the route '/recipe/:id/edit'.
+     * 
+     * @property {string} id
      */
-    const { id } = useParams();
-
-    const [filename, setFilename] = useState('Datei auswählen');
-    const [recipe, setRecipe] = useState([]);
-    const [isSubmittedSuccessfully, setSubmittedSuccessfully] = useState(false);
-    const [isLoading, setLoading] = useState(false);
-    const [isDeleted, setDeleted] = useState(false);
-    const [isUploadButtonVisible, setUploadButtonVisible] = useState(true);
-    const [newId, setNewId] = useState(0);
+    const { id } = useParams()
 
     /**
-     * When recipes are loaded, on each re-render, 
-     * check if there is a recipe with the id parameter.
-     * If yes, set the index of that recipe to the 
-     * global state variable recipeIndex, which is 
-     * passed to <EditRecipe />. If no, redirect to an
-     * Error 404 page.
+     * A function that can change location.
+     * Needed for the edit topbar action button.
+     * 
+     * @type {NavigateFunction}
+     */
+    const navigate = useNavigate()
+
+    /**
+     * The currently selected recipe.
+     * Will be updated whenever id changes.
+     * 
+     * @type {[object, function]}
+     */
+    const [recipe, setRecipe] = useState({})
+
+    /**
+     * The name of the selected file.
+     * When no file is selected, show a placeholder text.
+     * 
+     * @type {[string, function]}
+     */
+    const [filename, setFilename] = useState('Datei auswählen')
+
+    /**
+     * Whether the page is loading. Will be 
+     * true while the form data is processed
+     * by the API.
+     * 
+     * @type {[boolean, function]}
+     */
+    const [isLoading, setLoading] = useState(false)
+
+    /**
+     * Whether the file upload button is enabled.
+     * Can be toggled by a Switch component.
+     */
+    const [isFileUploadButtonEnabled, setFileUploadButtonEnabled] = useState(true)
+
+    /**
+     * The ID of the new recipe. Will be 
+     * provided be the API and can be used
+     * for redirecting.
+     * 
+     * @type {[number, function]}
+     */
+    const [responseId, setResponseId] = useState(0)
+
+    /**
+     * Initializes the recipe state variable.
+     * Each time the id parameter changes, the 
+     * recipe state is updated. When the recipes 
+     * are reloaded, recipe is also updated.
      */
     useEffect(() => {
-        if (!props.isLoadingRecipes) {
-            let returnVal;
-
-            props.recipes.forEach((recipe, index) => {
-                if (recipe.id == id) {
-                    returnVal = index;
-                }
-            });
-
-            if (returnVal >= 0) {
-                props.setRecipeIndex(returnVal);
-            } else if (id) {
-                window.location = "/error/404";
-            }
+        if (recipes.isLoading) {
+            return
         }
-    });
 
-    /**
-     * Put the selected recipe in a local state 
-     * variable as an abbreviation.
-     */
-    useEffect(() => {
-        setRecipe(props.recipes[props.recipeIndex]);
-    });
+        // Find correct recipe
+        const queryResult = recipes.data?.filter(recipe => recipe?.id == id)
+        setRecipe(queryResult[0])
+
+        // If recipe does not exist, redirect to 404 page
+        if (queryResult.length === 0) {
+            navigate('/error/404')
+        }
+    }, [id, recipes.isLoading])
 
     /**
      * getIngredients
@@ -96,31 +124,31 @@ export default function EditRecipe(props) {
      * @returns string A list of all ingredients, separated by linebreaks.
      */
     const getIngredients = (arr) => {
-        let ingredients = '';
-        let l = arr?.length;
+        let ingredients = ''
+        let l = arr?.length
 
         arr?.map((ingredient, i) => {
-            let q = '' + (ingredient.quantity_value ?? '');
+            let q = '' + (ingredient.quantity_value ?? '')
 
             if (q !== '' && ingredient?.quantity_unit !== '') {
-                q += ' ' + (ingredient.quantity_unit ?? '');
+                q += ' ' + (ingredient.quantity_unit ?? '')
             } else if (ingredient?.quantity_unit !== '') {
-                q += (ingredient.quantity_unit ?? '');
+                q += (ingredient.quantity_unit ?? '')
             }
 
             if (q !== '') {
-                ingredients += q + ' ';
+                ingredients += q + ' '
             }
 
-            ingredients += '' + ingredient.name;
+            ingredients += '' + ingredient.name
 
             if (l != i + 1) { // NOT WORKING
-                ingredients += "\r\n";
+                ingredients += "\r\n"
             }
-        });
+        })
 
-        return ingredients;
-    };
+        return ingredients
+    }
 
     /**
      * getInstructions
@@ -135,16 +163,16 @@ export default function EditRecipe(props) {
      * @returns string A list of all instructions, separated by linebreaks.
      */
     const getInstructions = (arr) => {
-        let instructions = '';
-        let l = arr?.length;
+        let instructions = ''
+        let l = arr?.length
 
         arr?.map((instruction, i) => {
             if (l == i + 1) { 
-                instructions += instruction.instruction;
+                instructions += instruction.instruction
             } else {
-                instructions += instruction.instruction + "\r\n\r\n";
+                instructions += instruction.instruction + "\r\n\r\n"
             }
-        });
+        })
 
         return instructions;
     };
@@ -158,55 +186,67 @@ export default function EditRecipe(props) {
      * @param {*} event
      */
     const handleFilePick = (event) => {
-        const val = event.target.value;
+        const value = event.target.value
 
-        setFilename((val != '') ? val : 'Datei auswählen');
-    };
+        setFilename((value != '') ? value : 'Datei auswählen')
+    }
 
     /**
      * handleFileRemove
      * 
      * Changes the visibility of the upload button when 
      * the toggle switch is changed.
-     * 
-     * @param {*} event 
      */
-    const handleFileRemove = (event) => {
-        setUploadButtonVisible(isUploadButtonVisible => {
-            return !isUploadButtonVisible;
+    const handleFileRemove = () => {
+        setFileUploadButtonEnabled(isFileUploadButtonEnabled => {
+            return !isFileUploadButtonEnabled
         })
-    };
+    }
 
     /**
      * handleSubmit
      * 
      * Submits the form data to the Recipe Edit API.
-     * Sets the ID response to the states
-     * variables so that the Component can redirect 
+     * Sets the ID of the response to the state
+     * variable so that the component can redirect 
      * there after submitting.
      * 
      * @param {*} event
      */
     const handleSubmit = (event) => {
-        const formData = new FormData(event.target);
-        event.preventDefault();
+        const formData = new FormData(event.target)
+        event.preventDefault()
 
-        setLoading(true);
+        setLoading(true)
 
         axios
             .post('/api/recipes/edit/'+ recipe?.id, formData)
             .then(response => {
-                setSubmittedSuccessfully(true);
-                setNewId(response.data.id);
+                // Reload recipes and get id
+                recipes.setLoading(true)
+                setResponseId(response.data.id)
 
-                props.setLoadingRecipes(true);
-                props.setLoadingDays(true);
+                // Update Day entities that may have
+                // Meals with that recipe
+                days.setLoading(true)
                 
                 // Refresh Data Timestamp
                 axios.get('/api/refresh-data-timestamp/set')
+
+                // End loading screen
+                setLoading(false)
             })
-        ;
-    };
+    }
+
+    /**
+     * Redirect to the new recipe after 
+     * it has properly loaded.
+     */
+    useEffect(() => {
+        if (responseId > 0) {
+            navigate('/recipe/' + responseId)
+        }
+    }, [responseId])
 
     /**
      * deleteRecipe
@@ -216,7 +256,7 @@ export default function EditRecipe(props) {
      * gets redirected to the index page. If cancelled, 
      * nothing happens.
      * 
-     * @param {int} id 
+     * @param {number} id The id of the recipe that should be deleted.
      */
     const deleteRecipe = (id) => {
         swal({
@@ -228,32 +268,22 @@ export default function EditRecipe(props) {
                 cancel: 'Abbrechen',
                 confirm: 'Löschen',
             },
-        }).then((confirm) => {
+        }).then(confirm => {
             if (confirm) {
                 axios
                     .get('/api/recipes/delete/' + id)
                     .then(() => {
-                        setDeleted(true);
-                        props.setLoadingRecipes(true);
-                        props.setLoadingDays(true);
+                        recipes.setLoading(true)
+                        days.setLoading(true)
                 
                         // Refresh Data Timestamp
                         axios.get('/api/refresh-data-timestamp/set')
-                    })
-                ;
-            }
-        });
-    };
-    
-    /**
-     * Create an array for the slider marks from 1 to 10
-     */
-    const marks = [];
 
-    for (let i = 1; i <= 10; i++) {
-        marks.push({
-            value: i, label: i
-        });
+                        // Navigate to recipe list
+                        navigate('/recipes')
+                    })
+            }
+        })
     }
 
     /**
@@ -261,19 +291,19 @@ export default function EditRecipe(props) {
      */
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem('recipes')
-        props.setSidebarActionButton()
+        props.setSidebar('recipes')
 
-        // Load Topbar
+        // Load topbar
         props.setTopbar({
             title: recipe?.title,
             showBackButton: true,
-            backButtonPath: '/recipe/' + recipe?.id,
+            backButtonPath: '/recipe/' + id,
             actionButtons: [
                 { icon: 'delete', onClick: () => deleteRecipe(recipe?.id) }
             ],
             truncate: true,
             style: 'max-w-[900px] pr-4',
+            isLoading: recipes.isLoading,
         })
 
         // Scroll to top
@@ -281,21 +311,13 @@ export default function EditRecipe(props) {
     }, [recipe])
 
     /**
-     * Render
+     * Render EditRecipe
      */
     return (
-        <div className="pb-24 md:pb-4 w-full md:max-w-[900px]">
+        <div className="pb-24 md:pb-4 md:max-w-[900px]">
             <Spacer height="6" />
 
-            {isSubmittedSuccessfully &&
-                <Navigate to={'/recipe/' + newId} />
-            }
-
-            {isDeleted &&
-                <Navigate to="/recipes" />
-            }
-
-            {props.isLoadingRecipes || isLoading ? (
+            {recipes.isLoading || isLoading ? (
                 <>
                     <Spinner />
                 </>
@@ -325,7 +347,10 @@ export default function EditRecipe(props) {
                                         min: 1,
                                         max: 10,
                                         step: 1,
-                                        marks: marks,
+                                        marks: [...Array(10)].map((value, index) => ({
+                                            value: index + 1,
+                                            label: index + 1,
+                                        })),
                                         defaultValue: recipe?.portion_size
                                     }}
                                     className=""
@@ -337,21 +362,21 @@ export default function EditRecipe(props) {
                                     <div className="text-sm font-semibold block mb-2">Aktuelles Bild</div>
                                     {recipe?.image != null 
                                         ? <>
-                                            {isUploadButtonVisible
+                                            {isFileUploadButtonEnabled
                                                 ? <img 
-                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300" 
+                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover transition duration-300" 
                                                     src={recipe?.image.directory + recipe?.image.filename}
                                                     alt={recipe}
                                                 />
                                                 : <img 
-                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-25" 
+                                                    className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover transition duration-300 opacity-25" 
                                                     src={recipe?.image.directory + recipe?.image.filename}
                                                     alt={recipe}
                                                 />
                                             }
                                         </>
                                         : <img 
-                                            className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover shadow-md transition duration-300 opacity-10 dark:opacity-100 dark:brightness-50" 
+                                            className="rounded-3xl h-[248px] max-h-[248px] w-full object-cover transition duration-300 opacity-10 dark:opacity-100 dark:brightness-50" 
                                             src="/img/default.jpg"
                                             alt={recipe}
                                         />
@@ -364,31 +389,12 @@ export default function EditRecipe(props) {
 
                                 <div className="flex justify-between items-center gap-4 h-12">
                                     <div className="overflow-hidden w-full">
-                                        {isUploadButtonVisible 
-                                            ? <>
-                                                <label htmlFor="recipe_image" className="file-label cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300">
-                                                    <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                                    <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">{filename}</span>
-                                                </label>
-                                                <input 
-                                                    type="file" id="recipe_image" name="recipe[image]" 
-                                                    className="file-input hidden" 
-                                                    onChange={handleFilePick}
-                                                />
-                                            </>
-                                            : <>
-                                                <label htmlFor="recipe_image" className="file-label rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-[#43483e] dark:text-[#c3c8bb] bg-[#e0e4d6] dark:bg-[#43483e]">
-                                                    <span className="label-icon material-symbols-rounded">photo_size_select_small</span>
-                                                    <span className="label-content max-h-6 overflow-hidden mr-2 ml-3">Datei auswählen</span>
-                                                </label>
-                                                <input 
-                                                    disabled="disabled"
-                                                    type="file" id="recipe_image" name="recipe[image]" 
-                                                    className="file-input hidden" 
-                                                    onChange={handleFilePick}
-                                                />
-                                            </>
-                                        }
+                                        <FilePicker
+                                            id="recipe_image"
+                                            label={filename}
+                                            onChange={handleFilePick}
+                                            enabled={isFileUploadButtonEnabled}
+                                        />
                                     </div>
 
                                     {recipe?.image != null &&
