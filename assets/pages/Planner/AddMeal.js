@@ -108,7 +108,7 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, ...
     }, [])
 
     /**
-     * Render
+     * Render AddMeal
      */
     return (
         <div className="pb-24 md:pb-4 md:w-[450px]">
