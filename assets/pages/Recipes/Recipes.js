@@ -22,40 +22,43 @@ import Spacer                           from '../../components/ui/Spacer';
  * @property {arr} recipes 
  * @property {boolean} isLoadingRecipes
  */
-export default function Recipes(props) {
+export default function Recipes({ recipes, ...props }) {
     /**
      * State variables
      */
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState('')
     
     /**
      * Search for user input in recipe list
      */
-    const recipesFiltered = props.recipes.filter(recipe => {
-        if (searchValue === '') {
-            return true;
-        } else {
+    const recipesFiltered = recipes.isLoading 
+        ? []
+        : recipes.data?.filter(recipe => {
+            // Return true if there is no search input
+            if (searchValue === '') {
+                return true
+            }
+            
             // Return true if recipe includes the search input value.
             // Put both to lowercase so that the searchValue is not case-sensitive.
             if (recipe.title.toLowerCase().includes(searchValue.toLowerCase())) {
-                return true;
+                return true
             }
 
-            // If the block above did not return:
-            let returnValue = false;
+            // If the block above did not return, check for ingredients
+            let returnValue = false
 
             // Return true if the search input value appears in ingredients.
             // Put both to lowercase so that the searchValue is not case-sensitive.
             recipe.ingredients.forEach(ingredient => {
                 if (ingredient.name.toLowerCase().includes(searchValue.toLowerCase())) {
-                    returnValue = true;
+                    returnValue = true
                 }
-            });
+            })
 
             // Return true if searchValue appeared in an ingredient
-            return returnValue;
-        }
-    })
+            return returnValue
+        })
 
     /**
      * Load layout
@@ -97,7 +100,7 @@ export default function Recipes(props) {
                 <Spacer height="10" />
 
                 {/* Recipe List */}
-                {props.isLoadingRecipes
+                {recipes.isLoading
                     ? <RecipeListSkeleton />
                     : <>
                         {recipesFiltered.length === 0 &&
