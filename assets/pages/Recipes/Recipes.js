@@ -75,8 +75,7 @@ export default function Recipes({ recipes, ...props }) {
      */
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem('recipes')
-        props.setSidebarActionButton({
+        props.setSidebar('recipes', {
             visible: true,
             icon: 'add',
             path: '/recipe/add',

@@ -112,7 +112,7 @@ export default function Recipe({ recipes, ...props }) {
         axios.get('/api/refresh-data-timestamp/set')
         
         // Update parameters for SAB
-        setShowSabDone(false)
+        setShowSabDone(true)
         setCountSabClicks(count => {
             return count + 1
         })
