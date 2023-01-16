@@ -311,10 +311,9 @@ export default function App({ version }) {
         // shoppingList,
         // pantry,
 
-        setSidebarActiveItem, 
-        setSidebarActionButton,
+        // setSidebarActiveItem,   /** @deprecated */
+        // setSidebarActionButton, /** @deprecated */
         setSidebar,
-        topbar, 
         setTopbar,
     }
 
