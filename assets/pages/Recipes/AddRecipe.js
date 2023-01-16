@@ -58,6 +58,7 @@ export default function AddRecipe({ recipes, ...props }) {
     /**
      * A function that can change the location.
      * Needed for the redirect after submit.
+     * 
      * @type {NavigateFunction}
      */
     const navigate = useNavigate()
