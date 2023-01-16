@@ -2,296 +2,372 @@
  * ./assets/pages/Recipes/Recipe.js *
  ************************************/
 
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState }       from 'react'
+import { useNavigate, useParams }           from 'react-router-dom'
+import axios                                from 'axios'
 
-import Heading, { SecondHeading } from '../../components/ui/Heading';
-import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton';
-import TextParagraph from '../../components/skeleton/TextParagraph';
-import IconButton from '../../components/ui/Buttons/IconButton';
-import Button from '../../components/ui/Buttons/Button';
-import loadShoppingList from '../../util/loadShoppingList';
-import generateDisplayName from '../../util/generateDisplayName';
-import loadPantry from '../../util/loadPantry';
-import { floatToFraction, fractionToFloat } from '../../util/fractions';
-import Spacer from '../../components/ui/Spacer';
-import Card from '../../components/ui/Card';
+import TextParagraph                        from '../../components/skeleton/TextParagraph'
+import Button                               from '../../components/ui/Buttons/Button'
+import Card                                 from '../../components/ui/Card'
+import { SecondHeading }                    from '../../components/ui/Heading'
+import Spacer                               from '../../components/ui/Spacer'
+import { floatToFraction, fractionToFloat } from '../../util/fractions'
+import generateDisplayName                  from '../../util/generateDisplayName'
+import loadPantry                           from '../../util/loadPantry'
+import loadShoppingList                     from '../../util/loadShoppingList'
 
 /**
  * Recipe
  * 
- * A component for showing a Recipe.
- * Collects the data from the Recipe Show API 
- * in /src/Controller/RecipeController.php.
+ * A component that shows a single recipe in detail.
  * 
- * This component is used in the Recipes component
- * and may not be used as standalone.
+ * @todo Change the color of the select arrow.
  * 
  * @component
- * @property {number} id The id of the recipe.
- * @property {function} setTwoColumns A function that sets the state isTwoColumns to false and resets the SAB.
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
- * @property {arr} recipes 
- * @property {boolean} isLoadingRecipes
- * @property {function} setLoadingRecipes
- * @property {number} recipeIndex
- * @property {function} setLoadingShoppingList
+ * @property {function} setTopbar
+ * @property {object} recipes 
  */
-export default function Recipe(props) {
+export default function Recipe({ recipes, ...props }) {
     /**
-     * State variables
+     * The id parameter of the route '/recipe/:id'.
+     * 
+     * @type {string}
      */
-    const [buttonCounter, setButtonCounter] = useState(0);
-    const [showButton, setShowButton] = useState(true);
-    const [showPantryButton, setShowPantryButton] = useState(true);
-    const [recipe, setRecipe] = useState([]);
-    const [tmpRecipe, setTmpRecipe] = useState([]);
-    const [portionSize, setPortionSize] = useState(0);
+    const { id } = useParams()
+
+    /**
+     * A function that can change location.
+     * Needed for the edit topbar action button.
+     * 
+     * @type {NavigateFunction}
+     */
+    const navigate = useNavigate()
+
+    /**
+     * The currently selected recipe.
+     * Will be updated whenever id changes.
+     * 
+     * @type {[object, function]}
+     */
+    const [recipe, setRecipe] = useState({})
+
+    /**
+     * A temporary state variable for the recipe.
+     * This object changes whenever recipe or 
+     * portionSize change.
+     * 
+     * @type {[object, function]}
+     */
+    const [tmpRecipe, setTmpRecipe] = useState([])
+
+    /**
+     * The portion size. Can be selected in an 
+     * input field in the ingredients section.
+     * Whenever this value is changed, tmpRecipe
+     * will be updated.
+     * 
+     * @type {[number, function]}
+     */
+    const [portionSize, setPortionSize] = useState(0)
+
+    /**
+     * Counts how often the SAB was pressed.
+     * Will update the SAB on change.
+     * 
+     * @type {[number, function]}
+     */
+    const [countSabClicks, setCountSabClicks] = useState(0)
+
+    /**
+     * Whether the SidebarActionButton should
+     * display "Done!" on click.
+     * 
+     * @type {[boolean, function]}
+     */
+    const [showSabDone, setShowSabDone] = useState(false)
+
+    /**
+     * Whether the "Add to Pantry" button should
+     * display "Done!" on click.
+     * 
+     * @type {[boolean, function]}
+     */
+    const [showPantryDone, setShowPantryDone] = useState(false)
 
     /**
      * handleAddShoppingList
      * 
-     * Handles a click on the "Add to Shopping List" button.
+     * Handles adding the whole recipe to the 
+     * ShoppingList. Is invoked by the SAB.
      */
     const handleAddShoppingList = (argRecipe) => {
+        // Call API
         axios
             .post('/api/shoppinglist/add', JSON.stringify([argRecipe]))
-            .then(() => props.setLoadingShoppingList(true))
-        ;
+            .then(() => props.shoppingList.setLoading(true))
         
-        setShowButton(false);
-        setButtonCounter(buttonCounter => {
-            return buttonCounter + 1;
-        });
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
+        
+        // Update parameters for SAB
+        setShowSabDone(false)
+        setCountSabClicks(count => {
+            return count + 1
+        })
+    }
+    
+    /**
+     * handleAddSingleToShoppingList
+     * 
+     * Handles adding a single ingredient to 
+     * the ShoppingList. Can be invoked by the 
+     * IconButtons next to each ingredient.
+     */
+    const handleAddSingleToShoppingList = (ingredient) => {
+        // Generate a name for the API
+        const newItem = { 
+            name: generateDisplayName(
+                ingredient.quantity_value,
+                ingredient.quantity_unit,
+                ingredient.name,
+            ),
+        }
+
+        // Call API
+        axios
+            .post('/api/shoppinglist/ingredients', newItem)
+            .then(() => {
+                loadShoppingList(props.shoppingList.setData)
+            })
+        
                 
         // Refresh Data Timestamp
         axios.get('/api/refresh-data-timestamp/set')
-    };
+    }
 
     /**
      * handleAddPantry
      * 
-     * Handles a click on the "Add to Pantry" button.
+     * Handles adding the whole recipe to the
+     * Pantry. Is invoked by a button under the 
+     * ingredient list.
      */
     const handleAddPantry = (argRecipe) => {
+        // Call API
         axios
             .post('/api/pantry/add', JSON.stringify([argRecipe]))
-            .then(() => props.setLoadingPantry(true))
-        ;
+            .then(() => props.pantry.setLoading(true))
+
+        // Refresh Data Timestamp
+        axios.get('/api/refresh-data-timestamp/set')
         
-        setShowPantryButton(false);
-                
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
-    };
-
-    /**
-     * Calculate the ingredient quantities depending on selected portionSize
-     */
-    useEffect(() => {
-        if(props.isLoadingRecipes) return;
-
-        let newRecipe = {...recipe};
-        newRecipe.ingredients = [];
-        newRecipe.portion_size = portionSize;
-
-        recipe?.ingredients?.forEach(ingredient => {
-            let newIngredient = {...ingredient};
-
-            newIngredient['quantity_value'] = fractionToFloat(ingredient.quantity_value) / recipe.portion_size * portionSize;
-
-            newRecipe.ingredients.push(newIngredient);
-        });
-
-        // Set the new calculated recipe in tmpRecipe.
-        // This does NOT trigger a reassignment of portionSize.
-        setTmpRecipe(newRecipe);
-    }, [portionSize]);
-    
-    /**
-     * handleAddSingleToShoppingList
-     */
-    const handleAddSingleToShoppingList = (ingredient) => {
-        const newItem = { 
-            name: generateDisplayName(
-                ingredient.quantity_value,
-                ingredient.quantity_unit,
-                ingredient.name,
-            ),
-        };
-
-        axios
-            .post('/api/shoppinglist/ingredients', newItem)
-            .then(() => {
-                loadShoppingList(props.setShoppingList);
-            })
-        ;
-                
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
+        // Update the button parameter
+        setShowPantryDone(false)
     }
 
     /**
      * handleAddSingleToPantry
+     * 
+     * Handles adding a single ingredient to 
+     * the Pantry. Can be invoked by the 
+     * IconButtons next to each ingredient.
      */
     const handleAddSingleToPantry = (ingredient) => {
+        // Generate a name for the API
         const newItem = { 
             name: generateDisplayName(
                 ingredient.quantity_value,
                 ingredient.quantity_unit,
                 ingredient.name,
             ),
-        };
+        }
 
+        // Call API
         axios
             .post('/api/pantry/ingredients', newItem)
             .then(() => {
-                loadPantry(props.setPantry);
+                loadPantry(props.pantry.setData)
             })
-        ;
+        
                 
         // Refresh Data Timestamp
         axios.get('/api/refresh-data-timestamp/set')
     }
-
-    /** 
-     * Load sidebar
-     */
-    useEffect(() => {
-        // Load sidebar
-        props.setSidebarActiveItem('recipes');
-
-        // Scroll to top
-        window.scrollTo(0, 0);
-    }, []);
-
+    
     /**
-     * Update SidebarActionButton when recipe changes
-     * or button is clicked (i.e., showButton is set to false).
+     * Initializes the recipe state variable.
+     * Each time the id parameter changes, the 
+     * recipe state is updated. When the recipes 
+     * are reloaded, recipe is also updated.
      */
     useEffect(() => {
-        if (!props.isLoadingRecipes) {
-            props.setSidebarActionButton({
-                visible: true, 
-                icon: showButton ? 'add_shopping_cart' : 'done', 
-                label: showButton 
-                    ? 'Zur Einkaufsliste' 
-                    : ('Erledigt!' + (buttonCounter > 1 
-                        ? ' (' + buttonCounter + ')' 
-                        : '')
-                    ),
-                onClickHandler: () => handleAddShoppingList(tmpRecipe),
-            });
+        if (recipes.isLoading) {
+            return
         }
-    }, [recipe, showButton, buttonCounter, tmpRecipe]);
+
+        const queryResult = recipes.data?.filter(recipe => recipe?.id == id)
+        setRecipe(queryResult[0]);
+    }, [id, recipes.isLoading])
 
     /**
-     * Put the selected recipe in a local state 
-     * variable as an abbreviation. A copy is also 
-     * stored in tmpRecipe.
+     * Put a copy of selected recipe in a local state 
+     * variable tmpRecipe and save the original portion
+     * size of the recipe in portionSize.
      * 
      * These will be updated whenever the global
      * recipes state variable changes, e.g. on recipe edit.
      */
     useEffect(() => {
-        setRecipe(props.recipes[props.recipeIndex]);
-        setTmpRecipe(props.recipes[props.recipeIndex]);
+        // Set temporary copy of recipe
+        setTmpRecipe(recipe)
         
         // Set initial portion size
-        setPortionSize(recipe?.portion_size);
-    }, [props.recipeIndex, recipe, props.recipes]);
+        setPortionSize(recipe?.portion_size)
+    }, [recipe, recipes.data])
 
     /**
-     * Render
-     * 
-     * @todo Update skeletons!
+     * Calculate the ingredient quantities 
+     * depending on selected portionSize
+     */
+    useEffect(() => {
+        if (recipes.isLoading) {
+            return
+        }
+            
+        let newRecipe = {...recipe}
+        newRecipe.ingredients = []
+        newRecipe.portion_size = portionSize
+
+        recipe?.ingredients?.forEach(ingredient => {
+            let newIngredient = {...ingredient}
+
+            newIngredient['quantity_value'] = 
+                fractionToFloat(ingredient.quantity_value) 
+                / recipe.portion_size * portionSize
+
+            newRecipe.ingredients.push(newIngredient)
+        })
+
+        // Set the new calculated recipe in tmpRecipe.
+        // This does NOT trigger a reassignment of portionSize.
+        setTmpRecipe(newRecipe)
+    }, [portionSize])
+
+    /**
+     * Update SidebarActionButton when recipe or tmpRecipe changes
+     * or button is clicked (i.e., showButton is set to false).
+     */
+    useEffect(() => {
+        if (recipes.isLoading) {
+            return
+        }
+
+        props.setSidebarActionButton({
+            visible: true, 
+            icon: showSabDone ? 'done' : 'add_shopping_cart', 
+            label: showSabDone 
+                ? 'Erledigt!' + (countSabClicks > 1 && ' (' + countSabClicks + ')')
+                : 'Zur Einkaufsliste' ,
+            onClickHandler: () => handleAddShoppingList(tmpRecipe),
+        })
+    }, [recipe, tmpRecipe, showSabDone, countSabClicks])
+
+    /** 
+     * Load layout
+     */
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebarActiveItem('recipes')
+
+        // Load topbar
+        props.setTopbar({
+            title: recipe?.title,
+            showBackButton: true,
+            backButtonPath: '/recipes',
+            actionButtons: [
+                { icon: 'edit', onClick: () => navigate('/recipe/' + id + '/edit') },
+            ],
+            truncate: true,
+            style: 'max-w-[700px] md:pr-4',
+            isLoading: recipes.isLoading,
+        })
+
+        // Scroll to top
+        window.scrollTo(0, 0)
+    }, [recipe])
+
+    /**
+     * Render Recipe
      */
     return (
-        <div className="">
-            {/* Title and close button */}
-            {props.isLoadingRecipes || props.recipeIndex < 0
-                ? <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
-                    <div className="h-9 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
-                </div>
-                : <div className="flex justify-between items-start p-4 md:px-0 md:pt-9 lg:px-4">
-                    <div className="hidden lg:block">
-                        <Heading>{recipe?.title}</Heading>
-                    </div>
-
-                    <div className="lg:hidden">
-                        <HeadingAndBackButton location="/recipes">{recipe?.title}</HeadingAndBackButton>
-                    </div>
-
-                    <Link to="/recipes">
-                        {/* Button for resetting two-column mode */}
-                        <IconButton 
-                            style="hidden lg:block" 
-                            onClick={() => props.setTwoColumns()}
-                        >
-                            close
-                        </IconButton>
-                    </Link>
-                </div>
-            }
-
-            <Spacer height="6" />
-
+        <div className="pb-24 md:pb-4 md:max-w-[700px]">
             {/* Image */}
-            <div className="px-4 md:pl-0 lg:pl-4">
-                {props.isLoadingRecipes || props.recipeIndex < 0
-                    ? <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
-                    : <>
-                        {recipe?.image != null &&
-                            <img 
-                                className="rounded-3xl h-80 object-cover transition duration-300 w-full" 
-                                src={recipe?.image.directory + recipe?.image.filename}
-                                alt={recipe}
-                            />
-                        }
-                    </>
+            <div className="mx-4 md:ml-0">
+                <Spacer height="6" />
+                {recipes.isLoading
+                    ? /* Recipe Skeleton */ <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
+                    : (recipe?.image != null &&
+                        <img 
+                            className="rounded-3xl h-80 object-cover transition duration-300 w-full" 
+                            src={recipe?.image.directory + recipe?.image.filename}
+                            alt={recipe}
+                        />
+                    )
                 }
             </div>
 
             {/* Ingredients, instructions and buttons */}
-            {props.isLoadingRecipes || props.recipeIndex < 0
+            {recipes.isLoading
                 ? <>
-                    <Spacer height="8" />
+                    {/* Recipe Skeleton */}
+                    <Spacer height="6" />
+
                     <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
-                        <div className="h-9 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
+                        <div className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
                     </div>
+
                     <Card style="mx-4 md:ml-0 lg:ml-4">
+                        <TextParagraph />
+                        <Spacer height="2" />
                         <TextParagraph />
                     </Card>
                 </>
                 : <>
                     {/* Ingredients */}
                     {recipe?.ingredients?.length > 0 &&
-                        <>
-                            <div className="mb-4 mx-6 md:ml-2 lg:ml-6 mt-10">
-                                <SecondHeading>
-                                    Zutaten für 
-                                        <select
-                                            className="dark:placeholder-gray-400 dark:bg-[#323a41] border border-gray-400 dark:border-none rounded-full h-10 w-20 mx-4 px-6 shadow-sm dark:shadow-md transition duration-300 focus:border-blue-600"
-                                            value={portionSize}
-                                            onChange={e => setPortionSize(e.target.value)}
-                                        > {/** @todo Colors for select widget! */}
-                                            {[...Array(10)].map((x, index) => 
-                                                <option
-                                                    key={index + 1}
-                                                    value={index + 1}
-                                                >
-                                                    {index + 1}
-                                                </option>
-                                            )}
-                                        </select>
-                                        {portionSize == 1 ? 'Portion' : 'Portionen'}
-                                </SecondHeading>
-                            </div>
-                            <Card style="mx-4 md:ml-0 lg:ml-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-6">
-                                    {tmpRecipe?.ingredients.map(ingredient =>
+                        <div className="mx-4 md:ml-0">
+                            <Spacer height="10" />
+
+                            <SecondHeading style="ml-2">
+                                Zutaten für 
+                                <select
+                                    value={portionSize}
+                                    onChange={e => setPortionSize(e.target.value)}
+                                    className={
+                                        'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 '
+                                        + 'border border-gray-300 dark:border-none rounded-md h-10 w-20 px-6 mx-4 '
+                                        + 'transition duration-300 focus:border-primary-100 dark:after:bg-red-500'
+                                    }
+                                >
+                                    {[...Array(10)].map((value, index) => 
+                                        <option
+                                            key={index + 1}
+                                            value={index + 1}
+                                        >
+                                            {index + 1}
+                                        </option>
+                                    )}
+                                </select>
+                                {portionSize == 1 ? 'Portion' : 'Portionen'}
+                            </SecondHeading>
+
+                            <Spacer height="4" />
+
+                            <Card>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                                    {tmpRecipe?.ingredients?.map(ingredient =>
                                         <div key={ingredient.id} className="flex items-center justify-between">
                                             <span>
                                                 {generateDisplayName(floatToFraction(ingredient.quantity_value), ingredient.quantity_unit, ingredient.name)}
@@ -301,19 +377,19 @@ export default function Recipe(props) {
                                                 <Button 
                                                     style={'shoppinglist-' + ingredient.id} 
                                                     onClick={() => { 
-                                                        handleAddSingleToShoppingList(ingredient); 
-                                                        document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild.innerHTML = "done"; 
+                                                        handleAddSingleToShoppingList(ingredient) 
+                                                        document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild.innerHTML = "done" 
                                                     }}
                                                     icon="add_shopping_cart"
                                                     outlined={true}
                                                     role="tertiary"
                                                 />
-                                                {props.settings.showPantry &&
+                                                {props.settings.data?.showPantry &&
                                                     <Button
                                                         style={'pantry-' + ingredient.id} 
                                                         onClick={() => { 
-                                                            handleAddSingleToPantry(ingredient); 
-                                                            document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done"; 
+                                                            handleAddSingleToPantry(ingredient) 
+                                                            document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done" 
                                                         }}
                                                         icon="add_home"
                                                         outlined={true}
@@ -325,33 +401,34 @@ export default function Recipe(props) {
                                     )}
                                 </div>
 
-                            {props.settings.showPantry &&
-                                <div className="flex justify-end mt-4">
-                                    <Button
-                                        icon={showPantryButton ? 'add_home' : 'done'}
-                                        outlined={true}
-                                        label={showPantryButton ? 'Alle Zutaten zum Vorrat' : 'Erledigt!'}
-                                        onClick={() => handleAddPantry(tmpRecipe)}
-                                        role="secondary"
-                                        small={true}
-                                    />
-                                </div>
-                            }
+                                {props.settings.data?.showPantry &&
+                                    <div className="flex justify-end mt-4">
+                                        <Button
+                                            icon={showPantryDone ? 'done' : 'add_home'}
+                                            outlined={true}
+                                            label={showPantryDone ? 'Erledigt!' : 'Alle Zutaten zum Vorrat'}
+                                            onClick={() => handleAddPantry(tmpRecipe)}
+                                            role="secondary"
+                                            small={true}
+                                        />
+                                    </div>
+                                }
                             </Card>
-                        </>
+                        </div>
                     }
 
                     {/* Instructions */}
                     {recipe?.instructions?.length > 0 &&
-                        <div className="mt-10">
-                            <div className="mb-4 mx-6 md:ml-2 lg:ml-6">
-                                <SecondHeading>
-                                    Zubereitung
-                                </SecondHeading>
-                            </div>
-                            <Card style="space-y-2 mx-4 md:ml-0 lg:ml-4">
-                                {recipe?.instructions.map((instruction, index) =>
-                                    <div key={instruction.id} className="flex -px-6">
+                        <div className="mx-4 md:ml-0">
+                            <Spacer height="10" />
+
+                            <SecondHeading style="ml-2">Zubereitung</SecondHeading>
+
+                            <Spacer height="4" />
+
+                            <Card style="space-y-2">
+                                {recipe?.instructions?.map((instruction, index) =>
+                                    <div key={instruction.id} className="flex">
                                         <span className="mr-2">{index + 1}.</span>
                                         {instruction.instruction}
                                     </div>
@@ -362,24 +439,15 @@ export default function Recipe(props) {
 
                     {/* Show empty card if there is no image, no ingredients and no instructions */}
                     {recipe?.image === undefined && recipe?.ingredients?.length === 0 && recipe?.instructions?.length === 0 &&
-                        <Card style="mx-4 md:ml-0 lg:ml-4">
+                        <Card style="mx-4 md:ml-0 flex items-center">
+                            <span className="material-symbols-rounded outlined mr-4">info</span>
                             Hier gibt es noch nichts zu sehen.
                         </Card>
                     }
 
-                    {/* Edit Button */}
-                    <div className="flex justify-end px-4 pt-6">
-                        <Button
-                            location={`/recipe/${recipe?.id}/edit`}
-                            icon="edit"
-                            outlined={true}
-                            label="Rezept bearbeiten"
-                            role="tertiary"
-                            small={true}
-                        />
-                    </div>
+                    <div className="mb-[5.5rem]"></div>
                 </>
             }
         </div>
-    );
+    )
 }
