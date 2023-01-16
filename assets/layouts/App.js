@@ -118,6 +118,7 @@ export default function App({ version }) {
      * @param {string} sidebarActionButton.label The label text of the SAB.
      * @param {string} sidebarActionButton.path An optional path that the SAB redirects to.
      * @param {function} sidebarActionButton.onClick An optional onClick handler.
+     * @param {boolean?} sidebarActionButton.floating Set true for being displayed expanded and floating in the bottom-right corner. Set false for an SAB integrated in the sidebar.
      */
     const setSidebar = (sidebarActiveItem = '', sidebarActionButton = {}) => {
         setSidebarActiveItem(sidebarActiveItem)
@@ -302,13 +303,16 @@ export default function App({ version }) {
     const props = {
         user,
         authentication,
+
         settings,
         userGroups,
         mealCategories,
+
         recipes,
         days,
         // shoppingList,
         // pantry,
+
         setSidebarActiveItem, 
         setSidebarActionButton,
         setSidebar,

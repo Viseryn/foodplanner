@@ -276,7 +276,7 @@ export default function Recipe({ recipes, ...props }) {
             label: showSabDone 
                 ? 'Erledigt!' + (countSabClicks > 1 && ' (' + countSabClicks + ')')
                 : 'Zur Einkaufsliste' ,
-            onClickHandler: () => handleAddShoppingList(tmpRecipe),
+            onClick: () => handleAddShoppingList(tmpRecipe),
         })
     }, [recipe, tmpRecipe, showSabDone, countSabClicks])
 
