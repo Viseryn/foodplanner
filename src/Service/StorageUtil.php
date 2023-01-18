@@ -70,6 +70,40 @@ abstract class StorageUtil
     }
 
     /**
+     * editIngredient
+     * 
+     * Given an ingredient object from an API request,
+     * finds the corresponding Ingredient object in the 
+     * database and updates its quantityValue, quantityUnit
+     * and name, where the new values are determined by 
+     * the name specified in the request (it will contain 
+     * a whole string that describes the ingredient).
+     * 
+     * The new description is given by $ingredient['name'],
+     * where $ingredient is the argument. With the utilities
+     * from the IngredientUtil class, the new values can 
+     * be set. After that, the Ingredient is saved in the 
+     * database.
+     *
+     * @param array $ingredient An array that describes an ingredient object from an API request.
+     * @return self
+     */
+    public function editIngredient(array $ingredient): self {
+        // Find Ingredient object and change quantity and name
+        $ingredient = $this->ingredientRepository->find($ingredient['id']);
+        $ingredient
+            ->setQuantityValue($this->ingredientUtil->getQuantityValueFromString($ingredient['name']))
+            ->setQuantityUnit($this->ingredientUtil->getQuantityUnitFromString($ingredient['name']))
+            ->setName($this->ingredientUtil->getNameFromString($ingredient['name']))
+        ;
+
+        // Save in database
+        $this->ingredientRepository->save($ingredient, true);
+
+        return $this;
+    }
+
+    /**
      * replace
      * 
      * Replaces all Ingredient objects in a Storage
