@@ -67,6 +67,35 @@ abstract class StorageUtil
     }
 
     /**
+     * replace
+     * 
+     * Replaces all Ingredient objects in a Storage
+     * with a new list of Ingredient objects that are 
+     * given by an array of strings of which each describes 
+     * an Ingredient object.
+     * 
+     * The Ingredient objects are created by using the 
+     * IngredientUtil::transformStringArrayToObjectArray()
+     * method and then prepared for the Storage by the 
+     * self::prepareIngredients() method.
+     * 
+     * An expected value for ingredientStrings could, for 
+     * example, be 
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
+     * .
+     *
+     * @param array $ingredientStrings An array of strings that describe an Ingredient.
+     * @return self
+     */
+    public function replace(array $ingredientStrings): self
+    {
+        $this->deleteAll();
+        $this->add($ingredientStrings);
+
+        return $this;
+    }
+
+    /**
      * deleteAll
      * 
      * Should delete all Ingredient objects from the 

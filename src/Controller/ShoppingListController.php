@@ -241,11 +241,8 @@ class ShoppingListController extends AbstractController
         // Decode request data
         $requestContent = json_decode($request->getContent());
         
-        // Delete old Ingredient objects and add new ones to database
-        $shoppingListUtil
-            ->deleteAll()
-            ->add($requestContent)
-        ;
+        // Replace ShoppingList in the database
+        $shoppingListUtil->replace($requestContent);
 
         // Update Refresh Data Timestamp
         $refreshDataTimestampUtil->updateTimestamp();
