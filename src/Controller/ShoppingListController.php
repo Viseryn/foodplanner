@@ -186,4 +186,45 @@ class ShoppingListController extends AbstractController
         // Empty response
         return new Response();
     }
+
+    /**
+     * ShoppingList Check Ingredient API
+     * 
+     * A ShoppingList API that checks or unchecks a given 
+     * Ingredient object from the ShoppingList. The request 
+     * data should be the ID of the Ingredient object.
+     * 
+     * Expected RequestContent Type: 
+     *     int
+     * 
+     * Example RequestContent:
+     *     24
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/check-ingredient', name: 'api_shoppinglist_check_ingredient', methods: ['GET', 'POST'])]
+    public function checkIngredient(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+        
+        // Find Ingredient object and negate checked property
+        $ingredient = $ingredientRepository->find($requestContent);
+        $ingredient->setChecked(!$ingredient->isChecked());
+
+        // Update Refresh Data Timestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
 }
