@@ -209,6 +209,59 @@ class ShoppingListController extends AbstractController
     }
 
     /**
+     * ShoppingList Edit Ingredient API
+     * 
+     * A ShoppingList API that edit a given 
+     * Ingredient object from the ShoppingList. The request 
+     * data should consist of the edited Ingredient object.
+     * Note that quantity_unit and quantity_value will be 
+     * empty and everything is contained in name.
+     * 
+     * Expected RequestContent Type: 
+     *     array<string, mixed>
+     * 
+     * Example RequestContent:
+     *     ['id' => int, 'name' => string, ...]
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/edit-ingredient', name: 'api_shoppinglist_edit_ingredient', methods: ['GET', 'POST'])]
+    public function editIngredient(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        IngredientUtil $ingredientUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = (array) json_decode($request->getContent());
+        
+        // Find Ingredient object and change quantity and name
+        $ingredient = $ingredientRepository->find($requestContent['id']);
+        $ingredient
+            ->setQuantityValue($ingredientUtil->getQuantityValueFromString($requestContent['name']))
+            ->setQuantityUnit($ingredientUtil->getQuantityUnitFromString($requestContent['name']))
+            ->setName($ingredientUtil->getNameFromString($requestContent['name']))
+        ;
+
+        // Save in database
+        $ingredientRepository->save($ingredient, true);
+        
+
+        // Update Refresh Data Timestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response(var_export($requestContent));
+    }
+
+    /**
      * ShoppingList Replace API
      * 
      * A ShoppingList API that replaces the current 
