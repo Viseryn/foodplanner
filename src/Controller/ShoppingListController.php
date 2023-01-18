@@ -16,6 +16,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * ShoppingList API
+ * 
+ * @method ingredients
+ * @method add
+ * @method deleteAll
+ */
 #[Route('/api/shoppinglist')]
 class ShoppingListController extends AbstractController
 {
@@ -145,8 +152,4 @@ class ShoppingListController extends AbstractController
         // Empty response
         return new Response();
     }
-
-
-
-
 }
