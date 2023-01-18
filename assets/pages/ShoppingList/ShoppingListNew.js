@@ -6,9 +6,9 @@ import React, { useEffect, useState }   from 'react'
 import axios                            from 'axios'
 import Fraction                         from 'fraction.js'
 
+import Item                             from './components/Item'
 import AddItemInputWidget               from '../../components/ui/AddItemInputWidget'
 import Button                           from '../../components/ui/Buttons/Button'
-import IconButton                       from '../../components/ui/Buttons/IconButton'
 import Card                             from '../../components/ui/Card'
 import Spacer                           from '../../components/ui/Spacer'
 import Spinner                          from '../../components/ui/Spinner'
@@ -57,119 +57,6 @@ export default function ShoppingList({ shoppingList, ...props }) {
 
         // API call
         axios.post('/api/shoppinglist/add', [value])
-    }
-
-    /**
-     * handleClickOnItem
-     * 
-     * Handles clicks on an item of the list.
-     * 
-     * @param {any} event
-     * @param {object} item A list item.
-     */
-    const handleClickOnItem = (event, item) => {
-        if (event.detail === 2) {
-            // Double click action
-            handleItemSetEditability(item)
-
-            // When a double click is registered, the 
-            // actions for a single click should be prevented.
-            preventSingleClick = true
-
-            // After a certain delay, allow registering single clicks again.
-            setTimeout(() => preventSingleClick = false, 200)
-        } else {
-            // Only do the single click action if after a short 
-            // delay no double click was registered. Also, do not 
-            // do the single click action if the item is editable.
-            setTimeout(() => {
-                if (!preventSingleClick && !item.editable) {
-                    // Single click action
-                    handleCheckboxChange(item)
-                }
-            }, 200)
-        }
-    }
-
-    let preventSingleClick = false;
-
-    /**
-     * handleItemSetEditability
-     * 
-     * Changes an item's editability. Is performed on double clicks.
-     * 
-     * @param {object} item A list item.
-     */
-    const handleItemSetEditability = (item) => {
-        // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
-
-        // Make all items non-editable
-        newItemList.forEach(item => {
-            item.editable = false
-        })
-
-        // Change editability of argument item if it is not checked
-        newItemList[index].editable = newItemList[index].checked ? false : !newItemList[index].editable
-        shoppingList.setData(newItemList)
-    }
-
-    /**
-     * handleEditItem
-     * 
-     * Changes the data of the given item and makes
-     * it non-editable after. Is called onBlur or 
-     * onKeyDown when the Enter key was pressed.
-     */
-    const handleEditItem = (event, item) => {
-        // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
-
-        // Return early if the value of the new item is empty
-        const newItem = event.target.value.replace(/(\s+)/g, ' ').trim()
-
-        if (newItem.length === 0) {
-            return
-        }
-
-        // Change data of the item.
-        // Note that the change to the state is only temporary
-        // so that the edit effect is visible immediately.
-        // The item will be updated in the database via the API
-        // and the list will refresh without loading screen.
-        newItemList[index].quantity_unit = ''
-        newItemList[index].quantity_value = ''
-        newItemList[index].name = newItem
-        newItemList[index].editable = false
-
-        // Set new list
-        shoppingList.setData(newItemList)
-
-        // API call
-        /** @todo */
-    }
-
-    /**
-     * handleCheckboxChange
-     * 
-     * Checks or unchecks an item.
-     * 
-     * @param {object} item A list item.
-     */
-    const handleCheckboxChange = (item) => {
-        // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
-
-        // Check or uncheck the item and make it non-editable
-        newItemList[index].checked = !newItemList[index].checked
-        newItemList[index].editable = false
-        shoppingList.setData(newItemList)
-        
-        // API call
-        axios.post('/api/shoppinglist/check-ingredient', item.id)
     }
 
     /**
@@ -340,38 +227,11 @@ export default function ShoppingList({ shoppingList, ...props }) {
                             }
 
                             {shoppingList.data?.map(item =>
-                                <div key={item.id} className="flex justify-between items-center" >
-                                    <div className="flex items-center grow" >
-                                        <input 
-                                            id={item.id} 
-                                            type="checkbox" 
-                                            className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
-                                            onChange={() => handleCheckboxChange(item)} 
-                                            checked={item.checked}
-                                        />
-
-                                        <div 
-                                            className={'break-words grow' + (item.checked ? ' line-through text-[#74796d]' : '')} 
-                                            onClick={event => handleClickOnItem(event, item)}
-                                        >
-                                            {item.editable ? (
-                                                <input 
-                                                    className="bg-white border rounded-md h-10 w-full px-2"
-                                                    defaultValue={getFullIngredientName(item)}
-                                                    onBlur={event => handleEditItem(event, item)}
-                                                    onKeyDown={event => { 
-                                                        if (event.key === 'Enter') {
-                                                            handleEditItem(event, item);
-                                                        }
-                                                    }}
-                                                />
-                                            ) : (
-                                                getFullIngredientName(item)
-                                            )}
-                                        </div>
-                                    </div>
-
-                                </div>
+                                <Item  
+                                    key={item.id}
+                                    shoppingList={shoppingList}
+                                    item={item}
+                                />
                             )}
                         </div>
                     </Card>
