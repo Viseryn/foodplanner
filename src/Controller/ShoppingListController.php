@@ -227,4 +227,65 @@ class ShoppingListController extends AbstractController
         // Empty response
         return new Response();
     }
+
+    /**
+     * ShoppingList Replace API
+     * 
+     * A ShoppingList API that replaces the current 
+     * Ingredient objects of the ShoppingList with 
+     * new ones. It basically does the same as running
+     * deleteAll() and then add().
+     * 
+     * @todo Maybe the delete and add functionalities should be a reusable service.
+     * @todo Create a StorageUtil interface that is implemented by ShoppingListUtil and PantryUtil.
+     * 
+     * Expected RequestContent Type: 
+     *     string[]
+     * 
+     * Example RequestContent:
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/replace', name: 'api_shoppinglist_replace', methods: ['GET', 'POST'])]
+    public function replace(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        IngredientUtil $ingredientUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+        
+        // Delete all shopping list ingredients from database
+        $ingredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
+        
+        foreach($ingredients as $ingredient) {
+            $ingredientRepository->remove($ingredient, true);
+        }
+        
+        // Turn requestContent into array of Ingredient objects
+        $ingredients = $ingredientUtil->transformStringArrayToObjectArray($requestContent);
+
+        // Prepare Ingredient objects for ShoppingList storage
+        $ingredientUtil->prepareIngredients('shoppinglist', $ingredients);
+
+        // Add Ingredient objects to database
+        foreach ($ingredients as $ingredient) {
+            $ingredientRepository->save($ingredient, true);
+        }
+
+        // Update Refresh Data Timestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
 }
