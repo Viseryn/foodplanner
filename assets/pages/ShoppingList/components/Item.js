@@ -138,17 +138,18 @@ export default function Item({ shoppingList, item }) {
     }
 
     /**
-     * handlePositionChange
+     * handleChangePosition
      * 
      * Moves the given item up or down in the ShoppingList.
      * 
      * @param {number} id The id of the given item.
      * @param {number} direction Possible values are -1 (up) and 1 (down).
      */
-    const handlePositionChange = (item, direction) => {
+    const handleChangePosition = (item, direction) => {
         // Make a copy of shoppingList.data and find item
         let newItemList = [...shoppingList.data]
         const index = newItemList.indexOf(item)
+        const itemCopy = {...newItemList[index]}
 
         const oldPosition = newItemList[index].position
         const newPosition = newItemList[index + direction]?.position
@@ -159,17 +160,21 @@ export default function Item({ shoppingList, item }) {
             (direction === -1 && index !== 0)
             || (direction === 1 && index !== shoppingList.data?.length - 1)
         ) {
+            itemCopy.position = newPosition
             newItemList[index].position = newPosition
             newItemList[index + direction].position = oldPosition
 
-            [newItemList[index], newItemList[index + direction]] = [newItemList[index + direction], newItemList[index]]
+            newItemList[index] = newItemList[index + direction]
+            newItemList[index + direction] = itemCopy
 
             // Set new list
             shoppingList.setData(newItemList)
 
             // API call
-            /** @todo */
-            axios.get('/api/shoppinglist/position-change')
+            axios.post('/api/shoppinglist/change-position', [
+                newItemList[index].id, 
+                newItemList[index + direction].id,
+            ])
         }
     }
     
@@ -209,8 +214,8 @@ export default function Item({ shoppingList, item }) {
             </div>
 
             <div className="flex gap-2">
-                <IconButton onClick={() => handlePositionChange(item, -1)}>expand_less</IconButton>
-                <IconButton onClick={() => handlePositionChange(item, 1)}>expand_more</IconButton>
+                <IconButton onClick={() => handleChangePosition(item, -1)}>expand_less</IconButton>
+                <IconButton onClick={() => handleChangePosition(item, 1)}>expand_more</IconButton>
             </div>
         </div>
     )
