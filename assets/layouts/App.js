@@ -30,10 +30,7 @@ import Recipe                           from '../pages/Recipes/Recipe'
 import Registration                     from '../pages/Registration/Registration'
 import AddGroup                         from '../pages/Settings/AddGroup'
 import Settings                         from '../pages/Settings/Settings'
-import ShoppingList                     from '../pages/ShoppingList/ShoppingList'
-
-import loadShoppingList                 from '../util/loadShoppingList'
-import loadPantry                       from '../util/loadPantry.js'
+import ShoppingList                     from '../pages/ShoppingList/ShoppingListNew'
 
 /**
  * App
