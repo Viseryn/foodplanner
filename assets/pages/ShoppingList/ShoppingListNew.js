@@ -45,6 +45,21 @@ export default function ShoppingList({ shoppingList, ...props }) {
     }
 
     /**
+     * handleDeleteChecked
+     * 
+     * Deletes all checked items.
+     */
+    const handleDeleteChecked = () => {
+        // Make a copy of shoppingList.data and
+        // filter out all items that are checked
+        const newItemList = [...shoppingList.data].filter(item => !item.checked)
+        shoppingList.setData(newItemList)
+
+        // API call
+        axios.get('/api/shoppinglist/delete-checked')
+    }
+
+    /**
      * Load layout
      */ 
     useEffect(() => {
@@ -63,6 +78,19 @@ export default function ShoppingList({ shoppingList, ...props }) {
         // Scroll to top
         window.scrollTo(0, 0)
     }, [])
+
+    /**
+     * Update SidebarActionButton when 
+     * shoppingList.data changes
+     */
+    useEffect(() => {
+        props.setSidebar('shoppinglist', {
+            visible: true, 
+            icon: 'remove_done', 
+            label: 'Erledigte löschen',
+            onClick: handleDeleteChecked,
+        })
+    }, [shoppingList.data])
 
     /**
      * Render ShoppingList
