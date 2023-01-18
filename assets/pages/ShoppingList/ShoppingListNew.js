@@ -22,6 +22,49 @@ export default function ShoppingList({ shoppingList, ...props }) {
     }
 
     /**
+     * handleDeleteAll
+     * 
+     * Deletes all items on the list after confirming
+     * a SweetAlert.
+     */
+    const handleDeleteAll = () => {
+        swal({
+            dangerMode: true,
+            icon: 'error',
+            title: 'Wirklich alle Zutaten löschen?',
+            buttons: {
+                cancel: 'Abbrechen',
+                confirm: 'Löschen',
+            },
+        }).then((confirm) => {
+            if (confirm) {
+                axios.get('/api/shoppinglist/delete-all')
+                shoppingList.setLoading(true)
+            }
+        })
+    }
+
+    /**
+     * Load layout
+     */ 
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebar('shoppinglist')
+
+        // Load topbar
+        props.setTopbar({
+            title: 'Einkaufsliste',
+            actionButtons: [
+                { icon: 'delete_forever', onClick: handleDeleteAll },
+            ],
+            style: 'md:w-[450px]',
+        })
+
+        // Scroll to top
+        window.scrollTo(0, 0)
+    }, [])
+
+    /**
      * Render ShoppingList
      */
     return (
