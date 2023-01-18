@@ -93,6 +93,28 @@ export default function ShoppingList({ shoppingList, ...props }) {
 
     let preventSingleClick = false;
 
+    /**
+     * handleItemSetEditability
+     * 
+     * Changes an item's editability. Is performed on double clicks.
+     * 
+     * @param {object} item A list item.
+     */
+    const handleItemSetEditability = (item) => {
+        // Make a copy of shoppingList.data and find item
+        let newItemList = [...shoppingList.data]
+        const index = newItemList.indexOf(item)
+
+        // Make all items non-editable
+        newItemList.forEach(item => {
+            item.editable = false
+        })
+
+        // Change editability of argument item if it is not checked
+        newItemList[index].editable = newItemList[index].checked ? false : !newItemList[index].editable
+        shoppingList.setData(newItemList)
+    }
+
     }
 
     /**
