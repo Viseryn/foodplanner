@@ -60,130 +60,70 @@ class ShoppingListController extends AbstractController
 
     /**
      * ShoppingList Add API
+     * 
+     * A ShoppingList API that, given a request with 
+     * an array of strings, creates new Ingredient 
+     * objects from these strings and adds them to the 
+     * database.
+     * 
+     * The Ingredient objects are created by using the 
+     * IngredientUtil::transformStringArrayToObjectArray()
+     * method and then prepared for the ShoppingList storage
+     * by the IngredientUtil::prepareIngredients() method.
+     * 
+     * Expected RequestContent Type: 
+     *     string[]
+     * 
+     * Example RequestContent:
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
      *
      * @param Request $request
-     * @param RecipeRepository $recipeRepository
-     * @param StorageRepository $storageRepository
      * @param IngredientRepository $ingredientRepository
      * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/add', name: 'api_shoppinglist_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
-        RecipeRepository $recipeRepository,
-        StorageRepository $storageRepository, 
         IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
+        IngredientUtil $ingredientUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Decode request data
         $requestContent = json_decode($request->getContent());
+        
+        // Turn requestContent into array of Ingredient objects
+        $ingredients = $ingredientUtil->transformStringArrayToObjectArray($requestContent);
 
-        // Collect all ingredients and combine to a string
-        $ingredients = '';
+        // Prepare Ingredient objects for ShoppingList storage
+        $ingredientUtil->prepareIngredients('shoppinglist', $ingredients);
 
-        // If only one recipe is given, the quantity might have been changed
-        if (count($requestContent) === 1) {
-            // Array for new ingredient objects, since
-            // these are not in the database
-            $ingredientsArr = [];
-
-            // Create a new Ingredient object for each ingredient from the request
-            foreach ($requestContent[0]->ingredients as $rawIngredient) {
-                $ingredientsArr[] = (new Ingredient())
-                    ->setName($rawIngredient->name)
-                    ->setQuantityValue($rawIngredient->quantity_value)
-                    ->setQuantityUnit($rawIngredient->quantity_unit)
-                ;
-            }
-
-            // Create the ingredient string
-            $ingredients .= $ingredientUtil->ingredientString(new ArrayCollection($ingredientsArr));
+        // Add Ingredient objects to database
+        foreach ($ingredients as $ingredient) {
+            $ingredientRepository->save($ingredient, true);
         }
 
-        // For multiple recipes, go through all their ingredients
-        if (count($requestContent) > 1) {
-            foreach ($requestContent as $recipeData) {
-                $recipe = $recipeRepository->find($recipeData->id);
-                $ingredients .= $ingredientUtil->ingredientString($recipe->getIngredients());
-                $ingredients .= "\n";
-            }
-        }
+        // Update Refresh Data Timestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
-        // Transform data into Ingredient objects
-        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
-
-        // Check highest position
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'DESC']);
-        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
-
-        // Add position and checked to Ingredient objects
-        $i = 0;
-        $storage = $storageRepository->find(2);
-
-        foreach ($newIngredients as $ingredient) {
-            $newIngredients[$i]
-                ->setStorage($storage)
-                ->setChecked(false)
-                ->setPosition($highestPosition + 1 + $i)
-            ;
-
-            $i++;
-        }
-
-        // Add new shopping list ingredients to the database
-        foreach($newIngredients as $ingredient) {
-            $ingredientRepository->add($ingredient, true);
-        }
-
-        // Empty Response
+        // Empty response
         return new Response();
     }
 
     /**
-     * ShoppingList Ingredients API
-     *
-     * @param Request $request
-     * @param StorageRepository $storageRepository
      * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
-     * @return Response
      */
-    #[Route('/ingredients', name: 'api_shoppinglist_ingredients', methods: ['GET', 'POST'])]
-    public function ingredient(
-        Request $request, 
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         
-        // Decode request data
-        $requestContent = json_decode($request->getContent());
 
-        // Transform data into Ingredient object
-        $newIngredient = $ingredientUtil->ingredientSplit($requestContent->name)[0];
 
-        // Check highest position
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'DESC']);
-        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
 
-        // Add position and checked to Ingredient object
-        $storage = $storageRepository->find(2);
-        $newIngredient
-            ->setStorage($storage)
-            ->setChecked(false)
-            ->setPosition($highestPosition + 1)
-        ;
 
-        // Add new shopping list ingredient to the database
-        $ingredientRepository->add($newIngredient, true);
 
-        // Empty Response
-        return new Response($newIngredient);
-    }
 }
