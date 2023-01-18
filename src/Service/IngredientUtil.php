@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Entity\Ingredient;
 use Doctrine\Common\Collections\Collection;
-use Exception;
 
 /**
  * IngredientUtil
