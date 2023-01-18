@@ -341,7 +341,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
 
                             {shoppingList.data?.map(item =>
                                 <div key={item.id} className="flex justify-between items-center" >
-                                    <div className="flex items-center" >
+                                    <div className="flex items-center grow" >
                                         <input 
                                             id={item.id} 
                                             type="checkbox" 
@@ -351,11 +351,19 @@ export default function ShoppingList({ shoppingList, ...props }) {
                                         />
 
                                         <div 
-                                            className={'break-words' + (item.checked ? ' line-through text-[#74796d]' : '')} 
+                                            className={'break-words grow' + (item.checked ? ' line-through text-[#74796d]' : '')} 
+                                            onClick={event => handleClickOnItem(event, item)}
                                         >
                                             {item.editable ? (
                                                 <input 
-                                                    className="bg-transparent border rounded-md"
+                                                    className="bg-white border rounded-md h-10 w-full px-2"
+                                                    defaultValue={getFullIngredientName(item)}
+                                                    onBlur={event => handleEditItem(event, item)}
+                                                    onKeyDown={event => { 
+                                                        if (event.key === 'Enter') {
+                                                            handleEditItem(event, item);
+                                                        }
+                                                    }}
                                                 />
                                             ) : (
                                                 getFullIngredientName(item)
