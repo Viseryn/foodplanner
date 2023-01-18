@@ -11,14 +11,12 @@ use Doctrine\Common\Collections\Collection;
  * An Ingredient utility class that can translate
  * strings and Ingredient objects into one another.
  * 
- * @method getQuantityValueFromString
- * @method getQuantityUnitFromString
- * @method getNameFromString
- * @method transformStringToObject
- * @method transformStringArrayToObjectArray
- * @method transformObjectArrayToStringArray
- * 
- * @todo EditRecipe, AddRecipe, Pantry, Planner, Recipe
+ * @method string getQuantityValueFromString(string $ingredientString)
+ * @method string getQuantityUnitFromString(string $ingredientString)
+ * @method string getNameFromString(string $ingredientString)
+ * @method Ingredient transformStringToObject(string $ingredientString)
+ * @method Ingredient[] transformStringArrayToObjectArray(string[] $ingredientStrings)
+ * @method array transformObjectArrayToStringArray(Ingredient[]|Collection<Ingredient> $ingredients)
  */
 class IngredientUtil 
 {
