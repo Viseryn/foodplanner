@@ -31,7 +31,7 @@ import axios                    from 'axios'
  * @param {Array<boolean>} isDependencyLoading An array of isLoading properties of dependent data. If an authentication object was provided, authentication.isLoading is automatically added to this list.
  * @param {Array<any>} otherDependencies An array of dependencies for the useEffect API call.
  * @param {boolean} doCustomFetch Whether after the API call a custom callback should be executed.
- * @param {(response: object, setData: React.Dispatch<React.SetStateAction<any>>, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void} customFetch A function that can be executed after the API call if doCustomFetch is true. The response of the API call will be passed as argument as well as the setter methodd of the data entity and its isLoading state.
+ * @param {(response: object, setData: React.Dispatch<React.SetStateAction<any>>, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void} customFetch A function that can be executed after the API call if doCustomFetch is true. The response of the API call will be passed as argument as well as the setter methods of the data entity and its isLoading state.
  * @return {object} An object that consists of the data state variable, the isLoading state variable, and their respective setter methods.
  */
 function useFetch(
