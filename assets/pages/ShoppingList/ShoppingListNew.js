@@ -58,6 +58,41 @@ export default function ShoppingList({ shoppingList, ...props }) {
         // API call
         axios.post('/api/shoppinglist/add', [value])
     }
+
+    /**
+     * handleClickOnItem
+     * 
+     * Handles clicks on an item of the list.
+     * 
+     * @param {any} event
+     * @param {object} item A list item.
+     */
+    const handleClickOnItem = (event, item) => {
+        if (event.detail === 2) {
+            // Double click action
+            handleItemSetEditability(item)
+
+            // When a double click is registered, the 
+            // actions for a single click should be prevented.
+            preventSingleClick = true
+
+            // After a certain delay, allow registering single clicks again.
+            setTimeout(() => preventSingleClick = false, 200)
+        } else {
+            // Only do the single click action if after a short 
+            // delay no double click was registered. Also, do not 
+            // do the single click action if the item is editable.
+            setTimeout(() => {
+                if (!preventSingleClick && !item.editable) {
+                    // Single click action
+                    handleCheckboxChange(item)
+                }
+            }, 200)
+        }
+    }
+
+    let preventSingleClick = false;
+
     }
 
     /**
