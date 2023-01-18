@@ -2,17 +2,30 @@
  * ./assets/pages/ShoppingList/ShoppingList.js *
  ***********************************************/
 
-import React, { useEffect, useRef, useState } from 'react'
-import axios from 'axios'
-import Fraction from 'fraction.js'
+import React, { useEffect, useState }   from 'react'
+import axios                            from 'axios'
+import Fraction                         from 'fraction.js'
 
-import AddItemInputWidget from '../../components/ui/AddItemInputWidget'
-import Button             from '../../components/ui/Buttons/Button'
-import IconButton         from '../../components/ui/Buttons/IconButton'
-import Card               from '../../components/ui/Card'
-import Spacer             from '../../components/ui/Spacer'
-import Spinner            from '../../components/ui/Spinner'
+import AddItemInputWidget               from '../../components/ui/AddItemInputWidget'
+import Button                           from '../../components/ui/Buttons/Button'
+import IconButton                       from '../../components/ui/Buttons/IconButton'
+import Card                             from '../../components/ui/Card'
+import Spacer                           from '../../components/ui/Spacer'
+import Spinner                          from '../../components/ui/Spinner'
 
+import getFullIngredientName            from '../../util/getFullIngredientName'
+
+/**
+ * ShoppingList
+ * 
+ * @todo
+ * 
+ * @component
+ * @param {object} props
+ * @param {object} props.shoppingList
+ * 
+ * @todo
+ */
 export default function ShoppingList({ shoppingList, ...props }) {
     /**
      * The input value of the Add Item Widget at the top.
