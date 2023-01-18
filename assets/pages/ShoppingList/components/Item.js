@@ -139,6 +139,42 @@ export default function Item({ shoppingList, item }) {
     }
 
     /**
+     * handlePositionChange
+     * 
+     * Moves the given item up or down in the ShoppingList.
+     * 
+     * @param {number} id The id of the given item.
+     * @param {number} direction Possible values are -1 (up) and 1 (down).
+     */
+    const handlePositionChange = (item, direction) => {
+        // Make a copy of shoppingList.data and find item
+        let newItemList = [...shoppingList.data]
+        const index = newItemList.indexOf(item)
+
+        const oldPosition = newItemList[index].position
+        const newPosition = newItemList[index + direction]?.position
+
+        // Move item up only when it is not the first item and 
+        // move item down only when it is not the last item.
+        if (
+            (direction === -1 && index !== 0)
+            || (direction === 1 && index !== shoppingList.data?.length - 1)
+        ) {
+            newItemList[index].position = newPosition
+            newItemList[index + direction].position = oldPosition
+
+            [newItemList[index], newItemList[index + direction]] = [newItemList[index + direction], newItemList[index]]
+
+            // Set new list
+            shoppingList.setData(newItemList)
+
+            // API call
+            /** @todo */
+            axios.get('/api/shoppinglist/position-change')
+        }
+    }
+    
+    /**
      * Render Item
      */
     return (
