@@ -4,6 +4,39 @@
 
 export default function ShoppingList({ shoppingList, ...props }) {
     /**
+     * The input value of the Add Item Widget at the top.
+     * Will be passed to the AddItemInputWidget component
+     * together with its setter method.
+     * 
+     * @type {[string, function]}
+     */
+    const [inputValue, setInputValue] = useState('')
+
+    /**
+     * handleEnterKeyDown
+     * 
+     * A function that is called when the enter key is 
+     * pressed with the trimmed inputValue as argument.
+     * Adds the argument to the ShoppingList via the 
+     * ShoppingList Add API and reloads the list afterwards.
+     * The reload is required because the API generates
+     * IDs and other fields.
+     * 
+     * @param {string} value A trimmed string that describes an Ingredient object.
+     */
+    const handleEnterKeyDown = (value) => {
+        axios
+            .post('/api/shoppinglist/add', [value])
+            .then(response => {
+                // Clear input field
+                setInputValue('')
+
+                // Load new shopping list
+                shoppingList.setLoading(true)
+            })
+    }
+
+    /**
      * handleCheckboxChange
      * 
      * Checks or unchecks an item.
@@ -103,6 +136,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
                 <AddItemInputWidget
                     inputValue={inputValue}
                     setInputValue={setInputValue}
+                    handleEnterKeyDown={handleEnterKeyDown}
                 />
             </div>
 
