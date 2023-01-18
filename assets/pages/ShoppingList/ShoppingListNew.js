@@ -115,6 +115,40 @@ export default function ShoppingList({ shoppingList, ...props }) {
         shoppingList.setData(newItemList)
     }
 
+    /**
+     * handleEditItem
+     * 
+     * Changes the data of the given item and makes
+     * it non-editable after. Is called onBlur or 
+     * onKeyDown when the Enter key was pressed.
+     */
+    const handleEditItem = (event, item) => {
+        // Make a copy of shoppingList.data and find item
+        let newItemList = [...shoppingList.data]
+        const index = newItemList.indexOf(item)
+
+        // Return early if the value of the new item is empty
+        const newItem = event.target.value.replace(/(\s+)/g, ' ').trim()
+
+        if (newItem.length === 0) {
+            return
+        }
+
+        // Change data of the item.
+        // Note that the change to the state is only temporary
+        // so that the edit effect is visible immediately.
+        // The item will be updated in the database via the API
+        // and the list will refresh without loading screen.
+        newItemList[index].quantity_unit = ''
+        newItemList[index].quantity_value = ''
+        newItemList[index].name = newItem
+        newItemList[index].editable = false
+
+        // Set new list
+        shoppingList.setData(newItemList)
+
+        // API call
+        /** @todo */
     }
 
     /**
