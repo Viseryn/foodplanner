@@ -152,4 +152,38 @@ class ShoppingListController extends AbstractController
         // Empty response
         return new Response();
     }
+    
+    /**
+     * ShoppingList Delete Checked API
+     * 
+     * A ShoppingList API that deletes all Ingredient objects
+     * that the ShoppingList has which have been marked as 
+     * checked, i.e. ingredient.checked = true for some ingredient.
+     *
+     * @param IngredientRepository $ingredientRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/delete-checked', name: 'api_shoppinglist_delete_checked', methods: ['GET'])]
+    public function deleteChecked(
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Find all checked Ingredient objects
+        $ingredients = $ingredientRepository->findBy(['checked' => true]);
+
+        // Remove checked ingredients from database
+        foreach ($ingredients as $ingredient) {
+            $ingredientRepository->remove($ingredient, true);
+        }
+
+        // Update Refresh Data Timestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
 }
