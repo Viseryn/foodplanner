@@ -260,35 +260,22 @@ export default function App({ version }) {
     }, [days.isLoading])
 
 
+    /******************
+     * SHOPPINGLIST  *
+     ******************/
 
-    /* ***************** */
-
-
-
-    // useEffect(() => {
-    //     if (!isLoadingShoppingList && !user?.isLoading && !isLoading) return
-    //     if (!authentication.isAuthenticated) return
-
-    //     loadShoppingList(setShoppingList, () => {
-    //         // Disable loading screen
-    //         setLoadingShoppingList(false)
-    //     })
-    // }, [isLoadingShoppingList, user?.isLoading, user, isLoading])
-
-    // useEffect(() => {
-    //     if (!isLoadingPantry && !user?.isLoading && !isLoading) return
-    //     if (!authentication.isAuthenticated) return
-
-    //     loadPantry(setPantry, () => {
-    //         // Disable loading screen
-    //         setLoadingPantry(false)
-    //     })
-    // }, [isLoadingPantry, user?.isLoading, user, isLoading])
-
-
-
-    /* ***************** */
-
+    /**
+     * The complete shopping list. The data 
+     * object is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
+     */
+    const shoppingList = useFetch(
+        '/api/shoppinglist/ingredients',
+        authentication,
+        [isLoading],
+    )
 
 
 
