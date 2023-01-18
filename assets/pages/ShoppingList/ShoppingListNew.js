@@ -55,6 +55,70 @@ export default function ShoppingList({ shoppingList, ...props }) {
     }
 
     /**
+     * handleAddUpIngredients
+     * 
+     * Combines items with the same name and same 
+     * quantity_unit to a single item and adds up
+     * the quantity_values. Since the items can contain
+     * fractions, the Fraction class is imported and 
+     * used. The resulting item list will be sent 
+     * to the ShoppingList Replace API and a reload 
+     * is done.
+     */
+    const handleAddUpIngredients = () => {
+        // Make a copy of the shoppingList.data
+        const copyOfList = [...shoppingList.data]
+
+        // Create temporary map for ingredients.
+        /** @type {Map<string, object>} */
+        let ingredientMap = new Map()
+
+        // Go through each ingredient
+        copyOfList.forEach(ingredient => {
+            // Check if the ingredient has been added to the ingredientMap yet
+            if (ingredientMap.has(ingredient.name)) {
+                // Get the ingredient from the map
+                let currentIngredient = ingredientMap.get(ingredient.name);
+
+                // Check if the quantity units match and the value is a number
+                if (currentIngredient.quantity_unit === ingredient.quantity_unit
+                    && ingredient.quantity_value) {
+                    // Calculate the new quantity value.
+                    // Note that the values may be fractions.
+                    let currentVal = new Fraction(currentIngredient.quantity_value)
+                    let newVal = new Fraction(ingredient.quantity_value)
+                    let totalVal = currentVal.add(newVal)
+
+                    // Save new quantity value in currentIngredient
+                    currentIngredient.quantity_value = totalVal.toFraction(true)
+                    ingredientMap.set(ingredient.name, currentIngredient)
+                } else {
+                    // If quantity units do not match or the value is not 
+                    // a number, add the ingredient to the map with a unique key
+                    ingredientMap.set(ingredient.name + Math.random(), ingredient)
+                }
+            } else {
+                // If ingredient is not in the ingredientMap, add it
+                ingredientMap.set(ingredient.name, ingredient)
+            }
+        })
+
+        // Create a new shoppingList from the ingredientMap
+        const newItemList = Array.from(ingredientMap.values())
+
+        // Create array of strings of ingredients for API
+        const ingredients = []
+
+        newItemList?.forEach(ingredient => {
+            ingredients.push(getFullIngredientName(ingredient))
+        })
+
+        // API call
+        axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
+        shoppingList.setLoading(true)
+    }
+
+    /**
      * handleDeleteAll
      * 
      * Deletes all items on the list after confirming
@@ -185,6 +249,18 @@ export default function ShoppingList({ shoppingList, ...props }) {
                             )}
                         </div>
                     </Card>
+
+                    {shoppingList.data?.length >= 1 &&
+                        <div className="flex flex-col items-end justify-end gap-4 mt-4 mx-4 md:mx-0 pb-[5.5rem] md:pb-0">
+                            <Button
+                                onClick={handleAddUpIngredients}
+                                icon="low_priority"
+                                label="Zutaten zusammenfassen"
+                                role="tertiary"
+                                small={true}
+                            />
+                        </div>
+                    }
                 </>
             )}
         </div>
