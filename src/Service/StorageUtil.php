@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use App\Repository\IngredientRepository;
+use App\Repository\StorageRepository;
+
 /**
  * StorageUtil
  * 
