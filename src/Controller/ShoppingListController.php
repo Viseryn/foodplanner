@@ -2,13 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
-use App\Repository\RecipeRepository;
-use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
 use App\Service\RefreshDataTimestampUtil;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Service\ShoppingListUtil;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -74,11 +71,6 @@ class ShoppingListController extends AbstractController
      * objects from these strings and adds them to the 
      * database.
      * 
-     * The Ingredient objects are created by using the 
-     * IngredientUtil::transformStringArrayToObjectArray()
-     * method and then prepared for the ShoppingList storage
-     * by the IngredientUtil::prepareIngredients() method.
-     * 
      * Expected RequestContent Type: 
      *     string[]
      * 
@@ -86,34 +78,24 @@ class ShoppingListController extends AbstractController
      *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
      *
      * @param Request $request
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param ShoppingListUtil $shoppingListUtil
      * @return Response
      */
     #[Route('/add', name: 'api_shoppinglist_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil,
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        ShoppingListUtil $shoppingListUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Decode request data
+        // Decode request content
         $requestContent = json_decode($request->getContent());
         
-        // Turn requestContent into array of Ingredient objects
-        $ingredients = $ingredientUtil->transformStringArrayToObjectArray($requestContent);
-
-        // Prepare Ingredient objects for ShoppingList storage
-        $ingredientUtil->prepareIngredients('shoppinglist', $ingredients);
-
-        // Add Ingredient objects to database
-        foreach ($ingredients as $ingredient) {
-            $ingredientRepository->save($ingredient, true);
-        }
+        // Add ingredients from request
+        $shoppingListUtil->add($requestContent);
 
         // Update Refresh Data Timestamp
         $refreshDataTimestampUtil->updateTimestamp();
@@ -130,21 +112,19 @@ class ShoppingListController extends AbstractController
      * 
      * @param IngredientRepository $ingredientRepository
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param ShoppingListUtil $shoppingListUtil
+     * @return Response
      */
     #[Route('/delete-all', name: 'api_shoppinglist_delete_all', methods: ['GET'])]
     public function deleteAll(
-        IngredientRepository $ingredientRepository,
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        ShoppingListUtil $shoppingListUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Delete all shopping list ingredients from database
-        $ingredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
-        
-        foreach($ingredients as $ingredient) {
-            $ingredientRepository->remove($ingredient, true);
-        }
+        $shoppingListUtil->deleteAll();
 
         // Update Refresh Data Timestamp
         $refreshDataTimestampUtil->updateTimestamp();
@@ -236,9 +216,6 @@ class ShoppingListController extends AbstractController
      * new ones. It basically does the same as running
      * deleteAll() and then add().
      * 
-     * @todo Maybe the delete and add functionalities should be a reusable service.
-     * @todo Create a StorageUtil interface that is implemented by ShoppingListUtil and PantryUtil.
-     * 
      * Expected RequestContent Type: 
      *     string[]
      * 
@@ -249,14 +226,14 @@ class ShoppingListController extends AbstractController
      * @param IngredientRepository $ingredientRepository
      * @param IngredientUtil $ingredientUtil
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param ShoppingListUtil $shoppingListUtil
      * @return Response
      */
     #[Route('/replace', name: 'api_shoppinglist_replace', methods: ['GET', 'POST'])]
     public function replace(
         Request $request,
-        IngredientRepository $ingredientRepository,
-        IngredientUtil $ingredientUtil,
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        ShoppingListUtil $shoppingListUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -264,23 +241,11 @@ class ShoppingListController extends AbstractController
         // Decode request data
         $requestContent = json_decode($request->getContent());
         
-        // Delete all shopping list ingredients from database
-        $ingredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
-        
-        foreach($ingredients as $ingredient) {
-            $ingredientRepository->remove($ingredient, true);
-        }
-        
-        // Turn requestContent into array of Ingredient objects
-        $ingredients = $ingredientUtil->transformStringArrayToObjectArray($requestContent);
-
-        // Prepare Ingredient objects for ShoppingList storage
-        $ingredientUtil->prepareIngredients('shoppinglist', $ingredients);
-
-        // Add Ingredient objects to database
-        foreach ($ingredients as $ingredient) {
-            $ingredientRepository->save($ingredient, true);
-        }
+        // Delete old Ingredient objects and add new ones to database
+        $shoppingListUtil
+            ->deleteAll()
+            ->add($requestContent)
+        ;
 
         // Update Refresh Data Timestamp
         $refreshDataTimestampUtil->updateTimestamp();
