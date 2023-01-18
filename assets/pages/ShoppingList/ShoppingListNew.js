@@ -49,15 +49,15 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * @param {string} value A trimmed string that describes an Ingredient object.
      */
     const handleEnterKeyDown = (value) => {
-        axios
-            .post('/api/shoppinglist/add', [value])
-            .then(response => {
-                // Clear input field
-                setInputValue('')
+        // Clear input field
+        setInputValue('')
 
-                // Load new shopping list
-                shoppingList.setLoading(true)
-            })
+        // Load new shopping list
+        shoppingList.setLoading(true)
+
+        // API call
+        axios.post('/api/shoppinglist/add', [value])
+    }
     }
 
     /**
