@@ -155,14 +155,17 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * handleCheckboxChange
      * 
      * Checks or unchecks an item.
+     * 
+     * @param {object} item A list item.
      */
     const handleCheckboxChange = (item) => {
         // Make a copy of shoppingList.data and find item
         let newItemList = [...shoppingList.data]
         const index = newItemList.indexOf(item)
 
-        // Check or uncheck the item and set new shoppingList
+        // Check or uncheck the item and make it non-editable
         newItemList[index].checked = !newItemList[index].checked
+        newItemList[index].editable = false
         shoppingList.setData(newItemList)
         
         // API call
