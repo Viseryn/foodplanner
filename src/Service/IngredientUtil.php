@@ -9,6 +9,12 @@ use Exception;
 /**
  * IngredientUtil
  * 
+ * An Ingredient utility class that can translate
+ * strings and Ingredient objects into one another.
+ * 
+ * @method getQuantityValueFromString
+ * @method getQuantityUnitFromString
+ * @method getNameFromString
  * @method transformStringToObject
  * @method transformStringArrayToObjectArray
  * @method transformObjectArrayToStringArray
@@ -18,49 +24,71 @@ use Exception;
 class IngredientUtil 
 {
     /**
-     * transformStringToObject
+     * getQuantityValueAndRestFromString
      * 
-     * Turns a string which describes an ingredient 
-     * into an Ingredient object and returns it.
-     * The Ingredient object will have the following
-     * properties set: name, quantityValue, quantityUnit.
-     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityValue and the rest of the 
+     * Ingredient description in an array. Is only a 
+     * helper method for getQuantityValueFromString() 
+     * and getQuantityUnitAndNameString().
+     *
      * @param string $ingredientString A string that describes an ingredient.
-     * @return Ingredient
+     * @return string[] The quantityValue of the Ingredient and the rest of the string
      */
-    private function transformStringToObject(string $ingredientString): Ingredient
+    private function getQuantityValueAndRestFromString(string $ingredientString): array
     {
-         /**
-          * The quantity units that are declared as allowed.
-          * If a unit appears that is not on this list, then 
-          * it will be considered part of the ingredient name.
-          * 
-          * @var string[]
-          */
-        $allowedUnits = [
-            'gehäufter TL', 'gehäufte TL', 
-            'gehäufter EL', 'gehäufte EL', 
-            'gehäufter Teelöffel', 'gehäufte Teelöffel', 
-            'gehäufter Esslöffel', 'gehäufte Esslöffel', 
-            'n. B.', 'g', 'kg', 'ml', 'l', 'EL', 'TL', 
-            'Tube', 'Tuben', 'Bund', 'Bünde',
-            'Glas', 'Gläser', 'Packung', 'Packungen',
-            'kl. Glas', 'kleines Glas', 'kl. Gläser', 
-            'kleine Gläser', 'Becher',
-            'Päckchen', 'Pck.', 'Msp.', 'Liter',
-            'Messerspitze', 'Messerspitzen',
-            'Prise', 'Prisen', 'Würfel', 'Stange', 'Stangen',
-            'Paket', 'Pakete', 'Beutel', 'Zweig', 'Zweige',
-            'Zehe', 'Zehen',
-        ];
+       // Find quantity value with regular expression.
+       // Note that the second matching group doesn't allow
+       // numbers, but the third does, so we combine them.
+       preg_match('/^([\d\.\/\s]*)(\D+)(.*)/', $ingredientString, $matches);
 
-        // Find quantity value with regular expression.
-        // Note that the second matching group doesn't allow
-        // numbers, but the third does, so we combine them.
-        preg_match('/^([\d\.\/\s]*)(\D+)(.*)/', $ingredientString, $matches);
+       $quantityValue = trim($matches[1] ?? '');
+       $quantityUnitAndName = trim(($matches[2] ?? '') . ($matches[3] ?? ''));
 
-        $quantityValue = trim($matches[1] ?? '');
-        $quantityUnitAndName = trim(($matches[2] ?? '') . ($matches[3] ?? ''));
+       return [$quantityValue, $quantityUnitAndName];
+    }
+
+    /**
+     * getQuantityUnitAndNameFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityUnit and the name of the 
+     * Ingredient in an array. Is only a helper method
+     * for getQuantityUnitFromString() and getNameFromString().
+     *
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string[] The quantityUnit and the name of the Ingredient
+     */
+    private function getQuantityUnitAndNameFromString(string $ingredientString): array
+    {
+        /**
+         * The quantity units that are declared as allowed.
+         * If a unit appears that is not on this list, then 
+         * it will be considered part of the ingredient name.
+         * 
+         * @var string[]
+         */
+       $allowedUnits = [
+           'gehäufter TL', 'gehäufte TL', 
+           'gehäufter EL', 'gehäufte EL', 
+           'gehäufter Teelöffel', 'gehäufte Teelöffel', 
+           'gehäufter Esslöffel', 'gehäufte Esslöffel', 
+           'n. B.', 'g', 'kg', 'ml', 'l', 'EL', 'TL', 
+           'Tube', 'Tuben', 'Bund', 'Bünde',
+           'Glas', 'Gläser', 'Packung', 'Packungen',
+           'kl. Glas', 'kleines Glas', 'kl. Gläser', 
+           'kleine Gläser', 'Becher',
+           'Päckchen', 'Pck.', 'Msp.', 'Liter',
+           'Messerspitze', 'Messerspitzen',
+           'Prise', 'Prisen', 'Würfel', 'Stange', 'Stangen',
+           'Paket', 'Pakete', 'Beutel', 'Zweig', 'Zweige',
+           'Zehe', 'Zehen',
+       ];
+
+        // Get quantityUnit and name
+        $quantityUnitAndName = $this
+            ->getQuantityValueAndRestFromString($ingredientString)[1]
+        ;
 
         // Find quantity unit with regular expression.
         // Note that the name will appear in the third matching 
@@ -74,11 +102,70 @@ class IngredientUtil
         // Remove extra whitespaces in the name.
         $name = trim(preg_replace('/\s+/', ' ', ($matches[3] ?? '')));
 
+        // Return quantityUnit and name
+        return [$quantityUnit, $name];
+    }
+
+    /**
+     * getQuantityValueFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityValue of the Ingredient.
+     *
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string The quantityValue of the Ingredient
+     */
+    public function getQuantityValueFromString(string $ingredientString): string 
+    {
+        return $this->getQuantityValueAndRestFromString($ingredientString)[0];
+    }
+
+    /**
+     * getQuantityUnitFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityUnit of the Ingredient.
+     *
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string The quantityUnit of the Ingredient
+     */
+    public function getQuantityUnitFromString(string $ingredientString): string 
+    {
+        return $this->getQuantityUnitAndNameFromString($ingredientString)[0];
+    }
+
+    /**
+     * getNameFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the name of the Ingredient.
+     *
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string The name of the Ingredient
+     */
+    public function getNameFromString(string $ingredientString): string 
+    {
+        return $this->getQuantityUnitAndNameFromString($ingredientString)[1];
+    }
+
+    /**
+     * transformStringToObject
+     * 
+     * Turns a string which describes an ingredient 
+     * into an Ingredient object and returns it.
+     * The Ingredient object will have the following
+     * properties set: name, quantityValue, quantityUnit.
+     * 
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return Ingredient
+     */
+    public function transformStringToObject(string $ingredientString): Ingredient
+    {
         // Create Ingredient object and return it
         $ingredientObject = (new Ingredient)
-            ->setName($name)
-            ->setQuantityUnit($quantityUnit)
-            ->setQuantityValue($quantityValue)
+            ->setQuantityValue($this->getQuantityValueFromString($ingredientString))
+            ->setQuantityUnit($this->getQuantityUnitFromString($ingredientString))
+            ->setName($this->getNameFromString($ingredientString))
         ;
 
         return $ingredientObject;
