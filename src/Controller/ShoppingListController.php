@@ -215,7 +215,7 @@ class ShoppingListController extends AbstractController
      * Ingredient object from the ShoppingList. The request 
      * data should consist of the edited Ingredient object.
      * Note that quantity_unit and quantity_value will be 
-     * empty and everything is contained in name.
+     * empty and the whole description is contained in name.
      * 
      * Expected RequestContent Type: 
      *     array<string, mixed>
@@ -224,17 +224,15 @@ class ShoppingListController extends AbstractController
      *     ['id' => int, 'name' => string, ...]
      *
      * @param Request $request
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param ShoppingListUtil $shoppingListUtil
      * @return Response
      */
     #[Route('/edit-ingredient', name: 'api_shoppinglist_edit_ingredient', methods: ['GET', 'POST'])]
     public function editIngredient(
         Request $request,
-        IngredientRepository $ingredientRepository,
-        IngredientUtil $ingredientUtil,
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        ShoppingListUtil $shoppingListUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -242,23 +240,14 @@ class ShoppingListController extends AbstractController
         // Decode request data
         $requestContent = (array) json_decode($request->getContent());
         
-        // Find Ingredient object and change quantity and name
-        $ingredient = $ingredientRepository->find($requestContent['id']);
-        $ingredient
-            ->setQuantityValue($ingredientUtil->getQuantityValueFromString($requestContent['name']))
-            ->setQuantityUnit($ingredientUtil->getQuantityUnitFromString($requestContent['name']))
-            ->setName($ingredientUtil->getNameFromString($requestContent['name']))
-        ;
-
-        // Save in database
-        $ingredientRepository->save($ingredient, true);
+        // Update the Ingredient object
+        $shoppingListUtil->editIngredient($requestContent);
         
-
         // Update Refresh Data Timestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
-        return new Response(var_export($requestContent));
+        return new Response();
     }
 
     /**
