@@ -115,13 +115,35 @@ class ShoppingListController extends AbstractController
     }
 
     /**
+     * ShoppingList Delete All API
+     * 
+     * A ShoppingList API that deletes all Ingredient objects 
+     * that the ShoppingList has.
+     * 
      * @param IngredientRepository $ingredientRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      */
+    #[Route('/delete-all', name: 'api_shoppinglist_delete_all', methods: ['GET'])]
+    public function deleteAll(
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
 
+        // Delete all shopping list ingredients from database
+        $ingredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
+        
+        foreach($ingredients as $ingredient) {
+            $ingredientRepository->remove($ingredient, true);
+        }
+
+        // Update Refresh Data Timestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
 
 
 
