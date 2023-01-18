@@ -57,7 +57,7 @@ CREATE TABLE `ingredient` (
   `storage_id` int(11) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `quantity_value` varchar(64) DEFAULT NULL,
-  `quantity_unit` varchar(16) DEFAULT NULL,
+  `quantity_unit` varchar(64) DEFAULT NULL,
   `position` int(11) DEFAULT NULL,
   `checked` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

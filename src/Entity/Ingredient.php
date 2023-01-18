@@ -20,7 +20,7 @@ class Ingredient
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $quantityValue = null;
 
-    #[ORM\Column(length: 16, nullable: true)]
+    #[ORM\Column(length: 64, nullable: true)]
     private ?string $quantityUnit = null;
 
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
