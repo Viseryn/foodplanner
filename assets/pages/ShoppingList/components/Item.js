@@ -134,8 +134,7 @@ export default function Item({ shoppingList, item }) {
         shoppingList.setData(newItemList)
 
         // API call
-        /** @todo */
-        axios.get('/api/shoppinglist/edit-ingredient')
+        axios.post('/api/shoppinglist/edit-ingredient', newItemList[index])
     }
 
     /**
