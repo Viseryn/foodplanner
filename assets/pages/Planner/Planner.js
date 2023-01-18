@@ -9,6 +9,7 @@ import axios                            from 'axios'
 import Card                             from '../../components/ui/Card'
 import Spacer                           from '../../components/ui/Spacer'
 import Spinner                          from '../../components/ui/Spinner'
+import getFullIngredientName            from '../../util/getFullIngredientName'
 
 /**
  * Planner
@@ -89,26 +90,40 @@ export default function Planner({ days, ...props }) {
      * ShoppingList Add API.
      */
     const handleAddShoppingList = () => {
+        if (days.isLoading || props.shoppingList.isLoading) {
+            return
+        }
+
         // Collect all recipes
         let recipes = []
 
         days.data?.forEach(day => {
             day.meals.forEach(meal => {
-                recipes.push(meal.recipe)
+                // Since the meal only has basic information of the recipe,
+                // find the full recipe object in props.recipes.
+                const recipeIds = props.recipes.data?.map(recipe => recipe.id)
+                const index = recipeIds.indexOf(meal.recipe.id)
+                recipes.push(props.recipes.data?.[index])
+            })
+        })
+
+        // Collect all ingredients
+        let ingredients = []
+
+        recipes?.forEach(recipe => {
+            recipe?.ingredients?.forEach(ingredient => {
+                ingredients.push(getFullIngredientName(ingredient))
             })
         })
 
         // Make API call
         axios
-            .post('/api/shoppinglist/add', JSON.stringify(recipes))
-            .then(() => props.setLoadingShoppingList(true))
+            .post('/api/shoppinglist/add', JSON.stringify(ingredients))
+            .then(() => props.shoppingList.setLoading(true))
         
-
-        // Hide button for adding to shopping list
+        // Trigger update for the SAB
         setShowSabDone(true)
-        setCountSabClicks(count => {
-            return count + 1
-        })
+        setCountSabClicks(count => count + 1)
     }
 
     /**
@@ -124,11 +139,11 @@ export default function Planner({ days, ...props }) {
             visible: true,
             icon: showSabDone ? 'done' : 'add_shopping_cart', 
             label: showSabDone 
-                ? 'Erledigt!' + (countSabClicks > 1 && ' (' + countSabClicks + ')')
+                ? 'Erledigt!' + (countSabClicks > 1 ? ' (' + countSabClicks + ')' : '')
                 : 'Zur Einkaufsliste',
             onClick: handleAddShoppingList,
         })
-    }, [days.data, days.isLoading, showSabDone, countSabClicks])
+    }, [days.data, days.isLoading, props.shoppingList.isLoading, showSabDone, countSabClicks])
 
     /**
      * Load layout
