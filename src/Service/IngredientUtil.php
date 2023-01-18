@@ -69,7 +69,9 @@ class IngredientUtil
         preg_match($regex, $quantityUnitAndName, $matches);
 
         $quantityUnit = trim($matches[1] ?? '');
-        $name = trim($matches[3] ?? '');
+
+        // Remove extra whitespaces in the name.
+        $name = trim(preg_replace('/\s+/', ' ', ($matches[3] ?? '')));
 
         // Create Ingredient object and return it
         $ingredientObject = (new Ingredient)
