@@ -14,6 +14,10 @@ use App\Repository\StorageRepository;
  * in CamelCase.
  * 
  * @method StorageUtil add()
+ * @method StorageUtil editIngredient(array $ingredient)
+ * @method StorageUtil replace(array $ingredientStrings)
+ * @method StorageUtil deleteAll()
+ * @method Ingredient[] prepareIngredients(Ingredient[] &$ingredients) 
  */
 abstract class StorageUtil
 {
