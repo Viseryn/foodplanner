@@ -19,14 +19,36 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShoppingListController extends AbstractController
 {
     /**
-     * ShoppingList API
+     * ShoppingList Ingredients API
+     * 
+     * A ShoppingList API that responds with the list of 
+     * all Ingredient objects that the ShoppingList has.
+     * 
+     * Expected ResponseData Type: 
+     *     Array<object>
+     * 
+     * Example ResponseData:
+     * [
+     *     {
+     *         id: 21491,
+     *         name: 'Spaghetti',
+     *         quantity_value: '200',
+     *         quantity_unit: 'g',
+     *     },
+     *     {
+     *         id: 21492,
+     *         name: 'Hartkäse',
+     *         checked: true,
+     *     },
+     * ]
      *
      * @param IngredientRepository $ingredientRepository
      * @return Response
      */
-    #[Route('/', name: 'api_shoppinglist', methods: ['GET'])]
-    public function index(IngredientRepository $ingredientRepository): Response
-    {
+    #[Route('/ingredients', name: 'api_shoppinglist_ingredients', methods: ['GET'])]
+    public function ingredients(
+        IngredientRepository $ingredientRepository
+    ): Response {
         $ingredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
 
         $serializer = SerializerBuilder::create()->build();
