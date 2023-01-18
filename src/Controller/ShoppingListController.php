@@ -57,67 +57,6 @@ class ShoppingListController extends AbstractController
         return (new JsonResponse($jsonContent));
     }
 
-    /**
-     * ShoppingList Update API
-     *
-     * @param Request $request
-     * @param StorageRepository $storageRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
-     * @return Response
-     */
-    #[Route('/update', name: 'api_shoppinglist_update', methods: ['GET', 'POST'])]
-    public function update(
-        Request $request, 
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
-    ): Response {
-        // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        // Decode request data
-        $requestContent = json_decode($request->getContent());
-
-        // Transform data into a string
-        $ingredients = '';
-
-        foreach ($requestContent as $ingredient) {
-            $ingredients .= $ingredient->name . "\n";
-        }
-
-        // Transform data into Ingredient objects
-        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
-
-        // Add position and checked to Ingredient objects
-        $i = 0;
-        $storage = $storageRepository->find(2);
-
-        foreach ($requestContent as $ingredient) {
-            $newIngredients[$i]
-                ->setStorage($storage)
-                ->setChecked($ingredient->checked)
-                ->setPosition($ingredient->position)
-            ;
-
-            $i++;
-        }
-
-        // Delete old shopping list ingredients from database
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
-        
-        foreach($oldIngredients as $ingredient) {
-            $ingredientRepository->remove($ingredient, true);
-        }
-
-        // Add new shopping list ingredients to the database
-        foreach($newIngredients as $ingredient) {
-            $ingredientRepository->add($ingredient, true);
-        }
-
-        // Empty Response
-        return new Response();
-    }
 
     /**
      * ShoppingList Add API
