@@ -4,6 +4,24 @@
 
 export default function ShoppingList({ shoppingList, ...props }) {
     /**
+     * handleCheckboxChange
+     * 
+     * Checks or unchecks an item.
+     */
+    const handleCheckboxChange = (item) => {
+        // Make a copy of shoppingList.data and find item
+        let newItemList = [...shoppingList.data]
+        const index = newItemList.indexOf(item)
+
+        // Check or uncheck the item and set new shoppingList
+        newItemList[index].checked = !newItemList[index].checked
+        shoppingList.setData(newItemList)
+        
+        // API call
+        axios.post('/api/shoppinglist/check-ingredient', item.id)
+    }
+
+    /**
      * Render ShoppingList
      */
     return (
@@ -41,6 +59,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
                                             id={item.id} 
                                             type="checkbox" 
                                             className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
+                                            onChange={() => handleCheckboxChange(item)} 
                                             checked={item.checked}
                                         />
 
