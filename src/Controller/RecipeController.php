@@ -20,6 +20,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Recipe API
+ */
 #[Route('/api/recipes')]
 class RecipeController extends AbstractController
 {
@@ -44,22 +47,26 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipes Add API
+     * Recipe Add API
      * 
-     * Adds a new Recipe to the database when the form 
-     * in the Request was submitted. Responds with the 
-     * ID of the new Recipe. If no form was submitted, 
-     * responds with an Error 500.
+     * A Recipe API that adds a new Recipe object to the
+     * database when the form in AddRecipe.js was submitted.
+     * Responds with the ID of the newly created Recipe 
+     * object. If no form was submitted, responds with an
+     * Error 500.
+     * 
+     * Expected RequestContent:
+     *     AddRecipe.js form
+     * 
+     * Expected ResponseData Type:
+     *     int: Id of new Recipe
      *
      * @param Request $request
      * @param RecipeRepository $recipeRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param InstructionRepository $instructionRepository
-     * @param IngredientUtil $ingredientUtil
-     * @param InstructionUtil $instructionUtil
+     * @param RecipeUtil $recipeUtil
      * @return Response
      */
-    #[Route('/add', name: 'api_recipes_add', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'api_recipe_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
         RecipeRepository $recipeRepository,
@@ -68,22 +75,23 @@ class RecipeController extends AbstractController
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        // The new Recipe object will automatically be 
+        // validated and set up by the Form.
         $recipe = new Recipe();
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $recipeRepository->add($recipe, true);
-            $recipeUtil->update($recipe, $form);
-
-            return new JsonResponse([
-                'id' => $recipe->getId()
-            ]);
+        // Send Error 500 if form was not submitted.
+        if (!$form->isSubmitted()) {
+            return (new Response)->setStatusCode(500);
         }
 
-        $response = (new Response())->setStatusCode(500);
-        return $response;
+        // If form was submitted, add Recipe to database
+        $recipeRepository->save($recipe, true);
+        $recipeUtil->update($recipe, $form);
+
+        return new Response($recipe->getId());
     }
 
     /**
