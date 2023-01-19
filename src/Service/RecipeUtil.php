@@ -8,8 +8,22 @@ use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
 use Symfony\Component\Form\FormInterface;
 
+/**
+ * RecipeUtil
+ * 
+ * A utility class for Recipe objects.
+ * 
+ * @method RecipeUtil update(Recipe &$recipe, FormInterface $form)
+ */
 class RecipeUtil 
 {
+    private IngredientUtil $ingredientUtil;
+    private InstructionUtil $instructionUtil;
+    private FileUploader $fileUploader;
+    private IngredientRepository $ingredientRepository;
+    private InstructionRepository $instructionRepository;
+    private RecipeRepository $recipeRepository;
+
     public function __construct(
         IngredientUtil $ingredientUtil,
         InstructionUtil $instructionUtil,
@@ -27,7 +41,11 @@ class RecipeUtil
     }
 
     /**
-     * Updates image, ingredients and instructions of a Recipe.
+     * update
+     * 
+     * Updates image, ingredients and instructions of a Recipe object
+     * through a given FormInterface that belongs to a form that was 
+     * submitted.
      *
      * @param Recipe $recipe
      * @param FormInterface $form
@@ -35,6 +53,9 @@ class RecipeUtil
      */
     public function update(Recipe &$recipe, FormInterface $form): self
     {
+        // In the EditRecipe.js form, the user can decide whether to 
+        // delete the current image. If they decide to do so, the 
+        // updateImage() method needs the third parameter set to true.
         $deleteImage = (isset($form['image_remove'])) 
             ? (bool) $form['image_remove']->getData() 
             : false;
