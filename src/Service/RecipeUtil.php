@@ -96,27 +96,39 @@ class RecipeUtil
     }
 
     /**
-     * Updates the ingredients of a Recipe if there was a change.
+     * updateIngredients
+     * 
+     * Updates the Ingredient objects of a Recipe object if a 
+     * change was detected.
      *
      * @param Recipe $recipe
      * @param string $new A string of ingredients, e.g. through a form.
      * @return self
      */
-    public function updateIngredients(Recipe &$recipe, ?string $newIngredients): self
+    private function updateIngredients(Recipe &$recipe, ?string $newIngredients): self
     {
-        $old = $recipe->getIngredients();
-        $oldString = $this->ingredientUtil->ingredientString($old);
+        // Turn current Ingredient objects into an array of strings
+        $currentIngredients = $recipe->getIngredients();
+        $currentIngredientStrings = $this->ingredientUtil
+            ->transformObjectArrayToStringArray($currentIngredients);
+        
+        // Split string after newlines
+        $newIngredientStrings = preg_split('/\r\n|\r|\n/', $newIngredients);
 
-        if ($newIngredients !== $oldString) {
-            foreach ($old as $ing) {
-                $this->ingredientRepository->remove($ing, true);
+        // Remove all empty elements from the array
+        $newIngredientStrings = array_filter($newIngredientStrings);
+
+        if ($currentIngredientStrings !== $newIngredientStrings) {
+            foreach ($currentIngredients as $ingredient) {
+                $this->ingredientRepository->remove($ingredient, true);
             }
 
-            $newArray = $this->ingredientUtil->ingredientSplit($newIngredients);
-
-            foreach ($newArray as $ing) {
-                $ing->setRecipe($recipe);
-                $this->ingredientRepository->add($ing, true);
+            $newIngredients = $this->ingredientUtil
+                ->transformStringArrayToObjectArray($newIngredientStrings);
+            
+            foreach ($newIngredients as $ingredient) {
+                $ingredient->setRecipe($recipe);
+                $this->ingredientRepository->save($ingredient, true);
             }
         }
 
