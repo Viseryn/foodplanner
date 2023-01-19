@@ -11,10 +11,8 @@ import Button                               from '../../components/ui/Buttons/Bu
 import Card                                 from '../../components/ui/Card'
 import { SecondHeading }                    from '../../components/ui/Heading'
 import Spacer                               from '../../components/ui/Spacer'
-import { floatToFraction, fractionToFloat } from '../../util/fractions'
-import generateDisplayName                  from '../../util/generateDisplayName'
-import loadPantry                           from '../../util/loadPantry'
-import loadShoppingList                     from '../../util/loadShoppingList'
+
+import getFullIngredientName                from '../../util/getFullIngredientName'
 
 /**
  * Recipe
@@ -103,19 +101,21 @@ export default function Recipe({ recipes, ...props }) {
      * ShoppingList. Is invoked by the SAB.
      */
     const handleAddShoppingList = (argRecipe) => {
-        // Call API
+        // Collect all ingredients
+        let ingredients = []
+
+        argRecipe?.ingredients?.forEach(ingredient => {
+            ingredients.push(getFullIngredientName(ingredient))
+        })
+
+        // API call
         axios
-            .post('/api/shoppinglist/add', JSON.stringify([argRecipe]))
+            .post('/api/shoppinglist/add', JSON.stringify(ingredients))
             .then(() => props.shoppingList.setLoading(true))
-        
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
         
         // Update parameters for SAB
         setShowSabDone(true)
-        setCountSabClicks(count => {
-            return count + 1
-        })
+        setCountSabClicks(count => count + 1)
     }
     
     /**
@@ -126,25 +126,10 @@ export default function Recipe({ recipes, ...props }) {
      * IconButtons next to each ingredient.
      */
     const handleAddSingleToShoppingList = (ingredient) => {
-        // Generate a name for the API
-        const newItem = { 
-            name: generateDisplayName(
-                ingredient.quantity_value,
-                ingredient.quantity_unit,
-                ingredient.name,
-            ),
-        }
-
-        // Call API
+        // API call
         axios
-            .post('/api/shoppinglist/ingredients', newItem)
-            .then(() => {
-                loadShoppingList(props.shoppingList.setData)
-            })
-        
-                
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
+            .post('/api/shoppinglist/add', [getFullIngredientName(ingredient)])
+            .then(() => props.shoppingList.setLoading(true))
     }
 
     /**
@@ -155,16 +140,16 @@ export default function Recipe({ recipes, ...props }) {
      * ingredient list.
      */
     const handleAddPantry = (argRecipe) => {
-        // Call API
-        axios
-            .post('/api/pantry/add', JSON.stringify([argRecipe]))
-            .then(() => props.pantry.setLoading(true))
+        // // Call API
+        // axios
+        //     .post('/api/pantry/add', JSON.stringify([argRecipe]))
+        //     .then(() => props.pantry.setLoading(true))
 
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
+        // // Refresh Data Timestamp
+        // axios.get('/api/refresh-data-timestamp/set')
         
-        // Update the button parameter
-        setShowPantryDone(false)
+        // // Update the button parameter
+        // setShowPantryDone(false)
     }
 
     /**
@@ -175,25 +160,25 @@ export default function Recipe({ recipes, ...props }) {
      * IconButtons next to each ingredient.
      */
     const handleAddSingleToPantry = (ingredient) => {
-        // Generate a name for the API
-        const newItem = { 
-            name: generateDisplayName(
-                ingredient.quantity_value,
-                ingredient.quantity_unit,
-                ingredient.name,
-            ),
-        }
+        // // Generate a name for the API
+        // const newItem = { 
+        //     name: generateDisplayName(
+        //         ingredient.quantity_value,
+        //         ingredient.quantity_unit,
+        //         ingredient.name,
+        //     ),
+        // }
 
-        // Call API
-        axios
-            .post('/api/pantry/ingredients', newItem)
-            .then(() => {
-                loadPantry(props.pantry.setData)
-            })
+        // // Call API
+        // axios
+        //     .post('/api/pantry/ingredients', newItem)
+        //     .then(() => {
+        //         loadPantry(props.pantry.setData)
+        //     })
         
                 
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
+        // // Refresh Data Timestamp
+        // axios.get('/api/refresh-data-timestamp/set')
     }
     
     /**
@@ -373,7 +358,7 @@ export default function Recipe({ recipes, ...props }) {
                                     {tmpRecipe?.ingredients?.map(ingredient =>
                                         <div key={ingredient.id} className="flex items-center justify-between">
                                             <span>
-                                                {generateDisplayName(floatToFraction(ingredient.quantity_value), ingredient.quantity_unit, ingredient.name)}
+                                                {getFullIngredientName(ingredient)}
                                             </span>
 
                                             <div className="flex flex-row">
