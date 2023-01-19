@@ -5,8 +5,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-import loadPantry from "../../../util/loadPantry";
-
 /**
  * AddItemInputWidget
  * 
