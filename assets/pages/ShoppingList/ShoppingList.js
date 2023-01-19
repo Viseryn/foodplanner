@@ -203,7 +203,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * Render ShoppingList
      */
     return (
-        <div className="pb-24 md:pb-4 w-full md:w-[450px]">
+        <div className="pb-24 md:pb-4 md:w-[450px]">
             <Spacer height="6" />
             
             <div className="mx-4 md:mx-0">
@@ -217,7 +217,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
             <Spacer height="10" />
 
             {shoppingList.isLoading ? (
-                <Spinner />
+                <Spinner /> /** @todo Add Skeleton here */
             ) : (
                 <>
                     <Card style="mx-4 md:mx-0">
