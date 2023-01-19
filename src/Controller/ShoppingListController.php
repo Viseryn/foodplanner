@@ -15,10 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * ShoppingList API
- * 
- * @method ingredients
- * @method add
- * @method deleteAll
  */
 #[Route('/api/shoppinglist')]
 class ShoppingListController extends AbstractController
