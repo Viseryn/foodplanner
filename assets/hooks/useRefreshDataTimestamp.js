@@ -44,7 +44,7 @@ function useRefreshDataTimestamp(isLoading, setLoading) {
             if (isLoading) {
                 setLoading(false)
             }
-        }, 5000)
+        }, 10000)
 
         // Clear interval
         return () => { 
