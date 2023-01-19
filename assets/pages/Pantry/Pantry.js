@@ -2,255 +2,178 @@
  * ./assets/pages/Pantry/Pantry.js *
  ***********************************/
 
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState }   from 'react'
+import axios                            from 'axios'
 
-import { floatToFraction, fractionToFloat } from '../../util/fractions';
-import generateDisplayName                  from '../../util/generateDisplayName';
-
-import AddItemInputWidget from './components/AddItemInputWidget'
-import Button             from '../../components/ui/Buttons/Button';
-import IconButton         from '../../components/ui/Buttons/IconButton';
-import Card               from '../../components/ui/Card';
-import Spacer             from '../../components/ui/Spacer';
-import Spinner            from '../../components/ui/Spinner';
+import Item                             from './components/Item'
+import AddItemInputWidget               from '../../components/ui/AddItemInputWidget'
+import Button                           from '../../components/ui/Buttons/Button'
+import Card                             from '../../components/ui/Card'
+import Spacer                           from '../../components/ui/Spacer'
+import Spinner                          from '../../components/ui/Spinner'
 
 /**
  * Pantry
  * 
- * A component for showing the pantry.
- * Contains an input widget for adding new 
- * items to the list.
- * 
- * The list is kept synchronized with the 
- * database. An Ingredient object is considered
- * part of the pantry if it has 
- * storageId = 1, and if it has no recipeId.
+ * @todo
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {arr} pantry 
- * @property {function} setPantry
- * @property {boolean} isLoadingPantry
- * @property {function} setLoadingPantry
  */
-export default function Pantry(props) {
+export default function Pantry({ pantry, ...props}) {
     /**
-     * State variables
+     * The order of the sorting button. If set to true, 
+     * items will be sorted ascending, otherwise descending
+     * (alphabetically).
+     * 
+     * @type {[boolean, function]}
      */
-    const [sortingOrder, setSortingOrder] = useState(true); // true is ASC, false is DESC
-    
+    const [sortingOrder, setSortingOrder] = useState(true);
+
     /**
-     * updateItem
+     * The input value of the Add Item Widget at the top.
+     * Will be passed to the AddItemInputWidget component
+     * together with its setter method.
      * 
-     * Updates one item with the given ID in the items state variable.
-     * The properties that should be changed, as well as their values,
-     * can be passed as an optional parameter.
-     * 
-     * @param {int} id The ID of the item that should be changed.
-     * @param {Object} properties The properties that should be changed and their values.
+     * @type {[string, function]}
      */
-    const updateItem = (id, properties = {}) => {
-        // Create a new list of items
-        let newList = [...props.pantry];
+    const [inputValue, setInputValue] = useState('')
 
-        // Find index of the item that will be changed
-        const itemIndex = findItemById(id);
+    /**
+     * handleEnterKeyDown
+     * 
+     * A function that is called when the enter key is 
+     * pressed with the trimmed inputValue as argument.
+     * Adds the argument to the ShoppingList via the 
+     * ShoppingList Add API and reloads the list afterwards.
+     * The reload is required because the API generates
+     * IDs and other fields.
+     * 
+     * @param {string} value A trimmed string that describes an Ingredient object.
+     */
+    const handleEnterKeyDown = (value) => {
+        // Clear input field
+        setInputValue('')
 
-        // Change properties of selected item
-        Object.keys(properties).forEach(key => {
-            newList[itemIndex][key] = properties[key];
-        });
+        // Load new shopping list
+        shoppingList.setLoading(true)
 
-        // Set new item list to the state variable
-        props.setPantry(newList);
+        // API call
+        axios.post('/api/shoppinglist/add', [value])
     }
 
-    /**
-     * findItemById
-     * 
-     * @param {int} id 
-     * @return Returns the index of the item with the given ID in the items state variable or -1 if item does not exist.
-     */
-    const findItemById = (id) => {
-        let returnVal = -1;
+    // /**
+    //  * handleCombine
+    //  * 
+    //  * Handler for combining items on the list with the same name.
+    //  */
+    // const handleCombine = () => {
+    //     let list = [...props.pantry];  // Working copy of item list
+    //     let appearedItems = []; // A list of "representative" items that all other duplicates are being added to
+    //     let appearedNames = []; // The names of the representative items
 
-        props.pantry.forEach((item, index) => {
-            if (item.id === id) {
-                returnVal = index;
-            } 
-        });
+    //     list.forEach(item => {
+    //         if (!appearedNames.includes(item.originalName)) {
+    //             // If item has not been saved as unique 
+    //             // representative, save it now.
+    //             appearedNames.push(item.originalName);
+    //             appearedItems.push(item);
+    //         } else {
+    //             // If item is a duplicate, find the representative
+    //             const index = appearedNames.indexOf(item.originalName);
+    //             let origItem = appearedItems[index];
 
-        return returnVal;
-    };
+    //             if (origItem.quantity_unit === item.quantity_unit 
+    //                 && !origItem.checked && !item.checked) {
+    //                     // Convert fractions to floats
+    //                     origItem.quantity_value = fractionToFloat(origItem.quantity_value);
+    //                     item.quantity_value = fractionToFloat(item.quantity_value);
 
-    /**
-     * handleCombine
-     * 
-     * Handler for combining items on the list with the same name.
-     */
-    const handleCombine = () => {
-        let list = [...props.pantry];  // Working copy of item list
-        let appearedItems = []; // A list of "representative" items that all other duplicates are being added to
-        let appearedNames = []; // The names of the representative items
+    //                 // If the representative has the same unit 
+    //                 // and both are not checked, add them up.
+    //                 origItem.quantity_value = +origItem.quantity_value + +item.quantity_value;
+    //             } else {
+    //                 // If either item is checked or units do not match, 
+    //                 // add the "duplicate" to the representative list.
+    //                 appearedNames.push(item.originalName);
+    //                 appearedItems.push(item);
+    //             }
+    //         }
+    //     });
 
-        list.forEach(item => {
-            if (!appearedNames.includes(item.originalName)) {
-                // If item has not been saved as unique 
-                // representative, save it now.
-                appearedNames.push(item.originalName);
-                appearedItems.push(item);
-            } else {
-                // If item is a duplicate, find the representative
-                const index = appearedNames.indexOf(item.originalName);
-                let origItem = appearedItems[index];
+    //     // In the list of representative items, generate the display names.
+    //     appearedItems.forEach(item => {
+    //         item.name = generateDisplayName(
+    //             floatToFraction(item.quantity_value), 
+    //             item.quantity_unit, 
+    //             item.originalName
+    //         );
+    //     });
 
-                if (origItem.quantity_unit === item.quantity_unit 
-                    && !origItem.checked && !item.checked) {
-                        // Convert fractions to floats
-                        origItem.quantity_value = fractionToFloat(origItem.quantity_value);
-                        item.quantity_value = fractionToFloat(item.quantity_value);
-
-                    // If the representative has the same unit 
-                    // and both are not checked, add them up.
-                    origItem.quantity_value = +origItem.quantity_value + +item.quantity_value;
-                } else {
-                    // If either item is checked or units do not match, 
-                    // add the "duplicate" to the representative list.
-                    appearedNames.push(item.originalName);
-                    appearedItems.push(item);
-                }
-            }
-        });
-
-        // In the list of representative items, generate the display names.
-        appearedItems.forEach(item => {
-            item.name = generateDisplayName(
-                floatToFraction(item.quantity_value), 
-                item.quantity_unit, 
-                item.originalName
-            );
-        });
-
-        // Update the state variable
-        props.setPantry(appearedItems);
+    //     // Update the state variable
+    //     props.setPantry(appearedItems);
                 
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
-    };
+    //     // Refresh Data Timestamp
+    //     axios.get('/api/refresh-data-timestamp/set')
+    // };
 
-    /**
-     * handleItemClick
-     * 
-     * Handler for click events on list items.
-     * Differentiates single and double clicks.
-     * On a single click, it toggles the checked status of an item.
-     * On a double click, it toggles the editable status of an item.
-     * 
-     * @param {*} event
-     * @param {number} id The id of the given item.
-     * @param {boolean} editable Whether the item is editable.
-     */
-    const handleItemClick = (event, id, editable = false) => {
-        if (event.detail === 2) {
-            // Double click action
-            handleItemEdit(id);
 
-            // When a double click is registered, the 
-            // actions for a single click should be prevented.
-            preventSingleClick = true;
 
-            // After a certain delay, allow registering single clicks again.
-            setTimeout(() => preventSingleClick = false, 200);
-        } else {
-            // Only do the single click action if after a short 
-            // delay no double click was registered. Also, do not 
-            // do the single click action if the item is editable.
-            setTimeout(() => {}, 200);
-        }
-    };
+    // /**
+    //  * handleSort
+    //  * 
+    //  * Sorts all items by alphabet.
+    //  */
+    // const handleSort = () => {
+    //     let items = [...props.pantry];
 
-    let preventSingleClick = false;
+    //     // Sort array by alphabet (ascending or descending depending on state)
+    //     items.sort((a, b) => {
+    //         const textA = a.originalName.toLowerCase();
+    //         const textB = b.originalName.toLowerCase();
+    //         const returnValue = (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
 
-    /**
-     * handleItemEdit
-     * 
-     * Makes the selected item editable and 
-     * all the others non-editable.
-     * 
-     * @param {number} id The id of the given item.
-     */
-    const handleItemEdit = (id) => {
-        // Make all items non-editable
-        props.pantry.forEach(item => {
-            updateItem(item.id, {
-                'editable': false,
-            });
-        })
+    //         return (sortingOrder ? 1 : -1) * returnValue;
+    //     });
 
-        // Make the selected item editable
-        updateItem(id, {
-            'editable': true,
-            'checked': false,
-        });
-    };
+    //     // Give each item a correct position
+    //     for (let i = 0; i < items.length; i++) {
+    //        items[i].position = i + 1;
+    //     }
 
-    /**
-     * handleItemNameChange
-     * 
-     * Changes the name of an item and makes 
-     * it non-editable. Is called after enter 
-     * presses and focus lost.
-     * 
-     * @param {*} event
-     * @param {number} id The id of the given item.
-     */
-    const handleItemNameChange = (event, id) => {
-        if (event.target.value.replace(/\s/g, '').length) {
-            updateItem(id, {
-                name: event.target.value.trim(),
-                editable: false,
-            })
+    //     // Change sorting order
+    //     setSortingOrder(sortingOrder => { return !sortingOrder; });
+
+    //     // Update list
+    //     props.setPantry(items);
                 
-            // Refresh Data Timestamp
-            axios.get('/api/refresh-data-timestamp/set')
-        }
-    };
+    //     // Refresh Data Timestamp
+    //     axios.get('/api/refresh-data-timestamp/set')
+    // };
 
-    /**
-     * handlePositionChange
-     * 
-     * Moves the given item up or down in the pantry.
-     * 
-     * @param {number} id The id of the given item.
-     * @param {number} direction Possible values are -1 (up) and 1 (down).
-     */
-    const handlePositionChange = (id, direction) => {
-        let items = [...props.pantry];
 
-        const index = findItemById(id);
-        const oldPosition = items[index].position;
-        const newPosition = items[index + direction]?.position;
 
-        // Move item up only when it is not the first item and 
-        // move item down only when it is not the last item.
-        if (
-            (direction === -1 && index !== 0)
-            || (direction === 1 && index !== props.pantry.length - 1)
-        ) {
-            items[index].position = newPosition;
-            items[index + direction].position = oldPosition;
+    // /**
+    //  * handleDeleteItem
+    //  * 
+    //  * Deletes the given item from the list.
+    //  * 
+    //  * @param {*} id 
+    //  */
+    // const handleDeleteItem = (id) => {
+    //     let items = [...props.pantry];
+    //     const index = findItemById(id);
 
-            [items[index], items[index + direction]] = [items[index + direction], items[index]];
-    
-            // Update list
-            props.setPantry(items);
+    //     // Remove the item
+    //     items.splice(index, 1);
+
+    //     // Update list
+    //     props.setPantry(items);
                 
-            // Refresh Data Timestamp
-            axios.get('/api/refresh-data-timestamp/set')
-        }
-    };
+    //     // Refresh Data Timestamp
+    //     axios.get('/api/refresh-data-timestamp/set')
+    // };
+
+
 
     /**
      * handleDeleteAll
@@ -262,87 +185,31 @@ export default function Pantry(props) {
         swal({
             dangerMode: true,
             icon: 'error',
-            title: 'Wirklich alle Einträge löschen?',
+            title: 'Wirklich alle Zutaten löschen?',
             buttons: {
                 cancel: 'Abbrechen',
                 confirm: 'Löschen',
             },
         }).then((confirm) => {
             if (confirm) {
-                props.setPantry([]);
-                
-                // Refresh Data Timestamp
-                axios.get('/api/refresh-data-timestamp/set')
+                axios.get('/api/pantry/delete-all')
+                pantry.setLoading(true)
             }
-        });
+        })
     }
-
-    /**
-     * handleDeleteItem
-     * 
-     * Deletes the given item from the list.
-     * 
-     * @param {*} id 
-     */
-    const handleDeleteItem = (id) => {
-        let items = [...props.pantry];
-        const index = findItemById(id);
-
-        // Remove the item
-        items.splice(index, 1);
-
-        // Update list
-        props.setPantry(items);
-                
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
-    };
-
-    /**
-     * handleSort
-     * 
-     * Sorts all items by alphabet.
-     */
-    const handleSort = () => {
-        let items = [...props.pantry];
-
-        // Sort array by alphabet (ascending or descending depending on state)
-        items.sort((a, b) => {
-            const textA = a.originalName.toLowerCase();
-            const textB = b.originalName.toLowerCase();
-            const returnValue = (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-
-            return (sortingOrder ? 1 : -1) * returnValue;
-        });
-
-        // Give each item a correct position
-        for (let i = 0; i < items.length; i++) {
-           items[i].position = i + 1;
-        }
-
-        // Change sorting order
-        setSortingOrder(sortingOrder => { return !sortingOrder; });
-
-        // Update list
-        props.setPantry(items);
-                
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
-    };
 
     /**
      * Load layout
      */ 
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem('pantry')
-        props.setSidebarActionButton()
+        props.setSidebar('pantry')
 
-        // Load Topbar
+        // Load topbar
         props.setTopbar({
             title: 'Vorratskammer',
             actionButtons: [
-                { icon: 'sort', onClick: handleSort },
+                // { icon: 'sort', onClick: handleSort },
                 { icon: 'delete_forever', onClick: handleDeleteAll },
             ],
             style: 'md:w-[450px]',
@@ -350,47 +217,32 @@ export default function Pantry(props) {
 
         // Scroll to top
         window.scrollTo(0, 0)
-    }, [props.pantry])
+    }, [])
 
     /**
-     * Update pantry items from state to database
-     */
-    useEffect(() => {
-        // Do not make an AJAX request on the first time (items init)
-        if (first.current) {
-            first.current = false;
-            return;
-        }
-
-        // Send items data to API
-        axios.post('/api/pantry/update', JSON.stringify(props.pantry));
-    }, [props.pantry]);
-
-    let first = useRef(true);
-
-    /**
-     * Render
+     * Render Pantry
      */
     return (
-        <div className="pb-24 md:pb-4 w-full md:w-[450px]">
+        <div className="pb-24 md:pb-4 md:w-[450px]">
             <Spacer height="6" />
 
             <div className="mx-4 md:mx-0">
                 <AddItemInputWidget
-                    items={props.pantry}
-                    {...props}
+                    inputValue={inputValue}
+                    setInputValue={setInputValue}
+                    handleEnterKeyDown={handleEnterKeyDown}
                 />
             </div>
 
             <Spacer height="10" />
 
-            {props.isLoadingPantry ? (
+            {pantry.isLoading ? (
                 <Spinner /> /** @todo Add Skeleton here */
             ) : (
                 <>
                     <Card style="mx-4 md:mx-0">
                         <div className="space-y-2 justify-center">
-                            {props.pantry.length === 0 &&
+                            {pantry.data?.length === 0 &&
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center">
                                         <span className="material-symbols-rounded outlined mr-4">info</span>
@@ -399,10 +251,10 @@ export default function Pantry(props) {
                                 </div>
                             }
 
-                            {props.pantry.length > 0 &&
+                            {pantry.data?.length > 0 &&
                                 <>
                                     <Button
-                                        onClick={handleSort}
+                                        //onClick={handleSort}
                                         label="Sortieren"
                                         icon="sort"
                                         role="secondary"
@@ -412,7 +264,15 @@ export default function Pantry(props) {
                                 </>
                             }
 
-                            {props.pantry.map(item =>
+                            {pantry.data?.map(item =>
+                                <Item
+                                    key={item.id}
+                                    pantry={pantry}
+                                    item={item}
+                                />
+                            )}
+
+                            {/* {props.pantry.map(item =>
                                 <div key={item.id} className="flex justify-between items-center">
                                     <div className="flex justify-start">
                                         <div className="mr-2">
@@ -444,14 +304,14 @@ export default function Pantry(props) {
                                         <IconButton onClick={() => handlePositionChange(item.id, 1)}>expand_more</IconButton>
                                     </div>
                                 </div>
-                            )}
+                            )} */}
                         </div>
                     </Card>
 
-                    {props.pantry.length > 0 &&
+                    {pantry.data?.length > 0 &&
                         <div className="flex justify-end mt-4 mx-4 md:mx-0">
                             <Button
-                                onClick={handleCombine}
+                                //onClick={handleCombine}
                                 label="Zutaten sammenfassen"
                                 icon="low_priority"
                                 role="tertiary"
