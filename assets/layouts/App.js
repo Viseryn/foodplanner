@@ -278,28 +278,34 @@ export default function App({ version }) {
     )
 
 
+    /******************
+     * PANTRY         *
+     ******************/
+
+    /**
+     * The complete pantry. The data 
+     * object is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
+     */
+    // const pantry = useFetch(
+    //     '/api/pantry/ingredients',
+    //     authentication,
+    //     [isLoading],
+    // )
+
+
+    /******************
+     * RENDERING      *
+     ******************/
 
     /**
      * Props for subcomponents
+     * 
+     * @todo Manage props for each component individually
      */
-    const props = {
-        user,
-        authentication,
-
-        settings,
-        userGroups,
-        mealCategories,
-
-        recipes,
-        days,
-        // shoppingList,
-        // pantry,
-
-        // setSidebarActiveItem,   /** @deprecated */
-        // setSidebarActionButton, /** @deprecated */
-        setSidebar,
-        setTopbar,
-    }
+    const props = { user, authentication, settings, userGroups, mealCategories, recipes, days, shoppingList, /*pantry,*/ setSidebar, setTopbar }
 
     /** 
      * Render App
