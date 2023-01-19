@@ -5,6 +5,7 @@
 import React, { useEffect, useState }       from 'react'
 import { useNavigate, useParams }           from 'react-router-dom'
 import axios                                from 'axios'
+import Fraction                             from 'fraction.js'
 
 import TextParagraph                        from '../../components/skeleton/TextParagraph'
 import Button                               from '../../components/ui/Buttons/Button'
@@ -234,9 +235,16 @@ export default function Recipe({ recipes, ...props }) {
         recipe?.ingredients?.forEach(ingredient => {
             let newIngredient = {...ingredient}
 
-            newIngredient['quantity_value'] = 
-                fractionToFloat(ingredient.quantity_value) 
-                / recipe.portion_size * portionSize
+            let newQuantityValue = new Fraction(ingredient.quantity_value ? ingredient.quantity_value : '0')
+
+            newIngredient['quantity_value'] = newQuantityValue
+                .div(new Fraction(recipe.portion_size))
+                .mul(new Fraction(portionSize))
+                .toFraction(true)
+            
+            if (newIngredient['quantity_value'] === '0') {
+                newIngredient['quantity_value'] = ''
+            }
 
             newRecipe.ingredients.push(newIngredient)
         })
