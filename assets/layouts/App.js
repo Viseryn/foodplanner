@@ -30,7 +30,7 @@ import Recipe                           from '../pages/Recipes/Recipe'
 import Registration                     from '../pages/Registration/Registration'
 import AddGroup                         from '../pages/Settings/AddGroup'
 import Settings                         from '../pages/Settings/Settings'
-import ShoppingList                     from '../pages/ShoppingList/ShoppingListNew'
+import ShoppingList                     from '../pages/ShoppingList/ShoppingList'
 
 /**
  * App
