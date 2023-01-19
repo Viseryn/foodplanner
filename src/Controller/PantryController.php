@@ -15,17 +15,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Pantry API
+ */
 #[Route('/api/pantry')]
 class PantryController extends AbstractController
 {
     /**
-     * Pantry API
+     * Pantry Ingredients API
+     * 
+     * A Pantry API that responds with the list of 
+     * all Ingredient objects that the Pantry has.
+     * 
+     * Expected ResponseData Type: 
+     *     Array<object>
+     * 
+     * Example ResponseData:
+     * [
+     *     {
+     *         id: 21491,
+     *         name: 'Spaghetti',
+     *         quantity_value: '200',
+     *         quantity_unit: 'g',
+     *     },
+     *     ...
+     * ]
      *
      * @param IngredientRepository $ingredientRepository
      * @return Response
      */
-    #[Route('/', name: 'api_pantry', methods: ['GET'])]
-    public function index(
+    #[Route('/ingredients', name: 'api_pantry_ingredients', methods: ['GET'])]
+    public function ingredients(
         IngredientRepository $ingredientRepository
     ): Response {
         $ingredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'ASC']);
