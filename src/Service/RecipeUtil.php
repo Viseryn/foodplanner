@@ -70,16 +70,18 @@ class RecipeUtil
     }
 
     /**
-     * Updates the image of a Recipe.
+     * updateImage
+     * 
+     * Updates the image of a Recipe object.
      *
      * @param Recipe $recipe
      * @param mixed $image An image file, e.g. through a form.
-     * @param boolean $deleteImage False by default.
+     * @param boolean $deleteImage Whether the image of the Recipe should be deleted. Default is false.
      * @return self
      */
-    public function updateImage(Recipe &$recipe, mixed $image, bool $deleteImage = false): self 
+    private function updateImage(Recipe &$recipe, mixed $image, bool $deleteImage = false): self 
     {
-        if (! $deleteImage) {
+        if (!$deleteImage) {
             if ($image && $this->fileUploader->isImage($image->getClientOriginalName())) {
                 $imageFile = $this->fileUploader->upload($image, '/img/recipes/');
                 $recipe->setImage($imageFile);
@@ -88,7 +90,7 @@ class RecipeUtil
             $recipe->setImage(null);
         }
 
-        $this->recipeRepository->add($recipe, true);
+        $this->recipeRepository->save($recipe, true);
 
         return $this;
     }
