@@ -267,7 +267,7 @@ export default function Recipe({ recipes, ...props }) {
             visible: true, 
             icon: showSabDone ? 'done' : 'add_shopping_cart', 
             label: showSabDone 
-                ? 'Erledigt!' + (countSabClicks > 1 && ' (' + countSabClicks + ')')
+                ? 'Erledigt!' + (countSabClicks > 1 ? ' (' + countSabClicks + ')' : '')
                 : 'Zur Einkaufsliste' ,
             onClick: () => handleAddShoppingList(tmpRecipe),
         })
