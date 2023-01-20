@@ -113,7 +113,8 @@ export default function Item({ pantry, item }) {
         shoppingList.setData(newItemList)
 
         // API call
-        axios.post('/api/shoppinglist/edit-ingredient', newItemList[index])
+        axios.post('/api/pantry/edit-ingredient', newItemList[index])
+    }
     }
 
     /**
