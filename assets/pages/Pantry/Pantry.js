@@ -18,9 +18,19 @@ import getFullIngredientName            from '../../util/getFullIngredientName'
 /**
  * Pantry
  * 
- * @todo
+ * A component that renders a pantry that consists 
+ * of Ingredient objects. An input widget is rendered at 
+ * top for adding new items. Items can be sorted, 
+ * repositioned, deleted and edited, as well as added up 
+ * together.
+ * 
+ * The pantry and any functionality that is related to it 
+ * can be deactivated by a user setting in Settings.js;
+ * the settings is stored in props.settings.data?.showPantry.
  * 
  * @component
+ * @param {object} props
+ * @param {object} props.pantry
  */
 export default function Pantry({ pantry, ...props}) {
     /**
@@ -123,9 +133,6 @@ export default function Pantry({ pantry, ...props}) {
         newItemList?.forEach(ingredient => {
             ingredients.push(getFullIngredientName(ingredient))
         })
-
-        console.log('LIST',newItemList)
-        console.log('MAP', ingredientMap)
 
         // API call
         axios.post('/api/pantry/replace', JSON.stringify(ingredients))
