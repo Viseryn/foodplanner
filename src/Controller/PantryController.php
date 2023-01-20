@@ -212,4 +212,50 @@ class PantryController extends AbstractController
         // Empty response
         return new Response();
     }
+
+    /**
+     * Pantry Change Position API
+     * 
+     * A Pantry API that swaps the position of 
+     * two Ingredient objects.
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/change-position', name: 'api_pantry_change_position', methods: ['GET', 'POST'])]
+    public function changePosition(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = (array) json_decode($request->getContent());
+
+        // Get both Ingredient objects
+        $ingredient1 = $ingredientRepository->find($requestContent[0]);
+        $ingredient2 = $ingredientRepository->find($requestContent[1]);
+
+        // Get positions
+        $position1 = $ingredient1->getPosition();
+        $position2 = $ingredient2->getPosition();
+
+        // Swap positions
+        $ingredient1->setPosition($position2);
+        $ingredient2->setPosition($position1);
+
+        // Save in database
+        $ingredientRepository->save($ingredient1, true);
+        $ingredientRepository->save($ingredient2, true);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
 }
