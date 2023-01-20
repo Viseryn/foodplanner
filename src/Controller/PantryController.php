@@ -214,6 +214,49 @@ class PantryController extends AbstractController
     }
 
     /**
+     * Pantry Replace API
+     * 
+     * A Pantry API that replaces the current 
+     * Ingredient objects of the Pantry with 
+     * new ones. It basically does the same as running
+     * deleteAll() and then add().
+     * 
+     * Expected RequestContent Type: 
+     *     string[]
+     * 
+     * Example RequestContent:
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param PantryUtil $pantryUtil
+     * @return Response
+     */
+    #[Route('/replace', name: 'api_pantry_replace', methods: ['GET', 'POST'])]
+    public function replace(
+        Request $request,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        PantryUtil $pantryUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+        
+        // Replace Pantry in the database
+        $pantryUtil->replace($requestContent);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
+
+    /**
      * Pantry Change Position API
      * 
      * A Pantry API that swaps the position of 

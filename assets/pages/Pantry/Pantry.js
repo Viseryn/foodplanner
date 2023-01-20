@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState }   from 'react'
 import axios                            from 'axios'
+import Fraction                         from 'fraction.js'
 
 import Item                             from './components/Item'
 import AddItemInputWidget               from '../../components/ui/AddItemInputWidget'
@@ -11,6 +12,8 @@ import Button                           from '../../components/ui/Buttons/Button
 import Card                             from '../../components/ui/Card'
 import Spacer                           from '../../components/ui/Spacer'
 import Spinner                          from '../../components/ui/Spinner'
+
+import getFullIngredientName            from '../../util/getFullIngredientName'
 
 /**
  * Pantry
@@ -61,10 +64,73 @@ export default function Pantry({ pantry, ...props}) {
         axios.post('/api/pantry/add', [value])
     }
 
+    /**
+     * handleAddUpIngredients
+     * 
+     * Combines items with the same name and same 
+     * quantity_unit to a single item and adds up
+     * the quantity_values. Since the items can contain
+     * fractions, the Fraction class is imported and 
+     * used. The resulting item list will be sent 
+     * to the Pantry Replace API and a reload 
+     * is done.
+     */
+    const handleAddUpIngredients = () => {
+        // Make a copy of the pantry.data
+        const copyOfList = [...pantry.data]
 
+        // Create temporary map for ingredients.
+        /** @type {Map<string, object>} */
+        let ingredientMap = new Map()
 
+        // Go through each ingredient
+        copyOfList.forEach(ingredient => {
+            // Check if the ingredient has been added to the ingredientMap yet
+            if (ingredientMap.has(ingredient.name)) {
+                // Get the ingredient from the map
+                let currentIngredient = ingredientMap.get(ingredient.name);
 
+                // Check if the quantity units match and the value is a number
+                if (currentIngredient.quantity_unit === ingredient.quantity_unit
+                    && ingredient.quantity_value) {
+                    // Calculate the new quantity value.
+                    // Note that the values may be fractions.
+                    let currentVal = new Fraction(currentIngredient.quantity_value)
+                    let newVal = new Fraction(ingredient.quantity_value)
+                    let totalVal = currentVal.add(newVal)
 
+                    // Save new quantity value in currentIngredient
+                    currentIngredient.quantity_value = totalVal.toFraction(true)
+                    ingredientMap.set(ingredient.name, currentIngredient)
+                } else {
+                    // If quantity units do not match or the value is not 
+                    // a number, add the ingredient to the map with another key
+                    ingredientMap.set(ingredient.name + ingredient.quantity_unit, ingredient)
+                }
+            } else {
+                // If ingredient is not in the ingredientMap, add it
+                ingredientMap.set(ingredient.name, ingredient)
+            }
+        })
+
+        // Create a new pantry from the ingredientMap
+        const newItemList = Array.from(ingredientMap.values())
+        console.log(newItemList)
+
+        // Create array of strings of ingredients for API
+        const ingredients = []
+
+        newItemList?.forEach(ingredient => {
+            ingredients.push(getFullIngredientName(ingredient))
+        })
+
+        console.log('LIST',newItemList)
+        console.log('MAP', ingredientMap)
+
+        // API call
+        axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        pantry.setLoading(true)
+    }
 
     //     let items = [...props.pantry];
 
@@ -190,7 +256,7 @@ export default function Pantry({ pantry, ...props}) {
                     {pantry.data?.length > 0 &&
                         <div className="flex justify-end mt-4 mx-4 md:mx-0">
                             <Button
-                                //onClick={handleCombine}
+                                onClick={handleAddUpIngredients}
                                 label="Zutaten sammenfassen"
                                 icon="low_priority"
                                 role="tertiary"
