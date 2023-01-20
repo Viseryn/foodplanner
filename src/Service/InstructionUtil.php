@@ -62,7 +62,7 @@ class InstructionUtil
         $instructionStrings = [];
 
         foreach ($instructions as $instruction) {
-            $instructionStrings[] = trim($$instruction->getInstruction());
+            $instructionStrings[] = trim($instruction->getInstruction());
         }
 
         return $instructionStrings;
