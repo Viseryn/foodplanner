@@ -212,4 +212,93 @@ class PantryController extends AbstractController
         // Empty response
         return new Response();
     }
+
+    /**
+     * Pantry Replace API
+     * 
+     * A Pantry API that replaces the current 
+     * Ingredient objects of the Pantry with 
+     * new ones. It basically does the same as running
+     * deleteAll() and then add().
+     * 
+     * Expected RequestContent Type: 
+     *     string[]
+     * 
+     * Example RequestContent:
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param PantryUtil $pantryUtil
+     * @return Response
+     */
+    #[Route('/replace', name: 'api_pantry_replace', methods: ['GET', 'POST'])]
+    public function replace(
+        Request $request,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        PantryUtil $pantryUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+        
+        // Replace Pantry in the database
+        $pantryUtil->replace($requestContent);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
+
+    /**
+     * Pantry Change Position API
+     * 
+     * A Pantry API that swaps the position of 
+     * two Ingredient objects.
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/change-position', name: 'api_pantry_change_position', methods: ['GET', 'POST'])]
+    public function changePosition(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = (array) json_decode($request->getContent());
+
+        // Get both Ingredient objects
+        $ingredient1 = $ingredientRepository->find($requestContent[0]);
+        $ingredient2 = $ingredientRepository->find($requestContent[1]);
+
+        // Get positions
+        $position1 = $ingredient1->getPosition();
+        $position2 = $ingredient2->getPosition();
+
+        // Swap positions
+        $ingredient1->setPosition($position2);
+        $ingredient2->setPosition($position1);
+
+        // Save in database
+        $ingredientRepository->save($ingredient1, true);
+        $ingredientRepository->save($ingredient2, true);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
 }

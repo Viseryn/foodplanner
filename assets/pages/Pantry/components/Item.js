@@ -46,7 +46,6 @@ export default function Item({ pantry, item }) {
             setTimeout(() => {
                 if (!preventSingleClick && !item.editable) {
                     // Single click action
-                    handleCheckboxChange(item)
                 }
             }, 200)
         }
@@ -58,13 +57,13 @@ export default function Item({ pantry, item }) {
      * handleItemSetEditability
      * 
      * Changes an item's editability. Is performed on double clicks.
-     * Does not trigger a reload or replacement of the shoppingList.
+     * Does not trigger a reload or replacement of the pantry.
      * 
      * @param {object} item A list item.
      */
     const handleItemSetEditability = (item) => {
-        // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
+        // Make a copy of pantry.data and find item
+        let newItemList = [...pantry.data]
         const index = newItemList.indexOf(item)
 
         // Make all items non-editable
@@ -74,7 +73,7 @@ export default function Item({ pantry, item }) {
 
         // Change editability of argument item if it is not checked
         newItemList[index].editable = newItemList[index].checked ? false : !newItemList[index].editable
-        shoppingList.setData(newItemList)
+        pantry.setData(newItemList)
     }
 
     /**
@@ -88,8 +87,8 @@ export default function Item({ pantry, item }) {
      * @param {object} item A list item.
      */
     const handleEditItem = (event, item) => {
-        // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
+        // Make a copy of pantry.data and find item
+        let newItemList = [...pantry.data]
         const index = newItemList.indexOf(item)
 
         // Return early if the value of the new item is empty
@@ -110,7 +109,7 @@ export default function Item({ pantry, item }) {
         newItemList[index].editable = false
 
         // Set new list
-        shoppingList.setData(newItemList)
+        pantry.setData(newItemList)
 
         // API call
         axios.post('/api/pantry/edit-ingredient', newItemList[index])
@@ -140,14 +139,14 @@ export default function Item({ pantry, item }) {
     /**
      * handleChangePosition
      * 
-     * Moves the given item up or down in the ShoppingList.
+     * Moves the given item up or down in the Pantry.
      * 
      * @param {number} id The id of the given item.
      * @param {number} direction Possible values are -1 (up) and 1 (down).
      */
     const handleChangePosition = (item, direction) => {
-        // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
+        // Make a copy of pantry.data and find item
+        let newItemList = [...pantry.data]
         const index = newItemList.indexOf(item)
         const itemCopy = {...newItemList[index]}
 
@@ -158,7 +157,7 @@ export default function Item({ pantry, item }) {
         // move item down only when it is not the last item.
         if (
             (direction === -1 && index !== 0)
-            || (direction === 1 && index !== shoppingList.data?.length - 1)
+            || (direction === 1 && index !== pantry.data?.length - 1)
         ) {
             itemCopy.position = newPosition
             newItemList[index].position = newPosition
@@ -168,10 +167,10 @@ export default function Item({ pantry, item }) {
             newItemList[index + direction] = itemCopy
 
             // Set new list
-            shoppingList.setData(newItemList)
+            pantry.setData(newItemList)
 
             // API call
-            axios.post('/api/shoppinglist/change-position', [
+            axios.post('/api/pantry/change-position', [
                 newItemList[index].id, 
                 newItemList[index + direction].id,
             ])
