@@ -98,10 +98,33 @@ class PantryController extends AbstractController
 
         // Empty response
         return new Response();
+    }
 
+    /**
+     * Pantry Delete All API
+     * 
+     * A Pantry API that deletes all Ingredient objects 
+     * that the Pantry has.
+     * 
+     * @param PantryUtil $pantryUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/delete-all', name: 'api_pantry_delete_all', methods: ['GET'])]
+    public function deleteAll(
+        PantryUtil $pantryUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        // Delete all pantry ingredients from database
+        $pantryUtil->deleteAll();
 
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
+        // Empty response
         return new Response();
     }
 
