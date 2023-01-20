@@ -30,8 +30,22 @@ class RecipeController extends AbstractController
     /**
      * Recipe List API
      * 
-     * Fetches all Recipes and responds with a JSON
+     * Fetches all Recipe objects and responds with an
      * array containing all Recipe data.
+     * 
+     * Expected ResponseData Type: 
+     *     Array<object>
+     * 
+     * Example ResponseData:
+     * [
+     *     {
+     *         id: 21,
+     *         title: 'Spaghetti Bolognese',
+     *         ingredients: Array<object>,
+     *         ...
+     *     },
+     *     ...
+     * ]
      *
      * @param RecipeRepository $recipeRepository
      * @return Response
