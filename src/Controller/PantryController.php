@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Ingredient;
+use App\Entity\RefreshDataTimestamp;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
+use App\Service\PantryUtil;
+use App\Service\RefreshDataTimestampUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,64 +60,48 @@ class PantryController extends AbstractController
     }
 
     /**
-     * Pantry Update API
+     * Pantry Add API
+     * 
+     * A Pantry API that, given a request with 
+     * an array of strings, creates new Ingredient 
+     * objects from these strings and adds them to the 
+     * database.
+     * 
+     * Expected RequestContent Type: 
+     *     string[]
+     * 
+     * Example RequestContent:
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
      *
      * @param Request $request
-     * @param StorageRepository $storageRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
+     * @param PantryUtil $pantryUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
-    #[Route('/update', name: 'api_pantry_update', methods: ['GET', 'POST'])]
-    public function update(
+    #[Route('/add', name: 'api_pantry_add', methods: ['GET', 'POST'])]
+    public function add(
         Request $request, 
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
+        PantryUtil $pantryUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Decode request data
+        // Decode request content
         $requestContent = json_decode($request->getContent());
-
-        // Transform data into a string
-        $ingredients = '';
-
-        foreach ($requestContent as $ingredient) {
-            $ingredients .= $ingredient->name . "\n";
-        }
-
-        // Transform data into Ingredient objects
-        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
-
-        // Add position and checked to Ingredient objects
-        $i = 0;
-        $storage = $storageRepository->find(1);
-
-        foreach ($requestContent as $ingredient) {
-            $newIngredients[$i]
-                ->setStorage($storage)
-                ->setChecked($ingredient->checked)
-                ->setPosition($ingredient->position)
-            ;
-
-            $i++;
-        }
-
-        // Delete old pantry ingredients from database
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'ASC']);
         
-        foreach($oldIngredients as $ingredient) {
-            $ingredientRepository->remove($ingredient, true);
-        }
+        // Add ingredients from request
+        $pantryUtil->add($requestContent);
 
-        // Add new pantry ingredients to the database
-        foreach($newIngredients as $ingredient) {
-            $ingredientRepository->add($ingredient, true);
-        }
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
-        // Empty Response
+        // Empty response
+        return new Response();
+
+
+
+
         return new Response();
     }
 
