@@ -260,11 +260,9 @@ export default function EditRecipe({ recipes, days, ...props }) {
                 axios
                     .get('/api/recipes/delete/' + id)
                     .then(() => {
+                        // Reload recipes and days
                         recipes.setLoading(true)
                         days.setLoading(true)
-                
-                        // Refresh Data Timestamp
-                        axios.get('/api/refresh-data-timestamp/set')
 
                         // Navigate to recipe list
                         navigate('/recipes')

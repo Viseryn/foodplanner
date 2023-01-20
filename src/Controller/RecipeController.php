@@ -156,17 +156,22 @@ class RecipeController extends AbstractController
     /**
      * Recipes Delete API
      * 
-     * Deletes the Recipe with the given ID and responds
-     * with an empty Response.
+     * Deletes the Recipe object with the given ID.
      *
      * @param Request $request
      * @param Recipe $recipe
      * @param MealRepository $mealRepository
      * @param RecipeRepository $recipeRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/delete/{id}', name: 'api_recipes_delete', methods: ['GET'])]
-    public function delete(Recipe $recipe, MealRepository $mealRepository, RecipeRepository $recipeRepository): Response
+    public function delete(
+        Recipe $recipe, 
+        MealRepository $mealRepository, 
+        RecipeRepository $recipeRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -181,6 +186,9 @@ class RecipeController extends AbstractController
 
         // Delete recipe
         $recipeRepository->remove($recipe, true);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
         return new Response();
     }
