@@ -129,87 +129,45 @@ class PantryController extends AbstractController
     }
 
     /**
-     * Pantry Add API
+     * Pantry Delete Ingredient API
+     * 
+     * A Pantry API that checks or unchecks a given 
+     * Ingredient object from the Pantry. The request 
+     * data should be the ID of the Ingredient object.
+     * 
+     * Expected RequestContent Type: 
+     *     int
+     * 
+     * Example RequestContent:
+     *     24
+     * 
+     * @todo Turn into Pantry Delete Single API
      *
      * @param Request $request
-     * @param RecipeRepository $recipeRepository
-     * @param StorageRepository $storageRepository
      * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
-    #[Route('/add', name: 'api_pantry_add', methods: ['GET', 'POST'])]
-    public function add(
-        Request $request, 
-        RecipeRepository $recipeRepository,
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
+    #[Route('/delete-ingredient', name: 'api_pantry_delete_ingredient', methods: ['GET', 'POST'])]
+    public function deleteIngredient(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Decode request data
         $requestContent = json_decode($request->getContent());
+        
+        // Find Ingredient object and remove it
+        $ingredient = $ingredientRepository->find($requestContent);
+        $ingredientRepository->remove($ingredient, true);
 
-        // Collect all ingredients and combine to a string
-        $ingredients = '';
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
-        // If only one recipe is given, the quantity might have been changed
-        if (count($requestContent) === 1) {
-            // Array for new ingredient objects, since
-            // these are not in the database
-            $ingredientsArr = [];
-
-            // Create a new Ingredient object for each ingredient from the request
-            foreach ($requestContent[0]->ingredients as $rawIngredient) {
-                $ingredientsArr[] = (new Ingredient())
-                    ->setName($rawIngredient->name)
-                    ->setQuantityValue($rawIngredient->quantity_value)
-                    ->setQuantityUnit($rawIngredient->quantity_unit)
-                ;
-            }
-
-            // Create the ingredient string
-            $ingredients .= $ingredientUtil->ingredientString(new ArrayCollection($ingredientsArr));
-        }
-
-        // For multiple recipes, go through all their ingredients
-        if (count($requestContent) > 1) {
-            foreach ($requestContent as $recipeData) {
-                $recipe = $recipeRepository->find($recipeData->id);
-                $ingredients .= $ingredientUtil->ingredientString($recipe->getIngredients());
-                $ingredients .= "\n";
-            }
-        }
-
-        // Transform data into Ingredient objects
-        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
-
-        // Check highest position
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'DESC']);
-        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
-
-        // Add position and checked to Ingredient objects
-        $i = 0;
-        $storage = $storageRepository->find(1);
-
-        foreach ($newIngredients as $ingredient) {
-            $newIngredients[$i]
-                ->setStorage($storage)
-                ->setChecked(false)
-                ->setPosition($highestPosition + 1 + $i)
-            ;
-
-            $i++;
-        }
-
-        // Add new pantry ingredients to the database
-        foreach($newIngredients as $ingredient) {
-            $ingredientRepository->add($ingredient, true);
-        }
-
-        // Empty Response
+        // Empty response
         return new Response();
     }
 
