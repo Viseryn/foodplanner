@@ -43,8 +43,8 @@ export default function Pantry({ pantry, ...props}) {
      * 
      * A function that is called when the enter key is 
      * pressed with the trimmed inputValue as argument.
-     * Adds the argument to the ShoppingList via the 
-     * ShoppingList Add API and reloads the list afterwards.
+     * Adds the argument to the Pantry via the 
+     * Pantry Add API and reloads the list afterwards.
      * The reload is required because the API generates
      * IDs and other fields.
      * 
@@ -54,11 +54,11 @@ export default function Pantry({ pantry, ...props}) {
         // Clear input field
         setInputValue('')
 
-        // Load new shopping list
-        shoppingList.setLoading(true)
+        // Load new pantry list
+        pantry.setLoading(true)
 
         // API call
-        axios.post('/api/shoppinglist/add', [value])
+        axios.post('/api/pantry/add', [value])
     }
 
     // /**
