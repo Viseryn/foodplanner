@@ -141,16 +141,20 @@ export default function Recipe({ recipes, ...props }) {
      * ingredient list.
      */
     const handleAddPantry = (argRecipe) => {
-        // // Call API
-        // axios
-        //     .post('/api/pantry/add', JSON.stringify([argRecipe]))
-        //     .then(() => props.pantry.setLoading(true))
+        // Collect all ingredients
+        let ingredients = []
 
-        // // Refresh Data Timestamp
-        // axios.get('/api/refresh-data-timestamp/set')
+        argRecipe?.ingredients?.forEach(ingredient => {
+            ingredients.push(getFullIngredientName(ingredient))
+        })
+
+        // API call
+        axios
+            .post('/api/pantry/add', JSON.stringify(ingredients))
+            .then(() => props.pantry.setLoading(true))
         
-        // // Update the button parameter
-        // setShowPantryDone(false)
+        // Update parameter for button
+        setShowPantryDone(true)
     }
 
     /**
@@ -161,25 +165,10 @@ export default function Recipe({ recipes, ...props }) {
      * IconButtons next to each ingredient.
      */
     const handleAddSingleToPantry = (ingredient) => {
-        // // Generate a name for the API
-        // const newItem = { 
-        //     name: generateDisplayName(
-        //         ingredient.quantity_value,
-        //         ingredient.quantity_unit,
-        //         ingredient.name,
-        //     ),
-        // }
-
-        // // Call API
-        // axios
-        //     .post('/api/pantry/ingredients', newItem)
-        //     .then(() => {
-        //         loadPantry(props.pantry.setData)
-        //     })
-        
-                
-        // // Refresh Data Timestamp
-        // axios.get('/api/refresh-data-timestamp/set')
+        // API call
+        axios
+            .post('/api/pantry/add', [getFullIngredientName(ingredient)])
+            .then(() => props.pantry.setLoading(true))
     }
     
     /**
