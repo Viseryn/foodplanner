@@ -178,6 +178,16 @@ class RecipeUtil
         return $this;
     }
 
+    /**
+     * prepareEditForm
+     * 
+     * Sets the default data for the FormInterface
+     * in the Recipe Edit API.
+     *
+     * @param Recipe $recipe
+     * @param FormInterface $form
+     * @return FormInterface
+     */
     public function prepareEditForm(Recipe &$recipe, FormInterface &$form): FormInterface
     {
         $ingredients = $this->ingredientUtil->transformObjectArrayToStringArray(

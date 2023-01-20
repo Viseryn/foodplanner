@@ -93,7 +93,7 @@ class ShoppingListController extends AbstractController
         // Add ingredients from request
         $shoppingListUtil->add($requestContent);
 
-        // Update Refresh Data Timestamp
+        // Update RefreshDataTimestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
@@ -122,7 +122,7 @@ class ShoppingListController extends AbstractController
         // Delete all shopping list ingredients from database
         $shoppingListUtil->deleteAll();
 
-        // Update Refresh Data Timestamp
+        // Update RefreshDataTimestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
@@ -156,7 +156,7 @@ class ShoppingListController extends AbstractController
             $ingredientRepository->remove($ingredient, true);
         }
 
-        // Update Refresh Data Timestamp
+        // Update RefreshDataTimestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
@@ -197,7 +197,7 @@ class ShoppingListController extends AbstractController
         $ingredient = $ingredientRepository->find($requestContent);
         $ingredient->setChecked(!$ingredient->isChecked());
 
-        // Update Refresh Data Timestamp
+        // Update RefreshDataTimestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
@@ -239,7 +239,7 @@ class ShoppingListController extends AbstractController
         // Update the Ingredient object
         $shoppingListUtil->editIngredient($requestContent);
         
-        // Update Refresh Data Timestamp
+        // Update RefreshDataTimestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
@@ -282,7 +282,7 @@ class ShoppingListController extends AbstractController
         // Replace ShoppingList in the database
         $shoppingListUtil->replace($requestContent);
 
-        // Update Refresh Data Timestamp
+        // Update RefreshDataTimestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
@@ -328,11 +328,10 @@ class ShoppingListController extends AbstractController
         $ingredientRepository->save($ingredient1, true);
         $ingredientRepository->save($ingredient2, true);
 
-        // Update Refresh Data Timestamp
+        // Update RefreshDataTimestamp
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
         return new Response(var_export($requestContent));
-
     }
 }
