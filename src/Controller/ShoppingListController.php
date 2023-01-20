@@ -106,7 +106,6 @@ class ShoppingListController extends AbstractController
      * A ShoppingList API that deletes all Ingredient objects 
      * that the ShoppingList has.
      * 
-     * @param IngredientRepository $ingredientRepository
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param ShoppingListUtil $shoppingListUtil
      * @return Response
@@ -332,6 +331,6 @@ class ShoppingListController extends AbstractController
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
-        return new Response(var_export($requestContent));
+        return new Response();
     }
 }

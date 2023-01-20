@@ -16,6 +16,7 @@ import getFullIngredientName    from '../../../util/getFullIngredientName'
  * 
  * @component
  * @param {object} props
+ * @param {object} props.shoppingList
  * @param {object} props.item
  */
 export default function Item({ shoppingList, item }) {
