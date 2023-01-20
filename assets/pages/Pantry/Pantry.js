@@ -125,7 +125,6 @@ export default function Pantry({ pantry, ...props}) {
 
         // Create a new pantry from the ingredientMap
         const newItemList = Array.from(ingredientMap.values())
-        console.log(newItemList)
 
         // Create array of strings of ingredients for API
         const ingredients = []

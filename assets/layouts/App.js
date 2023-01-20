@@ -48,7 +48,7 @@ import ShoppingList                     from '../pages/ShoppingList/ShoppingList
  * load depending on the URL.
  * 
  * @component
- * @property {string} version The current version number.
+ * @param {string} props.version The current version number.
  */
 export default function App({ version }) {
     /******************
