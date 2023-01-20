@@ -101,9 +101,6 @@ export default function AddRecipe({ recipes, ...props }) {
                 // Reload recipes and get id
                 recipes.setLoading(true)
                 setId(response.data)
-                
-                // Refresh Data Timestamp
-                axios.get('/api/refresh-data-timestamp/set')
 
                 // End loading screen
                 setLoading(false)

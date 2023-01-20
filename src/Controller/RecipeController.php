@@ -64,6 +64,7 @@ class RecipeController extends AbstractController
      * @param Request $request
      * @param RecipeRepository $recipeRepository
      * @param RecipeUtil $recipeUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/add', name: 'api_recipe_add', methods: ['GET', 'POST'])]
@@ -71,6 +72,7 @@ class RecipeController extends AbstractController
         Request $request, 
         RecipeRepository $recipeRepository,
         RecipeUtil $recipeUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -91,6 +93,10 @@ class RecipeController extends AbstractController
         $recipeRepository->save($recipe, true);
         $recipeUtil->update($recipe, $form);
 
+        // Update Refresh Data Timestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Respond with new Id
         return new Response($recipe->getId());
     }
 
