@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormInterface;
  * A utility class for Recipe objects.
  * 
  * @method RecipeUtil update(Recipe &$recipe, FormInterface $form)
+ * @method
  */
 class RecipeUtil 
 {
@@ -136,27 +137,39 @@ class RecipeUtil
     }
 
     /**
-     * Updates the instructions of a Recipe if there was a change.
+     * updateInstructions
+     * 
+     * Updates the Instruction objects of a Recipe object if a 
+     * change was detected.
      *
      * @param Recipe $recipe
      * @param string $newInstructions A string of instructions, e.g. through a form.
      * @return self
      */
-    public function updateInstructions(Recipe &$recipe, ?string $newInstructions): self
+    private function updateInstructions(Recipe &$recipe, ?string $newInstructions): self
     {
-        $old = $recipe->getInstructions();
-        $oldString = $this->instructionUtil->instructionString($old);
+        // Turn current Instruction objects into an array of strings
+        $currentInstructions = $recipe->getInstructions();
+        $currentInstructionStrings = $this->instructionUtil
+            ->transformObjectArrayToStringArray($currentInstructions);
+        
+        // Split string after newlines
+        $newInstructionStrings = preg_split('/\r\n|\r|\n/', $newInstructions);
 
-        if ($newInstructions !== $oldString) {
-            foreach ($old as $inst) {
-                $this->instructionRepository->remove($inst, true);
+        // Remove all empty elements from the array
+        $newInstructionStrings = array_filter($newInstructionStrings);
+
+        if ($currentInstructionStrings !== $newInstructionStrings) {
+            foreach ($currentInstructions as $instruction) {
+                $this->instructionRepository->remove($instruction, true);
             }
 
-            $newArray = $this->instructionUtil->instructionSplit($newInstructions);
-
-            foreach ($newArray as $inst) {
-                $inst->setRecipe($recipe);
-                $this->instructionRepository->add($inst, true);
+            $newInstructions = $this->instructionUtil
+                ->transformStringArrayToObjectArray($newInstructionStrings);
+            
+            foreach ($newInstructions as $instruction) {
+                $instruction->setRecipe($recipe);
+                $this->instructionRepository->save($instruction, true);
             }
         }
 

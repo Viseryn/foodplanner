@@ -8,57 +8,63 @@ use Exception;
 
 class InstructionUtil 
 {
+
     /**
-     * Splits instructions between new lines and returns an 
-     * array of Instruction objects.
-     *
-     * @param string|null $instructions
-     * @return array|Instruction[]
+     * transformStringToObject
+     * 
+     * Turns a string which describes an instruction 
+     * into an Instruction object and returns it.
+     * 
+     * @param string $instructionString A string that describes an instruction.
+     * @return Instruction
      */
-    public function instructionSplit(?string $instructions): array
+    public function transformStringToObject(string $instructionString): Instruction
     {
-        $instructionArray = [];
+        // Create Instruction object and return it
+        $instructionObject = (new Instruction)
+            ->setInstruction($instructionString)
+        ;
 
-        // Split string after newlines
-        $instArray = preg_split('/\r\n|\r|\n/', $instructions);
-
-        // Remove all empty elements from the array
-        $instArray = array_filter($instArray);
-
-        // If array is empty, we are done
-        if (count($instArray) === 0) {
-            return [];
-        }
-
-        // Create Instruction objects
-        foreach ($instArray as $inst) {
-            array_push(
-                $instructionArray, 
-                (new Instruction())->setInstruction($inst)
-            );
-        }
-
-        return $instructionArray;
+        return $instructionObject;
     }
 
     /**
-     * Combines an array of Instruction objects into a single string.
-     *
-     * @param Collection|null $instructionArray
-     * @return string|null
+     * transformStringArrayToObjectArray
+     * 
+     * Turns an array of strings, each describing an instruction,
+     * into an array of Instruction objects and returns it.
+     * 
+     * @param string[] $instructionStrings An array of strings that describe instructions.
+     * @return Instruction[]
      */
-    public function instructionString(?Collection $instructionArray): ?string
+    public function transformStringArrayToObjectArray(array $instructionStrings): array
     {
-        // Check if all elements are Instruction objects
-        foreach ($instructionArray as $instruction) {
-            if (!is_a($instruction, Instruction::class)) {
-                throw new Exception('One of the elements of $instructionArray is not an Instruction object.');
-            }
+        $instructionObjects = [];
+
+        foreach ($instructionStrings as $instructionString) {
+            $instructionObject = $this->transformStringToObject($instructionString);
+            $instructionObjects[] = $instructionObject;
         }
 
-        // Combine all elements to one string
-        $instructionString = implode("\r\n\r\n", $instructionArray->toArray());
+        return $instructionObjects;
+    }
 
-        return $instructionString;
+    /**
+     * transformObjectArrayToStringArray
+     * 
+     * Turns an array of Instruction objects into an array of strings.
+     *
+     * @param Instruction[]|Collection<Instruction> $instructions An array or Collection of Instruction objects
+     * @return string[]
+     */
+    public function transformObjectArrayToStringArray(array|Collection $instructions): array
+    {
+        $instructionStrings = [];
+
+        foreach ($instructions as $instruction) {
+            $instructionStrings[] = trim($$instruction->getInstruction());
+        }
+
+        return $instructionStrings;
     }
 }
