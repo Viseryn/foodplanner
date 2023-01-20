@@ -224,14 +224,11 @@ export default function EditRecipe({ recipes, days, ...props }) {
             .then(response => {
                 // Reload recipes and get id
                 recipes.setLoading(true)
-                setResponseId(response.data.id)
+                setResponseId(response.data)
 
                 // Update Day entities that may have
                 // Meals with that recipe
                 days.setLoading(true)
-                
-                // Refresh Data Timestamp
-                axios.get('/api/refresh-data-timestamp/set')
 
                 // End loading screen
                 setLoading(false)
