@@ -331,6 +331,6 @@ class ShoppingListController extends AbstractController
         $refreshDataTimestampUtil->updateTimestamp();
 
         // Empty response
-        return new Response(var_export($requestContent));
+        return new Response();
     }
 }
