@@ -172,46 +172,44 @@ class PantryController extends AbstractController
     }
 
     /**
-     * Pantry Ingredients API
+     * Pantry Edit Ingredient API
+     * 
+     * A Pantry API that edit a given 
+     * Ingredient object from the Pantry. The request 
+     * data should consist of the edited Ingredient object.
+     * Note that quantity_unit and quantity_value will be 
+     * empty and the whole description is contained in name.
+     * 
+     * Expected RequestContent Type: 
+     *     array<string, mixed>
+     * 
+     * Example RequestContent:
+     *     ['id' => int, 'name' => string, ...]
      *
      * @param Request $request
-     * @param StorageRepository $storageRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param PantryUtil $pantryUtil
      * @return Response
      */
-    #[Route('/ingredients', name: 'api_pantry_ingredients', methods: ['GET', 'POST'])]
-    public function ingredient(
-        Request $request, 
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
+    #[Route('/edit-ingredient', name: 'api_pantry_edit_ingredient', methods: ['GET', 'POST'])]
+    public function editIngredient(
+        Request $request,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        PantryUtil $pantryUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
+
         // Decode request data
-        $requestContent = json_decode($request->getContent());
+        $requestContent = (array) json_decode($request->getContent());
+        
+        // Update the Ingredient object
+        $pantryUtil->editIngredient($requestContent);
+        
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
-        // Transform data into Ingredient object
-        $newIngredient = $ingredientUtil->ingredientSplit($requestContent->name)[0];
-
-        // Check highest position
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'DESC']);
-        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
-
-        // Add position and checked to Ingredient object
-        $storage = $storageRepository->find(1);
-        $newIngredient
-            ->setStorage($storage)
-            ->setChecked(false)
-            ->setPosition($highestPosition + 1)
-        ;
-
-        // Add new pantry ingredient to the database
-        $ingredientRepository->add($newIngredient, true);
-
-        // Empty Response
-        return new Response($newIngredient);
+        // Empty response
+        return new Response();
     }
 }
