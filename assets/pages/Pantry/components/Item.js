@@ -115,6 +115,26 @@ export default function Item({ pantry, item }) {
         // API call
         axios.post('/api/pantry/edit-ingredient', newItemList[index])
     }
+
+    /**
+     * handleDeleteItem
+     * 
+     * Checks or unchecks an item. Is performed on single clicks 
+     * on the item or the checkboxes.
+     * 
+     * @param {object} item A list item.
+     */
+    const handleDeleteItem = (item) => {
+        // Make a copy of pantry.data and find item
+        let newItemList = [...pantry.data]
+        const index = newItemList.indexOf(item)
+
+        // Remove item from list
+        newItemList.splice(index, 1)
+        pantry.setData(newItemList)
+        
+        // API call
+        axios.post('/api/pantry/delete-ingredient', item.id)
     }
 
     /**
