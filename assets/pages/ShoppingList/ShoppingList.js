@@ -69,8 +69,6 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * used. The resulting item list will be sent 
      * to the ShoppingList Replace API and a reload 
      * is done.
-     * 
-     * @todo Still not working correctly
      */
     const handleAddUpIngredients = () => {
         // Make a copy of the shoppingList.data
@@ -120,8 +118,6 @@ export default function ShoppingList({ shoppingList, ...props }) {
             ingredients.push(getFullIngredientName(ingredient))
         })
 
-        console.log('LIST',newItemList)
-        console.log('MAP', ingredientMap)
         // API call
         axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
         shoppingList.setLoading(true)
