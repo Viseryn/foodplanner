@@ -6,6 +6,8 @@ use App\Entity\Recipe;
 use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
 use App\Repository\RecipeRepository;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -174,5 +176,38 @@ class RecipeUtil
         }
 
         return $this;
+    }
+
+    public function prepareEditForm(Recipe &$recipe, FormInterface &$form): FormInterface
+    {
+        $ingredients = $this->ingredientUtil->transformObjectArrayToStringArray(
+            $recipe->getIngredients()
+        );
+
+        $instructions = $this->instructionUtil->transformObjectArrayToStringArray(
+            $recipe->getInstructions()
+        );
+
+        $ingredientsValue = implode("\r\n", $ingredients);
+        $instructionsValue = implode("\r\n\r\n", $instructions);
+
+        $form
+            ->add('ingredients', TextareaType::class, [
+                'required' => false,
+                'mapped' => false,
+                'data' => $ingredientsValue,
+            ])
+            ->add('instructions', TextareaType::class, [
+                'required' => false,
+                'mapped' => false,
+                'data' => $instructionsValue,
+            ])
+            ->add('image_remove', CheckboxType::class, [
+                'required' => false,
+                'mapped' => false,
+            ])
+        ;
+
+        return $form;
     }
 }
