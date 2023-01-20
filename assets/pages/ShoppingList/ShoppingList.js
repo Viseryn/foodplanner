@@ -18,13 +18,16 @@ import getFullIngredientName            from '../../util/getFullIngredientName'
 /**
  * ShoppingList
  * 
- * @todo
+ * A component that renders a shopping list that consists 
+ * of Ingredient objects. An input widget is rendered at 
+ * top for adding new items. Items can be checked, 
+ * repositioned, deleted and edited, as well as added up 
+ * together or amounts being reduced by the ingredients 
+ * that are stored in the pantry.
  * 
  * @component
  * @param {object} props
  * @param {object} props.shoppingList
- * 
- * @todo
  */
 export default function ShoppingList({ shoppingList, ...props }) {
     /**
