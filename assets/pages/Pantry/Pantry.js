@@ -132,27 +132,40 @@ export default function Pantry({ pantry, ...props}) {
         pantry.setLoading(true)
     }
 
-    //     let items = [...props.pantry];
+    /**
+     * handleSort
+     * 
+     * Sorts all items by alphabet.
+     */
+    const handleSort = () => {
+        const newItemList = [...pantry.data]
 
-    //     // Sort array by alphabet (ascending or descending depending on state)
-    //     items.sort((a, b) => {
-    //         const textA = a.originalName.toLowerCase();
-    //         const textB = b.originalName.toLowerCase();
-    //         const returnValue = (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        // Sort ingredient list
+        newItemList.sort((a, b) => {
+            const textA = a.name.toLowerCase()
+            const textB = b.name.toLowerCase()
+            return (sortingOrder ? 1 : -1) 
+                * ((textA < textB) ? -1 : (textA > textB) ? 1 : 0)
+        })
 
-    //         return (sortingOrder ? 1 : -1) * returnValue;
-    //     });
+        newItemList.map((item, index) => item.position = index + 1)
 
-    //     // Give each item a correct position
-    //     for (let i = 0; i < items.length; i++) {
-    //        items[i].position = i + 1;
-    //     }
+        // Change sorting order
+        setSortingOrder(sortingOrder => !sortingOrder)
 
-    //     // Change sorting order
-    //     setSortingOrder(sortingOrder => { return !sortingOrder; });
+        // Update list
+        pantry.setData(newItemList)
 
-    //     // Update list
-    //     props.setPantry(items);
+        // Create array of strings of ingredients for API
+        const ingredients = []
+
+        newItemList?.forEach(ingredient => {
+            ingredients.push(getFullIngredientName(ingredient))
+        })
+
+        // API call
+        axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+    }
 
     /**
      * handleDeleteAll
@@ -233,7 +246,7 @@ export default function Pantry({ pantry, ...props}) {
                             {pantry.data?.length > 0 &&
                                 <>
                                     <Button
-                                        //onClick={handleSort}
+                                        onClick={handleSort}
                                         label="Sortieren"
                                         icon="sort"
                                         role="secondary"
