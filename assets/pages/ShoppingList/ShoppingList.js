@@ -156,8 +156,8 @@ export default function ShoppingList({ shoppingList, ...props }) {
                     && ingredient.quantity_value) {
                     // Calculate the new quantity value.
                     // Note that the values may be fractions.
-                    let currentVal = new Fraction(currentIngredient.quantity_value)
-                    let newVal = new Fraction(ingredient.quantity_value)
+                    let currentVal = new Fraction(currentIngredient.quantity_value == '' ? 0 : currentIngredient.quantity_value)
+                    let newVal = new Fraction(ingredient.quantity_value == '' ? 0 : ingredient.quantity_value)
                     let totalVal = currentVal.add(newVal)
 
                     // Save new quantity value in currentIngredient
@@ -179,7 +179,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
 
         // Filter non-positive quantity values out
         newItemList = newItemList.filter(item => {
-            let quantityValue = new Fraction(item.quantity_value)
+            let quantityValue = new Fraction(item.quantity_value == '' ? 0 : item.quantity_value)
             // quantityValue = quantityValue.valueOf()
             return quantityValue > 0 || !quantityValue && quantityValue !== 0
         })
