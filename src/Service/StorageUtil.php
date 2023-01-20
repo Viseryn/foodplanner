@@ -94,15 +94,15 @@ abstract class StorageUtil
      */
     public function editIngredient(array $ingredient): self {
         // Find Ingredient object and change quantity and name
-        $ingredient = $this->ingredientRepository->find($ingredient['id']);
-        $ingredient
+        $ingredientObject = $this->ingredientRepository->find($ingredient['id']);
+        $ingredientObject
             ->setQuantityValue($this->ingredientUtil->getQuantityValueFromString($ingredient['name']))
             ->setQuantityUnit($this->ingredientUtil->getQuantityUnitFromString($ingredient['name']))
             ->setName($this->ingredientUtil->getNameFromString($ingredient['name']))
         ;
 
         // Save in database
-        $this->ingredientRepository->save($ingredient, true);
+        $this->ingredientRepository->save($ingredientObject, true);
 
         return $this;
     }

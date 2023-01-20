@@ -21,7 +21,7 @@ class RecipeRepository extends ServiceEntityRepository
         parent::__construct($registry, Recipe::class);
     }
 
-    public function add(Recipe $entity, bool $flush = false): void
+    public function save(Recipe $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
