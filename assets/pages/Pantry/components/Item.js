@@ -16,9 +16,10 @@ import getFullIngredientName    from '../../../util/getFullIngredientName'
  * 
  * @component
  * @param {object} props
+ * @param {object} props.pantry
  * @param {object} props.item
  */
-export default function Item({ shoppingList, item }) {
+export default function Item({ pantry, item }) {
     /**
      * handleClickOnItem
      * 
@@ -52,28 +53,6 @@ export default function Item({ shoppingList, item }) {
     }
 
     let preventSingleClick = false
-
-    /**
-     * handleCheckboxChange
-     * 
-     * Checks or unchecks an item. Is performed on single clicks 
-     * on the item or the checkboxes.
-     * 
-     * @param {object} item A list item.
-     */
-    const handleCheckboxChange = (item) => {
-        // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
-
-        // Check or uncheck the item and make it non-editable
-        newItemList[index].checked = !newItemList[index].checked
-        newItemList[index].editable = false
-        shoppingList.setData(newItemList)
-        
-        // API call
-        axios.post('/api/shoppinglist/check-ingredient', item.id)
-    }
 
     /**
      * handleItemSetEditability
