@@ -2,19 +2,21 @@
  * ./assets/pages/Recipes/EditRecipe.js *
  ****************************************/
     
-import React, { useEffect, useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
+import React, { useEffect, useState }       from 'react'
+import { useNavigate, useParams }           from 'react-router-dom'
+import axios                                from 'axios'
 
-import FilePicker       from '../../components/form/FilePicker'
-import { InputRow }     from '../../components/form/Input'
-import { SliderRow }    from '../../components/form/Slider'
-import Switch           from '../../components/form/Switch'
-import { TextareaRow }  from '../../components/form/Textarea'
-import Button           from '../../components/ui/Buttons/Button'
-import Card             from '../../components/ui/Card'
-import Spacer           from '../../components/ui/Spacer'
-import Spinner          from '../../components/ui/Spinner'
+import FilePicker                           from '../../components/form/FilePicker'
+import { InputRow }                         from '../../components/form/Input'
+import { SliderRow }                        from '../../components/form/Slider'
+import Switch                               from '../../components/form/Switch'
+import { TextareaRow }                      from '../../components/form/Textarea'
+import Button                               from '../../components/ui/Buttons/Button'
+import Card                                 from '../../components/ui/Card'
+import Spacer                               from '../../components/ui/Spacer'
+import Spinner                              from '../../components/ui/Spinner'
+
+import getFullIngredientName                from '../../util/getFullIngredientName'
 
 /**
  * EditRecipe
@@ -128,21 +130,9 @@ export default function EditRecipe({ recipes, days, ...props }) {
         let l = arr?.length
 
         arr?.map((ingredient, i) => {
-            let q = '' + (ingredient.quantity_value ?? '')
+            ingredients += getFullIngredientName(ingredient)
 
-            if (q !== '' && ingredient?.quantity_unit !== '') {
-                q += ' ' + (ingredient.quantity_unit ?? '')
-            } else if (ingredient?.quantity_unit !== '') {
-                q += (ingredient.quantity_unit ?? '')
-            }
-
-            if (q !== '') {
-                ingredients += q + ' '
-            }
-
-            ingredients += '' + ingredient.name
-
-            if (l != i + 1) { // NOT WORKING
+            if (l != i + 1) { 
                 ingredients += "\r\n"
             }
         })
