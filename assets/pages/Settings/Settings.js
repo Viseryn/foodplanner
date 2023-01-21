@@ -3,7 +3,7 @@
  ***************************************/
 
 import React, { useEffect } from 'react'
-import axios from 'axios'
+import axios                from 'axios'
 
 import Switch               from '../../components/form/Switch'
 import Button               from '../../components/ui/Buttons/Button'
@@ -16,21 +16,19 @@ import Spinner              from '../../components/ui/Spinner'
 /**
  * Settings
  * 
+ * A component that renders some user-specific as 
+ * well as global settings.
+ * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {boolean} isLoadingUser
- * @property {arr} userGroups
- * @property {function} setUserGroups
- * @property {boolean} isLoadingUserGroups
- * @property {function} setLoadingUserGroups
- * @property {arr} mealCategories
- * @property {function} setMealCategories
- * @property {boolean} isLoadingMealCategories
- * @property {function} setLoadingMealCategories
- * @property {function} setLoadingDays
+ * @param {object} props
+ * @param {function} props.setSidebar
+ * @param {function} props.setTopbar
+ * @param {object} props.settings
+ * @param {object} props.userGroups
+ * @param {object} props.mealCategories
+ * @param {object} props.days
  */
-export default function Settings(props) {
+export default function Settings({ settings, userGroups, mealCategories, ...props }) {
     /**
      * handleSetStandardGroup
      * 
@@ -41,9 +39,9 @@ export default function Settings(props) {
      * @param {number} index The index of the group that shall be the standard group.
      */
     const handleSetStandardGroup = (index) => {
-        let groups = [...props.userGroups]
+        let groups = [...userGroups.data]
 
-        groups.forEach((group, i) => {
+        groups?.forEach((group, i) => {
             if (index === i) {
                 group.isStandard = true
                 group.checked = 'checked'
@@ -53,7 +51,7 @@ export default function Settings(props) {
             }
         })
 
-        props.setUserGroups(groups)
+        userGroups.setData(groups)
         axios.post('/api/usergroups/standard', JSON.stringify(groups))
                 
         // Refresh Data Timestamp
@@ -70,9 +68,9 @@ export default function Settings(props) {
      * @param {number} index The index of the category that shall be the standard category.
      */
     const handleSetStandardMealCategory = (index) => {
-        let categories = [...props.mealCategories]
+        let categories = [...mealCategories.data]
 
-        categories.forEach((category, i) => {
+        categories?.forEach((category, i) => {
             if (index === i) {
                 category.isStandard = true
                 category.checked = 'checked'
@@ -82,7 +80,7 @@ export default function Settings(props) {
             }
         })
 
-        props.setMealCategories(categories)
+        mealCategories.setData(categories)
         axios.post('/api/mealcategories/standard', JSON.stringify(categories))
                 
         // Refresh Data Timestamp
@@ -102,9 +100,9 @@ export default function Settings(props) {
         // Get id
         let id = 0
 
-        props.userGroups.forEach((group, i) => {
+        userGroups.data?.forEach((group, i) => {
             if (index === i) {
-                id = props.userGroups[i].value
+                id = userGroups.data?.[i].value
             }
         })
 
@@ -122,7 +120,7 @@ export default function Settings(props) {
             if (!confirm) return
 
             // Cancel if there is only one UserGroup left
-            if (props.userGroups.length <= 1) {
+            if (userGroups.data?.length <= 1) {
                 swal({
                     dangerMode: true,
                     icon: 'error',
@@ -137,7 +135,7 @@ export default function Settings(props) {
             }
 
             // Cancel if the given group is standard
-            if (props.userGroups[index].isStandard) {
+            if (userGroups.data?.[index].isStandard) {
                 swal({
                     dangerMode: true,
                     icon: 'error',
@@ -156,8 +154,8 @@ export default function Settings(props) {
             axios
                 .get('/api/usergroups/delete/' + id)
                 .then(() => {
-                    props.setLoadingUserGroups(true)
-                    props.setLoadingDays(true)
+                    userGroups.setLoading(true)
+                    props.days.setLoading(true)
                 
                     // Refresh Data Timestamp
                     axios.get('/api/refresh-data-timestamp/set')
@@ -173,27 +171,31 @@ export default function Settings(props) {
      * be called (as long as the Settings are not loading).
      */
     const handlePantrySettings = (e) => {
-        props.setSettings({ 
-            ...props.settings,
-            showPantry: !props.settings.showPantry,
+        settings.setData({ 
+            ...settings.data,
+            showPantry: !settings.data.showPantry,
         })
     }
 
+    /**
+     * When settings data changes, call Settings API.
+     */
     useEffect(() => {
-        if (props.isLoadingSettings) return
+        if (settings.isLoading) {
+            return
+        }
 
-        axios.post('/api/settings/pantry', JSON.stringify(props.settings))
-    }, [props.settings])
+        axios.post('/api/settings/pantry', JSON.stringify(settings.data))
+    }, [settings.data])
 
     /**
      * Load layout
      */
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem()
-        props.setSidebarActionButton()
+        props.setSidebar()
 
-        // Load Topbar
+        // Load topbar
         props.setTopbar({
             title: 'Einstellungen',
         })
@@ -203,9 +205,7 @@ export default function Settings(props) {
     }, [])
 
     /** 
-     * Render
-     * 
-     * @todo UserGroup - Avatars?
+     * Render Settings
      */
     return (
         <div className="pb-24 md:pb-4 md:w-[450px]">
@@ -222,11 +222,19 @@ export default function Settings(props) {
                     <Spacer height="4" />
 
                     <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
-                        <input type="checkbox" value={props.settings.showPantry} checked={props.settings.showPantry ? 'checked' : ''} id="showPantry" name="showPantry" className="sr-only peer" onChange={handlePantrySettings} />
+                        <input 
+                            type="checkbox" 
+                            id="showPantry" 
+                            name="showPantry" 
+                            className="sr-only peer" 
+                            value={settings.data?.showPantry} 
+                            checked={settings.data?.showPantry ? 'checked' : ''} 
+                            onChange={handlePantrySettings} 
+                        />
                         <Switch />
 
                         <span className="ml-3 text-sm font-semibold">
-                            Vorratskammer wird {!props.settings.showPantry && ' nicht '} angezeigt
+                            Vorratskammer wird {!settings.data?.showPantry && ' nicht '} angezeigt
                         </span>
                     </label>
                 </Card>
@@ -241,15 +249,15 @@ export default function Settings(props) {
 
                     <Spacer height="4" />
 
-                    {props.isLoadingUser ? (
+                    {props.authentication.isLoading ? (
                         <Spinner />
                     ) : (
-                        (props.isLoadingUserGroups ? (
+                        (userGroups.isLoading ? (
                             <Spinner />
                         ) : (
                             <>
                                 <div className="space-y-2">
-                                    {props.userGroups.map((group, index) => 
+                                    {userGroups.data?.map((group, index) => 
                                         <div key={index} className="flex justify-between items-center">
                                             <div className="flex items-center">
                                                 <span className="material-symbols-rounded mr-4">{group.icon}</span>
@@ -289,14 +297,14 @@ export default function Settings(props) {
 
                     <Spacer height="4" />
 
-                    {props.isLoadingUser ? (
+                    {props.authentication.isLoading ? (
                         <Spinner />
                     ) : (
-                        (props.isLoadingMealCategories ? (
+                        (mealCategories.isLoading ? (
                             <Spinner />
                         ) : (
                             <div className="space-y-2">
-                                {props.mealCategories.map((category, index) => 
+                                {mealCategories.data?.map((category, index) => 
                                     <div key={category.id} className="flex justify-between items-center">
                                         <div className="flex items-center">
                                             <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>

@@ -11,6 +11,7 @@ use App\Repository\RecipeRepository;
 use App\Service\IngredientUtil;
 use App\Service\InstructionUtil;
 use App\Service\RecipeUtil;
+use App\Service\RefreshDataTimestampUtil;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -20,14 +21,31 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Recipe API
+ */
 #[Route('/api/recipes')]
 class RecipeController extends AbstractController
 {
     /**
      * Recipe List API
      * 
-     * Fetches all Recipes and responds with a JSON
+     * Fetches all Recipe objects and responds with an
      * array containing all Recipe data.
+     * 
+     * Expected ResponseData Type: 
+     *     Array<object>
+     * 
+     * Example ResponseData:
+     * [
+     *     {
+     *         id: 21,
+     *         title: 'Spaghetti Bolognese',
+     *         ingredients: Array<object>,
+     *         ...
+     *     },
+     *     ...
+     * ]
      *
      * @param RecipeRepository $recipeRepository
      * @return Response
@@ -44,63 +62,78 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipes Add API
+     * Recipe Add API
      * 
-     * Adds a new Recipe to the database when the form 
-     * in the Request was submitted. Responds with the 
-     * ID of the new Recipe. If no form was submitted, 
-     * responds with an Error 500.
+     * A Recipe API that adds a new Recipe object to the
+     * database when the form in AddRecipe.js was submitted.
+     * Responds with the ID of the newly created Recipe 
+     * object. If no form was submitted, responds with an
+     * Error 500.
+     * 
+     * Expected RequestContent:
+     *     AddRecipe.js form
+     * 
+     * Expected ResponseData Type:
+     *     int: Id of new Recipe
      *
      * @param Request $request
      * @param RecipeRepository $recipeRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param InstructionRepository $instructionRepository
-     * @param IngredientUtil $ingredientUtil
-     * @param InstructionUtil $instructionUtil
+     * @param RecipeUtil $recipeUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
-    #[Route('/add', name: 'api_recipes_add', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'api_recipe_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
         RecipeRepository $recipeRepository,
         RecipeUtil $recipeUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        // The new Recipe object will automatically be 
+        // validated and set up by the Form.
         $recipe = new Recipe();
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $recipeRepository->add($recipe, true);
-            $recipeUtil->update($recipe, $form);
-
-            return new JsonResponse([
-                'id' => $recipe->getId()
-            ]);
+        // Send Error 500 if form was not submitted.
+        if (!$form->isSubmitted()) {
+            return (new Response)->setStatusCode(500);
         }
 
-        $response = (new Response())->setStatusCode(500);
-        return $response;
+        // If form was submitted, add Recipe to database
+        $recipeRepository->save($recipe, true);
+        $recipeUtil->update($recipe, $form);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Respond with new Id
+        return new Response($recipe->getId());
     }
 
     /**
      * Recipes Edit API
      * 
-     * Edits an existing Recipe when the form 
-     * in the Request was submitted. Responds with the 
-     * ID of the new Recipe. If no form was submitted, 
-     * responds with an Error 500.
+     * A Recipe API that edit an existing Recipe object in the
+     * database when the form in EditRecipe.js was submitted.
+     * Responds with the ID of the Recipe object. If no form 
+     * was submitted, responds with an Error 500.
+     * 
+     * Expected RequestContent:
+     *     EditRecipe.js form
+     * 
+     * Expected ResponseData Type:
+     *     int: Id of new Recipe
      * 
      * @param Request $request
      * @param Recipe $recipe
      * @param RecipeRepository $recipeRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param InstructionRepository $instructionRepository
-     * @param IngredientUtil $ingredientUtil
-     * @param InstructionUtil $instructionUtil
+     * @param RecipeUtil $recipeUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/edit/{id}', name: 'api_recipes_edit', methods: ['GET', 'POST'])]
@@ -108,60 +141,51 @@ class RecipeController extends AbstractController
         Request $request, 
         Recipe $recipe, 
         RecipeRepository $recipeRepository,
-        IngredientUtil $ingredientUtil,
-        InstructionUtil $instructionUtil,
         RecipeUtil  $recipeUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $form = $this
-            ->createForm(RecipeType::class, $recipe)
-            ->add('ingredients', TextareaType::class, [
-                'required' => false,
-                'mapped' => false,
-                'data' => $ingredientUtil->ingredientString($recipe->getIngredients()),
-            ])
-            ->add('instructions', TextareaType::class, [
-                'required' => false,
-                'mapped' => false,
-                'data' => $instructionUtil->instructionString($recipe->getInstructions()),
-            ])
-            ->add('image_remove', CheckboxType::class, [
-                'required' => false,
-                'mapped' => false,
-            ])
-        ;
-
+        $form = $this->createForm(RecipeType::class, $recipe);
+        $form = $recipeUtil->prepareEditForm($recipe, $form);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $recipeUtil->update($recipe, $form);
-            $recipeRepository->add($recipe, true);
-
-            return new JsonResponse([
-                'id' => $recipe->getId()
-            ]);
+        // Send Error 500 if form was not submitted.
+        if (!$form->isSubmitted()) {
+            return (new Response)->setStatusCode(500);
         }
 
-        $response = (new Response())->setStatusCode(500);
-        return $response;
+        // If form was submitted, save Recipe to database
+        $recipeUtil->update($recipe, $form);
+        $recipeRepository->save($recipe, true);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Respond with new Id
+        return new Response($recipe->getId());
     }
 
     /**
      * Recipes Delete API
      * 
-     * Deletes the Recipe with the given ID and responds
-     * with an empty Response.
+     * Deletes the Recipe object with the given ID.
      *
      * @param Request $request
      * @param Recipe $recipe
      * @param MealRepository $mealRepository
      * @param RecipeRepository $recipeRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/delete/{id}', name: 'api_recipes_delete', methods: ['GET'])]
-    public function delete(Recipe $recipe, MealRepository $mealRepository, RecipeRepository $recipeRepository): Response
+    public function delete(
+        Recipe $recipe, 
+        MealRepository $mealRepository, 
+        RecipeRepository $recipeRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -176,6 +200,9 @@ class RecipeController extends AbstractController
 
         // Delete recipe
         $recipeRepository->remove($recipe, true);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
         return new Response();
     }

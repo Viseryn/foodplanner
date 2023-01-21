@@ -2,15 +2,15 @@
  * ./assets/pages/Login/Login.js *
  *********************************/
 
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState }   from 'react'
+import axios                            from 'axios'
 
-import { InputRow } from '../../components/form/Input'
-import Button       from '../../components/ui/Buttons/Button'
-import Card         from '../../components/ui/Card'
-import Notification from '../../components/ui/Notification'
-import Spacer       from '../../components/ui/Spacer'
-import Spinner      from '../../components/ui/Spinner'
+import { InputRow }                     from '../../components/form/Input'
+import Button                           from '../../components/ui/Buttons/Button'
+import Card                             from '../../components/ui/Card'
+import Notification                     from '../../components/ui/Notification'
+import Spacer                           from '../../components/ui/Spacer'
+import Spinner                          from '../../components/ui/Spinner'
 
 /**
  * Login
@@ -19,32 +19,28 @@ import Spinner      from '../../components/ui/Spinner'
  * users or a success/error notification.
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {arr} user
- * @property {boolean} isLoadingUser
- * @property {function} setLoadingUser
+ * @param {object} props
+ * @param {function} props.setSidebar
+ * @param {function} props.setTopbar
+ * @param {function} props.setLoading
+ * @param {object} props.user
+ * @param {object} props.authentication
  */
 export default function Login(props) {
     /**
-     * State variables
+     * The response from the Login API.
+     * 
+     * @type {[string, function]}
      */
     const [response, setResponse] = useState()
-    const [isLoadingSubmit, setLoadingSubmit] = useState(false)
 
     /**
-     * Load layout
+     * A loading boolean for the submit handler.
+     * 
+     * @type {[boolean, function]}
      */
-    useEffect(() => {
-        // Load sidebar
-        props.setSidebarActiveItem()
-        props.setSidebarActionButton()
+    const [isLoading, setLoading] = useState(false)
 
-        // Load topbar
-        props.setTopbar({
-            title: 'Login',
-        })
-    }, [])
 
     /**
      * handleSubmit
@@ -59,25 +55,39 @@ export default function Login(props) {
         event.preventDefault()
 
         setResponse()
-        setLoadingSubmit(true)
+        setLoading(true)
 
         axios
             .post('/api/login', formData)
             .then(response => {
                 setResponse(response.data)
-                setLoadingSubmit(false)
-                props.setLoadingUser(true)
+                setLoading(false)
+                props.user.setLoading(true)
+                props.setLoading(true)
             })
     }
 
     /**
-     * Render
+     * Load layout
+     */
+    useEffect(() => {
+        // Load sidebar
+        props.setSidebar()
+
+        // Load topbar
+        props.setTopbar({
+            title: 'Login',
+        })
+    }, [])
+
+    /**
+     * Render Login
      */
     return (
         <div className="pb-24 md:pb-4 md:w-[450px]">
             <Spacer height="6" />
             
-            {(props.isLoadingUser || isLoadingSubmit) &&
+            {(props.user.isLoading || isLoading) &&
                 <Spinner />
             }
 
@@ -90,13 +100,13 @@ export default function Login(props) {
                 </div>
             }
 
-            {props.user?.username !== undefined && !props.isLoadingUser && !isLoadingSubmit &&
+            {props.user.data?.username !== undefined && !props.user.isLoading && !isLoading &&
                 <div className="mx-4 md:mx-0">
                     <Notification color="green" title="Erfolgreich eingeloggt!">
-                        Willkommen, {props.user?.username}.
+                        Willkommen, {props.user.data?.username}.
                     </Notification>
 
-                    {!props.user?.roles?.includes('ROLE_ADMIN') &&
+                    {!props.authentication.isAuthenticated &&
                         <>
                             <Spacer height="4" />
                             <Notification title="Nicht genügend Berechtigungen.">
@@ -117,7 +127,7 @@ export default function Login(props) {
                 </div>
             }
 
-            {props.user?.username === undefined && !props.isLoadingUser && !isLoadingSubmit &&
+            {props.user.data?.username === undefined && !props.user.isLoading && !isLoading &&
                 <div className="mx-4 md:mx-0">
                     <form onSubmit={handleSubmit}>
                         <Card>

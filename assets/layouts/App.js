@@ -2,30 +2,35 @@
  * ./assets/layouts/App.js *
  ***************************/
 
-import React, { useEffect, useState } from "react";
-import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
-import axios from "axios";
+import React, { useEffect, useState }   from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import loadShoppingList from "../util/loadShoppingList";
-import loadPantry from "../util/loadPantry.js";
+import axios                            from 'axios'
 
-import Sidebar, { SidebarDrawerButton } from './Sidebar/Sidebar';
-import Topbar from "./Topbar/Topbar";
-import AuthChecker from "./AuthChecker";
+import AuthChecker                      from './AuthChecker/AuthChecker'
+import Sidebar                          from './Sidebar/Sidebar'
+import SidebarDrawer                    from './Sidebar/SidebarDrawer'
+import SidebarDrawerButton              from './Sidebar/components/SidebarDrawerButton'
+import Topbar                           from './Topbar/Topbar'
 
-import Planner from '../pages/Planner/Planner';
-import AddMeal from '../pages/Planner/AddMeal';
-import Recipes from '../pages/Recipes/Recipes';
-import AddRecipe from '../pages/Recipes/AddRecipe';
-import EditRecipe from '../pages/Recipes/EditRecipe';
-import ShoppingList from '../pages/ShoppingList/ShoppingList';
-import Login from '../pages/Login/Login';
-import Logout from '../pages/Logout/Logout';
-import PageNotFound from '../pages/PageNotFound/PageNotFound';
-import Settings from '../pages/Settings/Settings';
-import AddGroup from "../pages/Settings/AddGroup";
-import Registration from "../pages/Registration/Registration";
-import Pantry from "../pages/Pantry/Pantry";
+import useAuthentication                from '../hooks/useAuthentication'
+import useFetch                         from '../hooks/useFetch'
+import useRefreshDataTimestamp          from '../hooks/useRefreshDataTimestamp'
+
+import Login                            from '../pages/Login/Login'
+import Logout                           from '../pages/Logout/Logout'
+import PageNotFound                     from '../pages/PageNotFound/PageNotFound'
+import Pantry                           from '../pages/Pantry/Pantry'
+import AddMeal                          from '../pages/Planner/AddMeal'
+import Planner                          from '../pages/Planner/Planner'
+import AddRecipe                        from '../pages/Recipes/AddRecipe'
+import EditRecipe                       from '../pages/Recipes/EditRecipe'
+import Recipes                          from '../pages/Recipes/Recipes'
+import Recipe                           from '../pages/Recipes/Recipe'
+import Registration                     from '../pages/Registration/Registration'
+import AddGroup                         from '../pages/Settings/AddGroup'
+import Settings                         from '../pages/Settings/Settings'
+import ShoppingList                     from '../pages/ShoppingList/ShoppingList'
 
 /**
  * App
@@ -35,417 +40,376 @@ import Pantry from "../pages/Pantry/Pantry";
  * various global components, such as the sidebar or 
  * the shopping list.
  * 
- * Renders a flex container consisting of two columns; 
+ * Renders a flex container consisting of two columns/rows:
  * the sidebar, rendered by the Sidebar component, and 
- * the content, which is handled by the BrowserRouter.
+ * the main container, which itself consists of the topbar,
+ * rendered by the Topbar component, and the actual content
+ * container, where the BrowserRouter decides which page to 
+ * load depending on the URL.
  * 
  * @component
+ * @param {string} props.version The current version number.
  */
-export default function App() {
-    /**
-     * Sidebar configuration (active item, action button) are kept 
-     * in global state variables.
-     * Sidebar setters will be passed as props to subcomponents, so 
-     * that each subcomponent can alter the sidebar state variables.
-     */
-    const [isDrawerVisible, setDrawerVisible] = useState(false);
-    const [sidebarActiveItem, setSidebarActiveItem] = useState('');
-    const [sidebarActionButton, setSidebarActionButton] = useState({
-        visible: false,
-        icon: '',
-        path: '#',
-        label: '',
-        onClickHandler: () => {},
-    }); 
+export default function App({ version }) {
+    /******************
+     * GENERAL        *
+     ******************/
 
     /**
-     * Topbar configuration is kept in global state.
-     * The topbar action buttons can move! On mobile screens,
-     * there is a dedicated top bar container. On larger screens,
-     * these buttons may move next to the Heading.
+     * The user and authentication objects.
      * 
-     * The format for the array of action buttons is as following.
+     * @type {[object, object]}
+     */
+    const [user, authentication] = useAuthentication()
+
+    /**
+     * Whether or not dependent data should be reloaded
+     * without loading screens. Will be updated by the
+     * useRefreshDataTimestamp hook.
      * 
-     * @example 
-     * const actionButtons = [
-     *     { icon: 'sync',   alt: 'Synchronize', onClick: () => { ... } },
-     *     { icon: 'delete', alt: 'Delete',      onClick: () => { ... } },
-     * ]
+     * @type {[boolean, function]}
+     */
+    const [isLoading, setLoading] = useState(false)
+
+    /**
+     * The RefreshDataTimestamp. This hook will keep
+     * updating isLoading if the timestamp changes.
+     * 
+     * @type {number}
+     */
+    const refreshDataTimestamp = useRefreshDataTimestamp(isLoading, setLoading)
+
+    
+    /******************
+     * SIDEBAR        *
+     ******************/
+
+    /**
+     * The active item of the sidebar. It will be highlighted
+     * with a darker background color and a filled icon.
+     * Each page MUST set an active item; it can be empty, however.
+     * 
+     * @type {[string?, function]}
+     */
+    const [sidebarActiveItem, setSidebarActiveItem] = useState('')
+
+    /**
+     * The configuration of the SidebarActionButton (SAB). 
+     * On larger screens, it is fixed in the top of the sidebar.
+     * On small screens it is a floating action button in the 
+     * bottom-right corner of the screen. By default, it is 
+     * invisible. Each page MUST set a configuration for the SAB;
+     * it can be empty, however.
+     * 
+     * @type {[object?, function]}
+     */
+    const [sidebarActionButton, setSidebarActionButton] = useState({})
+
+    /**
+     * Updates the active sidebar item and the SidebarActionButton.
+     * 
+     * @param {string} sidebarActiveItem The sidebar item that should be active.
+     * @param {object} sidebarActionButton The configuration for the SidebarActionButton.
+     * @param {boolean} sidebarActionButton.visible Whether the SAB should be visible or not.
+     * @param {string} sidebarActionButton.icon The icon of the SAB.
+     * @param {string} sidebarActionButton.label The label text of the SAB.
+     * @param {string} sidebarActionButton.path An optional path that the SAB redirects to.
+     * @param {function} sidebarActionButton.onClick An optional onClick handler.
+     * @param {boolean?} sidebarActionButton.floating Set true for being displayed expanded and floating in the bottom-right corner. Set false for an SAB integrated in the sidebar.
+     */
+    const setSidebar = (sidebarActiveItem = '', sidebarActionButton = {}) => {
+        setSidebarActiveItem(sidebarActiveItem)
+        setSidebarActionButton(sidebarActionButton)
+    }
+
+    /**
+     * Whether or not the sidebar drawer is visible.
+     * If set to true, the SidebarDrawer will move into 
+     * the view. The setDrawerVisible method can be passed
+     * to any button, preferably to SidebarDrawerButton 
+     * components, e.g. in the sidebar or the topbar.
+     * 
+     * @type {[boolean, function]}
+     */
+    const [isDrawerVisible, setDrawerVisible] = useState(false)
+
+    
+    /******************
+     * TOPBAR         *
+     ******************/
+
+    /**
+     * The configuration of the topbar. On small screens, 
+     * the topbar consists of two rows, one of which has a
+     * SidebarDrawerButton and Topbar Action Buttons, while
+     * the other one has a back button and the title. By 
+     * scrolling, it will collapse into one row. On large 
+     * screens, the topbar will be shown in the main container.
+     * 
+     * See the documentation of the Topbar component 
+     * for further details on the properties.
      */
     const [topbar, setTopbar] = useState({
         title: '',
         showBackButton: false,
         backButtonPath: '/',
+        onBackButtonClick: () => {},
         actionButtons: [],
-    });
-
-    /**
-     * Keep data in global state variables
-     * and pass them as props to subcomponents.
-     */
-    // RefreshDataTimestamp
-    const [refreshDataTimestamp, setRefreshDataTimestamp] = useState(null);
-    const [isLoadingAnonymously, setLoadingAnonymously] = useState(false);
-
-    // User
-    const [user, setUser] = useState([]);
-    const [isLoadingUser, setLoadingUser] = useState(true);
-
-    // ShoppingList
-    const [shoppingList, setShoppingList] = useState([]);
-    const [isLoadingShoppingList, setLoadingShoppingList] = useState(true);
-
-    // Pantry
-    const [pantry, setPantry] = useState([]);
-    const [isLoadingPantry, setLoadingPantry] = useState(true);
-
-    // Days
-    const [days, setDays] = useState([]);
-    const [isLoadingDays, setLoadingDays] = useState(true);
-
-    // Recipes
-    const [recipes, setRecipes] = useState([]);
-    const [isLoadingRecipes, setLoadingRecipes] = useState(true);
-    const [recipeIndex, setRecipeIndex] = useState(-1);
-
-    // UserGroups
-    const [userGroups, setUserGroups] = useState([]);
-    const [isLoadingUserGroups, setLoadingUserGroups] = useState(true);
-
-    // MealCategories
-    const [mealCategories, setMealCategories] = useState([]);
-    const [isLoadingMealCategories, setLoadingMealCategories] = useState(true);
-
-    // Settings
-    const [settings, setSettings] = useState([]);
-    const [isLoadingSettings, setLoadingSettings] = useState(true);
-
-    /**
-     * isAuthenticated
-     * 
-     * @return {boolean} Returns true when the authenticated user has the admin role and false otherwise.
-     */
-    const isAuthenticated = () => {
-        return user?.roles?.includes('ROLE_ADMIN');
-    };
-
-    /**
-     * Props for subcomponents
-     */
-    const props = {
-        // RefreshDataTimestamp
-        'refreshDataTimestamp': refreshDataTimestamp,
-        'setRefreshDataTimestamp': setRefreshDataTimestamp,
-        'setLoadingAnonymously': setLoadingAnonymously,
-
-        // User
-        'user': user,
-        'setUser': setUser,
-        'isLoadingUser': isLoadingUser,
-        'setLoadingUser': setLoadingUser,
-        'isAuthenticated': isAuthenticated,
-
-        // ShoppingList
-        'shoppingList': shoppingList,
-        'setShoppingList': setShoppingList,
-        'isLoadingShoppingList': isLoadingShoppingList,
-        'setLoadingShoppingList': setLoadingShoppingList,
-
-        // Pantry
-        'pantry': pantry,
-        'setPantry': setPantry,
-        'isLoadingPantry': isLoadingPantry,
-        'setLoadingPantry': setLoadingPantry,
-
-        // Days
-        'days': days,
-        'setDays': setDays,
-        'isLoadingDays': isLoadingDays,
-        'setLoadingDays': setLoadingDays,
-
-        // Recipes
-        'recipes': recipes,
-        'setRecipes': setRecipes,
-        'isLoadingRecipes': isLoadingRecipes,
-        'setLoadingRecipes': setLoadingRecipes,
-        'recipeIndex': recipeIndex,
-        'setRecipeIndex': setRecipeIndex,
-
-        // UserGroups
-        'userGroups': userGroups,
-        'setUserGroups': setUserGroups,
-        'isLoadingUserGroups': isLoadingUserGroups,
-        'setLoadingUserGroups': setLoadingUserGroups,
-
-        // MealCategories
-        'mealCategories': mealCategories,
-        'setMealCategories': setMealCategories,
-        'isLoadingMealCategories': isLoadingMealCategories,
-        'setLoadingMealCategories': setLoadingMealCategories,
-
-        // Settings
-        'settings': settings,
-        'setSettings': setSettings,
-        'isLoadingSettings': isLoadingSettings,
-        'setLoadingSettings': setLoadingSettings,
-
-        // Sidebar
-        'setSidebarActiveItem': setSidebarActiveItem, 
-        'setSidebarActionButton': setSidebarActionButton,
-
-        // Topbar
-        'topbar': topbar,
-        'setTopbar': setTopbar,
-    };
-
-    /**
-     * Load current RefreshDataTimestamp from database
-     * and trigger rerenders if the timestamp has changed.
-     */
-    useEffect(() => {
-        // Set initial timestamp
-        if (refreshDataTimestamp === null) {
-            axios
-                .get('/api/refresh-data-timestamp')
-                .then(response => {
-                    setRefreshDataTimestamp(JSON.parse(response.data))
-                })
-        }
-
-        // Create a repeating 5 seconds interval
-        const interval = setInterval(() => {
-            axios
-                .get('/api/refresh-data-timestamp')
-                .then(response => {
-                    const timestamp = JSON.parse(response.data)
-                    // console.log(timestamp)
-
-                    // Check if timestamp has changed.
-                    // If yes, trigger a reload of everything.
-                    if (timestamp !== refreshDataTimestamp) {
-                        // console.log('Trigger reload')
-                        setRefreshDataTimestamp(timestamp)
-
-                        // Settings isLoadingAnonymously to true will
-                        // trigger a reload of Days, Recipes, UserGroups,
-                        // Pantry, ShoppingList, MealCategories and Settings 
-                        // without activating any spinners or loading screens.
-                        setLoadingAnonymously(true)
-                    }
-                })
-
-            // If reload was triggered, set isLoadingAnonymously to false
-            if (isLoadingAnonymously) {
-                setLoadingAnonymously(false)
-            }
-        }, 5000)
-
-        return () => { 
-            clearInterval(interval)
-        }
+        truncate: false,
+        isLoading: false,
+        style: '',
     })
 
-    /**
-     * Load user data into global state when isLoadingUser
-     * is true, e.g. on first render or after login/logout.
-     */
-    useEffect(() => {
-        if (!isLoadingUser) return;
-
-        axios
-            .get('/api/user')
-            .then(response => {
-                // Load user data
-                setUser(JSON.parse(response.data));
-                setLoadingUser(false);
-
-                // Remove user-sensitive data
-                setUserGroups([]);
-                setMealCategories([]);
-                setSettings([]);
-                setLoadingUserGroups(true);
-                setLoadingMealCategories(true);
-                setLoadingSettings(true);
-
-                // Update state variables
-                setLoadingDays(true);
-                setLoadingRecipes(true);
-                setLoadingShoppingList(true);
-                setLoadingPantry(true);
-            })
-        ;
-    }, [isLoadingUser]);
+    
+    /******************
+     * SETTINGS       *
+     ******************/
 
     /**
-     * Load UserGroup data into global state when isLoadingUserGroups
-     * is true, e.g. on first render.
+     * The user-specific settings.
+     * 
+     * @type {object}
      */
-    useEffect(() => {
-        if (!isLoadingUserGroups && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+    const settings = useFetch(
+        '/api/settings', 
+        authentication,
+        [isLoading],
+    )
 
-        axios
-            .get('/api/usergroups/list')
-            .then(response => {
-                setUserGroups(JSON.parse(response.data));
-                setLoadingUserGroups(false);
-            })
-        ;
-    }, [isLoadingUserGroups, isLoadingUser, user, isLoadingAnonymously]);
+    
+    /******************
+     * USERGROUPS     *
+     ******************/
 
     /**
-     * Load MealCategory data into global state when isLoadingMealCategories
-     * is true, e.g. on first render.
+     * The list of UserGroups. The data object 
+     * is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
-    useEffect(() => {
-        if (!isLoadingMealCategories && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+    const userGroups = useFetch(
+        '/api/usergroups/list',
+        authentication,
+        [isLoading],
+    )
 
-        axios
-            .get('/api/mealcategories/list')
-            .then(response => {
-                setMealCategories(JSON.parse(response.data));
-                setLoadingMealCategories(false);
-            })
-        ;
-    }, [isLoadingMealCategories, isLoadingUser, user, isLoadingAnonymously]);
+    
+    /******************
+     * MEALCATEGORIES *
+     ******************/
 
     /**
-     * Load Settings data into global state when isLoadingSettings
-     * is true, e.g. on first render.
+     * The list of MealCategories. The data object 
+     * is an array of objects here. 
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
-    useEffect(() => {
-        if (!isLoadingSettings && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+    const mealCategories = useFetch(
+        '/api/mealcategories/list',
+        authentication,
+        [isLoading],
+    )
 
-        axios
-            .get('/api/settings')
-            .then(response => {
-                setSettings(JSON.parse(response.data));
-                setLoadingSettings(false);
-            })
-        ;
-    }, [isLoadingSettings, isLoadingUser, user, isLoadingAnonymously]);
+    
+    /******************
+     * RECIPES        *
+     ******************/
 
     /**
-     * Load recipes into global state when isLoadingRecipes 
-     * is true, e.g. on first render or after adding/editing
-     * a recipe.
+     * The complete recipe list. The data object 
+     * is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
-    useEffect(() => {
-        if (!isLoadingRecipes && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+    const recipes = useFetch(
+        '/api/recipes/list',
+        authentication,
+        [isLoading],
+    )
 
-        axios
-            .get('/api/recipes/list')
-            .then(response => {
-                setRecipes(JSON.parse(response.data));
-                setLoadingRecipes(false);
-            })
-        ;
-    }, [isLoadingRecipes, isLoadingUser, user, isLoadingAnonymously]);
+
+    /******************
+     * PLANNER        *
+     ******************/
+
+    /**
+     * The complete list of Day entities. The data
+     * object is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
+     */
+    const days = useFetch(
+        '/api/days/list',
+        authentication,
+        [isLoading],
+    )
 
     /**
      * Calls the Update Days API, which removes all 
      * unnecessary Days (past days and days further away
-     * than ten), and calls getDays() after.
-     * Loads days data into global state when isLoadingDays
-     * is true, e.g. on first render or after adding/deleting 
-     * a meal.
+     * than ten).
      */
     useEffect(() => {
-        if (!isLoadingDays && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+        if (days.isLoading) return
 
-        axios
-            .get('/api/days/update')
-            .then(() => {
-                axios
-                    .get('/api/days/list')
-                    .then(response => {
-                        setDays(JSON.parse(response.data));
-                        setLoadingDays(false);
-                    })
-                ;
-            })
-        ;
-    }, [isLoadingDays, isLoadingUser, user, isLoadingAnonymously]);
+        axios.get('/api/days/update')
+    }, [days.isLoading])
+
+
+    /******************
+     * SHOPPINGLIST  *
+     ******************/
 
     /**
-     * Load shopping list into global state when 
-     * isLoadingShoppingList is true, e.g. on first render.
+     * The complete shopping list. The data 
+     * object is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
-    useEffect(() => {
-        if (!isLoadingShoppingList && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+    const shoppingList = useFetch(
+        '/api/shoppinglist/ingredients',
+        authentication,
+        [isLoading],
+    )
 
-        loadShoppingList(setShoppingList, () => {
-            // Disable loading screen
-            setLoadingShoppingList(false);
-        });
-    }, [isLoadingShoppingList, isLoadingUser, user, isLoadingAnonymously]);
+
+    /******************
+     * PANTRY         *
+     ******************/
 
     /**
-     * Load pantry into global state when 
-     * isLoadingPantry is true, e.g. on first render.
+     * The complete pantry. The data 
+     * object is an array of objects here.
+     * 
+     * @type {object}
+     * @property {Array<object>} data
      */
-    useEffect(() => {
-        if (!isLoadingPantry && !isLoadingUser && !isLoadingAnonymously) return;
-        if (!isAuthenticated()) return;
+    const pantry = useFetch(
+        '/api/pantry/ingredients',
+        authentication,
+        [isLoading],
+    )
 
-        loadPantry(setPantry, () => {
-            // Disable loading screen
-            setLoadingPantry(false);
-        });
-    }, [isLoadingPantry, isLoadingUser, user, isLoadingAnonymously]);
+
+    /******************
+     * RENDERING      *
+     ******************/
+
+    /**
+     * Props for subcomponents
+     * 
+     * @todo Manage props for each component individually
+     */
+    const props = { user, authentication, settings, userGroups, mealCategories, recipes, days, shoppingList, pantry, setSidebar, setTopbar }
 
     /** 
-     * Render
+     * Render App
      */
     return (
         <BrowserRouter>
             <div className="flex flex-col md:flex-row items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900 min-w-[375px]">
+                <SidebarDrawer
+                    isDrawerVisible={isDrawerVisible}
+                    setDrawerVisible={setDrawerVisible} 
+                    version={version}
+                    user={user}
+                />
+
                 <Sidebar 
                     sidebarActiveItem={sidebarActiveItem} 
                     sidebarActionButton={sidebarActionButton}
                     isDrawerVisible={isDrawerVisible}
                     setDrawerVisible={setDrawerVisible} 
-                    {...props}
+                    authentication={authentication}
+                    settings={settings}
                 />
                 
+                {/* Main Container */}
                 <div className="flex flex-col w-full">
-                    {/* Topbar */}
                     <Topbar 
+                        topbar={topbar}
                         SidebarDrawerButton={
                             <SidebarDrawerButton
                                 isDrawerVisible={isDrawerVisible}
                                 setDrawerVisible={setDrawerVisible} 
                             />
                         }
-                        {...props}
                     />
 
-                    {/* Main Content */}
+                    {/* Routing */}
                     <Routes>
-                        <Route path="/"                     element={<AuthChecker component={<Planner {...props} />} {...props} />} />
-                        <Route path="/planner"              element={<AuthChecker component={<Planner {...props} />} {...props} />} />
-                        <Route path="/planner/add"          element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
-                        <Route path="/planner/add/:id"      element={<AuthChecker component={<AddMeal {...props} />} {...props} />} />
-                        <Route path="/shoppinglist"         element={<AuthChecker component={<ShoppingList {...props} />} {...props} />} />
-                        <Route path="/recipes"              element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
-                        <Route path="/recipe/add"           element={<AuthChecker component={<AddRecipe {...props} />} {...props} />} />
-                        <Route path="/recipe/:id"           element={<AuthChecker component={<Recipes {...props} />} {...props} />} />
-                        <Route path="/recipe/:id/edit"      element={<AuthChecker component={<EditRecipe {...props} />} {...props} />} />
-                        <Route path="/pantry"               element={<AuthChecker component={<Pantry {...props} />} {...props} />} />
-                        <Route path="/settings"             element={<AuthChecker component={<Settings {...props} />} {...props} />} />
-                        <Route path="/settings/groups/add"  element={<AuthChecker component={<AddGroup {...props} />} {...props} />} />
-                        <Route path="/login"                element={<Login {...props} />} />
-                        <Route path="/logout"               element={<Logout {...props} />} />
-                        <Route path="/register"             element={<Registration {...props} />} />
-                        <Route path="*"                     element={<PageNotFound {...props} />} />
+                        <Route 
+                            path="/"                     
+                            element={<AuthChecker authentication={authentication} component={<Planner {...props} />} />} 
+                        />
+                        <Route 
+                            path="/planner"              
+                            element={<AuthChecker authentication={authentication} component={<Planner {...props} />} />} 
+                        />
+                        <Route 
+                            path="/planner/add"          
+                            element={<AuthChecker authentication={authentication} component={<AddMeal {...props} />} />} 
+                        />
+                        <Route 
+                            path="/planner/add/:id"      
+                            element={<AuthChecker authentication={authentication} component={<AddMeal {...props} />} />} 
+                        />
+                        <Route 
+                            path="/shoppinglist"         
+                            element={<AuthChecker authentication={authentication} component={<ShoppingList {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipes"              
+                            element={<AuthChecker authentication={authentication} component={<Recipes {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipe/add"           
+                            element={<AuthChecker authentication={authentication} component={<AddRecipe {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipe/:id"           
+                            element={<AuthChecker authentication={authentication} component={<Recipe {...props} />} />} 
+                        />
+                        <Route 
+                            path="/recipe/:id/edit"      
+                            element={<AuthChecker authentication={authentication} component={<EditRecipe {...props} />} />} 
+                        />
+                        <Route 
+                            path="/pantry"               
+                            element={<AuthChecker authentication={authentication} component={<Pantry {...props} />} />} 
+                        />
+                        <Route 
+                            path="/settings"             
+                            element={<AuthChecker authentication={authentication} component={<Settings {...props} />} />} 
+                        />
+                        <Route 
+                            path="/settings/groups/add"  
+                            element={<AuthChecker authentication={authentication} component={<AddGroup {...props} />} />} 
+                        />
+                        <Route 
+                            path="/login"                
+                            element={<Login setLoading={setLoading} {...props} />} 
+                        />
+                        <Route 
+                            path="/logout"               
+                            element={<Logout {...props} />} 
+                        />
+                        <Route 
+                            path="/register"             
+                            element={<Registration {...props} />} 
+                        />
+                        <Route 
+                            path="*"                     
+                            element={<PageNotFound {...props} />} 
+                        />
                     </Routes>
                 </div>
             </div>
         </BrowserRouter>
-    );
+    )
 }

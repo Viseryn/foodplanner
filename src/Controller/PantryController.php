@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Ingredient;
+use App\Entity\RefreshDataTimestamp;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\StorageRepository;
 use App\Service\IngredientUtil;
+use App\Service\PantryUtil;
+use App\Service\RefreshDataTimestampUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,17 +18,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Pantry API
+ */
 #[Route('/api/pantry')]
 class PantryController extends AbstractController
 {
     /**
-     * Pantry API
+     * Pantry Ingredients API
+     * 
+     * A Pantry API that responds with the list of 
+     * all Ingredient objects that the Pantry has.
+     * 
+     * Expected ResponseData Type: 
+     *     Array<object>
+     * 
+     * Example ResponseData:
+     * [
+     *     {
+     *         id: 21491,
+     *         name: 'Spaghetti',
+     *         quantity_value: '200',
+     *         quantity_unit: 'g',
+     *     },
+     *     ...
+     * ]
      *
      * @param IngredientRepository $ingredientRepository
      * @return Response
      */
-    #[Route('/', name: 'api_pantry', methods: ['GET'])]
-    public function index(
+    #[Route('/ingredients', name: 'api_pantry_ingredients', methods: ['GET'])]
+    public function ingredients(
         IngredientRepository $ingredientRepository
     ): Response {
         $ingredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'ASC']);
@@ -37,193 +60,245 @@ class PantryController extends AbstractController
     }
 
     /**
-     * Pantry Update API
-     *
-     * @param Request $request
-     * @param StorageRepository $storageRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
-     * @return Response
-     */
-    #[Route('/update', name: 'api_pantry_update', methods: ['GET', 'POST'])]
-    public function update(
-        Request $request, 
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
-    ): Response {
-        // Deny access if not logged in
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        // Decode request data
-        $requestContent = json_decode($request->getContent());
-
-        // Transform data into a string
-        $ingredients = '';
-
-        foreach ($requestContent as $ingredient) {
-            $ingredients .= $ingredient->name . "\n";
-        }
-
-        // Transform data into Ingredient objects
-        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
-
-        // Add position and checked to Ingredient objects
-        $i = 0;
-        $storage = $storageRepository->find(1);
-
-        foreach ($requestContent as $ingredient) {
-            $newIngredients[$i]
-                ->setStorage($storage)
-                ->setChecked($ingredient->checked)
-                ->setPosition($ingredient->position)
-            ;
-
-            $i++;
-        }
-
-        // Delete old pantry ingredients from database
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'ASC']);
-        
-        foreach($oldIngredients as $ingredient) {
-            $ingredientRepository->remove($ingredient, true);
-        }
-
-        // Add new pantry ingredients to the database
-        foreach($newIngredients as $ingredient) {
-            $ingredientRepository->add($ingredient, true);
-        }
-
-        // Empty Response
-        return new Response();
-    }
-
-    /**
      * Pantry Add API
+     * 
+     * A Pantry API that, given a request with 
+     * an array of strings, creates new Ingredient 
+     * objects from these strings and adds them to the 
+     * database.
+     * 
+     * Expected RequestContent Type: 
+     *     string[]
+     * 
+     * Example RequestContent:
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
      *
      * @param Request $request
-     * @param RecipeRepository $recipeRepository
-     * @param StorageRepository $storageRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
+     * @param PantryUtil $pantryUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/add', name: 'api_pantry_add', methods: ['GET', 'POST'])]
     public function add(
         Request $request, 
-        RecipeRepository $recipeRepository,
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
+        PantryUtil $pantryUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Decode request data
+        // Decode request content
         $requestContent = json_decode($request->getContent());
+        
+        // Add ingredients from request
+        $pantryUtil->add($requestContent);
 
-        // Collect all ingredients and combine to a string
-        $ingredients = '';
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
-        // If only one recipe is given, the quantity might have been changed
-        if (count($requestContent) === 1) {
-            // Array for new ingredient objects, since
-            // these are not in the database
-            $ingredientsArr = [];
-
-            // Create a new Ingredient object for each ingredient from the request
-            foreach ($requestContent[0]->ingredients as $rawIngredient) {
-                $ingredientsArr[] = (new Ingredient())
-                    ->setName($rawIngredient->name)
-                    ->setQuantityValue($rawIngredient->quantity_value)
-                    ->setQuantityUnit($rawIngredient->quantity_unit)
-                ;
-            }
-
-            // Create the ingredient string
-            $ingredients .= $ingredientUtil->ingredientString(new ArrayCollection($ingredientsArr));
-        }
-
-        // For multiple recipes, go through all their ingredients
-        if (count($requestContent) > 1) {
-            foreach ($requestContent as $recipeData) {
-                $recipe = $recipeRepository->find($recipeData->id);
-                $ingredients .= $ingredientUtil->ingredientString($recipe->getIngredients());
-                $ingredients .= "\n";
-            }
-        }
-
-        // Transform data into Ingredient objects
-        $newIngredients = $ingredientUtil->ingredientSplit($ingredients);
-
-        // Check highest position
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'DESC']);
-        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
-
-        // Add position and checked to Ingredient objects
-        $i = 0;
-        $storage = $storageRepository->find(1);
-
-        foreach ($newIngredients as $ingredient) {
-            $newIngredients[$i]
-                ->setStorage($storage)
-                ->setChecked(false)
-                ->setPosition($highestPosition + 1 + $i)
-            ;
-
-            $i++;
-        }
-
-        // Add new pantry ingredients to the database
-        foreach($newIngredients as $ingredient) {
-            $ingredientRepository->add($ingredient, true);
-        }
-
-        // Empty Response
+        // Empty response
         return new Response();
     }
 
     /**
-     * Pantry Ingredients API
-     *
-     * @param Request $request
-     * @param StorageRepository $storageRepository
-     * @param IngredientRepository $ingredientRepository
-     * @param IngredientUtil $ingredientUtil
+     * Pantry Delete All API
+     * 
+     * A Pantry API that deletes all Ingredient objects 
+     * that the Pantry has.
+     * 
+     * @param PantryUtil $pantryUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
-    #[Route('/ingredients', name: 'api_pantry_ingredients', methods: ['GET', 'POST'])]
-    public function ingredient(
-        Request $request, 
-        StorageRepository $storageRepository, 
-        IngredientRepository $ingredientRepository, 
-        IngredientUtil $ingredientUtil
+    #[Route('/delete-all', name: 'api_pantry_delete_all', methods: ['GET'])]
+    public function deleteAll(
+        PantryUtil $pantryUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ): Response {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
+
+        // Delete all pantry ingredients from database
+        $pantryUtil->deleteAll();
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
+
+    /**
+     * Pantry Delete Ingredient API
+     * 
+     * A Pantry API that checks or unchecks a given 
+     * Ingredient object from the Pantry. The request 
+     * data should be the ID of the Ingredient object.
+     * 
+     * Expected RequestContent Type: 
+     *     int
+     * 
+     * Example RequestContent:
+     *     24
+     * 
+     * @todo Turn into Pantry Delete Single API
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/delete-ingredient', name: 'api_pantry_delete_ingredient', methods: ['GET', 'POST'])]
+    public function deleteIngredient(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // Decode request data
         $requestContent = json_decode($request->getContent());
+        
+        // Find Ingredient object and remove it
+        $ingredient = $ingredientRepository->find($requestContent);
+        $ingredientRepository->remove($ingredient, true);
 
-        // Transform data into Ingredient object
-        $newIngredient = $ingredientUtil->ingredientSplit($requestContent->name)[0];
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
-        // Check highest position
-        $oldIngredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'DESC']);
-        $highestPosition = (count($oldIngredients) > 0) ? $oldIngredients[0]->getPosition() : 0;
+        // Empty response
+        return new Response();
+    }
 
-        // Add position and checked to Ingredient object
-        $storage = $storageRepository->find(1);
-        $newIngredient
-            ->setStorage($storage)
-            ->setChecked(false)
-            ->setPosition($highestPosition + 1)
-        ;
+    /**
+     * Pantry Edit Ingredient API
+     * 
+     * A Pantry API that edit a given 
+     * Ingredient object from the Pantry. The request 
+     * data should consist of the edited Ingredient object.
+     * Note that quantity_unit and quantity_value will be 
+     * empty and the whole description is contained in name.
+     * 
+     * Expected RequestContent Type: 
+     *     array<string, mixed>
+     * 
+     * Example RequestContent:
+     *     ['id' => int, 'name' => string, ...]
+     *
+     * @param Request $request
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param PantryUtil $pantryUtil
+     * @return Response
+     */
+    #[Route('/edit-ingredient', name: 'api_pantry_edit_ingredient', methods: ['GET', 'POST'])]
+    public function editIngredient(
+        Request $request,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        PantryUtil $pantryUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Add new pantry ingredient to the database
-        $ingredientRepository->add($newIngredient, true);
+        // Decode request data
+        $requestContent = (array) json_decode($request->getContent());
+        
+        // Update the Ingredient object
+        $pantryUtil->editIngredient($requestContent);
+        
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
 
-        // Empty Response
-        return new Response($newIngredient);
+        // Empty response
+        return new Response();
+    }
+
+    /**
+     * Pantry Replace API
+     * 
+     * A Pantry API that replaces the current 
+     * Ingredient objects of the Pantry with 
+     * new ones. It basically does the same as running
+     * deleteAll() and then add().
+     * 
+     * Expected RequestContent Type: 
+     *     string[]
+     * 
+     * Example RequestContent:
+     *     ['200 g Spaghetti', 'Hartkäse', '2 1/2 Karotten']
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param PantryUtil $pantryUtil
+     * @return Response
+     */
+    #[Route('/replace', name: 'api_pantry_replace', methods: ['GET', 'POST'])]
+    public function replace(
+        Request $request,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        PantryUtil $pantryUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = json_decode($request->getContent());
+        
+        // Replace Pantry in the database
+        $pantryUtil->replace($requestContent);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
+    }
+
+    /**
+     * Pantry Change Position API
+     * 
+     * A Pantry API that swaps the position of 
+     * two Ingredient objects.
+     *
+     * @param Request $request
+     * @param IngredientRepository $ingredientRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @return Response
+     */
+    #[Route('/change-position', name: 'api_pantry_change_position', methods: ['GET', 'POST'])]
+    public function changePosition(
+        Request $request,
+        IngredientRepository $ingredientRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
+        // Deny access if not logged in
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Decode request data
+        $requestContent = (array) json_decode($request->getContent());
+
+        // Get both Ingredient objects
+        $ingredient1 = $ingredientRepository->find($requestContent[0]);
+        $ingredient2 = $ingredientRepository->find($requestContent[1]);
+
+        // Get positions
+        $position1 = $ingredient1->getPosition();
+        $position2 = $ingredient2->getPosition();
+
+        // Swap positions
+        $ingredient1->setPosition($position2);
+        $ingredient2->setPosition($position1);
+
+        // Save in database
+        $ingredientRepository->save($ingredient1, true);
+        $ingredientRepository->save($ingredient2, true);
+
+        // Update RefreshDataTimestamp
+        $refreshDataTimestampUtil->updateTimestamp();
+
+        // Empty response
+        return new Response();
     }
 }

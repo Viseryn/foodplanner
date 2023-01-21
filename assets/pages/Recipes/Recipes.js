@@ -2,68 +2,80 @@
  * ./assets/pages/Recipes/Recipes.js *
  *************************************/
 
-import React, { useEffect, useState }   from 'react';
-import { Link }                         from 'react-router-dom';
+import React, { useEffect, useState }   from 'react'
+import { Link }                         from 'react-router-dom'
 
-import Notification                     from '../../components/ui/Notification';
-import RecipeListSkeleton               from './components/RecipeListSkeleton';
-import Spacer                           from '../../components/ui/Spacer';
+import SearchWidget                     from './components/SearchWidget'
+import RecipeListSkeleton               from './components/RecipeListSkeleton'
+import Notification                     from '../../components/ui/Notification'
+import Spacer                           from '../../components/ui/Spacer'
 
 /**
  * Recipes
  * 
- * A Component for showing a list of all Recipes.
- * Collects the Recipe data from the Recipe List API.
+ * A component that renders a list of all recipes.
+ * At the top, a search bar can be used to filter 
+ * the list by recipe title and ingredient names.
  * 
  * @component
  * @property {function} setSidebarActiveItem
  * @property {function} setSidebarActionButton
  * @property {function} setTopbar
- * @property {arr} recipes 
- * @property {boolean} isLoadingRecipes
+ * @property {object} recipes 
  */
-export default function Recipes(props) {
+export default function Recipes({ recipes, ...props }) {
     /**
-     * State variables
+     * The current input in the search input field.
+     * 
+     * @type {[string, function]}
      */
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState('')
     
     /**
-     * Search for user input in recipe list
+     * The list of recipes filtered by the searchValue.
+     * Currently, the filter looks for the title of the
+     * recipe and the ingredient names of a recipe.
+     * 
+     * @todo Implement a more intelligent search with 
+     * more filters.
+     * 
+     * @type {Array<object>}
      */
-    const recipesFiltered = props.recipes.filter(recipe => {
-        if (searchValue === '') {
-            return true;
-        } else {
+    const recipesFiltered = recipes.isLoading 
+        ? []
+        : recipes.data?.filter(recipe => {
+            // Return true if there is no search input
+            if (searchValue === '') {
+                return true
+            }
+            
             // Return true if recipe includes the search input value.
             // Put both to lowercase so that the searchValue is not case-sensitive.
             if (recipe.title.toLowerCase().includes(searchValue.toLowerCase())) {
-                return true;
+                return true
             }
 
-            // If the block above did not return:
-            let returnValue = false;
+            // If the block above did not return, check for ingredients
+            let returnValue = false
 
             // Return true if the search input value appears in ingredients.
             // Put both to lowercase so that the searchValue is not case-sensitive.
             recipe.ingredients.forEach(ingredient => {
                 if (ingredient.name.toLowerCase().includes(searchValue.toLowerCase())) {
-                    returnValue = true;
+                    returnValue = true
                 }
-            });
+            })
 
             // Return true if searchValue appeared in an ingredient
-            return returnValue;
-        }
-    })
+            return returnValue
+        })
 
     /**
      * Load layout
      */
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem('recipes')
-        props.setSidebarActionButton({
+        props.setSidebar('recipes', {
             visible: true,
             icon: 'add',
             path: '/recipe/add',
@@ -80,7 +92,7 @@ export default function Recipes(props) {
     }, [])
     
     /**
-     * Render
+     * Render Recipes
      */
     return (
         <div className="pb-24 md:pb-4 max-w-[900px]">
@@ -88,31 +100,16 @@ export default function Recipes(props) {
                 <Spacer height="6" />
 
                 {/* Search bar */}
-                <div className="rounded-full flex items-center h-14 pl-6 pr-4 font-semibold bg-secondary-100 dark:bg-secondary-dark-100">
-                    <span className="material-symbols-rounded mr-2 cursor-default">search</span>
-                    <input 
-                        className="bg-secondary-100 dark:bg-secondary-dark-100 placeholder-[#55624c] dark:placeholder-secondary-dark-300 w-full border-transparent focus:border-transparent focus:ring-0"
-                        placeholder='Suche nach Rezepten ...'
-                        id='search'
-                        name='search'
-                        type='text'
-                        value={searchValue}
-                        onChange={e => {
-                            setSearchValue(e.target.value);
-                        }} 
-                    />
-                    {searchValue !== '' &&
-                        <span 
-                            className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 p-2 rounded-full"
-                            onClick={() => setSearchValue('')}
-                        >close</span>
-                    }
-                </div>
+                <SearchWidget
+                    inputValue={searchValue}
+                    setInputValue={setSearchValue}
+                    placeholder="Suche nach Rezepten ..."
+                />
                 
                 <Spacer height="10" />
 
                 {/* Recipe List */}
-                {props.isLoadingRecipes
+                {recipes.isLoading
                     ? <RecipeListSkeleton />
                     : <>
                         {recipesFiltered.length === 0 &&

@@ -4,186 +4,215 @@ namespace App\Service;
 
 use App\Entity\Ingredient;
 use Doctrine\Common\Collections\Collection;
-use Exception;
 
+/**
+ * IngredientUtil
+ * 
+ * An Ingredient utility class that can translate
+ * strings and Ingredient objects into one another.
+ * 
+ * @method string getQuantityValueFromString(string $ingredientString)
+ * @method string getQuantityUnitFromString(string $ingredientString)
+ * @method string getNameFromString(string $ingredientString)
+ * @method Ingredient transformStringToObject(string $ingredientString)
+ * @method Ingredient[] transformStringArrayToObjectArray(string[] $ingredientStrings)
+ * @method array transformObjectArrayToStringArray(Ingredient[]|Collection<Ingredient> $ingredients)
+ */
 class IngredientUtil 
 {
     /**
-     * Returns an array of the form 
-     * [?string quantityValue, ?string quantityUnit]
+     * getQuantityValueAndRestFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityValue and the rest of the 
+     * Ingredient description in an array. Is only a 
+     * helper method for getQuantityValueFromString() 
+     * and getQuantityUnitAndNameString().
      *
-     * @param string|null $quantity
-     * @return array
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string[] The quantityValue of the Ingredient and the rest of the string
      */
-    public function quantitySplit(?string $quantity): array
+    private function getQuantityValueAndRestFromString(string $ingredientString): array
     {
-        // If empty, then return empty array
-        if($quantity === null) {
-            return [null, null];
-        }
+       // Find quantity value with regular expression.
+       // Note that the second matching group doesn't allow
+       // numbers, but the third does, so we combine them.
+       preg_match('/^([\d\.\/\s]*)(\D+)(.*)/', $ingredientString, $matches);
 
-        // If value and unit are already split by a whitespace, we are done
-        $quantityData = explode(' ', $quantity);
+       $quantityValue = trim($matches[1] ?? '');
+       $quantityUnitAndName = trim(($matches[2] ?? '') . ($matches[3] ?? ''));
 
-        if (count($quantityData) > 1) {
-            return [
-                (string) $quantityData[0], // The value is the first part
-                implode(' ', array_slice($quantityData, 1)) // The unit might consist of more than one word
-            ];
-        }
-
-        // If there is no whitespace:
-        // First, split between number and word part
-        preg_match('/^(\d*|\d*\.\d+|\d+\/\d+)(\w*)$/', $quantity, $quantityData);
-        array_shift($quantityData);
-
-        // Check if there was a match with both groups
-        if (count($quantityData) < 2) {
-            throw new Exception('The parameter $quantity is of wrong format.');
-        }
-
-        return $quantityData;
-    }
-    
-    /**
-     * Splits ingredients between new lines and returns an 
-     * array of Ingredient objects.
-     *
-     * @param string|null $ingredients
-     * @return array|Ingredient[]
-     */
-    public function ingredientSplit(?string $ingredients): array
-    {
-        $ingredientArray = [];
-
-        // Split string after newlines
-        $ingArray = preg_split('/\r\n|\r|\n/', $ingredients);
-
-        // Remove all empty elements from the array
-        $ingArray = array_filter($ingArray);
-
-        // If array is empty, we are done
-        if (count($ingArray) === 0) {
-            return [];
-        }
-
-        // Create Instruction objects
-        foreach ($ingArray as $ing) {
-            $ingredient = new Ingredient();
-
-            // The split between quantity and name of the ingredient
-            // is not trivial, since the unit can consist of more 
-            // than one word. The first option would be to have 
-            // ingredients in the format "<name> <value> <unit>", 
-            // which is quite unnatural. The second option, which 
-            // is chosen here, is to compare with a list of units.
-            $allowedUnits = [
-                'gehäufter TL', 'gehäufte TL', 
-                'gehäufter EL', 'gehäufte EL', 
-                'gehäufter Teelöffel', 'gehäufte Teelöffel', 
-                'gehäufter Esslöffel', 'gehäufte Esslöffel', 
-                'n. B.', 'g', 'kg', 'ml', 'l', 'EL', 'TL', 
-                'Tube', 'Tuben', 'Bund', 'Bünde',
-                'Glas', 'Gläser', 'Packung', 'Packungen',
-                'kl. Glas', 'kleines Glas', 'kl. Gläser', 
-                'kleine Gläser', 'Becher',
-                'Päckchen', 'Pck.', 'Msp.', 'Liter',
-                'Messerspitze', 'Messerspitzen',
-                'Prise', 'Prisen', 'Würfel', 'Stange', 'Stangen',
-                'Paket', 'Pakete', 'Beutel', 'Zweig', 'Zweige',
-                'Zehe', 'Zehen',
-            ];
-
-            // Find quantity value with regexp
-            preg_match('/^(\d*|\d*\.\d+|\d+\/\d+|\d*\s\d+\/\d+)(\D+)$/', $ing, $ingData);
-            array_shift($ingData);
-
-            // Check if there is a quantity value
-            if (count($ingData) > 1) {
-                $nonValuePart = explode(' ', $ingData[1]);
-
-                // Remove first element of the non-value part if empty
-                if ($nonValuePart[0] == '') {
-                    array_shift($nonValuePart);
-                }
-
-                // Check for unit.
-                // $i is the number of words of the unit;
-                // so first we test one word, then two words, ...
-                for ($i = 1; $i <= count($nonValuePart); $i++) {
-                    $unitCandidate = '';
-
-                    // Define the unit candidate
-                    for ($j = 0; $j < $i; $j++) {
-                        $unitCandidate .= $nonValuePart[$j];
-                        if ($j != $i - 1) {
-                            $unitCandidate .= ' ';
-                        }
-                    }
-                    
-                    // Check if unit candidate is allowed unit
-                    if (in_array($unitCandidate, $allowedUnits)) {
-                        $name = implode(' ', array_slice($nonValuePart, $i));
-                        $ingredient
-                            ->setQuantity([$ingData[0], $unitCandidate])
-                            ->setName($name)
-                        ;
-                    }
-                }
-
-                // Check if name is still not set.
-                // In this case, the quantity is also not set yet.
-                if ($ingredient->getName() === null) {
-                    $ingredient
-                        ->setQuantity([$ingData[0], null])
-                        ->setName(implode(' ', $nonValuePart))
-                    ;
-                }
-            }
-            // If there is no quantity value, just set name
-            else {
-                $ingredient->setName($ing);
-            }
-
-            array_push($ingredientArray, $ingredient);
-        }
-
-        return $ingredientArray;
+       return [$quantityValue, $quantityUnitAndName];
     }
 
     /**
-     * Combines an array of Ingredient objects into a single string.
+     * getQuantityUnitAndNameFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityUnit and the name of the 
+     * Ingredient in an array. Is only a helper method
+     * for getQuantityUnitFromString() and getNameFromString().
      *
-     * @param Collection|null $ingredientArray
-     * @return string|null
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string[] The quantityUnit and the name of the Ingredient
      */
-    public function ingredientString(?Collection $ingredientArray): ?string
+    private function getQuantityUnitAndNameFromString(string $ingredientString): array
     {
-        // Check if all elements are Ingredient objects
-        foreach ($ingredientArray as $ingredient) {
-            if (!is_a($ingredient, Ingredient::class)) {
-                throw new Exception('One of the elements of $ingredientArray is not an Ingredient object.');
-            }
+        /**
+         * The quantity units that are declared as allowed.
+         * If a unit appears that is not on this list, then 
+         * it will be considered part of the ingredient name.
+         * 
+         * @var string[]
+         */
+       $allowedUnits = [
+           'gehäufter TL', 'gehäufte TL', 
+           'gehäufter EL', 'gehäufte EL', 
+           'gehäufter Teelöffel', 'gehäufte Teelöffel', 
+           'gehäufter Esslöffel', 'gehäufte Esslöffel', 
+           'n. B.', 'g', 'kg', 'ml', 'l', 'EL', 'TL', 
+           'Tube', 'Tuben', 'Bund', 'Bünde',
+           'Glas', 'Gläser', 'Packung', 'Packungen',
+           'kl. Glas', 'kleines Glas', 'kl. Gläser', 
+           'kleine Gläser', 'Becher',
+           'Päckchen', 'Pck.', 'Msp.', 'Liter',
+           'Messerspitze', 'Messerspitzen',
+           'Prise', 'Prisen', 'Würfel', 'Stange', 'Stangen',
+           'Paket', 'Pakete', 'Beutel', 'Zweig', 'Zweige',
+           'Zehe', 'Zehen',
+       ];
+
+        // Get quantityUnit and name
+        $quantityUnitAndName = $this
+            ->getQuantityValueAndRestFromString($ingredientString)[1]
+        ;
+
+        // Find quantity unit with regular expression.
+        // Note that the name will appear in the third matching 
+        // group, since the second group catches a whitespace 
+        // between unit and name.
+        $regex = '/^((' . implode('|', $allowedUnits) . ')\s+)?(.*)/';
+        preg_match($regex, $quantityUnitAndName, $matches);
+
+        $quantityUnit = trim($matches[1] ?? '');
+
+        // Remove extra whitespaces in the name.
+        $name = trim(preg_replace('/\s+/', ' ', ($matches[3] ?? '')));
+
+        // Return quantityUnit and name
+        return [$quantityUnit, $name];
+    }
+
+    /**
+     * getQuantityValueFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityValue of the Ingredient.
+     *
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string The quantityValue of the Ingredient
+     */
+    public function getQuantityValueFromString(string $ingredientString): string 
+    {
+        return $this->getQuantityValueAndRestFromString($ingredientString)[0];
+    }
+
+    /**
+     * getQuantityUnitFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the quantityUnit of the Ingredient.
+     *
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string The quantityUnit of the Ingredient
+     */
+    public function getQuantityUnitFromString(string $ingredientString): string 
+    {
+        return $this->getQuantityUnitAndNameFromString($ingredientString)[0];
+    }
+
+    /**
+     * getNameFromString
+     * 
+     * Given a string that describes an Ingredient,
+     * returns the name of the Ingredient.
+     *
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return string The name of the Ingredient
+     */
+    public function getNameFromString(string $ingredientString): string 
+    {
+        return $this->getQuantityUnitAndNameFromString($ingredientString)[1];
+    }
+
+    /**
+     * transformStringToObject
+     * 
+     * Turns a string which describes an ingredient 
+     * into an Ingredient object and returns it.
+     * The Ingredient object will have the following
+     * properties set: name, quantityValue, quantityUnit.
+     * 
+     * @param string $ingredientString A string that describes an ingredient.
+     * @return Ingredient
+     */
+    public function transformStringToObject(string $ingredientString): Ingredient
+    {
+        // Create Ingredient object and return it
+        $ingredientObject = (new Ingredient)
+            ->setQuantityValue($this->getQuantityValueFromString($ingredientString))
+            ->setQuantityUnit($this->getQuantityUnitFromString($ingredientString))
+            ->setName($this->getNameFromString($ingredientString))
+        ;
+
+        return $ingredientObject;
+    }
+
+    /**
+     * transformStringArrayToObjectArray
+     * 
+     * Turns an array of strings, each describing an ingredient,
+     * into an array of Ingredient objects and returns it.
+     * The Ingredient objects will have the following
+     * properties set: name, quantityValue, quantityUnit.
+     * 
+     * @param string[] $ingredientStrings An array of strings that describe ingredients.
+     * @return Ingredient[]
+     */
+    public function transformStringArrayToObjectArray(array $ingredientStrings): array
+    {
+        $ingredientObjects = [];
+
+        foreach ($ingredientStrings as $ingredientString) {
+            $ingredientObject = $this->transformStringToObject($ingredientString);
+            $ingredientObjects[] = $ingredientObject;
         }
 
-        $ingredientString = '';
-        $i = 0;
-        
-        // Combine all elements to one string
-        foreach ($ingredientArray as $ingredient) {
-            if ($ingredient->getQuantity() != '') {
-                $ingredientString .= $ingredient->getQuantity() . ' ';
-            }
+        return $ingredientObjects;
+    }
 
-            $ingredientString .= $ingredient; 
+    /**
+     * transformObjectArrayToStringArray
+     * 
+     * Turns an array of Ingredient objects into an array of 
+     * strings of the form '{quantityValue} {quantityUnit} {name}'.
+     *
+     * @param Ingredient[]|Collection<Ingredient> $ingredients An array or Collection of Ingredient objects
+     * @return string[]
+     */
+    public function transformObjectArrayToStringArray(array|Collection $ingredients): array
+    {
+        $ingredientStrings = [];
 
-            if ($i != count($ingredientArray) - 1) {
-                $ingredientString .= "\r\n";
-            }
+        foreach ($ingredients as $ingredient) {
+            $ingredientString = '' . $ingredient->getQuantityValue();
+            $ingredientString .= ' ' . $ingredient->getQuantityUnit();
+            $ingredientString .= ' ' . $ingredient->getName();
 
-            $i++;
+            // Remove leading whitespace (if exists)
+            $ingredientStrings[] = trim($ingredientString);
         }
 
-        return $ingredientString;
+        return $ingredientStrings;
     }
 }

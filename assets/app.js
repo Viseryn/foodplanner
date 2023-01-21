@@ -18,4 +18,4 @@ import App from './layouts/App';
 
 // Render app
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+root.render(<App version="v1.2.2-pre" />);
