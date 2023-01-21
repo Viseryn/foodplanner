@@ -45,7 +45,7 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, ...pr
                         />
                     </ul>
 
-                    <ul className="flex flex-col space-y-2 px-4 md:px-0">
+                    <ul className="flex flex-col space-y-2">
                         {props.user.data?.username === undefined ? (
                             <>
                                 <SidebarDrawerItem 
@@ -77,7 +77,7 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, ...pr
 
                     <hr className="m-4 md:mx-0 border-t-secondary-dark-300" />
 
-                    <ul className="flex flex-col space-y-2 px-4 md:px-0">
+                    <ul className="flex flex-col space-y-2">
                         <SidebarDrawerItem 
                             path="https://github.com/Viseryn/foodplanner"
                             id="github"
