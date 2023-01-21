@@ -13,8 +13,8 @@ import Spacer       from '../../components/ui/Spacer'
  * A component that is shown when an Error 404 occurs.
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
+ * @param {function} props.setSidebar
+ * @param {function} props.setTopbar
  */
 export default function PageNotFound(props) {
     /**
@@ -22,8 +22,7 @@ export default function PageNotFound(props) {
      */
     useEffect(() => {
         // Load sidebar
-        props.setSidebarActiveItem()
-        props.setSidebarActionButton()
+        props.setSidebar()
 
         // Load topbar
         props.setTopbar({})
