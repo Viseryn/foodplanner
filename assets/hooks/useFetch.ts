@@ -96,8 +96,6 @@ function useFetch<DataType = object>(
 
             // Try fetching maximally five times
             while (tries > 0) {
-                console.log('Attempt loading', url)
-
                 try {
                     const response = await axios.get(url)
 
