@@ -29,3 +29,8 @@ type User = {
     username?: string
     roles?: Array<string>
 }
+
+type Authentication = {
+    isAuthenticated: boolean
+    isLoading: boolean
+}
