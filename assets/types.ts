@@ -16,3 +16,16 @@ type TopbarConfiguration = {
     isLoading?: boolean
     style?: string
 }
+
+type FetchableEntity<Type = any> = {
+    data: Type | undefined
+    setData: React.Dispatch<React.SetStateAction<Type | undefined>>
+    isLoading: boolean
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+type User = {
+    id?: number
+    username?: string
+    roles?: Array<string>
+}
