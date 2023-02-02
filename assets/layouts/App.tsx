@@ -156,7 +156,7 @@ export default function App({ version }: {
     /**
      * The user-specific settings.
      */
-    const settings = useFetch(
+    const settings = useFetch<Settings>(
         '/api/settings', 
         authentication,
         [isLoading],
