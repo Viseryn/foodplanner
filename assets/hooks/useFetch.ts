@@ -2,8 +2,6 @@
  * ./assets/hooks/useFetch.ts *
  ******************************/
 
-import '@/types'
-
 import { useEffect, useState }  from 'react'
 import axios, { AxiosResponse } from 'axios'
 
