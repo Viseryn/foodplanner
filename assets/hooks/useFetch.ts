@@ -76,15 +76,12 @@ function useFetch<DataType = object>(
     // Detect changes in dependencies
     useEffect(() => {
         // Do not fetch data if authentication fails
-        // (if an authentication object was provided)
         if (authentication !== undefined && !authentication?.isAuthenticated) {
             return
         }
 
-        // If all array entries are false (i.e., 
-        // nothing is loading), we can return.
-        // We need to exclude all non-boolean 
-        // array entries though.
+        // If all array entries are false (i.e., nothing is loading), we can 
+        // return. We need to exclude all non-boolean array entries though.
         const nothingLoading = dependencies.every(value => {
             return value === false || typeof value !== 'boolean'
         })
@@ -94,18 +91,39 @@ function useFetch<DataType = object>(
         }
 
         // If we have not returned yet, do the API call
-        axios
-            .get(url)
-            .then(response => {
-                // Do a custom fetch if doCustomFetch is true, 
-                // otherwise just put the response data into the state
-                if (customFetch != null) {
-                    customFetch?.(response, setData, setLoading)
-                } else {
-                    setLoading(false)
-                    setData(JSON.parse(response.data))
+        (async () => {
+            let tries = 5
+
+            // Try fetching maximally five times
+            while (tries > 0) {
+                console.log('Attempt loading', url)
+
+                try {
+                    const response = await axios.get(url)
+
+                    // Do a customFetch if callback was given
+                    if (customFetch != null) {
+                        customFetch?.(response, setData, setLoading)
+                    } else {
+                        setData(JSON.parse(response.data))
+                        setLoading(false)
+                    }
+
+                    // Stop trying once fetch was successful
+                    break
+                } catch (error) {
+                    const attempts = '(' + (6 - tries) 
+                        + ' attempt' 
+                        + (tries < 5 ? 's' : '') 
+                        + (tries === 1 ? ', stopping now' : '') 
+                        +')'
+
+                    console.log('Failed loading', url, attempts, error)
+                    
+                    tries--
                 }
-            })
+            }
+        })()
     }, dependencies)
 
     // Return the state variables, their loading status and the setters
