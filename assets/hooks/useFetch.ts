@@ -5,7 +5,7 @@
 import '@/types'
 
 import { useEffect, useState }  from 'react'
-import axios                    from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 /**
  * useFetch
@@ -36,14 +36,14 @@ import axios                    from 'axios'
  * @param customFetch A function that can be executed after the API call if passed as argument. The response of the API call will be passed as argument as well as the setter methods of the data entity and its isLoading state.
  * @return An object that consists of the data state variable, the isLoading state variable, and their respective setter methods.
  */
-function useFetch<DataType = Object>(
+function useFetch<DataType = object>(
     url: string,
-    authentication?: any,
+    authentication?: Authentication,
     isDependencyLoading?: Array<boolean>,
     otherDependencies?: React.DependencyList,
     customFetch?: (
-        response: any,
-        setData: React.Dispatch<React.SetStateAction<any>>,
+        response: AxiosResponse<any, any>,
+        setData: React.Dispatch<React.SetStateAction<DataType | undefined>>,
         setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     ) => void,
 ) : FetchableEntity<DataType> {
