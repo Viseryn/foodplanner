@@ -1,16 +1,16 @@
-/*************************************
- * ./assets/layouts/Topbar/Topbar.js *
- *************************************/
+/**************************************
+ * ./assets/layouts/Topbar/Topbar.tsx *
+ **************************************/
 
 import React                from 'react'
 import { Link }             from 'react-router-dom'
 
 import TopbarTitleSkeleton  from './components/TopbarTitleSkeleton'
-import IconButton           from '../../components/ui/Buttons/IconButton'
-import Heading              from '../../components/ui/Heading'
-import HeadingAndBackButton from '../../components/ui/HeadingAndBackButton'
+import IconButton           from '@/components/ui/Buttons/IconButton'
+import Heading              from '@/components/ui/Heading'
+import HeadingAndBackButton from '@/components/ui/HeadingAndBackButton'
 
-import useScrollPosition    from '../../hooks/useScrollPosition'
+import useScrollPosition    from '@/hooks/useScrollPosition'
 
 /**
  * Topbar
@@ -42,42 +42,26 @@ import useScrollPosition    from '../../hooks/useScrollPosition'
  * to show a skeleton instead of the title while loading.
  * 
  * @component
- * @property {object} topbar An object that describes the topbar. See example for properties.
- * @property {JSX.Element} SidebarDrawerButton An instance of the SidebarDrawerButton component.
- * 
- * @example
- * setTopbar({
- *     title: 'Example Title',
- *     showBackButton: true,
- *     backButtonPath: '#',
- *     onBackButtonClick: () => { doSomething() },
- *     actionButtons: [
- *         { icon: 'delete', onClick: id => { delete(id) } },
- *         ...
- *     ],
- *     truncate: true,
- *     isLoading: someBooleanValue,
- *     style: 'max-w-[450px]',
- * })
+ * @param props
+ * @param props.topbar An object that describes the topbar. 
+ * @param props.SidebarDrawerButton An instance of the SidebarDrawerButton component.
  */
-export default function Topbar({ 
-    topbar, 
-    SidebarDrawerButton,
-}) {
+export default function Topbar({ topbar, SidebarDrawerButton }: {
+    topbar: TopbarConfiguration
+    SidebarDrawerButton: JSX.Element
+}): JSX.Element {
     /**
      * Current scrolling position.
-     * 
-     * @type {number}
      */
     const scrollPosition = useScrollPosition(true)
 
     /**
      * Renders a container div containing the action buttons.
      * 
-     * @param {string} style Styling classes of the container.
-     * @return {JSX.Element} The container of the action buttons.
+     * @param style Styling classes of the container.
+     * @return The container of the action buttons.
      */
-    const TopbarActionButtons = (style = '') => (
+    const TopbarActionButtons = (style: string = ''): JSX.Element => (
         <div className={style}>
             {topbar?.actionButtons?.map((button, index) => 
                 <IconButton
@@ -94,10 +78,8 @@ export default function Topbar({
     /**
      * The topbar for large screens (md+). 
      * Hidden on small screens.
-     * 
-     * @type {JSX.Element}
      */
-    const TopbarLargeScreens = (
+    const TopbarLargeScreens: JSX.Element = (
         <div className={
             'hidden md:flex justify-between items-center h-14 mt-6 '
             + topbar?.style
@@ -121,10 +103,8 @@ export default function Topbar({
     /**
      * The topbar for small screens.
      * Hidden on large screens (md+).
-     * 
-     * @type {JSX.Element}
      */
-    const TopbarSmallScreens = (
+    const TopbarSmallScreens: JSX.Element = (
         <>
             <div className="w-full h-[4.5rem] bg-bg dark:bg-bg-dark md:hidden fixed z-20">
                 <ul className={'transition-all duration-300 h-[4.5rem] p-2 pr-4 fixed z-40'}>
