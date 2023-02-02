@@ -16,10 +16,7 @@ import useFetch                 from './useFetch'
  * 
  * @returns An array of a user object and an authentication object.
  */
-function useAuthentication(): [FetchableEntity<User>, {
-    isAuthenticated: boolean
-    isLoading: boolean
-}] {
+function useAuthentication(): [FetchableEntity<User>, Authentication] {
     /**
      * Whether the user is currently authenticated.
      */
