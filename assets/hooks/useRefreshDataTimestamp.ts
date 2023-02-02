@@ -23,7 +23,7 @@ function useRefreshDataTimestamp(
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
     // Fetch the current RefreshDataTimestamp
-    const refreshDataTimestamp = useFetch('/api/refresh-data-timestamp')
+    const refreshDataTimestamp = useFetch<string>('/api/refresh-data-timestamp')
 
     // Create a repeating 5 seconds interval
     useEffect(() => {
