@@ -11,7 +11,7 @@ type TopbarConfiguration = {
     showBackButton?: boolean
     backButtonPath?: string
     onBackButtonClick?: () => void
-    actionButtons?: Array<Object>
+    actionButtons?: Array<{ icon: string; onClick?: () => void; }>
     truncate?: boolean
     isLoading?: boolean
     style?: string
