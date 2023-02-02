@@ -34,7 +34,7 @@ import axios, { AxiosResponse } from 'axios'
  * @param customFetch A function that can be executed after the API call if passed as argument. The response of the API call will be passed as argument as well as the setter methods of the data entity and its isLoading state.
  * @return An object that consists of the data state variable, the isLoading state variable, and their respective setter methods.
  */
-function useFetch<DataType = object>(
+function useFetch<DataType = any>(
     url: string,
     authentication?: Authentication,
     isDependencyLoading?: Array<boolean>,
