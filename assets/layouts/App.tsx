@@ -1,6 +1,8 @@
-/***************************
- * ./assets/layouts/App.js *
- ***************************/
+/****************************
+ * ./assets/layouts/App.tsx *
+ ****************************/
+
+import '@/types'
 
 import React, { useEffect, useState }   from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -13,24 +15,24 @@ import SidebarDrawer                    from './Sidebar/SidebarDrawer'
 import SidebarDrawerButton              from './Sidebar/components/SidebarDrawerButton'
 import Topbar                           from './Topbar/Topbar'
 
-import useAuthentication                from '../hooks/useAuthentication'
-import useFetch                         from '../hooks/useFetch'
-import useRefreshDataTimestamp          from '../hooks/useRefreshDataTimestamp'
+import useAuthentication                from '@/hooks/useAuthentication'
+import useFetch                         from '@/hooks/useFetch'
+import useRefreshDataTimestamp          from '@/hooks/useRefreshDataTimestamp'
 
-import Login                            from '../pages/Login/Login'
-import Logout                           from '../pages/Logout/Logout'
-import PageNotFound                     from '../pages/PageNotFound/PageNotFound'
-import Pantry                           from '../pages/Pantry/Pantry'
-import AddMeal                          from '../pages/Planner/AddMeal'
-import Planner                          from '../pages/Planner/Planner'
-import AddRecipe                        from '../pages/Recipes/AddRecipe'
-import EditRecipe                       from '../pages/Recipes/EditRecipe'
-import Recipes                          from '../pages/Recipes/Recipes'
-import Recipe                           from '../pages/Recipes/Recipe'
-import Registration                     from '../pages/Registration/Registration'
-import AddGroup                         from '../pages/Settings/AddGroup'
-import Settings                         from '../pages/Settings/Settings'
-import ShoppingList                     from '../pages/ShoppingList/ShoppingList'
+import Login                            from '@/pages/Login/Login'
+import Logout                           from '@/pages/Logout/Logout'
+import PageNotFound                     from '@/pages/PageNotFound/PageNotFound'
+import Pantry                           from '@/pages/Pantry/Pantry'
+import AddMeal                          from '@/pages/Planner/AddMeal'
+import Planner                          from '@/pages/Planner/Planner'
+import AddRecipe                        from '@/pages/Recipes/AddRecipe'
+import EditRecipe                       from '@/pages/Recipes/EditRecipe'
+import Recipes                          from '@/pages/Recipes/Recipes'
+import Recipe                           from '@/pages/Recipes/Recipe'
+import Registration                     from '@/pages/Registration/Registration'
+import AddGroup                         from '@/pages/Settings/AddGroup'
+import Settings                         from '@/pages/Settings/Settings'
+import ShoppingList                     from '@/pages/ShoppingList/ShoppingList'
 
 /**
  * App
@@ -48,17 +50,18 @@ import ShoppingList                     from '../pages/ShoppingList/ShoppingList
  * load depending on the URL.
  * 
  * @component
- * @param {string} props.version The current version number.
+ * @param props
+ * @param props.version The current version number.
  */
-export default function App({ version }) {
+export default function App({ version }: { 
+    version: string
+}): JSX.Element {
     /******************
      * GENERAL        *
      ******************/
 
     /**
      * The user and authentication objects.
-     * 
-     * @type {[object, object]}
      */
     const [user, authentication] = useAuthentication()
 
@@ -66,18 +69,14 @@ export default function App({ version }) {
      * Whether or not dependent data should be reloaded
      * without loading screens. Will be updated by the
      * useRefreshDataTimestamp hook.
-     * 
-     * @type {[boolean, function]}
      */
     const [isLoading, setLoading] = useState(false)
 
     /**
      * The RefreshDataTimestamp. This hook will keep
      * updating isLoading if the timestamp changes.
-     * 
-     * @type {number}
      */
-    const refreshDataTimestamp = useRefreshDataTimestamp(isLoading, setLoading)
+    useRefreshDataTimestamp(isLoading, setLoading)
 
     
     /******************
@@ -88,8 +87,6 @@ export default function App({ version }) {
      * The active item of the sidebar. It will be highlighted
      * with a darker background color and a filled icon.
      * Each page MUST set an active item; it can be empty, however.
-     * 
-     * @type {[string?, function]}
      */
     const [sidebarActiveItem, setSidebarActiveItem] = useState('')
 
@@ -101,23 +98,27 @@ export default function App({ version }) {
      * invisible. Each page MUST set a configuration for the SAB;
      * it can be empty, however.
      * 
-     * @type {[object?, function]}
+     * See the documentation of the SidebarActionButtonConfiguration 
+     * type alias for more information on the properties.
      */
-    const [sidebarActionButton, setSidebarActionButton] = useState({})
+    const [sidebarActionButton, setSidebarActionButton] = useState<SidebarActionButtonConfiguration>({})
 
     /**
      * Updates the active sidebar item and the SidebarActionButton.
      * 
-     * @param {string} sidebarActiveItem The sidebar item that should be active.
-     * @param {object} sidebarActionButton The configuration for the SidebarActionButton.
-     * @param {boolean} sidebarActionButton.visible Whether the SAB should be visible or not.
-     * @param {string} sidebarActionButton.icon The icon of the SAB.
-     * @param {string} sidebarActionButton.label The label text of the SAB.
-     * @param {string} sidebarActionButton.path An optional path that the SAB redirects to.
-     * @param {function} sidebarActionButton.onClick An optional onClick handler.
-     * @param {boolean?} sidebarActionButton.floating Set true for being displayed expanded and floating in the bottom-right corner. Set false for an SAB integrated in the sidebar.
+     * @param sidebarActiveItem The sidebar item that should be active.
+     * @param sidebarActionButton The configuration for the SidebarActionButton.
+     * @param sidebarActionButton.visible Whether the SAB should be visible or not.
+     * @param sidebarActionButton.icon The icon of the SAB.
+     * @param sidebarActionButton.label The label text of the SAB.
+     * @param sidebarActionButton.path 
+     * @param sidebarActionButton.onClick An optional onClick handler.
+     * @param sidebarActionButton.floating Set true for being displayed expanded and floating in the bottom-right corner. Set false for an SAB integrated in the sidebar.
      */
-    const setSidebar = (sidebarActiveItem = '', sidebarActionButton = {}) => {
+    const setSidebar = (
+        sidebarActiveItem: string = '', 
+        sidebarActionButton: SidebarActionButtonConfiguration = {},
+    ) => {
         setSidebarActiveItem(sidebarActiveItem)
         setSidebarActionButton(sidebarActionButton)
     }
@@ -128,8 +129,6 @@ export default function App({ version }) {
      * the view. The setDrawerVisible method can be passed
      * to any button, preferably to SidebarDrawerButton 
      * components, e.g. in the sidebar or the topbar.
-     * 
-     * @type {[boolean, function]}
      */
     const [isDrawerVisible, setDrawerVisible] = useState(false)
 
@@ -146,19 +145,10 @@ export default function App({ version }) {
      * scrolling, it will collapse into one row. On large 
      * screens, the topbar will be shown in the main container.
      * 
-     * See the documentation of the Topbar component 
-     * for further details on the properties.
+     * See the documentation of the TopbarConfiguration type 
+     * alias for more information on the properties.
      */
-    const [topbar, setTopbar] = useState({
-        title: '',
-        showBackButton: false,
-        backButtonPath: '/',
-        onBackButtonClick: () => {},
-        actionButtons: [],
-        truncate: false,
-        isLoading: false,
-        style: '',
-    })
+    const [topbar, setTopbar] = useState<TopbarConfiguration>({})
 
     
     /******************
@@ -167,8 +157,6 @@ export default function App({ version }) {
 
     /**
      * The user-specific settings.
-     * 
-     * @type {object}
      */
     const settings = useFetch(
         '/api/settings', 
@@ -184,9 +172,6 @@ export default function App({ version }) {
     /**
      * The list of UserGroups. The data object 
      * is an array of objects here.
-     * 
-     * @type {object}
-     * @property {Array<object>} data
      */
     const userGroups = useFetch(
         '/api/usergroups/list',
@@ -202,9 +187,6 @@ export default function App({ version }) {
     /**
      * The list of MealCategories. The data object 
      * is an array of objects here. 
-     * 
-     * @type {object}
-     * @property {Array<object>} data
      */
     const mealCategories = useFetch(
         '/api/mealcategories/list',
@@ -220,9 +202,6 @@ export default function App({ version }) {
     /**
      * The complete recipe list. The data object 
      * is an array of objects here.
-     * 
-     * @type {object}
-     * @property {Array<object>} data
      */
     const recipes = useFetch(
         '/api/recipes/list',
@@ -238,9 +217,6 @@ export default function App({ version }) {
     /**
      * The complete list of Day entities. The data
      * object is an array of objects here.
-     * 
-     * @type {object}
-     * @property {Array<object>} data
      */
     const days = useFetch(
         '/api/days/list',
@@ -254,7 +230,9 @@ export default function App({ version }) {
      * than ten).
      */
     useEffect(() => {
-        if (days.isLoading) return
+        if (days.isLoading) { 
+            return
+        }
 
         axios.get('/api/days/update')
     }, [days.isLoading])
@@ -267,9 +245,6 @@ export default function App({ version }) {
     /**
      * The complete shopping list. The data 
      * object is an array of objects here.
-     * 
-     * @type {object}
-     * @property {Array<object>} data
      */
     const shoppingList = useFetch(
         '/api/shoppinglist/ingredients',
@@ -285,9 +260,6 @@ export default function App({ version }) {
     /**
      * The complete pantry. The data 
      * object is an array of objects here.
-     * 
-     * @type {object}
-     * @property {Array<object>} data
      */
     const pantry = useFetch(
         '/api/pantry/ingredients',
