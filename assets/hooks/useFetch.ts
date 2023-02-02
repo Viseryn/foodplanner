@@ -1,5 +1,5 @@
 /******************************
- * ./assets/hooks/useFetch.js *
+ * ./assets/hooks/useFetch.ts *
  ******************************/
 
 import { useEffect, useState }  from 'react'
@@ -26,38 +26,42 @@ import axios                    from 'axios'
  * The hook returns an object with both the data and the loading 
  * boolean as well as their setter methods.
  * 
- * @param {string} url The URL to the API that provides the data.
- * @param {object?} authentication If argument is an authentication object, the data will only be fetched if the user is authenticated. If argument is null, it will be ignored.
- * @param {Array<boolean>} isDependencyLoading An array of isLoading properties of dependent data. If an authentication object was provided, authentication.isLoading is automatically added to this list.
- * @param {Array<any>} otherDependencies An array of dependencies for the useEffect API call.
- * @param {boolean} doCustomFetch Whether after the API call a custom callback should be executed.
- * @param {(response: object, setData: React.Dispatch<React.SetStateAction<any>>, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void} customFetch A function that can be executed after the API call if doCustomFetch is true. The response of the API call will be passed as argument as well as the setter methods of the data entity and its isLoading state.
- * @return {object} An object that consists of the data state variable, the isLoading state variable, and their respective setter methods.
+ * @template DataType The return value's data property type. Default is Object.
+ * @param url The URL to the API that provides the data.
+ * @param authentication If argument is an authentication object, the data will only be fetched if the user is authenticated. If argument is null, it will be ignored.
+ * @param isDependencyLoading An array of isLoading properties of dependent data. If an authentication object was provided, authentication.isLoading is automatically added to this list.
+ * @param otherDependencies An array of dependencies for the useEffect API call.
+ * @param customFetch A function that can be executed after the API call if passed as argument. The response of the API call will be passed as argument as well as the setter methods of the data entity and its isLoading state.
+ * @return An object that consists of the data state variable, the isLoading state variable, and their respective setter methods.
  */
-function useFetch(
-    url,
-    authentication = null,
-    isDependencyLoading = [],
-    otherDependencies = [],
-    doCustomFetch = false,
-    customFetch,
-) {
+function useFetch<DataType = Object>(
+    url: string,
+    authentication?: any,
+    isDependencyLoading?: Array<boolean>,
+    otherDependencies?: React.DependencyList,
+    customFetch?: (
+        response: any,
+        setData: React.Dispatch<React.SetStateAction<any>>,
+        setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    ) => void,
+) : {
+    data: DataType
+    setData: React.Dispatch<React.SetStateAction<DataType>>
+    isLoading: boolean
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+} {
     /**
      * The data that the API provides. Can usually
      * be an object or an array of objects, but any 
      * other type is also allowed.
-     * 
-     * @type {[*, function]}
      */
-    const [data, setData] = useState({})
+    const [data, setData] = useState<any>({})
 
     /**
      * Whether the data is currently loading. Whenever
      * this is set to true, a reload of the data is 
      * attempted. This is the property that should be 
      * used to determine the necessity for a loading screen.
-     * 
-     * @type {[boolean, function]}
      */
     const [isLoading, setLoading] = useState(true)
 
@@ -65,7 +69,8 @@ function useFetch(
      * Attempt API call
      */
     // Collect all dependencies in one array
-    const dependencies = [isLoading].concat(
+    const dependencies: Array<any> = ([] as Array<any>).concat(
+        isLoading,
         authentication?.isLoading, 
         isDependencyLoading, 
         otherDependencies,
@@ -75,11 +80,8 @@ function useFetch(
     useEffect(() => {
         // Do not fetch data if authentication fails
         // (if an authentication object was provided)
-        if (authentication !== null) {
-            if (!authentication.isAuthenticated) {
-                // console.log('AUTH FAILED', url, dependencies)
-                return
-            }
+        if (authentication !== undefined && !authentication?.isAuthenticated) {
+            return
         }
 
         // If all array entries are false (i.e., 
@@ -91,7 +93,6 @@ function useFetch(
         })
 
         if (nothingLoading) {
-            // console.log('NOTHING LOADING', url, dependencies)
             return
         }
 
@@ -101,17 +102,16 @@ function useFetch(
             .then(response => {
                 // Do a custom fetch if doCustomFetch is true, 
                 // otherwise just put the response data into the state
-                if (doCustomFetch) {
-                    customFetch(response, setData, setLoading)
+                if (customFetch != null) {
+                    customFetch?.(response, setData, setLoading)
                 } else {
                     setLoading(false)
                     setData(JSON.parse(response.data))
-                    // console.log('API', url, dependencies, JSON.parse(response.data))
                 }
             })
     }, dependencies)
 
-    // Return the state variables, there loading status and the setters
+    // Return the state variables, their loading status and the setters
     return { data, setData, isLoading, setLoading }
 }
 
