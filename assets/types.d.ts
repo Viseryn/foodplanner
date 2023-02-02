@@ -34,3 +34,7 @@ type Authentication = {
     isAuthenticated: boolean
     isLoading: boolean
 }
+
+type Settings = {
+    showPantry: boolean
+}
