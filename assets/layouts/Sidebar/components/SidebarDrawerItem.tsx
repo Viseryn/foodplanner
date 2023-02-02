@@ -1,6 +1,6 @@
-/************************************************************
- * ./assets/layouts/Sidebar/components/SidebarDrawerItem.js *
- ************************************************************/
+/*************************************************************
+ * ./assets/layouts/Sidebar/components/SidebarDrawerItem.tsx *
+ *************************************************************/
 
 import React    from 'react'
 import { Link } from 'react-router-dom'
@@ -11,12 +11,18 @@ import { Link } from 'react-router-dom'
  * A component that renders a single sidebar drawer item.
  * 
  * @component
- * @property {string} id The id of the component this sidebar item should link to. Default is '/'. Will be overriden if path is set.
- * @property {string} icon The icon of the sidebar item. 
- * @property {string} label The label of the sidebar item.
- * @property {?string} path An external URL. 
+ * @param props
+ * @param props.id The id of the component this sidebar item should link to. Default is '/'. Will be overriden if path is set.
+ * @param props.icon The icon of the sidebar item. 
+ * @param props.label The label of the sidebar item.
+ * @param props.path An external URL. 
  */
-export default function SidebarDrawerItem({ id, icon, label, path }) {
+export default function SidebarDrawerItem({ id, icon, label, path }: {
+    id: string
+    icon: string
+    label: string
+    path?: string
+}) {
     const SidebarDrawerItemContent = (
         <div className={
             'transition duration-300 group-hover:text-primary-200 dark:group-hover:text-primary-dark-100 '

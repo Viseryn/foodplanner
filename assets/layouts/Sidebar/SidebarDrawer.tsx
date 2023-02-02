@@ -1,6 +1,6 @@
-/*********************************************
- * ./assets/layouts/Sidebar/SidebarDrawer.js *
- *********************************************/
+/**********************************************
+ * ./assets/layouts/Sidebar/SidebarDrawer.tsx *
+ **********************************************/
 
 import React                from 'react'
 
@@ -23,12 +23,18 @@ import SidebarDrawerItem    from './components/SidebarDrawerItem'
  * the drawer also shows the current version number of the app.
  * 
  * @component
- * @property {boolean} isDrawerVisible A state variable that describes whether or not the sidebar drawer is visible.
- * @property {React.Dispatch<ReactSetStateAction<boolean>>} setDrawerVisible The setter method of isDrawerVisible.
- * @property {string} version The current version number of the app.
- * @property {object} user A user object.
+ * @param props
+ * @param props.isDrawerVisible A state variable that describes whether or not the sidebar drawer is visible.
+ * @param props.setDrawerVisible The setter method of isDrawerVisible.
+ * @param props.version The current version number of the app.
+ * @param props.user A user object.
  */
-export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, ...props }) {
+export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, version, user }: {
+    isDrawerVisible: boolean
+    setDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>
+    version: string
+    user: FetchableEntity<User>
+}): JSX.Element {
     return (
         <>
             {/* SidebarDrawer */}
@@ -46,7 +52,7 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, ...pr
                     </ul>
 
                     <ul className="flex flex-col space-y-2">
-                        {props.user.data?.username === undefined ? (
+                        {user.data?.username === undefined ? (
                             <>
                                 <SidebarDrawerItem 
                                     id="login"
@@ -94,7 +100,7 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, ...pr
 
                     {/* Current version */}
                     <div className="text-xs flex justify-end absolute bottom-5 right-5">
-                        {props.version}
+                        {version}
                     </div>
                 </div>
             </aside>
