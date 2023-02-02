@@ -2,6 +2,8 @@
  * ./assets/hooks/useFetch.ts *
  ******************************/
 
+import '@/types'
+
 import { useEffect, useState }  from 'react'
 import axios                    from 'axios'
 
@@ -44,18 +46,13 @@ function useFetch<DataType = Object>(
         setData: React.Dispatch<React.SetStateAction<any>>,
         setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     ) => void,
-) : {
-    data: DataType
-    setData: React.Dispatch<React.SetStateAction<DataType>>
-    isLoading: boolean
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
-} {
+) : FetchableEntity<DataType> {
     /**
      * The data that the API provides. Can usually
      * be an object or an array of objects, but any 
      * other type is also allowed.
      */
-    const [data, setData] = useState<any>({})
+    const [data, setData] = useState<DataType>()
 
     /**
      * Whether the data is currently loading. Whenever
