@@ -1,5 +1,5 @@
 /***************************************
- * ./assets/hooks/useAuthentication.js *
+ * ./assets/hooks/useAuthentication.ts *
  ***************************************/
 
 import { useEffect, useState }  from 'react'
@@ -14,26 +14,14 @@ import useFetch                 from './useFetch'
  * authenticated at the moment and whether the authentication
  * is done loading.
  * 
- * @returns {Array<Object>} An array of a user object and an authentication object.
- * 
- * @example 
- * const [user, authentication] = useAuthentication()
- * user: { 
- *     data: {};
- *     setData: React.Dispatch<React.SetStateAction<{}>>;
- *     isLoading: boolean;
- *     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
- * }
- * authentication: { 
- *     isAuthenticated: boolean;
- *     isLoading: boolean;
- * }
+ * @returns An array of a user object and an authentication object.
  */
-function useAuthentication() {
+function useAuthentication(): [FetchableEntity<User>, {
+    isAuthenticated: boolean
+    isLoading: boolean
+}] {
     /**
      * Whether the user is currently authenticated.
-     * 
-     * @type {[boolean, function]}
      */
     const [isAuthenticated, setAuthenticated] = useState(false)
 
@@ -42,13 +30,11 @@ function useAuthentication() {
      * This will only be false after the user data has been 
      * loaded and isAuthenticated has been set for the last 
      * time.
-     * 
-     * @type {[boolean, function]}
      */
     const [isLoading, setLoading] = useState(true)
 
     // User object
-    const user = useFetch('/api/user')
+    const user = useFetch<User>('/api/user')
 
     // Authentication object
     const authentication = { isAuthenticated, isLoading }
