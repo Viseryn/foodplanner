@@ -82,9 +82,17 @@ export default function App({ version }: {
      ******************/
 
     /**
-     * The active item of the sidebar. It will be highlighted
+     * Whether or not the sidebar drawer is visible.
+     * If set to true, the SidebarDrawer will move into 
+     * the view. The setDrawerVisible method can be passed
+     * to any button, preferably to SidebarDrawerButton 
+     * components, e.g. in the sidebar or the topbar.
+     */
+    const [isDrawerVisible, setDrawerVisible] = useState(false)
+
+    /**
+     * The id of the active item of the sidebar. It will be highlighted
      * with a darker background color and a filled icon.
-     * Each page MUST set an active item; it can be empty, however.
      */
     const [sidebarActiveItem, setSidebarActiveItem] = useState('')
 
@@ -93,8 +101,7 @@ export default function App({ version }: {
      * On larger screens, it is fixed in the top of the sidebar.
      * On small screens it is a floating action button in the 
      * bottom-right corner of the screen. By default, it is 
-     * invisible. Each page MUST set a configuration for the SAB;
-     * it can be empty, however.
+     * invisible. 
      * 
      * See the documentation of the SidebarActionButtonConfiguration 
      * type alias for more information on the properties.
@@ -102,33 +109,24 @@ export default function App({ version }: {
     const [sidebarActionButton, setSidebarActionButton] = useState<SidebarActionButtonConfiguration>({})
 
     /**
-     * Updates the active sidebar item and the SidebarActionButton.
+     * Updates the active sidebar item and the SidebarActionButton. 
+     * If there is no argument given, the sidebar will have no active 
+     * item and the Sidebar Action Button is invisible.
+     * This method MUST be called by each page, otherwise the configuration
+     * of the last page will not be overriden.
+     * See the documentation of the SidebarActionButtonConfiguration 
+     * type alias for more information on the properties.
      * 
      * @param sidebarActiveItem The sidebar item that should be active.
      * @param sidebarActionButton The configuration for the SidebarActionButton.
-     * @param sidebarActionButton.visible Whether the SAB should be visible or not.
-     * @param sidebarActionButton.icon The icon of the SAB.
-     * @param sidebarActionButton.label The label text of the SAB.
-     * @param sidebarActionButton.path 
-     * @param sidebarActionButton.onClick An optional onClick handler.
-     * @param sidebarActionButton.floating Set true for being displayed expanded and floating in the bottom-right corner. Set false for an SAB integrated in the sidebar.
      */
     const setSidebar = (
         sidebarActiveItem: string = '', 
         sidebarActionButton: SidebarActionButtonConfiguration = {},
-    ) => {
+    ): void => {
         setSidebarActiveItem(sidebarActiveItem)
         setSidebarActionButton(sidebarActionButton)
     }
-
-    /**
-     * Whether or not the sidebar drawer is visible.
-     * If set to true, the SidebarDrawer will move into 
-     * the view. The setDrawerVisible method can be passed
-     * to any button, preferably to SidebarDrawerButton 
-     * components, e.g. in the sidebar or the topbar.
-     */
-    const [isDrawerVisible, setDrawerVisible] = useState(false)
 
     
     /******************
@@ -150,73 +148,34 @@ export default function App({ version }: {
 
     
     /******************
-     * SETTINGS       *
+     * FETCH DATA     *
      ******************/
-
-    /**
-     * The user-specific settings.
-     */
+    
     const settings = useFetch<Settings>(
         '/api/settings', 
         authentication,
         [isLoading],
     )
 
-    
-    /******************
-     * USERGROUPS     *
-     ******************/
-
-    /**
-     * The list of UserGroups. The data object 
-     * is an array of objects here.
-     */
-    const userGroups = useFetch(
+    const userGroups = useFetch<Array<UserGroup>>(
         '/api/usergroups/list',
         authentication,
         [isLoading],
     )
 
-    
-    /******************
-     * MEALCATEGORIES *
-     ******************/
-
-    /**
-     * The list of MealCategories. The data object 
-     * is an array of objects here. 
-     */
-    const mealCategories = useFetch(
+    const mealCategories = useFetch<Array<MealCategory>>(
         '/api/mealcategories/list',
         authentication,
         [isLoading],
     )
 
-    
-    /******************
-     * RECIPES        *
-     ******************/
-
-    /**
-     * The complete recipe list. The data object 
-     * is an array of objects here.
-     */
-    const recipes = useFetch(
+    const recipes = useFetch<Recipe>(
         '/api/recipes/list',
         authentication,
         [isLoading],
     )
 
-
-    /******************
-     * PLANNER        *
-     ******************/
-
-    /**
-     * The complete list of Day entities. The data
-     * object is an array of objects here.
-     */
-    const days = useFetch(
+    const days = useFetch<Day>(
         '/api/days/list',
         authentication,
         [isLoading],
@@ -236,30 +195,13 @@ export default function App({ version }: {
     }, [days.isLoading])
 
 
-    /******************
-     * SHOPPINGLIST  *
-     ******************/
-
-    /**
-     * The complete shopping list. The data 
-     * object is an array of objects here.
-     */
-    const shoppingList = useFetch(
+    const shoppingList = useFetch<Array<Ingredient>>(
         '/api/shoppinglist/ingredients',
         authentication,
         [isLoading],
     )
 
-
-    /******************
-     * PANTRY         *
-     ******************/
-
-    /**
-     * The complete pantry. The data 
-     * object is an array of objects here.
-     */
-    const pantry = useFetch(
+    const pantry = useFetch<Array<Ingredient>>(
         '/api/pantry/ingredients',
         authentication,
         [isLoading],
@@ -270,11 +212,6 @@ export default function App({ version }: {
      * RENDERING      *
      ******************/
 
-    /**
-     * Props for subcomponents
-     * 
-     * @todo Manage props for each component individually
-     */
     const props = { user, authentication, settings, userGroups, mealCategories, recipes, days, shoppingList, pantry, setSidebar, setTopbar }
 
     /** 
