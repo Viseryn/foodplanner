@@ -181,20 +181,6 @@ export default function App({ version }: {
         [isLoading],
     )
 
-    /**
-     * Calls the Update Days API, which removes all 
-     * unnecessary Days (past days and days further away
-     * than ten).
-     */
-    useEffect(() => {
-        if (days.isLoading) { 
-            return
-        }
-
-        axios.get('/api/days/update')
-    }, [days.isLoading])
-
-
     const shoppingList = useFetch<Array<Ingredient>>(
         '/api/shoppinglist/ingredients',
         authentication,

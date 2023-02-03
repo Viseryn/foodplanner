@@ -127,6 +127,25 @@ export default function Planner({ days, ...props }) {
     }
 
     /**
+     * Calls the Update Days API, which removes all 
+     * unnecessary Days (past days and days further away
+     * than ten).
+     */
+    useEffect(() => {
+        if (days.isLoading) { 
+            return
+        }
+
+        (async () => {
+            try {
+                await axios.get('/api/days/update')
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, [days.isLoading])
+
+    /**
      * Update sidebar action button when 
      * shopping list changes or when pressed.
      */
