@@ -2,10 +2,8 @@
  * ./assets/layouts/App.tsx *
  ****************************/
 
-import React, { useEffect, useState }   from 'react'
+import React, { useState }              from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
-import axios                            from 'axios'
 
 import AuthChecker                      from './AuthChecker/AuthChecker'
 import Sidebar                          from './Sidebar/Sidebar'
