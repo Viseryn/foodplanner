@@ -22,7 +22,7 @@ export default function SidebarDrawerItem({ id, icon, label, path }: {
     icon: string
     label: string
     path?: string
-}) {
+}): JSX.Element {
     const SidebarDrawerItemContent = (
         <div className={
             'transition duration-300 group-hover:text-primary-200 dark:group-hover:text-primary-dark-100 '
