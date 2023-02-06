@@ -26,7 +26,7 @@ import axios, { AxiosResponse } from 'axios'
  * The hook returns an object with both the data and the loading 
  * boolean as well as their setter methods.
  * 
- * @template DataType The return value's data property type. Default is Object.
+ * @template DataType The return value's data property type. Default is any.
  * @param url The URL to the API that provides the data.
  * @param authentication If argument is an authentication object, the data will only be fetched if the user is authenticated. If argument is null, it will be ignored.
  * @param isDependencyLoading An array of isLoading properties of dependent data. If an authentication object was provided, authentication.isLoading is automatically added to this list.
