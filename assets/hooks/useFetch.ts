@@ -58,7 +58,7 @@ function useFetch<DataType = any>(
      * attempted. This is the property that should be 
      * used to determine the necessity for a loading screen.
      */
-    const [isLoading, setLoading] = useState(true)
+    const [isLoading, setLoading] = useState<boolean>(true)
 
     /**
      * Attempt API call
@@ -80,7 +80,7 @@ function useFetch<DataType = any>(
 
         // If all array entries are false (i.e., nothing is loading), we can 
         // return. We need to exclude all non-boolean array entries though.
-        const nothingLoading = dependencies.every(value => {
+        const nothingLoading: boolean = dependencies.every(value => {
             return value === false || typeof value !== 'boolean'
         })
 
@@ -90,12 +90,12 @@ function useFetch<DataType = any>(
 
         // If we have not returned yet, do the API call
         (async () => {
-            let tries = 5
+            let tries: number = 5
 
             // Try fetching maximally five times
             while (tries > 0) {
                 try {
-                    const response = await axios.get(url)
+                    const response: AxiosResponse<any, any> = await axios.get(url)
 
                     // Do a customFetch if callback was given
                     if (customFetch != null) {
@@ -108,7 +108,7 @@ function useFetch<DataType = any>(
                     // Stop trying once fetch was successful
                     break
                 } catch (error) {
-                    const attempts = '(' + (6 - tries) 
+                    const attempts: string = '(' + (6 - tries) 
                         + ' attempt' 
                         + (tries < 5 ? 's' : '') 
                         + (tries === 1 ? ', stopping now' : '') 
