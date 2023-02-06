@@ -1,19 +1,20 @@
-/***********************************************
- * ./assets/pages/ShoppingList/ShoppingList.js *
- ***********************************************/
+/************************************************
+ * ./assets/pages/ShoppingList/ShoppingList.tsx *
+ ************************************************/
 
 import React, { useEffect, useState }   from 'react'
 import axios                            from 'axios'
 import Fraction                         from 'fraction.js'
+import swal                             from 'sweetalert'
 
 import Item                             from './components/Item'
-import AddItemInputWidget               from '../../components/ui/AddItemInputWidget'
-import Button                           from '../../components/ui/Buttons/Button'
-import Card                             from '../../components/ui/Card'
-import Spacer                           from '../../components/ui/Spacer'
-import Spinner                          from '../../components/ui/Spinner'
+import AddItemInputWidget               from '@/components/ui/AddItemInputWidget'
+import Button                           from '@/components/ui/Buttons/Button'
+import Card                             from '@/components/ui/Card'
+import Spacer                           from '@/components/ui/Spacer'
+import Spinner                          from '@/components/ui/Spinner'
 
-import getFullIngredientName            from '../../util/getFullIngredientName'
+import getFullIngredientName            from '@/util/getFullIngredientName'
 
 /**
  * ShoppingList
@@ -26,18 +27,22 @@ import getFullIngredientName            from '../../util/getFullIngredientName'
  * that are stored in the pantry.
  * 
  * @component
- * @param {object} props
- * @param {object} props.shoppingList
+ * @param props
+ * @param props.shoppingList
  */
-export default function ShoppingList({ shoppingList, ...props }) {
+export default function ShoppingList({ shoppingList, pantry, settings, setSidebar, setTopbar }: {
+    shoppingList: FetchableEntity<Array<Ingredient>>
+    pantry: FetchableEntity<Array<Ingredient>>
+    settings: FetchableEntity<Settings>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
     /**
      * The input value of the Add Item Widget at the top.
      * Will be passed to the AddItemInputWidget component
      * together with its setter method.
-     * 
-     * @type {[string, function]}
      */
-    const [inputValue, setInputValue] = useState('')
+    const [inputValue, setInputValue] = useState<string>('')
 
     /**
      * handleEnterKeyDown
@@ -49,9 +54,9 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * The reload is required because the API generates
      * IDs and other fields.
      * 
-     * @param {string} value A trimmed string that describes an Ingredient object.
+     * @param value A trimmed string that describes an Ingredient object.
      */
-    const handleEnterKeyDown = (value) => {
+    const handleEnterKeyDown = (value: string) => {
         // Clear input field
         setInputValue('')
 
@@ -73,29 +78,28 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * to the ShoppingList Replace API and a reload 
      * is done.
      */
-    const handleAddUpIngredients = () => {
+    const handleAddUpIngredients = (): void => {
         // Make a copy of the shoppingList.data
-        const copyOfList = [...shoppingList.data]
+        const copyOfList: Array<Ingredient> = [...shoppingList.data]
 
         // Create temporary map for ingredients.
-        /** @type {Map<string, object>} */
-        let ingredientMap = new Map()
+        let ingredientMap: Map<string, Ingredient> = new Map()
 
         // Go through each ingredient
         copyOfList.forEach(ingredient => {
             // Check if the ingredient has been added to the ingredientMap yet
             if (ingredientMap.has(ingredient.name)) {
                 // Get the ingredient from the map
-                let currentIngredient = ingredientMap.get(ingredient.name);
+                let currentIngredient: Ingredient = ingredientMap.get(ingredient.name)!
 
                 // Check if the quantity units match and the value is a number
                 if (currentIngredient.quantity_unit === ingredient.quantity_unit
                     && ingredient.quantity_value) {
                     // Calculate the new quantity value.
                     // Note that the values may be fractions.
-                    let currentVal = new Fraction(currentIngredient.quantity_value)
-                    let newVal = new Fraction(ingredient.quantity_value)
-                    let totalVal = currentVal.add(newVal)
+                    let currentVal: Fraction = new Fraction(currentIngredient.quantity_value)
+                    let newVal: Fraction = new Fraction(ingredient.quantity_value)
+                    let totalVal: Fraction = currentVal.add(newVal)
 
                     // Save new quantity value in currentIngredient
                     currentIngredient.quantity_value = totalVal.toFraction(true)
@@ -112,10 +116,10 @@ export default function ShoppingList({ shoppingList, ...props }) {
         })
 
         // Create a new shoppingList from the ingredientMap
-        const newItemList = Array.from(ingredientMap.values())
+        const newItemList: Array<Ingredient> = Array.from(ingredientMap.values())
 
         // Create array of strings of ingredients for API
-        const ingredients = []
+        const ingredients: Array<string> = []
 
         newItemList?.forEach(ingredient => {
             ingredients.push(getFullIngredientName(ingredient))
@@ -133,10 +137,10 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * but additionally substracts all ingredients 
      * that are in the pantry.
      */
-    const handleSubstractPantry = () => {
+    const handleSubstractPantry = (): void => {
         // Make a copy of the shoppingList.data and pantry.data
-        const copyOfList = [...shoppingList.data]
-        const copyOfPantry = JSON.parse(JSON.stringify(props.pantry.data))
+        const copyOfList: Array<Ingredient> = [...shoppingList.data]
+        const copyOfPantry: Array<Ingredient> = JSON.parse(JSON.stringify(pantry.data))
 
         // Each pantry ingredient should have negative value
         copyOfPantry.forEach(item => {
@@ -144,24 +148,23 @@ export default function ShoppingList({ shoppingList, ...props }) {
         })
 
         // Create temporary map for ingredients.
-        /** @type {Map<string, object>} */
-        let ingredientMap = new Map();
+        let ingredientMap: Map<string, Ingredient> = new Map();
 
         // Go through each ingredient
         ([...copyOfList, ...copyOfPantry]).forEach(ingredient => {
             // Check if the ingredient has been added to the ingredientMap yet
             if (ingredientMap.has(ingredient.name)) {
                 // Get the ingredient from the map
-                let currentIngredient = ingredientMap.get(ingredient.name);
+                let currentIngredient: Ingredient = ingredientMap.get(ingredient.name)!
 
                 // Check if the quantity units match and the value is a number
                 if (currentIngredient.quantity_unit === ingredient.quantity_unit
                     && ingredient.quantity_value) {
                     // Calculate the new quantity value.
                     // Note that the values may be fractions.
-                    let currentVal = new Fraction(currentIngredient.quantity_value == '' ? 0 : currentIngredient.quantity_value)
-                    let newVal = new Fraction(ingredient.quantity_value == '' ? 0 : ingredient.quantity_value)
-                    let totalVal = currentVal.add(newVal)
+                    let currentVal: Fraction = new Fraction(currentIngredient.quantity_value == '' ? 0 : currentIngredient.quantity_value)
+                    let newVal: Fraction = new Fraction(ingredient.quantity_value == '' ? 0 : ingredient.quantity_value)
+                    let totalVal: Fraction = currentVal.add(newVal)
 
                     // Save new quantity value in currentIngredient
                     currentIngredient.quantity_value = totalVal.toFraction(true)
@@ -178,17 +181,17 @@ export default function ShoppingList({ shoppingList, ...props }) {
         })
 
         // Create a new shoppingList from the ingredientMap
-        let newItemList = Array.from(ingredientMap.values())
+        let newItemList: Array<Ingredient> = Array.from(ingredientMap.values())
 
         // Filter non-positive quantity values out
         newItemList = newItemList.filter(item => {
-            let quantityValue = new Fraction(item.quantity_value == '' ? 0 : item.quantity_value)
+            let quantityValue: Fraction = new Fraction(item.quantity_value == '' ? 0 : item.quantity_value)
             // quantityValue = quantityValue.valueOf()
-            return quantityValue > 0 || !quantityValue && quantityValue !== 0
+            return quantityValue.valueOf() > 0 || !quantityValue && quantityValue !== 0
         })
 
         // Create array of strings of ingredients for API
-        const ingredients = []
+        const ingredients: Array<string> = []
 
         newItemList?.forEach(ingredient => {
             ingredients.push(getFullIngredientName(ingredient))
@@ -211,10 +214,10 @@ export default function ShoppingList({ shoppingList, ...props }) {
             icon: 'error',
             title: 'Wirklich alle Zutaten löschen?',
             buttons: {
-                cancel: 'Abbrechen',
-                confirm: 'Löschen',
+                cancel: { text: 'Abbrechen' },
+                confirm: { text: 'Löschen' },
             },
-        }).then((confirm) => {
+        }).then(confirm => {
             if (confirm) {
                 axios.get('/api/shoppinglist/delete-all')
                 shoppingList.setLoading(true)
@@ -230,7 +233,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
     const handleDeleteChecked = () => {
         // Make a copy of shoppingList.data and
         // filter out all items that are checked
-        const newItemList = [...shoppingList.data].filter(item => !item.checked)
+        const newItemList: Array<Ingredient> = [...shoppingList.data].filter(item => !item.checked)
         shoppingList.setData(newItemList)
 
         // API call
@@ -242,10 +245,10 @@ export default function ShoppingList({ shoppingList, ...props }) {
      */ 
     useEffect(() => {
         // Load sidebar
-        props.setSidebar('shoppinglist')
+        setSidebar('shoppinglist')
 
         // Load topbar
-        props.setTopbar({
+        setTopbar({
             title: 'Einkaufsliste',
             actionButtons: [
                 { icon: 'delete_forever', onClick: handleDeleteAll },
@@ -262,7 +265,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
      * shoppingList.data changes
      */
     useEffect(() => {
-        props.setSidebar('shoppinglist', {
+        setSidebar('shoppinglist', {
             visible: true, 
             icon: 'remove_done', 
             label: 'Erledigte löschen',
@@ -312,15 +315,15 @@ export default function ShoppingList({ shoppingList, ...props }) {
                         </div>
                     </Card>
 
-                    {shoppingList.data?.length >= 1 &&
+                    {shoppingList.data !== undefined && shoppingList.data.length >= 1 &&
                         <div className="flex flex-col items-end justify-end gap-4 mt-4 mx-4 md:mx-0 pb-[5.5rem] md:pb-0">
-                            {props.settings.data?.showPantry && props.pantry.data?.length > 0 &&
+                            {settings.data?.showPantry && pantry.data != undefined && pantry.data.length > 0 &&
                                 <Button
                                     onClick={handleSubstractPantry}
                                     label="Vorräte verrechnen"
                                     icon="cell_merge"
                                     role="tertiary"
-                                    small={true}
+                                    isSmall={true}
                                 />
                             }
                             <Button
@@ -328,7 +331,7 @@ export default function ShoppingList({ shoppingList, ...props }) {
                                 icon="low_priority"
                                 label="Zutaten zusammenfassen"
                                 role="tertiary"
-                                small={true}
+                                isSmall={true}
                             />
                         </div>
                     }

@@ -1,12 +1,12 @@
-/**************************************************
- * ./assets/pages/ShoppingList/components/Item.js *
- **************************************************/
+/***************************************************
+ * ./assets/pages/ShoppingList/components/Item.tsx *
+ ***************************************************/
 
 import React                    from 'react'
 import axios                    from 'axios'
 
-import IconButton               from '../../../components/ui/Buttons/IconButton'
-import getFullIngredientName    from '../../../util/getFullIngredientName'
+import IconButton               from '@/components/ui/Buttons/IconButton'
+import getFullIngredientName    from '@/util/getFullIngredientName'
 
 /**
  * Item
@@ -15,20 +15,23 @@ import getFullIngredientName    from '../../../util/getFullIngredientName'
  * handles events related to that item.
  * 
  * @component
- * @param {object} props
- * @param {object} props.shoppingList
- * @param {object} props.item
+ * @param props
+ * @param props.shoppingList
+ * @param props.item
  */
-export default function Item({ shoppingList, item }) {
+export default function Item({ shoppingList, item }: {
+    shoppingList: FetchableEntity<Array<Ingredient>>
+    item: Ingredient
+}): JSX.Element {
     /**
      * handleClickOnItem
      * 
-     * Handles clicks on an item of the list.
+     * Handles a click event on a list item.
      * 
-     * @param {any} event
-     * @param {object} item A list item.
+     * @param event A mouse event.
+     * @param item A list item.
      */
-    const handleClickOnItem = (event, item) => {
+    const handleClickOnItem = (event: React.MouseEvent, item: Ingredient): void => {
         if (event.detail === 2) {
             // Double click action
             handleItemSetEditability(item)
@@ -52,7 +55,7 @@ export default function Item({ shoppingList, item }) {
         }
     }
 
-    let preventSingleClick = false
+    let preventSingleClick: boolean = false
 
     /**
      * handleCheckboxChange
@@ -60,12 +63,12 @@ export default function Item({ shoppingList, item }) {
      * Checks or unchecks an item. Is performed on single clicks 
      * on the item or the checkboxes.
      * 
-     * @param {object} item A list item.
+     * @param item A list item.
      */
-    const handleCheckboxChange = (item) => {
+    const handleCheckboxChange = (item: Ingredient): void => {
         // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
+        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        const index: number = newItemList.indexOf(item)
 
         // Check or uncheck the item and make it non-editable
         newItemList[index].checked = !newItemList[index].checked
@@ -82,12 +85,12 @@ export default function Item({ shoppingList, item }) {
      * Changes an item's editability. Is performed on double clicks.
      * Does not trigger a reload or replacement of the shoppingList.
      * 
-     * @param {object} item A list item.
+     * @param item A list item.
      */
-    const handleItemSetEditability = (item) => {
+    const handleItemSetEditability = (item: Ingredient) => {
         // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
+        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        const index: number = newItemList.indexOf(item)
 
         // Make all items non-editable
         newItemList.forEach(item => {
@@ -106,16 +109,19 @@ export default function Item({ shoppingList, item }) {
      * it non-editable after. Is called onBlur or 
      * onKeyDown when the Enter key was pressed.
      * 
-     * @param {any} event
-     * @param {object} item A list item.
+     * @param event A focus or keyboard event.
+     * @param item A list item.
      */
-    const handleEditItem = (event, item) => {
+    const handleEditItem = (
+        event: React.FocusEvent<HTMLInputElement, Element> | React.KeyboardEvent<HTMLInputElement>, 
+        item: Ingredient
+    ) => {
         // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
+        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        const index: number = newItemList.indexOf(item)
 
         // Return early if the value of the new item is empty
-        const newItem = event.target.value.replace(/(\s+)/g, ' ').trim()
+        const newItem: string = (event.target as HTMLInputElement).value.replace(/(\s+)/g, ' ').trim()
 
         if (newItem.length === 0) {
             return
@@ -143,23 +149,23 @@ export default function Item({ shoppingList, item }) {
      * 
      * Moves the given item up or down in the ShoppingList.
      * 
-     * @param {number} id The id of the given item.
-     * @param {number} direction Possible values are -1 (up) and 1 (down).
+     * @param item A list item.
+     * @param direction Possible values are -1 (up) and 1 (down).
      */
-    const handleChangePosition = (item, direction) => {
+    const handleChangePosition = (item: Ingredient, direction: -1 | 1) => {
         // Make a copy of shoppingList.data and find item
-        let newItemList = [...shoppingList.data]
-        const index = newItemList.indexOf(item)
-        const itemCopy = {...newItemList[index]}
+        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        const index: number = newItemList.indexOf(item)
+        const itemCopy: Ingredient = {...newItemList[index]}
 
-        const oldPosition = newItemList[index].position
-        const newPosition = newItemList[index + direction]?.position
+        const oldPosition: number = newItemList[index].position
+        const newPosition: number = newItemList[index + direction].position
 
         // Move item up only when it is not the first item and 
         // move item down only when it is not the last item.
         if (
             (direction === -1 && index !== 0)
-            || (direction === 1 && index !== shoppingList.data?.length - 1)
+            || (direction === 1 && index !== shoppingList.data!.length - 1)
         ) {
             itemCopy.position = newPosition
             newItemList[index].position = newPosition
@@ -186,7 +192,7 @@ export default function Item({ shoppingList, item }) {
         <div className="flex justify-between items-center gap-4" >
             <div className="flex items-center grow gap-4" >
                 <input 
-                    id={item.id} 
+                    id={item.id.toString()} 
                     type="checkbox" 
                     className="w-4 h-4 text-primary-100 bg-[#e0e4d6] rounded-sm border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
                     onChange={() => handleCheckboxChange(item)} 
