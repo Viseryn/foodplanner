@@ -74,7 +74,7 @@ function useFetch<DataType = any>(
     // Detect changes in dependencies
     useEffect(() => {
         // Do not fetch data if authentication fails
-        if (authentication !== undefined && !authentication?.isAuthenticated) {
+        if (authentication !== undefined && !authentication.isAuthenticated) {
             return
         }
 
