@@ -1,3 +1,10 @@
+type SetSidebarAction = (
+    sidebarActiveItem?: string,
+    sidebarActionButton?: SidebarActionButtonConfiguration
+) => void
+
+type SetTopbarAction = React.Dispatch<TopbarConfiguration>
+
 type SidebarActionButtonConfiguration = {
     path?: string           /** A path that the SAB leads to.            */
     visible?: boolean       /** Whether the SAB shall be visible or not. */
