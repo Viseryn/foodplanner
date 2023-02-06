@@ -118,7 +118,7 @@ export default function App({ version }: {
      * @param sidebarActiveItem The sidebar item that should be active.
      * @param sidebarActionButton The configuration for the SidebarActionButton.
      */
-    const setSidebar = (
+    const setSidebar: SetSidebarAction = (
         sidebarActiveItem: string = '', 
         sidebarActionButton: SidebarActionButtonConfiguration = {},
     ): void => {
@@ -196,7 +196,8 @@ export default function App({ version }: {
      * RENDERING      *
      ******************/
 
-    const props = { user, authentication, settings, userGroups, mealCategories, recipes, days, shoppingList, pantry, setSidebar, setTopbar }
+    const props = { user, authentication, settings, userGroups, mealCategories, 
+        recipes, days, shoppingList, pantry, setSidebar, setTopbar }
 
     /** 
      * Render App
