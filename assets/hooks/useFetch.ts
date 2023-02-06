@@ -8,30 +8,47 @@ import axios, { AxiosResponse } from 'axios'
 /**
  * useFetch
  * 
- * A hook that manages the data and loading state of 
- * fetchable entities. When used, it attempts an API
- * call at the given URL, but first checks several things.
+ * A hook that fetches the data of a fetchable entity using a given API.
+ * Manages a state variable 'data' that contains the data of the entity,
+ * as well as a state variable 'isLoading' that is true while the data 
+ * is loading. 
  * 
- * First, if the authentication argument is not null, 
- * the attempt is cancelled when the user is not authenticated.
+ * The hook returns an object of the FetchableEntity<DataType> type, i.e.
+ * an object that consists of the 'data' and 'isLoading' state variables 
+ * as well as their setter functions.
  * 
- * Second, for the list of isLoading dependencies, it is 
- * checked that indeed at least one is true, i.e. something
- * wants to load (this can be the data entity itself, or 
- * some external factor like App.isLoading or authentication.isLoading).
+ * Usually, one can use the 'isLoading' property to decide in a component
+ * whether a loading screen should be shown. The 'setLoading' function 
+ * can be used to trigger a reload by passing true, since the 'data' property
+ * will be updated whenever 'isLoading' is true.
  * 
- * If none of these steps lead to an early return, the API
- * is called and the response data is saved to the state 
- * variable data. The state this.isLoading is then set to false.
- * The hook returns an object with both the data and the loading 
- * boolean as well as their setter methods.
+ * When the hook is called, it is first checked whether an Authentication 
+ * object was passed as argument. If yes and the user is not authenticated,
+ * then the hook will return early and thus not attempt an API call.
  * 
- * @template DataType The return value's data property type. Default is any.
+ * The hook will basically attempt an API call, and thus a (re-)load of the 
+ * entity data, whenever the 'isLoading' state variable is true. If it is 
+ * false, it will not trigger a (re-)load. If the entity is (co-)dependent of 
+ * some other entity however, one might want to trigger a reload regardless.
+ * For example, if this hook manages EntityA, but a reload is wished because
+ * EntityB is loading, then EntityB.isLoading can be passed in the parameter
+ * list 'isDependencyLoading'. The Authentication.isLoading is automatically
+ * added to this list if an Authentication object was provided. If all 
+ * booleans in this list are also false, then the hook returns early.
+ * 
+ * If none of these steps lead to an early return, the hook will try to 
+ * do the API call (up to a maximal number of five tries). If a customFetch 
+ * callback function was passed as argument, it will now be called with the 
+ * API response object and the setter functions of the 'data' and 'isLoading' 
+ * state variables as arguments. If no customFetch callback function was given, 
+ * then instead the 'data' state variable is set to be the API response data 
+ * and the 'isLoading' state variable is set to false.
+ * 
+ * @template DataType The expected type of the 'data' state variable.
  * @param url The URL to the API that provides the data.
- * @param authentication If argument is an authentication object, the data will only be fetched if the user is authenticated. If argument is null, it will be ignored.
- * @param isDependencyLoading An array of isLoading properties of dependent data. If an authentication object was provided, authentication.isLoading is automatically added to this list.
- * @param otherDependencies An array of dependencies for the useEffect API call.
- * @param customFetch A function that can be executed after the API call if passed as argument. The response of the API call will be passed as argument as well as the setter methods of the data entity and its isLoading state.
+ * @param authentication An optional Authentication object. If such an object is given, the hook will only attempt API calls if Authentication.isAuthenticated is true, i.e. the user is authenticated.
+ * @param isDependencyLoading An array of isLoading properties of dependent data. If an Authentication object was provided, Authentication.isLoading is automatically added to this list.
+ * @param customFetch A function that can be executed after the API call if passed as argument. The response of the API call will be passed as argument as well as the setter methods of the 'data' state and its 'isLoading' state.
  * @return An object that consists of the data state variable, the isLoading state variable, and their respective setter methods.
  */
 function useFetch<DataType = any>(
