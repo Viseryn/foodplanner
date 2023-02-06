@@ -1,21 +1,17 @@
-/*************************************
- * ./assets/components/ui/Spinner.js *
- *************************************/
+/**************************************
+ * ./assets/components/ui/Spinner.tsx *
+ **************************************/
 
-import React from 'react';
+import React from 'react'
 
 /**
  * Spinner
  * 
- * A component that renders an animated spinner, 
- * e.g. for loading screens.
+ * A component that renders an animated spinner, e.g. for loading screens.
  * 
  * @component
- * 
- * @example
- * <Spinner />
  */
-export default function Spinner() {
+export default function Spinner(): JSX.Element {
     return (
         <div role="status" className="flex justify-center">
             <svg className=" my-40 w-10 h-10 text-secondary-200 animate-spin fill-primary-100" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,5 +20,5 @@ export default function Spinner() {
             </svg>
             <span className="sr-only">Loading...</span>
         </div>
-    );
+    )
 }
