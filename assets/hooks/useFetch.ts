@@ -41,7 +41,7 @@ function useFetch<DataType = any>(
     otherDependencies?: React.DependencyList,
     customFetch?: (
         response: AxiosResponse<any, any>,
-        setData: React.Dispatch<React.SetStateAction<DataType | undefined>>,
+        setData: React.Dispatch<React.SetStateAction<DataType>>,
         setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     ) => void,
 ) : FetchableEntity<DataType> {
@@ -50,7 +50,7 @@ function useFetch<DataType = any>(
      * be an object or an array of objects, but any 
      * other type is also allowed.
      */
-    const [data, setData] = useState<DataType>()
+    const [data, setData] = useState<DataType>(<DataType> {})
 
     /**
      * Whether the data is currently loading. Whenever

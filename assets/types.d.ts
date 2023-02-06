@@ -28,8 +28,8 @@ type TopbarConfiguration = {
 }
 
 type FetchableEntity<Type = any> = {
-    data: Type | undefined
-    setData: React.Dispatch<React.SetStateAction<Type | undefined>>
+    data: Type
+    setData: React.Dispatch<React.SetStateAction<Type>>
     isLoading: boolean
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
