@@ -100,9 +100,10 @@ type Ingredient = {
     name: string
     quantity_value: string
     quantity_unit: string
-    storage?: { id: number } /** @todo */
-    position?: number
-    checked?: boolean
+    storage: { id: number } /** @todo */
+    position: number
+    checked: boolean
+    editable?: boolean
 }
 
 /** @todo Refactor API */
