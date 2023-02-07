@@ -108,10 +108,12 @@ type Ingredient = {
 
 /** @todo Refactor API */
 type Meal = {
+    [x: string]: ReactNode /** @deprecated */
     id: number
     meal_category: MealCategory
     recipe: Recipe
-    user_group: UserGroup
+    user_group: UserGroup | string /** @deprecated */ | ReactNode /** @deprecated */
+    user_group_icon: string /** @deprecated */
 }
 
 type Day = {
