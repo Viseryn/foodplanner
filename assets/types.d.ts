@@ -13,18 +13,20 @@ type SidebarActionButtonConfiguration = {
     label?: string          /** The label text of the SAB.               */
 }
 
+type TopbarActionButton = {
+    icon: string
+    onClick?: () => void
+}
+
 type TopbarConfiguration = {
-    title?: string                  /** The title of the topbar.                                           */
-    showBackButton?: boolean        /** Whether the back button shall be visible or not.                   */
-    backButtonPath?: string         /** The path that the back button leads to.                            */
-    onBackButtonClick?: () => void  /** An onClick handler callback for the back button.                   */
-    actionButtons?: Array<{         /** An array of action buttons for the top-right corner of the topbar. */
-        icon: string
-        onClick?: () => void
-    }>
-    truncate?: boolean              /** Whether a too long title shall be truncated or not on scroll.                                              */
-    isLoading?: boolean             /** Whether the topbar should display a skeleton while this property is true.                                  */
-    style?: string                  /** Additional styling classes for the topbar on larger screns (e.g. a max-width to match the main container). */
+    title?: string                            /** The title of the topbar.                                           */
+    showBackButton?: boolean                  /** Whether the back button shall be visible or not.                   */
+    backButtonPath?: string                   /** The path that the back button leads to.                            */
+    onBackButtonClick?: () => void            /** An onClick handler callback for the back button.                   */
+    actionButtons?: Array<TopbarActionButton> /** An array of action buttons for the top-right corner of the topbar. */
+    truncate?: boolean                        /** Whether a too long title shall be truncated or not on scroll.                                              */
+    isLoading?: boolean                       /** Whether the topbar should display a skeleton while this property is true.                                  */
+    style?: string                            /** Additional styling classes for the topbar on larger screns (e.g. a max-width to match the main container). */
 }
 
 type FetchableEntity<Type = any> = {
