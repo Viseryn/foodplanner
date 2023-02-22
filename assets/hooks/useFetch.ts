@@ -55,7 +55,6 @@ function useFetch<DataType = any>(
     url: string,
     authentication?: Authentication,
     isDependencyLoading?: Array<boolean>,
-    otherDependencies?: React.DependencyList,
     customFetch?: (
         response: AxiosResponse<any, any>,
         setData: React.Dispatch<React.SetStateAction<DataType>>,
@@ -81,11 +80,10 @@ function useFetch<DataType = any>(
      * Attempt API call
      */
     // Collect all dependencies in one array
-    const dependencies: Array<any> = ([] as Array<any>).concat(
+    const dependencies: Array<boolean | undefined> = ([] as Array<boolean | undefined>).concat(
         isLoading,
         authentication?.isLoading, 
         isDependencyLoading, 
-        otherDependencies,
     )
 
     // Detect changes in dependencies
