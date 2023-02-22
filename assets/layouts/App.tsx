@@ -115,6 +115,16 @@ export default function App({ version }: {
     /******************
      * TOPBAR         *
      ******************/
+    // Fetch data
+    const fetch = <T,>(url: string) => { return useFetch<T>(url, authentication, [isLoading]) }
+
+    const settings = fetch<Settings>('/api/settings')
+    const mealCategories = fetch<Array<MealCategory>>('/api/mealcategories/list')
+    const userGroups = fetch<Array<UserGroup>>('/api/usergroups/list')
+    const shoppingList = fetch<Array<Ingredient>>('/api/shoppinglist/ingredients')
+    const pantry = fetch<Array<Ingredient>>('/api/pantry/ingredients')
+    const recipes = fetch<Array<Recipe>>('/api/recipes/list')
+    const days = fetch<Array<Day>>('/api/days/list')
 
     /**
      * The configuration of the topbar. On small screens, 
@@ -130,51 +140,6 @@ export default function App({ version }: {
     const [topbar, setTopbar] = useState<TopbarConfiguration>({})
 
     
-    /******************
-     * FETCH DATA     *
-     ******************/
-    
-    const settings = useFetch<Settings>(
-        '/api/settings', 
-        authentication,
-        [isLoading],
-    )
-
-    const userGroups = useFetch<Array<UserGroup>>(
-        '/api/usergroups/list',
-        authentication,
-        [isLoading],
-    )
-
-    const mealCategories = useFetch<Array<MealCategory>>(
-        '/api/mealcategories/list',
-        authentication,
-        [isLoading],
-    )
-
-    const recipes = useFetch<Recipe>(
-        '/api/recipes/list',
-        authentication,
-        [isLoading],
-    )
-
-    const days = useFetch<Day>(
-        '/api/days/list',
-        authentication,
-        [isLoading],
-    )
-
-    const shoppingList = useFetch<Array<Ingredient>>(
-        '/api/shoppinglist/ingredients',
-        authentication,
-        [isLoading],
-    )
-
-    const pantry = useFetch<Array<Ingredient>>(
-        '/api/pantry/ingredients',
-        authentication,
-        [isLoading],
-    )
 
 
     /******************
