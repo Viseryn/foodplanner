@@ -33,17 +33,13 @@ import ShoppingList                     from '@/pages/ShoppingList/ShoppingList'
 /**
  * App
  * 
- * Main component of the application. Handles the routing
- * and provides state variables and setter functions for 
- * various global components, such as the sidebar or 
- * the shopping list.
+ * Main component of the application. Handles the routing and provides state variables and 
+ * setter functions for various global components, such as the sidebar or the shopping list.
  * 
- * Renders a flex container consisting of two columns/rows:
- * the sidebar, rendered by the Sidebar component, and 
- * the main container, which itself consists of the topbar,
- * rendered by the Topbar component, and the actual content
- * container, where the BrowserRouter decides which page to 
- * load depending on the URL.
+ * Renders a flex container consisting of two columns/rows: the sidebar, rendered by the 
+ * Sidebar component, and the main container, which itself consists of the topbar, rendered by 
+ * the Topbar component, and the actual content container, where the BrowserRouter decides 
+ * which page to  load depending on the URL.
  * 
  * @component
  * @param props
@@ -52,26 +48,15 @@ import ShoppingList                     from '@/pages/ShoppingList/ShoppingList'
 export default function App({ version }: { 
     version: string
 }): JSX.Element {
-    /******************
-     * GENERAL        *
-     ******************/
+    // The User and Authentication objects
+    const [user, authentication]: [FetchableEntity<User>, Authentication] = useAuthentication()
 
-    /**
-     * The user and authentication objects.
-     */
-    const [user, authentication] = useAuthentication()
+    // Will be updated by useRefreshDataTimestamp and set to true if the timestamp changed.
+    // Can e.g. be passed as dependency in a useFetch call to reload entity data without 
+    // showing a loading screen.
+    const [isLoading, setLoading] = useState<boolean>(false)
 
-    /**
-     * Whether or not dependent data should be reloaded
-     * without loading screens. Will be updated by the
-     * useRefreshDataTimestamp hook.
-     */
-    const [isLoading, setLoading] = useState(false)
-
-    /**
-     * The RefreshDataTimestamp. This hook will keep
-     * updating isLoading if the timestamp changes.
-     */
+    // This hook will keep updating isLoading if the timestamp changes
     useRefreshDataTimestamp(isLoading, setLoading)
 
     
