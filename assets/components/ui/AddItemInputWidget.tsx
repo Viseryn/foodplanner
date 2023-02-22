@@ -1,6 +1,6 @@
-/************************************************
- * ./assets/components/ui/AddItemInputWidget.js *
- ************************************************/
+/*************************************************
+ * ./assets/components/ui/AddItemInputWidget.tsx *
+ *************************************************/
 
 import React from 'react'
 
@@ -15,18 +15,23 @@ import React from 'react'
  * the (trimmed) inputValue as parameter.
  * 
  * @component
- * @param {object} props
- * @param {string} props.inputValue A state variable that stores the current user input value.
- * @param {React.Dispatch<React.SetStateAction<string>>} props.setInputValue The setter method for the state variable inputValue.
- * @param {(inputValue: string) => void} props.handleEnterKeyDown A function that is called when the enter key is pressed with the trimmed inputValue as argument.
- * @param {string?} props.placeholder The placeholder text of the widget. Default is 'Tippe eine Zutat ein ...'.
+ * @param props
+ * @param props.inputValue A state variable that stores the current user input value.
+ * @param props.setInputValue The setter method for the state variable inputValue.
+ * @param props.handleEnterKeyDown A function that is called when the enter key is pressed. The trimmed inputValue is passed as argument.
+ * @param props.placeholder The placeholder text of the widget. Default is 'Tippe eine Zutat ein ...'.
  */
  export default function AddItemInputWidget({ 
     inputValue, 
     setInputValue, 
     handleEnterKeyDown, 
-    placeholder = 'Tippe eine Zutat ein ...' 
-}) {
+    placeholder = 'Tippe eine Zutat ein ...'
+}: {
+    inputValue: string
+    setInputValue: React.Dispatch<React.SetStateAction<string>>
+    handleEnterKeyDown: (inputValue: string) => void
+    placeholder?: string
+}): JSX.Element {
     /**
      * handleKeyDown
      * 
@@ -36,11 +41,13 @@ import React from 'react'
      * function handleEnterKeyDown from the parent component
      * with the trimmed inputValue as argument.
      * 
-     * @param {*} event
+     * @param event A keyboard event.
      */ 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: React.KeyboardEvent): void => {
         // Return if enter key was not pressed
-        if (event.key !== 'Enter') return
+        if (event.key !== 'Enter') {
+            return
+        }
 
         // Only accept input if it consists of more than whitespaces
         if (inputValue.trim().length > 0) {

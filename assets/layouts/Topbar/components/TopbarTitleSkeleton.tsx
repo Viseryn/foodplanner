@@ -1,8 +1,8 @@
-/*************************************************************
- * ./assets/layouts/Topbar/components/TopbarTitleSkeleton.js *
- *************************************************************/
+/**************************************************************
+ * ./assets/layouts/Topbar/components/TopbarTitleSkeleton.tsx *
+ **************************************************************/
 
-import React from 'react';
+import React from 'react'
 
 /**
  * TopbarTitleSkeleton

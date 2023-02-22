@@ -1,11 +1,11 @@
-/***********************************
- * ./assets/layouts/AuthChecker.js *
- ***********************************/
+/************************************
+ * ./assets/layouts/AuthChecker.tsx *
+ ************************************/
 
 import React, { useEffect, useState }   from 'react'
 import { useNavigate }                  from 'react-router-dom'
 
-import Spinner                          from '../../components/ui/Spinner'
+import Spinner                          from '@/components/ui/Spinner'
 
 /**
  * AuthChecker
@@ -18,21 +18,21 @@ import Spinner                          from '../../components/ui/Spinner'
  * authenticated.
  * 
  * @component
- * @property {object} authentication The authentication object from useAuthentication().
- * @property {function} component A React component that should be locked behind authentication.
+ * @param props
+ * @param props.authentication The authentication object from useAuthentication().
+ * @param props.component A React component that should be locked behind authentication.
  */
-export default function AuthChecker({ authentication, component = <></> }) {
+export default function AuthChecker({ authentication, component }: {
+    authentication: Authentication
+    component: JSX.Element
+}): JSX.Element {
     /**
      * Whether the AuthChecker is loading.
-     * 
-     * @type {[boolean, function]}
      */
     const [isLoading, setLoading] = useState(true)
 
     /**
      * A NavigateFunction for navigating to the login page.
-     * 
-     * @type {NavigateFunction}
      */
     const navigate = useNavigate()
 

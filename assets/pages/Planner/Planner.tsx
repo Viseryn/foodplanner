@@ -1,53 +1,45 @@
-/*************************************
- * ./assets/pages/Planner/Planner.js *
- *************************************/
+/**************************************
+ * ./assets/pages/Planner/Planner.tsx *
+ **************************************/
 
 import React, { useEffect, useState }   from 'react'
 import { Link }                         from 'react-router-dom'
 import axios                            from 'axios'
+import swal                             from 'sweetalert'
 
-import Card                             from '../../components/ui/Card'
-import Spacer                           from '../../components/ui/Spacer'
-import Spinner                          from '../../components/ui/Spinner'
-import getFullIngredientName            from '../../util/getFullIngredientName'
+import Card                             from '@/components/ui/Card'
+import Spacer                           from '@/components/ui/Spacer'
+import Spinner                          from '@/components/ui/Spinner'
+import getFullIngredientName            from '@/util/getFullIngredientName'
 
 /**
  * Planner
  * 
- * A Component for showing a list of all Meals.
- * Collects the data from the Day List API
- * in the /src/Controller/DayController.php.
- * 
- * A component that renders the Weekly Planner.
- * Shows a list of ten Day entities which each
- * have a variable amount of Meal entities. At 
- * the bottom of each day, there is a button for 
- * adding a meal to that specific day. There is 
- * also a SidebarActionButton that puts all 
- * ingredients of all meals into the ShoppingList.
+ * A component that renders the Weekly Planner. Shows a list of ten Day entities 
+ * which each have a variable amount of Meal entities. At the bottom of each day, 
+ * there is a button for  adding a meal to that specific day. There is  lso a 
+ * SidebarActionButton that puts all ingredients of all meals into the ShoppingList.
  * 
  * @component
- * @param {object} props
- * @param {function} props.setSidebar
- * @param {function} props.setTopbar
- * @param {object} props.days
+ * @param props
+ * @param props.days
+ * @param props.recipes
+ * @param props.shoppingList
+ * @param props.setSidebar
+ * @param props.setTopbar
  */
-export default function Planner({ days, ...props }) {
-    /**
-     * Counts how often the SAB was pressed.
-     * Will update the SAB on change.
-     * 
-     * @type {[number, function]}
-     */
-    const [countSabClicks, setCountSabClicks] = useState(0)
+export default function Planner({ days, recipes, shoppingList, setSidebar, setTopbar }: {
+    days: FetchableEntity<Array<Day>>
+    recipes: FetchableEntity<Array<Recipe>>
+    shoppingList: FetchableEntity<Array<Ingredient>>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
+    // Counts how often the SAB was pressed. Will update the SAB on change.
+    const [countSabClicks, setCountSabClicks] = useState<number>(0)
 
-    /**
-     * Whether the SidebarActionButton should
-     * display "Done!" on click.
-     * 
-     * @type {[boolean, function]}
-     */
-    const [showSabDone, setShowSabDone] = useState(false)
+    // Whether the SidebarActionButton should display "Done!" on click.
+    const [showSabDone, setShowSabDone] = useState<boolean>(false)
 
     /**
      * deleteMeal
@@ -56,16 +48,16 @@ export default function Planner({ days, ...props }) {
      * then the Meal Delete API is called and the days are 
      * updated. If cancelled, nothing happens.
      * 
-     * @param {object} meal 
+     * @param meal A Meal object.
      */
-    const deleteMeal = (meal) => {
+    const deleteMeal = (meal: Meal): void => {
         swal({
             dangerMode: true,
             icon: 'error',
             title: 'Mahlzeit wirklich löschen?',
             buttons: {
-                cancel: 'Abbrechen',
-                confirm: 'Löschen',
+                cancel: { text: 'Abbrechen' },
+                confirm: { text: 'Löschen' },
             },
         }).then(confirm => {
             if (confirm) {
@@ -85,57 +77,73 @@ export default function Planner({ days, ...props }) {
     /**
      * handleAddShoppingList
      * 
-     * Adds the ingredients of all meals 
-     * to the shopping list via the 
-     * ShoppingList Add API.
+     * Adds the ingredients of all meals to the shopping list via the ShoppingList Add API.
      */
-    const handleAddShoppingList = () => {
-        if (days.isLoading || props.shoppingList.isLoading) {
+    const handleAddShoppingList = (): void => {
+        if (days.isLoading || shoppingList.isLoading) {
             return
         }
 
         // Collect all recipes
-        let recipes = []
+        let recipesTmp: Array<Recipe> = []
 
-        days.data?.forEach(day => {
+        days.data.forEach(day => {
             day.meals.forEach(meal => {
                 // Since the meal only has basic information of the recipe,
                 // find the full recipe object in props.recipes.
-                const recipeIds = props.recipes.data?.map(recipe => recipe.id)
-                const index = recipeIds.indexOf(meal.recipe.id)
-                recipes.push(props.recipes.data?.[index])
+                const recipeIds: Array<number> = recipes.data.map((recipe: Recipe) => recipe.id)
+                const index: number = recipeIds.indexOf(meal.recipe.id)
+                recipesTmp.push(recipes.data[index])
             })
         })
 
-        // Collect all ingredients
-        let ingredients = []
+        // Collect all ingredients as strings
+        let ingredients: Array<string> = []
 
-        recipes?.forEach(recipe => {
-            recipe?.ingredients?.forEach(ingredient => {
+        recipesTmp.forEach(recipe => {
+            recipe.ingredients.forEach(ingredient => {
                 ingredients.push(getFullIngredientName(ingredient))
             })
-        })
+        });
 
         // Make API call
-        axios
-            .post('/api/shoppinglist/add', JSON.stringify(ingredients))
-            .then(() => props.shoppingList.setLoading(true))
+        (async () => {
+            try {
+                await axios.post('/api/shoppinglist/add', JSON.stringify(ingredients))
+                shoppingList.setLoading(true)
+            } catch (error) {
+                console.log(error)
+            }
+        })()
         
         // Trigger update for the SAB
         setShowSabDone(true)
         setCountSabClicks(count => count + 1)
     }
 
-    /**
-     * Update sidebar action button when 
-     * shopping list changes or when pressed.
-     */
+    // Calls the Update Days API, which removes all unnecessary Day objects
+    // (past days and days further away than ten).
     useEffect(() => {
-        if (days.isLoading) {
-            props.setSidebar('planner')
+        if (days.isLoading) { 
+            return
         }
 
-        props.setSidebar('planner', {
+        (async () => {
+            try {
+                await axios.get('/api/days/update')
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, [days.isLoading])
+
+    // Update sidebar action button when shopping list changes or when pressed.
+    useEffect(() => {
+        if (days.isLoading) {
+            setSidebar('planner')
+        }
+
+        setSidebar('planner', {
             visible: true,
             icon: showSabDone ? 'done' : 'add_shopping_cart', 
             label: showSabDone 
@@ -143,14 +151,12 @@ export default function Planner({ days, ...props }) {
                 : 'Zur Einkaufsliste',
             onClick: handleAddShoppingList,
         })
-    }, [days.data, days.isLoading, props.shoppingList.isLoading, showSabDone, countSabClicks])
+    }, [days.data, days.isLoading, shoppingList.isLoading, showSabDone, countSabClicks])
 
-    /**
-     * Load layout
-     */
+    // Load layout
     useEffect(() => {
         // Load topbar
-        props.setTopbar({
+        setTopbar({
             title: 'Wochenplan',
         })
 
@@ -158,9 +164,7 @@ export default function Planner({ days, ...props }) {
         window.scrollTo(0, 0)
     }, [])
     
-    /**
-     * Render Planner
-     */
+    // Render Planner component
     return (
         <div className="pb-24 md:pb-4 w-full md:w-fit md:min-w-[450px] md:max-w-[900px]">
             <Spacer height="6" />
@@ -170,7 +174,7 @@ export default function Planner({ days, ...props }) {
             ) : (
                 <div className="pb-[5.5rem] md:pb-0 mx-4 md:ml-0 flex flex-col gap-4">
                 {/* The container might be bigger than the screen (md+), so leave extra margin to the right. */}
-                    {days.data?.map(day =>
+                    {days.data.map(day =>
                         <Card key={day.id}>
                             <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900">
                                 <span>{day.weekday}, {day.date}</span>

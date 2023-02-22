@@ -22,8 +22,6 @@ import Spinner                          from '../../components/ui/Spinner'
  * Recipes and MealCategories.
  * 
  * @component
- * @param {function} props.setSidebar
- * @param {function} props.setTopbar
  * @param {object} props.days
  * @param {object} props.mealCategories
  * @param {object} props.recipes

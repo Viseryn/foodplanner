@@ -1,27 +1,29 @@
 /*********************************************
- * ./assets/hooks/useRefreshDataTimestamp.js *
+ * ./assets/hooks/useRefreshDataTimestamp.ts *
  *********************************************/
 
-import axios            from 'axios'
-import { useEffect }    from 'react'
+import axios                    from 'axios'
+import React, { useEffect }     from 'react'
 
-import useFetch         from './useFetch'
+import useFetch                 from './useFetch'
 
 /**
  * useRefreshDataTimestamp
  * 
- * A hook that returns the current RefreshDataTimestamp value
- * stored in the database. It updates itself every 5 seconds
+ * A hook that fetches the current RefreshDataTimestamp value
+ * stored in the database. It updates itself every 10 seconds
  * and will set the isLoading state variable that was passed 
  * as argument to true if there was a change in the timestamp.
  * 
- * @param {boolean} isLoading A boolean state variable.
- * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading The setter method of the state variable isLoading.
- * @returns {number} The current RefreshDataTimestamp.
+ * @param isLoading A boolean state variable.
+ * @param setLoading The setter method of the state variable isLoading.
  */
-function useRefreshDataTimestamp(isLoading, setLoading) {
+function useRefreshDataTimestamp(
+    isLoading: boolean, 
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) {
     // Fetch the current RefreshDataTimestamp
-    const refreshDataTimestamp = useFetch('/api/refresh-data-timestamp')
+    const refreshDataTimestamp = useFetch<string>('/api/refresh-data-timestamp')
 
     // Create a repeating 5 seconds interval
     useEffect(() => {
@@ -51,9 +53,6 @@ function useRefreshDataTimestamp(isLoading, setLoading) {
             clearInterval(interval)
         }
     })
-
-    // Return the current RefreshDataTimestamp
-    return refreshDataTimestamp.data
 }
 
 export default useRefreshDataTimestamp

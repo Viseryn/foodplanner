@@ -1,6 +1,6 @@
-/***************************************
- * ./assets/layouts/Sidebar/Sidebar.js *
- ***************************************/
+/****************************************
+ * ./assets/layouts/Sidebar/Sidebar.tsx *
+ ****************************************/
 
 import React, { useEffect } from 'react'
 import { useLocation }      from 'react-router-dom'
@@ -26,12 +26,13 @@ import SidebarItem          from './components/SidebarItem'
  * screens.
  * 
  * @component
- * @property {string} sidebarActiveItem The id of the sidebar item that should be highlighted.
- * @property {object} sidebarActionButton An object that contains the sidebar action button configuration.
- * @property {boolean} isDrawerVisible A state variable that describes whether or not the sidebar drawer is visible.
- * @property {React.Dispatch<ReactSetStateAction<boolean>>} setDrawerVisible The setter method of isDrawerVisible.
- * @property {object} authentication An authentication object.
- * @property {object} settings A settings object.
+ * @param props
+ * @param props.sidebarActiveItem The id of the sidebar item that should be highlighted.
+ * @param props.sidebarActionButton An object that contains the sidebar action button configuration.
+ * @param props.isDrawerVisible A state variable that describes whether or not the sidebar drawer is visible.
+ * @param props.setDrawerVisible The setter method of isDrawerVisible.
+ * @param props.authentication An authentication object.
+ * @param props.settings A settings object.
  */
 export default function Sidebar({ 
     sidebarActiveItem,
@@ -40,17 +41,19 @@ export default function Sidebar({
     setDrawerVisible, 
     authentication,
     settings, 
-}) {
-    /**
-     * The current location, i.e. the relative path.
-     * 
-     * @type {Location}
-     */
-    const location = useLocation()
- 
+}: {
+    sidebarActiveItem: string
+    sidebarActionButton: SidebarActionButtonConfiguration
+    isDrawerVisible: boolean
+    setDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>
+    authentication: Authentication
+    settings: FetchableEntity<Settings>
+}): JSX.Element {
     /**
      * Close drawer when location changes.
      */
+    const location = useLocation()
+    
     useEffect(() => {
         setDrawerVisible(false)
     }, [location])

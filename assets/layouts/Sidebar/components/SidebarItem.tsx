@@ -1,6 +1,6 @@
-/******************************************************
- * ./assets/layouts/Sidebar/components/SidebarItem.js *
- ******************************************************/
+/*******************************************************
+ * ./assets/layouts/Sidebar/components/SidebarItem.tsx *
+ *******************************************************/
 
 import React    from 'react'
 import { Link } from 'react-router-dom'
@@ -12,12 +12,18 @@ import { Link } from 'react-router-dom'
  * a <li> element that contains an icon and a label.
  * 
  * @component
- * @property {string} id The id of the component this sidebar item should link to. Default is '/'. Will be overriden if path is set.
- * @property {string} icon The icon of the sidebar item. 
- * @property {string} label The label of the sidebar item.
- * @property {string} sidebarActiveItem The id of the sidebar item that is currently active.
+ * @param props
+ * @param props.id The id of the component this sidebar item should link to. Default is '/'. Will be overriden if path is set.
+ * @param props.icon The icon of the sidebar item. 
+ * @param props.label The label of the sidebar item.
+ * @param props.sidebarActiveItem The id of the sidebar item that is currently active.
  */
-export default function SidebarItem({ id, icon, label, sidebarActiveItem }) {
+export default function SidebarItem({ id, icon, label, sidebarActiveItem }: {
+    id: string
+    icon: string
+    label: string
+    sidebarActiveItem: string
+}): JSX.Element {
     const SidebarItemContent = (
         <div className={
             'transition duration-300 group-hover:text-primary-200 dark:group-hover:text-primary-dark-100 '
