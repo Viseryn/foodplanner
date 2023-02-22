@@ -59,36 +59,16 @@ export default function App({ version }: {
     // This hook will keep updating isLoading if the timestamp changes
     useRefreshDataTimestamp(isLoading, setLoading)
 
-    
-    /******************
-     * SIDEBAR        *
-     ******************/
+    // The configuration of the topbar
+    const [topbar, setTopbar] = useState<TopbarConfiguration>({})
 
-    /**
-     * Whether or not the sidebar drawer is visible.
-     * If set to true, the SidebarDrawer will move into 
-     * the view. The setDrawerVisible method can be passed
-     * to any button, preferably to SidebarDrawerButton 
-     * components, e.g. in the sidebar or the topbar.
-     */
-    const [isDrawerVisible, setDrawerVisible] = useState(false)
+    // Whether or not the sidebar drawer is visible
+    const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false)
 
-    /**
-     * The id of the active item of the sidebar. It will be highlighted
-     * with a darker background color and a filled icon.
-     */
-    const [sidebarActiveItem, setSidebarActiveItem] = useState('')
+    // The identifier of the active sidebar item
+    const [sidebarActiveItem, setSidebarActiveItem] = useState<string>('')
 
-    /**
-     * The configuration of the SidebarActionButton (SAB). 
-     * On larger screens, it is fixed in the top of the sidebar.
-     * On small screens it is a floating action button in the 
-     * bottom-right corner of the screen. By default, it is 
-     * invisible. 
-     * 
-     * See the documentation of the SidebarActionButtonConfiguration 
-     * type alias for more information on the properties.
-     */
+    // The configuration of the SidebarActionButton (SAB)
     const [sidebarActionButton, setSidebarActionButton] = useState<SidebarActionButtonConfiguration>({})
 
     /**
@@ -103,18 +83,11 @@ export default function App({ version }: {
      * @param sidebarActiveItem The sidebar item that should be active.
      * @param sidebarActionButton The configuration for the SidebarActionButton.
      */
-    const setSidebar: SetSidebarAction = (
-        sidebarActiveItem: string = '', 
-        sidebarActionButton: SidebarActionButtonConfiguration = {},
-    ): void => {
+    const setSidebar: SetSidebarAction = (sidebarActiveItem = '', sidebarActionButton = {}) => {
         setSidebarActiveItem(sidebarActiveItem)
         setSidebarActionButton(sidebarActionButton)
     }
 
-    
-    /******************
-     * TOPBAR         *
-     ******************/
     // Fetch data
     const fetch = <T,>(url: string) => { return useFetch<T>(url, authentication, [isLoading]) }
 
@@ -127,21 +100,9 @@ export default function App({ version }: {
     const days = fetch<Array<Day>>('/api/days/list')
 
     /**
-     * The configuration of the topbar. On small screens, 
-     * the topbar consists of two rows, one of which has a
-     * SidebarDrawerButton and Topbar Action Buttons, while
-     * the other one has a back button and the title. By 
-     * scrolling, it will collapse into one row. On large 
-     * screens, the topbar will be shown in the main container.
-     * 
-     * See the documentation of the TopbarConfiguration type 
-     * alias for more information on the properties.
+     * props for subcomponents.
+     * @todo Every component should have individual props.
      */
-    const [topbar, setTopbar] = useState<TopbarConfiguration>({})
-
-    
-
-
     const props = {
         user, authentication, settings, userGroups, mealCategories,
         recipes, days, shoppingList, pantry, setSidebar, setTopbar
