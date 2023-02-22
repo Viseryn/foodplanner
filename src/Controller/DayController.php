@@ -55,6 +55,7 @@ class DayController extends AbstractController
                             'directory' => $meal->getRecipe()->getImage()?->getDirectory(),
                         ],
                     ],
+                    /** @todo */ // 'user_group' => $meal->getUserGroup(), // This reveals password hashes. 
                     'user_group' => (string) $meal->getUserGroup(),
                     'user_group_icon' => $meal->getUserGroup()->getIcon(),
                 ];
