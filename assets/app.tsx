@@ -8,10 +8,6 @@
 // Import CSS
 import './styles/app.scss'
 
-// Import SweetAlert and fire empty swal
-import swal from 'sweetalert'
-if (false) swal()
-
 // Import React
 import React from 'react'
 import ReactDOM from 'react-dom/client'
