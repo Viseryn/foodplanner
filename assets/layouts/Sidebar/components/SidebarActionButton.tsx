@@ -12,6 +12,13 @@ import useScrollPosition    from '@/hooks/useScrollPosition'
  * SidebarActionButton
  * 
  * A component that renders the sidebar action button (SAB). 
+ * On larger screens, it is fixed in the top of the sidebar.
+ * On small screens it is a floating action button in the 
+ * bottom-right corner of the screen. By default, it is 
+ * invisible. 
+ * 
+ * See the documentation of the SidebarActionButtonConfiguration 
+ * type alias for more information on the properties.
  * 
  * @component
  * @param props
