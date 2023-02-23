@@ -226,7 +226,7 @@ export default function App({ version }: {
                         />
                         <Route 
                             path="/register"
-                            element={<Registration {...props} />} 
+                            element={<Registration {...{ user, setSidebar, setTopbar }} />} 
                         />
                         <Route 
                             path="*"

@@ -19,15 +19,19 @@ import Spinner      from '../../components/ui/Spinner'
  * A component that renders a registration form.
  * 
  * @component
- * @property {function} setSidebarActiveItem
- * @property {function} setSidebarActionButton
- * @property {arr} user
- * @property {boolean} isLoadingUser
+ * @param props
+ * @param props.user
+ * @param props.setSidebar
+ * @param props.setTopbar
  */
-export default function Registration(props) {
     /**
      * State variables
      */
+export default function Registration({ user, setSidebar, setTopbar }: {
+    user: FetchableEntity<User>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
     const [isLoadingSubmit, setLoadingSubmit] = useState(false)
     const [success, setSuccess] = useState(false)
 
@@ -35,12 +39,8 @@ export default function Registration(props) {
      * Load layout
      */
     useEffect(() => {
-        // Load sidebar
-        props.setSidebarActiveItem()
-        props.setSidebarActionButton()
-
-        // Load topbar
-        props.setTopbar({
+        setSidebar()
+        setTopbar({
             title: 'Registrierung',
         })
     }, [])
@@ -79,15 +79,15 @@ export default function Registration(props) {
                     </Notification>
                 }
                 
-                {(props.isLoadingUser || isLoadingSubmit) && !success &&
+                {(user.isLoading || isLoadingSubmit) && !success &&
                     <Spinner />
                 }
 
-                {props.user?.username !== undefined && !props.isLoadingUser && !isLoadingSubmit &&
+                {user.data.username !== undefined && !user.isLoading && !isLoadingSubmit &&
                     <Navigate to="/login" />
                 }
 
-                {props.user?.username === undefined && !props.isLoadingUser && !isLoadingSubmit &&
+                {user.data.username === undefined && !user.isLoading && !isLoadingSubmit &&
                     <form onSubmit={handleSubmit} autoComplete="off">
                         <Card>
                             <InputRow 
