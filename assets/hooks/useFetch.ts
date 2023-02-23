@@ -60,7 +60,7 @@ function useFetch<DataType = any>(
         setData: React.Dispatch<React.SetStateAction<DataType>>,
         setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     ) => void,
-) : FetchableEntity<DataType> {
+): FetchableEntity<DataType> {
     /**
      * The data that the API provides. Can usually
      * be an object or an array of objects, but any 
