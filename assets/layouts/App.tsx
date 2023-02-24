@@ -218,7 +218,7 @@ export default function App({ version }: {
                         />
                         <Route 
                             path="/login"
-                            element={<Login setLoading={setLoading} {...props} />} 
+                            element={<Login {...{ user, authentication, setLoading, setSidebar, setTopbar }} />} 
                         />
                         <Route 
                             path="/logout"

@@ -19,27 +19,21 @@ import Spinner from '@/components/ui/Spinner'
  * users or a success/error notification.
  * 
  * @component
- * @param {object} props
- * @param {function} props.setSidebar
- * @param {function} props.setTopbar
- * @param {function} props.setLoading
- * @param {object} props.user
- * @param {object} props.authentication
+ * @param props
+ * @param props.setLoading The setter for the state variable isLoading from the App component.
  */
-export default function Login(props) {
-    /**
-     * The response from the Login API.
-     * 
-     * @type {[string, function]}
-     */
-    const [response, setResponse] = useState()
+export default function Login({ user, authentication, setLoading, setSidebar, setTopbar }: {
+    user: FetchableEntity<User>
+    authentication: Authentication
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
+    // The response from the Login API
+    const [response, setResponse] = useState<any>()
 
-    /**
-     * A loading boolean for the submit handler.
-     * 
-     * @type {[boolean, function]}
-     */
-    const [isLoading, setLoading] = useState(false)
+    // A loading boolean for the submit handler
+    const [isLoadingSubmit, setLoadingSubmit] = useState<boolean>(false)
 
 
     /**
