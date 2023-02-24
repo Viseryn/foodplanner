@@ -71,19 +71,14 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
         })()
     }
 
-    /**
-     * Navigate back to Planner when Meal
-     * was successfully saved.
-     */
+    // Navigate back to Planner component when Meal was saved
     useEffect(() => {
         if (isLoading && days.isLoading) {
             navigate('/planner')
         }
     }, [isLoading, days.isLoading])
 
-    /**
-     * Load layout
-     */
+    // Load layout
     useEffect(() => {
         setSidebar('planner')
         setTopbar({
@@ -92,13 +87,11 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
             backButtonPath: '/planner',
         })
 
-        // Scroll to top
+        // Scroll to top on rerender
         window.scrollTo(0, 0)
     }, [])
 
-    /**
-     * Render AddMeal
-     */
+    // Render AddMeal
     return (
         <div className="pb-24 md:pb-4 md:w-[450px]">
             <Spacer height="6" />
@@ -192,5 +185,5 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                 </div>
             )}
         </div>
-    );
+    )
 }
