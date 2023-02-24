@@ -102,7 +102,7 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                 <div className="mx-4 md:mx-0">
                     <form onSubmit={handleSubmit}>
                         <Card>
-                            <InputLabel id="meal_day" label="Für welchen Tag?" />
+                            <InputLabel htmlFor="meal_day" label="Für welchen Tag?" />
                             {days.isLoading ? (
                                 <div role="status" className="animate-pulse">
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
@@ -118,7 +118,7 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
 
                             <Spacer height="6" />
 
-                            <InputLabel id="meal_mealCategory" label="Wann ist die Mahlzeit?" />
+                            <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
                             {mealCategories.isLoading ? (
                                 <div role="status" className="animate-pulse">
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
@@ -152,7 +152,7 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
 
                             <Spacer height="6" />
 
-                            <InputLabel id="meal_userGroup" label="Für wen ist die Mahlzeit?" />
+                            <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
                             {userGroups.isLoading ? (
                                 <div role="status" className="animate-pulse">
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
