@@ -222,7 +222,7 @@ export default function App({ version }: {
                         />
                         <Route 
                             path="/logout"
-                            element={<Logout {...props} />} 
+                            element={<Logout {...{ authentication, setSidebar, setTopbar }} />} 
                         />
                         <Route 
                             path="/register"
