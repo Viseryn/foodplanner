@@ -19,11 +19,20 @@ type ButtonOptions = {
     label?: string
     title?: string
     outlined?: boolean
-    elevated?: boolean  /** @deprecated */
+    /**
+     * @deprecated Use isElevated instead.
+     */
+    elevated?: boolean
     isElevated?: boolean
-    floating?: boolean  /** @deprecated */
+    /**
+     * @deprecated Use isFloating instead.
+     */
+    floating?: boolean
     isFloating?: boolean
-    small?: boolean     /** @deprecated */
+    /**
+     * @deprecated Use isSmall instead.
+     */
+    small?: boolean
     isSmall?: boolean
     onClick?: () => void
 }
@@ -31,7 +40,10 @@ type ButtonOptions = {
 /**
  * Button
  * 
- * A component that renders a button. Depending on the type argument, can be either a submit button or a link button.
+ * A component that renders a button. Depending on the type argument, can be either a submit button 
+ * or a link button. The role argument determines the color of the Button. Primary buttons are dark 
+ * green with light font color, while secondary buttons are light green with darker font color. 
+ * Tertiary buttons are transparent, so they appear almost as links. 
  * 
  * @component
  * @param props
@@ -43,9 +55,12 @@ type ButtonOptions = {
  * @param props.label The label of the button. Default is empty.
  * @param props.title A title that is shown when hovering the button.
  * @param props.outlined Whether the icon should only have outlines. Default is false.
- * @param props.elevated If set to true, the button has a little shadow. Default is false.
- * @param props.floating If set to true, the button will float above the rest of the UI and is fixed at the bottom. Default is false.
- * @param props.small If set to true, the button has a little less height. Default is false.
+ * @param props.elevated Deprecated: Use isElevated instead.
+ * @param props.isElevated If set to true, the button has a little shadow. Default is false.
+ * @param props.floating Deprecated: Use isFloating instead.
+ * @param props.isFloating If set to true, the button will float above the rest of the UI and is fixed at the bottom. Default is false.
+ * @param props.small Deprecated: Use isSmall instead.
+ * @param props.isSmall If set to true, the button has a little less height. Default is false.
  * @param props.onClick An onClick handler function.
  * 
  * @example
@@ -54,38 +69,36 @@ type ButtonOptions = {
  *     icon="add"
  *     label="Add recipe"
  *     role="secondary"
- *     elevated={true}
+ *     isElevated={true}
  *     onClick={() => someHandler(params)}
  * />
  */
 export default function Button({ 
-    style, 
-    type, 
-    role = 'primary', 
-    location = '#', 
-    icon, 
-    label, 
-    title = '', 
-    outlined, 
-    elevated, isElevated, 
-    floating, isFloating,
-    small, isSmall,
-    onClick
+    style, type, role = 'primary', location = '#', icon, label, title = '', outlined, 
+    elevated, isElevated, floating, isFloating, small, isSmall, onClick 
 }: ButtonOptions): JSX.Element {
-    const stylingClasses: string = buttonStyle(role, elevated || isElevated, small || isSmall, floating || isFloating, label) + (style ? ' ' + style : '')
+    // Generate styling classes for the button
+    const stylingClasses: string = buttonStyle(
+        role, 
+        elevated || isElevated, 
+        small || isSmall, 
+        floating || isFloating, 
+        label
+    ) + (style ? ' ' + style : '')
 
-    const generalProps = {
+    // Props for the button/Link component
+    const componentProps = {
         title: title,
         onClick: onClick,
         className: stylingClasses,
     }
 
     return type === 'submit' ? (
-        <button type="submit" {...generalProps}>
+        <button type="submit" {...componentProps}>
             <ButtonContent icon={icon} label={label} outlined={outlined} />
         </button>
     ) : (
-        <Link to={location } {...generalProps}>
+        <Link to={location } {...componentProps}>
             <ButtonContent icon={icon} label={label} outlined={outlined} />
         </Link>
     )
