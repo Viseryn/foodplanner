@@ -18,7 +18,7 @@ import React from 'react'
  */
 export default function Card({ style = '', children }: { 
     style?: string
-    children: any /** @todo Find right type */
+    children: React.ReactNode
 }): JSX.Element {
     return <div className={'bg-secondary-100 dark:bg-secondary-dark-100 rounded-xl p-4 ' + style}>
         {children}
