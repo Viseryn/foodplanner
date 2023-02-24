@@ -1,6 +1,6 @@
-/*************************************
+/**************************************
  * ./assets/pages/Planner/AddMeal.tsx *
- *************************************/
+ **************************************/
 
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
@@ -22,14 +22,8 @@ import Spinner from '@/components/ui/Spinner'
  * 
  * @component
  * 
- * @todo Skeleton colors
+ * @todo Skeleton colors and sizes
  */
-    /**
-     * The id parameter of the route '/planner/add/:id'.
-     * 
-     * @property {string} id
-     */
-    const { id } = useParams()
 export default function AddMeal({ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }: {
     days: FetchableEntity<Array<Day>>
     mealCategories: FetchableEntity<Array<MealCategory>>
@@ -38,23 +32,19 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
+    // Type for route parameters
+    type AddMealRouteParams = {
+        id?: string
+    }
 
-    /**
-     * A function that can change the location.
-     * Needed for the redirect after submit.
-     * 
-     * @type {NavigateFunction}
-     */
-    const navigate = useNavigate()
+    // The id parameter of the route '/planner/add/:id'
+    const { id }: AddMealRouteParams = useParams()
 
-    /**
-     * Whether the page is loading. Will be 
-     * true while the form data is processed
-     * by the API.
-     * 
-     * @type {[boolean, function]}
-     */
-    const [isLoading, setLoading] = useState(false)
+    // A function that can change the location. Needed for the redirect after submit.
+    const navigate: NavigateFunction = useNavigate()
+
+    // Whether the page is loading. Will be true while the form data is processed by the API.
+    const [isLoading, setLoading] = useState<boolean>(false)
 
     /**
      * handleSubmit
