@@ -47,26 +47,28 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
     const [isLoading, setLoading] = useState<boolean>(false)
 
     /**
-     * handleSubmit
-     * 
      * Submits the form data to the Meal Add API.
      * 
-     * @param {*} event
+     * @param event A submit form event.
      */
-    const handleSubmit = (event) => {
-        const formData = new FormData(event.target)
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        const formData = new FormData(event.currentTarget)
 
-        setLoading(true)
+        setLoading(true);
 
-        axios
-            .post('/api/meals/add', formData)
-            .then(() => {
+        (async () => {
+            try {
+                // Send form data to Meal Add API
+                await axios.post('/api/meals/add', formData)
                 days.setLoading(true)
                 
                 // Refresh Data Timestamp
-                axios.get('/api/refresh-data-timestamp/set')
-            })
+                await axios.get('/api/refresh-data-timestamp/set')
+            } catch (error) {
+                console.log(error)
+            }
+        })()
     }
 
     /**
