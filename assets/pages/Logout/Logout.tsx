@@ -2,12 +2,12 @@
  * ./assets/pages/Logout/Logout.tsx *
  ************************************/
 
-import React, { useEffect, useState }   from 'react'
-import { useNavigate }                  from 'react-router-dom'
-import axios                            from 'axios'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
-import Spacer                           from '../../components/ui/Spacer'
-import Spinner                          from '../../components/ui/Spinner'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
 
 /**
  * Logout
@@ -26,17 +26,10 @@ import Spinner                          from '../../components/ui/Spinner'
  * @param {object} props.pantry
  */
 export default function Logout(props) {
-    /**
-     * A function that can change the location.
-     * Needed for the redirect after submit.
-     * 
-     * @type {NavigateFunction}
-     */
+    // A function that can change the location. Needed for the redirect after submit.
     const navigate = useNavigate()
 
-    /**
-     * Call Logout API
-     */
+    // Call Logout API
     useEffect(() => {
         // Remove other sensitive data
         props.settings.setData()
@@ -63,22 +56,15 @@ export default function Logout(props) {
             })
     }, [])
 
-    /**
-     * Load layout
-     */
+    // Load layout
     useEffect(() => {
-        // Load sidebar
-        props.setSidebar()
-
-        // Load topbar
-        props.setTopbar({
+        setSidebar()
+        setTopbar({
             title: 'Logout',
         })
     }, [])
 
-    /**
-     * Redirect to login page
-     */
+    // Render Logout
     return (
         <div className="pb-24 md:pb-4 md:w-[450px]">
             <Spacer height="6" />
