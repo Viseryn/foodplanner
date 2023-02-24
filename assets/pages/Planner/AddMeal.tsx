@@ -1,5 +1,5 @@
 /*************************************
- * ./assets/pages/Planner/AddMeal.js *
+ * ./assets/pages/Planner/AddMeal.tsx *
  *************************************/
 
 import React, { useEffect, useState }   from 'react'
@@ -17,9 +17,8 @@ import Spinner                          from '../../components/ui/Spinner'
 /**
  * AddMeal
  * 
- * A component that renders a form to add a new
- * meal. Consists of a list of Days, UserGroups,
- * Recipes and MealCategories.
+ * A component that renders a form to add a new meal. 
+ * Consists of a list of Days, UserGroups, Recipes and MealCategories.
  * 
  * @component
  * @param {object} props.days
