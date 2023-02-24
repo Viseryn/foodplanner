@@ -15,8 +15,7 @@ import Spinner from '@/components/ui/Spinner'
 /**
  * Login
  * 
- * A component that renders a login form for unauthenticated 
- * users or a success/error notification.
+ * A component that renders a login form for unauthenticated users or a success/error notification.
  * 
  * @component
  * @param props
@@ -37,126 +36,122 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
 
 
     /**
-     * handleSubmit
+     * On submitting the form, calls the Login API. Responds with an error on failure.
      * 
-     * On submitting the form, calls the Login API.
-     * Responds with an error on failure.
-     * 
-     * @param {*} event
+     * @param event A form submit event.
      */
-    const handleSubmit = (event) => {
-        const formData = new FormData(event.target)
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        const formData = new FormData(event.currentTarget)
 
-        setResponse()
-        setLoading(true)
+        setLoadingSubmit(true);
 
-        axios
-            .post('/api/login', formData)
-            .then(response => {
+        (async () => {
+            try {
+                await axios.post('/api/login', formData)
+
+                // Set response and stop loading the form submit
                 setResponse(response.data)
-                setLoading(false)
-                props.user.setLoading(true)
-                props.setLoading(true)
-            })
+                setLoadingSubmit(false)
+
+                // Load user data
+                user.setLoading(true)
+
+                // Fetch all data
+                setLoading(true)
+            } catch (error) {
+                console.log(error)
+            }
+        })()
     }
 
-    /**
-     * Load layout
-     */
+    // Load layout
     useEffect(() => {
-        // Load sidebar
-        props.setSidebar()
-
-        // Load topbar
-        props.setTopbar({
+        setSidebar()
+        setTopbar({
             title: 'Login',
         })
     }, [])
 
-    /**
-     * Render Login
-     */
-    return (
-        <div className="pb-24 md:pb-4 md:w-[450px]">
-            <Spacer height="6" />
-            
-            {(props.user.isLoading || isLoading) &&
-                <Spinner />
-            }
+    // Render Login
+    return <div className="pb-24 md:pb-4 md:w-[450px]">
+        <Spacer height="6" />
+        
+        {(user.isLoading || isLoadingSubmit) &&
+            <Spinner />
+        }
 
-            {response?.error &&
-                <div className="mx-4 md:mx-0">
-                    <Notification color="red" title="Login fehlgeschlagen!">
-                        Fehlercode: {response?.error}
-                    </Notification>
-                    <Spacer height="4" />
+        {response?.error &&
+            <div className="mx-4 md:mx-0">
+                <Notification color="red" title="Login fehlgeschlagen!">
+                    Fehlercode: {response?.error}
+                </Notification>
+                <Spacer height="4" />
+            </div>
+        }
+
+        {user.data.username !== undefined && !user.isLoading && !isLoadingSubmit &&
+            <div className="mx-4 md:mx-0">
+                <Notification color="green" title="Erfolgreich eingeloggt!">
+                    Willkommen, {user.data.username}.
+                </Notification>
+
+                {!authentication.isAuthenticated &&
+                    <>
+                        <Spacer height="4" />
+                        <Notification title="Nicht genügend Berechtigungen.">
+                            Für den Zugriff auf alle Funktionen sind Admin-Berechtigungen nötig.
+                        </Notification>
+                    </>
+                }
+
+                <div className="mt-6 p-6">
+                    <Button
+                        location="/planner"
+                        icon="date_range"
+                        label="Zum Wochenplan"
+                        isElevated={true}
+                        style="flex justify-center"
+                    />
                 </div>
-            }
+            </div>
+        }
 
-            {props.user.data?.username !== undefined && !props.user.isLoading && !isLoading &&
-                <div className="mx-4 md:mx-0">
-                    <Notification color="green" title="Erfolgreich eingeloggt!">
-                        Willkommen, {props.user.data?.username}.
-                    </Notification>
+        {user.data.username === undefined && !user.isLoading && !isLoadingSubmit &&
+            <div className="mx-4 md:mx-0">
+                <form onSubmit={handleSubmit}>
+                    <Card>
+                        <InputRow 
+                            id="username"
+                            label="Dein Benutzername"
+                            inputProps={{
+                                required: 'required', 
+                                name: '_username',
+                            }}
+                        />
+                        <InputRow 
+                            id="password"
+                            label="Dein Passwort"
+                            inputProps={{
+                                required: 'required', 
+                                type: 'password',
+                                name: '_password',
+                            }}
+                        />
+                    </Card>
 
-                    {!props.authentication.isAuthenticated &&
-                        <>
-                            <Spacer height="4" />
-                            <Notification title="Nicht genügend Berechtigungen.">
-                                Für den Zugriff auf alle Funktionen sind Admin-Berechtigungen nötig.
-                            </Notification>
-                        </>
-                    }
+                    <Spacer height="4" />
 
-                    <div className="mt-6 p-6">
+                    <div className="flex justify-end">
                         <Button
-                            location="/planner"
-                            icon="date_range"
-                            label="Zum Wochenplan"
-                            elevated={true}
-                            style="flex justify-center"
+                            type="submit"
+                            icon="login"
+                            label="Einloggen"
+                            role="secondary"
                         />
                     </div>
-                </div>
-            }
-
-            {props.user.data?.username === undefined && !props.user.isLoading && !isLoading &&
-                <div className="mx-4 md:mx-0">
-                    <form onSubmit={handleSubmit}>
-                        <Card>
-                            <InputRow 
-                                id="username"
-                                label="Dein Benutzername"
-                                inputProps={{
-                                    required: 'required', 
-                                    name: '_username',
-                                }}
-                            />
-                            <InputRow 
-                                id="password"
-                                label="Dein Passwort"
-                                inputProps={{
-                                    required: 'required', 
-                                    type: 'password',
-                                    name: '_password',
-                                }}
-                            />
-                        </Card>
-
-                        <Spacer height="4" />
-
-                        <div className="flex justify-end">
-                            <Button
-                                type="submit"
-                                icon="login"
-                                label="Einloggen"
-                                role="secondary"
-                            />
-                        </div>
-                    </form>
-                </div>
-            }
-        </div>
-    )
+                </form>
+            </div>
+        }
+    </div>
 }
