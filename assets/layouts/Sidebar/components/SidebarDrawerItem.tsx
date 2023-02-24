@@ -16,13 +16,25 @@ import { Link } from 'react-router-dom'
  * @param props.icon The icon of the sidebar item. 
  * @param props.label The label of the sidebar item.
  * @param props.path An external URL. 
+ * @param props.onClick An optional onClick handler, if no path was provided.
  */
-export default function SidebarDrawerItem({ id, icon, label, path }: {
+export default function SidebarDrawerItem({ id, icon, label, path, onClick }: {
     id: string
     icon: string
     label: string
     path?: string
+    onClick?: () => void
 }): JSX.Element {
+    // The location that the Link component will redirect to
+    const linkLocation: string = (onClick != null) ? '#' : ('/' + id)
+
+    // If onClick was provided, it will be called in onClickHandler
+    const onClickHandler = (): void => { 
+        if (onClick != null) {
+            onClick()
+        }
+    }
+        
     const SidebarDrawerItemContent = (
         <div className={
             'transition duration-300 group-hover:text-primary-200 dark:group-hover:text-primary-dark-100 '
@@ -52,7 +64,7 @@ export default function SidebarDrawerItem({ id, icon, label, path }: {
                     {SidebarDrawerItemContent}
                 </a>
             ) : (
-                <Link to={'/' + id} className={
+                <Link to={linkLocation} onClick={onClickHandler} className={
                     'group transition duration-300 '
                     + 'flex items-center p-4 rounded-full '
                     + 'hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 '

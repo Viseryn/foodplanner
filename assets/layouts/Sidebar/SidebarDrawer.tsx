@@ -96,6 +96,12 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, versi
                             icon="web"
                             label="Blog"
                         />
+                        <SidebarDrawerItem
+                            onClick={() => location.reload()}
+                            id="refresh"
+                            icon="refresh"
+                            label="App neuladen"
+                        />
                     </ul>
 
                     {/* Current version */}
