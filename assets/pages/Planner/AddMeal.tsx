@@ -2,17 +2,17 @@
  * ./assets/pages/Planner/AddMeal.tsx *
  *************************************/
 
-import React, { useEffect, useState }   from 'react'
-import { useNavigate, useParams }       from 'react-router-dom'
-import axios                            from 'axios'
+import React, { useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import axios from 'axios'
 
-import { InputLabel }                   from '../../components/form/Input'
-import { RadioWidget }                  from '../../components/form/Radio'
-import { SelectWidget }                 from '../../components/form/Select'
-import Button                           from '../../components/ui/Buttons/Button'
-import Card                             from '../../components/ui/Card'
-import Spacer                           from '../../components/ui/Spacer'
-import Spinner                          from '../../components/ui/Spinner'
+import { InputLabel } from '@/components/form/Input'
+import { RadioWidget } from '@/components/form/Radio'
+import { SelectWidget } from '@/components/form/Select'
+import Button from '@/components/ui/Buttons/Button'
+import Card from '@/components/ui/Card'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
 
 /**
  * AddMeal
@@ -21,20 +21,23 @@ import Spinner                          from '../../components/ui/Spinner'
  * Consists of a list of Days, UserGroups, Recipes and MealCategories.
  * 
  * @component
- * @param {object} props.days
- * @param {object} props.mealCategories
- * @param {object} props.recipes
- * @param {object} props.userGroups
  * 
  * @todo Skeleton colors
  */
-export default function AddMeal({ days, mealCategories, recipes, userGroups, ...props }) {
     /**
      * The id parameter of the route '/planner/add/:id'.
      * 
      * @property {string} id
      */
     const { id } = useParams()
+export default function AddMeal({ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }: {
+    days: FetchableEntity<Array<Day>>
+    mealCategories: FetchableEntity<Array<MealCategory>>
+    recipes: FetchableEntity<Array<Recipe>>
+    userGroups: FetchableEntity<Array<UserGroup>>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
 
     /**
      * A function that can change the location.
@@ -90,11 +93,8 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, ...
      * Load layout
      */
     useEffect(() => {
-        // Load sidebar
-        props.setSidebar('planner')
-
-        // Load topbar
-        props.setTopbar({
+        setSidebar('planner')
+        setTopbar({
             title: 'Neue Mahlzeit',
             showBackButton: true,
             backButtonPath: '/planner',

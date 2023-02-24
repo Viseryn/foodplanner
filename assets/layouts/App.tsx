@@ -157,13 +157,13 @@ export default function App({ version }: {
                         <Route 
                             path="/planner/add"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddMeal {...props} />
+                                <AddMeal {...{ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
                             path="/planner/add/:id"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddMeal {...props} />
+                                <AddMeal {...{ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
