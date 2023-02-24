@@ -1,6 +1,6 @@
-/**************************************************
- * ./assets/components/ui/HeadingAndBackButton.js *
- **************************************************/
+/***************************************************
+ * ./assets/components/ui/HeadingAndBackButton.tsx *
+ ***************************************************/
 
 import React from 'react';
 import { Link } from 'react-router-dom';
