@@ -74,33 +74,31 @@ type ButtonOptions = {
  * />
  */
 export default function Button({ 
-    style, 
-    type, 
-    role = 'primary', 
-    location = '#', 
-    icon, 
-    label, 
-    title = '', 
-    outlined, 
-    elevated, isElevated, 
-    floating, isFloating,
-    small, isSmall,
-    onClick
+    style, type, role = 'primary', location = '#', icon, label, title = '', outlined, 
+    elevated, isElevated, floating, isFloating, small, isSmall, onClick 
 }: ButtonOptions): JSX.Element {
-    const stylingClasses: string = buttonStyle(role, elevated || isElevated, small || isSmall, floating || isFloating, label) + (style ? ' ' + style : '')
+    // Generate styling classes for the button
+    const stylingClasses: string = buttonStyle(
+        role, 
+        elevated || isElevated, 
+        small || isSmall, 
+        floating || isFloating, 
+        label
+    ) + (style ? ' ' + style : '')
 
-    const generalProps = {
+    // Props for the button/Link component
+    const componentProps = {
         title: title,
         onClick: onClick,
         className: stylingClasses,
     }
 
     return type === 'submit' ? (
-        <button type="submit" {...generalProps}>
+        <button type="submit" {...componentProps}>
             <ButtonContent icon={icon} label={label} outlined={outlined} />
         </button>
     ) : (
-        <Link to={location } {...generalProps}>
+        <Link to={location } {...componentProps}>
             <ButtonContent icon={icon} label={label} outlined={outlined} />
         </Link>
     )
