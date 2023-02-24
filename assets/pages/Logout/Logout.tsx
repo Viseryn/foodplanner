@@ -2,7 +2,7 @@
  * ./assets/pages/Logout/Logout.tsx *
  ************************************/
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -15,45 +15,31 @@ import Spinner from '@/components/ui/Spinner'
  * A component that logs a user out and redirects to the login page.
  * 
  * @component
- * @param {object} props
- * @param {object} props.user
- * @param {object} props.settings
- * @param {object} props.userGroups
- * @param {object} props.mealCategories
- * @param {object} props.recipes
- * @param {object} props.days
- * @param {object} props.shoppingList
- * @param {object} props.pantry
  */
-export default function Logout(props) {
-    // A function that can change the location. Needed for the redirect after submit.
+export default function Logout({ authentication, setSidebar, setTopbar }: {
+    authentication: Authentication
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
+    // A function that can change the location. Needed for the redirect after logout.
     const navigate = useNavigate()
 
     // Call Logout API
     useEffect(() => {
-        // Remove other sensitive data
-        props.settings.setData()
-        props.userGroups.setData()
-        props.mealCategories.setData()
-        props.recipes.setData()
-        props.days.setData()
-        // props.shoppinglist.setData()
-        // props.pantry.setData()
-
-        // Call Logout API
-        axios
-            .get('/api/logout')
-            .then(() => {
-
-                // Remove user data from state
-                props.user.setData({})
-
-                // Trigger reload of user data
-                props.user.setLoading(true)
-
-                // Navigate to login page
-                navigate('/login')
-            })
+        if (authentication.isAuthenticated) {
+            (async () => {
+                try {
+                    // If user is authenticated, logout and reload
+                    await axios.get('/api/logout')
+                    location.reload()
+                } catch (error) {
+                    console.log(error)
+                }
+            })()
+        } else {
+            // Navigate to login page
+            navigate('/login')
+        }
     }, [])
 
     // Load layout
