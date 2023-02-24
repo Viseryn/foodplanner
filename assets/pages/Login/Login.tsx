@@ -1,16 +1,16 @@
-/*********************************
- * ./assets/pages/Login/Login.js *
- *********************************/
+/**********************************
+ * ./assets/pages/Login/Login.tsx *
+ **********************************/
 
-import React, { useEffect, useState }   from 'react'
-import axios                            from 'axios'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
-import { InputRow }                     from '../../components/form/Input'
-import Button                           from '../../components/ui/Buttons/Button'
-import Card                             from '../../components/ui/Card'
-import Notification                     from '../../components/ui/Notification'
-import Spacer                           from '../../components/ui/Spacer'
-import Spinner                          from '../../components/ui/Spinner'
+import { InputRow } from '@/components/form/Input'
+import Button from '@/components/ui/Buttons/Button'
+import Card from '@/components/ui/Card'
+import Notification from '@/components/ui/Notification'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
 
 /**
  * Login
