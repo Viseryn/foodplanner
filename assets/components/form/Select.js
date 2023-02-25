@@ -24,6 +24,8 @@ import { InputLabel } from "./Input";
  *     options={days}
  *     defaultValue={id}
  * />
+ * 
+ * @deprecated Use Select/SelectWidget instead.
  */
 function SelectWidget({
     id, 
@@ -68,6 +70,8 @@ function SelectWidget({
  *     options={days}
  *     defaultValue={id}
  * />
+ * 
+ * @deprecated Use Select/SelectRow instead.
  */
 function SelectRow({
     id, 
