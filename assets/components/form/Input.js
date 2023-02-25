@@ -22,6 +22,8 @@ import { nameFromId, inputLabelStyle, inputRowStyle, inputWidgetStyle } from "./
  *     label="Name of recipe"
  *     onClick={handleClickLabel}
  * />
+ * 
+ * @deprecated Use Label instead.
  */
 function InputLabel({
     htmlFor, 
@@ -51,6 +53,8 @@ function InputLabel({
  *     type="password"
  *     className="rounded-full"
  * />
+ * 
+ * @deprecated Use Input/InputWidget instead.
  */
 function InputWidget({
     id, 
@@ -89,6 +93,8 @@ function InputWidget({
  *     }}
  *     className="mb-10"
  * />
+ * 
+ * @deprecated Use Input/InputRow instead.
  */
 function InputRow({
     id, 

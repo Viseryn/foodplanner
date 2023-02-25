@@ -32,6 +32,8 @@ import { InputLabel } from "./Input";
  *     }}
  *     className="mb-10"
  * />
+ * 
+ * @deprecated Use Slider/SliderRow instead.
  */
 function SliderRow({
     id = 'entity_name', 
