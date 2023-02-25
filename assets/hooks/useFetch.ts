@@ -62,17 +62,14 @@ function useFetch<DataType = any>(
     ) => void,
 ): FetchableEntity<DataType> {
     /**
-     * The data that the API provides. Can usually
-     * be an object or an array of objects, but any 
+     * The data that the API provides. Can usually be an object or an array of objects, but any 
      * other type is also allowed.
      */
     const [data, setData] = useState<DataType>(<DataType> {})
 
     /**
-     * Whether the data is currently loading. Whenever
-     * this is set to true, a reload of the data is 
-     * attempted. This is the property that should be 
-     * used to determine the necessity for a loading screen.
+     * Whether the data is currently loading. Whenever this is set to true, a reload of the data is 
+     * attempted. This is the property that should be used to determine the necessity for a loading screen.
      */
     const [isLoading, setLoading] = useState<boolean>(true)
 
