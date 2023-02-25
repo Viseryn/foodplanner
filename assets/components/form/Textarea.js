@@ -26,6 +26,8 @@ const textareaWidgetStyle = 'dark:placeholder-secondary-dark-900 dark:bg-seconda
  *     id="recipe_ingredients"
  *     className="rounded-full"
  * />
+ * 
+ * @deprecated Use Textarea/TextareaWidget instead.
  */
 function TextareaWidget({id, ...textareaProps}) {
     return (
@@ -57,6 +59,8 @@ function TextareaWidget({id, ...textareaProps}) {
  *     }}
  *     className="mb-10"
  * />
+ * 
+ * @deprecated Use Textarea/TextareaRow instead.
  */
 function TextareaRow({
     id, 

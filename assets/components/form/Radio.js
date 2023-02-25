@@ -30,6 +30,8 @@ import { InputLabel } from "./Input";
  *         ...options
  *     ]}
  * />
+ * 
+ * @deprecated Use Radio/RadioWidget instead.
  */
 function RadioWidget({
     id, 
@@ -89,6 +91,8 @@ function RadioWidget({
  *         ...options
  *     ]}
  * />
+ * 
+ * @deprecated Use Radio/RadioRow instead.
  */
 function RadioRow({
     id, 

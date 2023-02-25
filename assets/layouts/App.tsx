@@ -157,13 +157,13 @@ export default function App({ version }: {
                         <Route 
                             path="/planner/add"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddMeal {...props} />
+                                <AddMeal {...{ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
                             path="/planner/add/:id"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddMeal {...props} />
+                                <AddMeal {...{ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
@@ -218,11 +218,11 @@ export default function App({ version }: {
                         />
                         <Route 
                             path="/login"
-                            element={<Login setLoading={setLoading} {...props} />} 
+                            element={<Login {...{ user, authentication, setLoading, setSidebar, setTopbar }} />} 
                         />
                         <Route 
                             path="/logout"
-                            element={<Logout {...props} />} 
+                            element={<Logout {...{ authentication, setSidebar, setTopbar }} />} 
                         />
                         <Route 
                             path="/register"

@@ -43,8 +43,12 @@ export default function Registration({ user, setSidebar, setTopbar }: {
         // Try API call
         (async () => {
             try {
+                // Send form data to Registration API
                 await axios.post('/api/register', formData)
                 setSuccess(true)
+                    
+                // Refresh Data Timestamp
+                await axios.get('/api/refresh-data-timestamp/set')
             } catch (error) {
                 console.log(error)
             }
