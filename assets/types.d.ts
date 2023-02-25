@@ -35,7 +35,11 @@ type FetchableEntity<Type = any> = {
     data: Type
     setData: React.Dispatch<React.SetStateAction<Type>>
     isLoading: boolean
+    /**
+     * @deprecated Use load instead.
+     */
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    load: SetLoadingAction
 }
 
 type User = {

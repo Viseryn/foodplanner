@@ -77,8 +77,14 @@ function useFetch<DataType = any>(
     const [isLoading, setLoading] = useState<boolean>(true)
 
     /**
-     * Attempt API call
+     * By default, reloads the data. If the optional parameter is set to false, then loading will be stopped.
+     * 
+     * @param shouldLoad Whether the entity should reload.
      */
+    const load: SetLoadingAction = (shouldLoad = true) => { 
+        setLoading(shouldLoad) 
+    }
+
     // Collect all dependencies in one array
     const dependencies: Array<boolean | undefined> = ([] as Array<boolean | undefined>).concat(
         isLoading,
@@ -138,7 +144,7 @@ function useFetch<DataType = any>(
     }, dependencies)
 
     // Return the state variables, their loading status and the setters
-    return { data, setData, isLoading, setLoading }
+    return { data, setData, isLoading, /** @deprecated */ setLoading, load }
 }
 
 export default useFetch
