@@ -89,7 +89,9 @@ export default function App({ version }: {
     }
 
     // Fetch data
-    const fetch = <T,>(url: string) => { return useFetch<T>(url, authentication, [isLoading]) }
+    const fetch = <T,>(url: string) => { 
+        return useFetch<T>(url, authentication, [isLoading]) 
+    }
 
     const settings = fetch<Settings>('/api/settings')
     const mealCategories = fetch<Array<MealCategory>>('/api/mealcategories/list')
