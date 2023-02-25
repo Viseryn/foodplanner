@@ -21,6 +21,8 @@ import React from "react";
  *         Label text
  *     </span>
  * </label>
+ * 
+ * @deprecated Use Switch/SwitchWidget or Switch/SwitchRow instead.
  */
 export default function Switch() {
     return (
