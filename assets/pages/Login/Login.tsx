@@ -3,8 +3,7 @@
  **********************************/
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-
+import axios, { AxiosResponse } from 'axios'
 import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
@@ -48,7 +47,7 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
 
         (async () => {
             try {
-                await axios.post('/api/login', formData)
+                const response: AxiosResponse<any, any> = await axios.post('/api/login', formData)
 
                 // Set response and stop loading the form submit
                 setResponse(response.data)
