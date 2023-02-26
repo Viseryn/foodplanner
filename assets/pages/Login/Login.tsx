@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
-import { InputRow } from '@/components/form/Input'
+import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
@@ -55,7 +55,7 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
                 setLoadingSubmit(false)
 
                 // Load user data
-                user.setLoading(true)
+                user.load()
 
                 // Fetch all data
                 setLoading(true)
@@ -124,18 +124,19 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
                         <InputRow 
                             id="username"
                             label="Dein Benutzername"
-                            inputProps={{
-                                required: 'required', 
-                                name: '_username',
+                            {...{
+                                name: "_username",
+                                required: true
                             }}
                         />
                         <InputRow 
                             id="password"
                             label="Dein Passwort"
-                            inputProps={{
-                                required: 'required', 
-                                type: 'password',
-                                name: '_password',
+                            type="password"
+                            style=""
+                            {...{
+                                name: "_password",
+                                required: true
                             }}
                         />
                     </Card>
