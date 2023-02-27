@@ -4,8 +4,8 @@
 
 import React, { useEffect } from 'react'
 
-import Notification from '../../components/ui/Notification'
-import Spacer       from '../../components/ui/Spacer'
+import Notification from '@/components/ui/Notification'
+import Spacer from '@/components/ui/Spacer'
 
 /**
  * PageNotFound
@@ -13,24 +13,20 @@ import Spacer       from '../../components/ui/Spacer'
  * A component that is shown when an Error 404 occurs.
  * 
  * @component
- * @param {function} props.setSidebar
- * @param {function} props.setTopbar
  */
-export default function PageNotFound(props) {
-    /**
-     * Load layout
-     */
+export default function PageNotFound({ setSidebar, setTopbar }: {
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}) {
+    // Load layout
     useEffect(() => {
-        // Load sidebar
-        props.setSidebar()
-
-        // Load topbar
-        props.setTopbar({})
+        setSidebar()
+        setTopbar({
+            title: "Fehler 404"
+        })
     }, [])
 
-    /** 
-     * Render
-     */
+    // Render PageNotFound
     return (
         <div className="pb-24 md:pb-4 md:max-w-[450px]">
             <Spacer height="6" />

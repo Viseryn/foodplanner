@@ -209,7 +209,7 @@ export default function App({ version }: {
                         <Route 
                             path="/settings"
                             element={<AuthChecker authentication={authentication} component={
-                                <Settings {...props} />
+                                <Settings {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
@@ -232,7 +232,7 @@ export default function App({ version }: {
                         />
                         <Route 
                             path="*"
-                            element={<PageNotFound {...props} />} 
+                            element={<PageNotFound {...{ setSidebar, setTopbar }} />} 
                         />
                     </Routes>
                 </div>
