@@ -221,149 +221,147 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     }, [recipe])
 
     // Render Recipe
-    return (
-        <div className="pb-24 md:pb-4 md:max-w-[700px]">
-            {/* Image */}
-            <div className="mx-4 md:ml-0">
-                <Spacer height="6" />
-                {recipes.isLoading
-                    ? /* Recipe Skeleton */ <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
-                    : (recipe.image != null &&
-                        <img 
-                            className="rounded-3xl h-80 object-cover transition duration-300 w-full" 
-                            src={recipe.image.directory + recipe.image.filename}
-                            alt={recipe.title}
-                        />
-                    )
-                }
-            </div>
-
-            {/* Ingredients, instructions and buttons */}
+    return <div className="pb-24 md:pb-4 md:max-w-[700px]">
+        {/* Image */}
+        <div className="mx-4 md:ml-0">
+            <Spacer height="6" />
             {recipes.isLoading
-                ? <>
-                    {/* Recipe Skeleton */}
-                    <Spacer height="6" />
+                ? /* Recipe Skeleton */ <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
+                : (recipe.image != null &&
+                    <img 
+                        className="rounded-3xl h-80 object-cover transition duration-300 w-full" 
+                        src={recipe.image.directory + recipe.image.filename}
+                        alt={recipe.title}
+                    />
+                )
+            }
+        </div>
 
-                    <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
-                        <div className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
-                    </div>
+        {/* Ingredients, instructions and buttons */}
+        {recipes.isLoading
+            ? <>
+                {/* Recipe Skeleton */}
+                <Spacer height="6" />
 
-                    <Card style="mx-4 md:ml-0 lg:ml-4">
-                        <TextParagraph />
-                        <Spacer height="2" />
-                        <TextParagraph />
-                    </Card>
-                </>
-                : <>
-                    {/* Ingredients */}
-                    {recipe.ingredients.length > 0 &&
-                        <div className="mx-4 md:ml-0">
-                            <Spacer height="10" />
+                <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
+                    <div className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
+                </div>
 
-                            <SecondHeading style="ml-2">
-                                Zutaten für 
-                                <select
-                                    value={portionSize}
-                                    onChange={e => setPortionSize(+e.target.value)}
-                                    className="dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-10 w-20 px-6 mx-4 transition duration-300 focus:border-primary-100 dark:after:bg-red-500"
-                                >
-                                    {[...Array(10)].map((value, index) => 
-                                        <option
-                                            key={index + 1}
-                                            value={index + 1}
-                                        >
-                                            {index + 1}
-                                        </option>
-                                    )}
-                                </select>
-                                {portionSize == 1 ? 'Portion' : 'Portionen'}
-                            </SecondHeading>
+                <Card style="mx-4 md:ml-0 lg:ml-4">
+                    <TextParagraph />
+                    <Spacer height="2" />
+                    <TextParagraph />
+                </Card>
+            </>
+            : <>
+                {/* Ingredients */}
+                {recipe.ingredients.length > 0 &&
+                    <div className="mx-4 md:ml-0">
+                        <Spacer height="10" />
 
-                            <Spacer height="4" />
+                        <SecondHeading style="ml-2">
+                            Zutaten für 
+                            <select
+                                value={portionSize}
+                                onChange={e => setPortionSize(+e.target.value)}
+                                className="dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-10 w-20 px-6 mx-4 transition duration-300 focus:border-primary-100 dark:after:bg-red-500"
+                            >
+                                {[...Array(10)].map((value, index) => 
+                                    <option
+                                        key={index + 1}
+                                        value={index + 1}
+                                    >
+                                        {index + 1}
+                                    </option>
+                                )}
+                            </select>
+                            {portionSize == 1 ? 'Portion' : 'Portionen'}
+                        </SecondHeading>
 
-                            <Card>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                    {tmpRecipe.ingredients.map(ingredient =>
-                                        <div key={ingredient.id} className="flex items-center justify-between">
-                                            <span>
-                                                {getFullIngredientName(ingredient)}
-                                            </span>
+                        <Spacer height="4" />
 
-                                            <div className="flex flex-row">
-                                                <Button 
-                                                    style={'shoppinglist-' + ingredient.id} 
+                        <Card>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                                {tmpRecipe.ingredients.map(ingredient =>
+                                    <div key={ingredient.id} className="flex items-center justify-between">
+                                        <span>
+                                            {getFullIngredientName(ingredient)}
+                                        </span>
+
+                                        <div className="flex flex-row">
+                                            <Button 
+                                                style={'shoppinglist-' + ingredient.id} 
+                                                onClick={() => { 
+                                                    handleAddSingleToShoppingList(ingredient)
+                                                    document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild.innerHTML = "done"
+                                                }}
+                                                icon="add_shopping_cart"
+                                                outlined={true}
+                                                role="tertiary"
+                                            />
+                                            {settings.data.showPantry &&
+                                                <Button
+                                                    style={'pantry-' + ingredient.id} 
                                                     onClick={() => { 
-                                                        handleAddSingleToShoppingList(ingredient)
-                                                        document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild.innerHTML = "done"
+                                                        handleAddSingleToPantry(ingredient) 
+                                                        document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done"
                                                     }}
-                                                    icon="add_shopping_cart"
+                                                    icon="add_home"
                                                     outlined={true}
                                                     role="tertiary"
                                                 />
-                                                {settings.data.showPantry &&
-                                                    <Button
-                                                        style={'pantry-' + ingredient.id} 
-                                                        onClick={() => { 
-                                                            handleAddSingleToPantry(ingredient) 
-                                                            document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done"
-                                                        }}
-                                                        icon="add_home"
-                                                        outlined={true}
-                                                        role="tertiary"
-                                                    />
-                                                }
-                                            </div>
+                                            }
                                         </div>
-                                    )}
-                                </div>
-
-                                {settings.data.showPantry &&
-                                    <div className="flex justify-end mt-4">
-                                        <Button
-                                            icon={showPantryDone ? 'done' : 'add_home'}
-                                            outlined={true}
-                                            label={showPantryDone ? 'Erledigt!' : 'Alle Zutaten zum Vorrat'}
-                                            onClick={() => handleAddPantry(tmpRecipe)}
-                                            role="secondary"
-                                            isSmall={true}
-                                        />
-                                    </div>
-                                }
-                            </Card>
-                        </div>
-                    }
-
-                    {/* Instructions */}
-                    {recipe?.instructions?.length > 0 &&
-                        <div className="mx-4 md:ml-0">
-                            <Spacer height="10" />
-
-                            <SecondHeading style="ml-2">Zubereitung</SecondHeading>
-
-                            <Spacer height="4" />
-
-                            <Card style="space-y-2">
-                                {recipe?.instructions?.map((instruction, index) =>
-                                    <div key={instruction.id} className="flex">
-                                        <span className="mr-2">{index + 1}.</span>
-                                        {instruction.instruction}
                                     </div>
                                 )}
-                            </Card>
-                        </div>
-                    }
+                            </div>
 
-                    {/* Show empty card if there is no image, no ingredients and no instructions */}
-                    {recipe?.image === undefined && recipe?.ingredients?.length === 0 && recipe?.instructions?.length === 0 &&
-                        <Card style="mx-4 md:ml-0 flex items-center">
-                            <span className="material-symbols-rounded outlined mr-4">info</span>
-                            Hier gibt es noch nichts zu sehen.
+                            {settings.data.showPantry &&
+                                <div className="flex justify-end mt-4">
+                                    <Button
+                                        icon={showPantryDone ? 'done' : 'add_home'}
+                                        outlined={true}
+                                        label={showPantryDone ? 'Erledigt!' : 'Alle Zutaten zum Vorrat'}
+                                        onClick={() => handleAddPantry(tmpRecipe)}
+                                        role="secondary"
+                                        isSmall={true}
+                                    />
+                                </div>
+                            }
                         </Card>
-                    }
+                    </div>
+                }
 
-                    <div className="mb-[5.5rem]"></div>
-                </>
-            }
-        </div>
-    )
+                {/* Instructions */}
+                {recipe?.instructions?.length > 0 &&
+                    <div className="mx-4 md:ml-0">
+                        <Spacer height="10" />
+
+                        <SecondHeading style="ml-2">Zubereitung</SecondHeading>
+
+                        <Spacer height="4" />
+
+                        <Card style="space-y-2">
+                            {recipe?.instructions?.map((instruction, index) =>
+                                <div key={instruction.id} className="flex">
+                                    <span className="mr-2">{index + 1}.</span>
+                                    {instruction.instruction}
+                                </div>
+                            )}
+                        </Card>
+                    </div>
+                }
+
+                {/* Show empty card if there is no image, no ingredients and no instructions */}
+                {recipe?.image === undefined && recipe?.ingredients?.length === 0 && recipe?.instructions?.length === 0 &&
+                    <Card style="mx-4 md:ml-0 flex items-center">
+                        <span className="material-symbols-rounded outlined mr-4">info</span>
+                        Hier gibt es noch nichts zu sehen.
+                    </Card>
+                }
+
+                <div className="mb-[5.5rem]"></div>
+            </>
+        }
+    </div>
 }
