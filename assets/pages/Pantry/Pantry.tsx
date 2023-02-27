@@ -1,6 +1,6 @@
-/***********************************
- * ./assets/pages/Pantry/Pantry.js *
- ***********************************/
+/************************************
+ * ./assets/pages/Pantry/Pantry.tsx *
+ ************************************/
 
 import React, { useEffect, useState }   from 'react'
 import axios                            from 'axios'
