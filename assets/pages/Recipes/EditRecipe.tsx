@@ -86,9 +86,9 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
      */
     const getIngredients = (arr: Array<Ingredient>): string => {
         let ingredients: string = ''
-        let l: number = arr.length
+        let l: number = arr?.length
 
-        arr.map((ingredient, i) => {
+        arr?.map((ingredient, i) => {
             ingredients += getFullIngredientName(ingredient)
 
             if (l != i + 1) { 
@@ -109,9 +109,9 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
      */
     const getInstructions = (arr: Array<Instruction>): string => {
         let instructions: string = ''
-        let l: number = arr.length
+        let l: number = arr?.length
 
-        arr.map((instruction, i) => {
+        arr?.map((instruction, i) => {
             if (l == i + 1) { 
                 instructions += instruction.instruction
             } else {
