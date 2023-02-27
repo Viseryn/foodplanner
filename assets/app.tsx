@@ -2,7 +2,7 @@
  * app.tsx
  * 
  * @author Kevin Sporbeck
- * @version v1.3.1
+ * @version v1.3.2
  */
 
 // Import CSS
@@ -15,4 +15,4 @@ import App from './layouts/App'
 
 // Render app
 const root = ReactDOM.createRoot(document.getElementById('root')!)
-root.render(<App version="v1.3.1" />)
+root.render(<App version="v1.3.2" />)
