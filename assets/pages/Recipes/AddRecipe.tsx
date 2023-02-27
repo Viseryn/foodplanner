@@ -49,7 +49,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
      * 
      * @todo Typing
      */
-    const handleFilePick = (event): void => {
+    const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const value: string = event.target.value
         setFilename((value != '') ? value : 'Datei auswählen')
     }
