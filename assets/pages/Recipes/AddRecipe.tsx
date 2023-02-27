@@ -1,6 +1,6 @@
-/***************************************
- * ./assets/pages/Recipes/AddRecipe.js *
- ***************************************/
+/****************************************
+ * ./assets/pages/Recipes/AddRecipe.tsx *
+ ****************************************/
 
 import React, { useEffect, useState }   from 'react'
 import { useNavigate }                  from 'react-router-dom'
