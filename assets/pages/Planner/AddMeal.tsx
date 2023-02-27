@@ -127,7 +127,7 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                             ) : (
                                 <RadioWidget
                                     id="meal_mealCategory" 
-                                    options={mealCategories.data}
+                                    options={mealCategories.data} /** @todo Make MealCategory type according to PHP Entity and create a separate options array here. */
                                     required={true}
                                 />
                             )}
