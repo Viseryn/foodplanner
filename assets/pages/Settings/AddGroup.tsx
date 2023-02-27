@@ -1,6 +1,6 @@
-/***************************************
- * ./assets/pages/Settings/AddGroup.js *
- ***************************************/
+/****************************************
+ * ./assets/pages/Settings/AddGroup.tsx *
+ ****************************************/
 
 import React, { useEffect, useState }   from 'react'
 import { useNavigate }                  from 'react-router-dom'
