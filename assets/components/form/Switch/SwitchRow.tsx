@@ -4,7 +4,6 @@
 
 import React from 'react'
 import SwitchWidget from './SwitchWidget'
-import rowStyle from '../util/rowStyle'
 
 /**
  * SwitchRow
@@ -16,9 +15,9 @@ import rowStyle from '../util/rowStyle'
  * @param props.id The id of the switch button.
  * @param props.label The label of the switch button.
  * @param props.checked Optional: Whether the switch is checked or not.
- * @param props.style Optional alternative styling classes for the div container.
+ * @param props.style Optional: Styling classes for the div container.
  */
-export default function SwitchRow({ id, label, checked, style = rowStyle, ...widgetProps }: {
+export default function SwitchRow({ id, label, checked, style, ...widgetProps }: {
     id: string
     label: string
     checked?: boolean
