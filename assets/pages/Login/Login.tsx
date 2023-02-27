@@ -128,6 +128,9 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
                                 required: true
                             }}
                         />
+
+                        <Spacer height="6" />
+                        
                         <InputRow 
                             id="password"
                             label="Dein Passwort"
