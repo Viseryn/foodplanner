@@ -58,6 +58,10 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
      * @todo Test this.
      */
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        if (users.isLoading) {
+            return
+        }
+
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         
