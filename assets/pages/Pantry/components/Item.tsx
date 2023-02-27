@@ -1,6 +1,6 @@
-/********************************************
- * ./assets/pages/Pantry/components/Item.js *
- ********************************************/
+/*********************************************
+ * ./assets/pages/Pantry/components/Item.tsx *
+ *********************************************/
 
 import React                    from 'react'
 import axios                    from 'axios'
