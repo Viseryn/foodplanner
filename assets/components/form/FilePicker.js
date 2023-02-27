@@ -18,6 +18,9 @@ import { nameFromId } from './Forms'
  * @param {string} props.label The label of the button.
  * @param {function} props.onChange A function that is called when a file was selected.
  * @param {boolean?} props.enabled Whether the button is enabled or disabled. Default is true.
+ * 
+ * @todo Update to TypeScript
+ * @todo Make this a Button component
  */
 export default function FilePicker({ id, label, onChange, enabled = true }) {
     /**
