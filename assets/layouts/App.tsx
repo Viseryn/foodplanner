@@ -215,7 +215,7 @@ export default function App({ version }: {
                         <Route 
                             path="/settings/groups/add"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddGroup {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar }} />
+                                <AddGroup {...{ authentication, userGroups, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
