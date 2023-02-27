@@ -4,7 +4,6 @@
 
 import React from 'react'
 import Label from '../Label'
-import rowStyle from '../util/rowStyle'
 import InputWidget from './InputWidget'
 
 /**
@@ -17,10 +16,10 @@ import InputWidget from './InputWidget'
  * @param props.id The id of the input field.
  * @param props.label The label of the input field.
  * @param props.type The type of the input field. Default is 'text'.
- * @param props.style Optional alternative styling classes for the div container.
+ * @param props.style Optional: Styling classes for the div container.
  * 
  */
-export default function InputRow({ id, label, type = 'text', style = rowStyle, ...widgetProps }: {
+export default function InputRow({ id, label, type = 'text', style, ...widgetProps }: {
     id: string
     label: string
     type?: string
