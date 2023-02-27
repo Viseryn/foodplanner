@@ -26,7 +26,7 @@ export default function Notification({ title, color = '', icon = 'info', childre
     title?: string
     color?: string
     icon?: string
-    children: React.ReactNode
+    children?: React.ReactNode
 }): JSX.Element {
     let notificationStyle: string = 'p-6 space-x-4 text-sm rounded-xl w-full'
 

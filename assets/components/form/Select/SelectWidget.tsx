@@ -19,7 +19,7 @@ import widgetStyle from '../util/widgetStyle'
  */
 export default function SelectWidget({ id, options, disabledOption, ...props }: {
     id: string
-    options?: Array<{ id: string, title?: string }>
+    options?: Array<{ id: string, label?: string }>
     disabledOption?: string
 }): JSX.Element {
     return <select
@@ -29,6 +29,6 @@ export default function SelectWidget({ id, options, disabledOption, ...props }: 
         {...props}
     >
         {disabledOption != undefined && <option disabled={true}>{disabledOption}</option>}
-        {options?.map((option, index) => <option key={index} value={option.id}>{option.title}</option>)}
+        {options?.map((option, index) => <option key={index} value={option.id}>{option.label}</option>)}
     </select>
 }

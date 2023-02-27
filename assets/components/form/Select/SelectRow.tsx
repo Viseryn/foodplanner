@@ -4,7 +4,6 @@
 
 import React from 'react'
 import Label from '../Label'
-import rowStyle from '../util/rowStyle'
 import SelectWidget from './SelectWidget'
 
 /**
@@ -20,7 +19,7 @@ import SelectWidget from './SelectWidget'
  * @param props.disabledOption Optional: The text of the disabled first option.
  * @param props.style Optional alternative styling classes for the div container.
  */
-export default function SelectRow({ id, label, options, disabledOption, style = rowStyle, ...widgetProps }: {
+export default function SelectRow({ id, label, options, disabledOption, style, ...widgetProps }: {
     id: string
     label: string
     options?: Array<{ id: string, title?: string }>

@@ -26,7 +26,7 @@ export default function SwitchWidget({ id, checked, ...props }: {
             name={nameFromId(id)} 
             className="sr-only peer"
             // value={checked}
-            checked={checked}
+            defaultChecked={checked}
             {...props}
         />
         <div 

@@ -3,9 +3,8 @@
  **********************************/
 
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-
-import { InputRow } from '@/components/form/Input'
+import axios, { AxiosResponse } from 'axios'
+import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
@@ -48,14 +47,14 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
 
         (async () => {
             try {
-                await axios.post('/api/login', formData)
+                const response: AxiosResponse<any, any> = await axios.post('/api/login', formData)
 
                 // Set response and stop loading the form submit
                 setResponse(response.data)
                 setLoadingSubmit(false)
 
                 // Load user data
-                user.setLoading(true)
+                user.load()
 
                 // Fetch all data
                 setLoading(true)
@@ -124,18 +123,22 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
                         <InputRow 
                             id="username"
                             label="Dein Benutzername"
-                            inputProps={{
-                                required: 'required', 
-                                name: '_username',
+                            {...{
+                                name: "_username",
+                                required: true
                             }}
                         />
+
+                        <Spacer height="6" />
+                        
                         <InputRow 
                             id="password"
                             label="Dein Passwort"
-                            inputProps={{
-                                required: 'required', 
-                                type: 'password',
-                                name: '_password',
+                            type="password"
+                            style=""
+                            {...{
+                                name: "_password",
+                                required: true
                             }}
                         />
                     </Card>

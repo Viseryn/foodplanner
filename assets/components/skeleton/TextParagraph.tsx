@@ -1,21 +1,18 @@
-/*************************************************
- * ./assets/components/skeleton/TextParagraph.js *
- *************************************************/
+/**************************************************
+ * ./assets/components/skeleton/TextParagraph.tsx *
+ **************************************************/
 
-import React from 'react';
+import React from 'react'
 
 /**
  * TextParagraph
  * 
- * A component that renders a text skeleton, 
- * e.g. for loading screens.
+ * A component that renders a text skeleton, e.g. for loading screens.
  * 
  * @component
- * 
- * @example
- * <TextParagraph />
+ * @example <TextParagraph />
  */
-export default function TextParagraph() {
+export default function TextParagraph(): JSX.Element {
     return (
         <div role="status" className="space-y-2.5 animate-pulse max-w-lg">
             <div className="flex items-center space-x-2 w-full">
@@ -50,5 +47,5 @@ export default function TextParagraph() {
             </div>
             <span className="sr-only">Loading...</span>
         </div>
-    );
+    )
 }

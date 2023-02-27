@@ -1,97 +1,68 @@
-/***************************************
- * ./assets/pages/Recipes/AddRecipe.js *
- ***************************************/
+/****************************************
+ * ./assets/pages/Recipes/AddRecipe.tsx *
+ ****************************************/
 
-import React, { useEffect, useState }   from 'react'
-import { useNavigate }                  from 'react-router-dom'
-import axios                            from 'axios'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 
-import FilePicker                       from '../../components/form/FilePicker'
-import { InputRow }                     from '../../components/form/Input'
-import { SliderRow }                    from '../../components/form/Slider'
-import { TextareaRow }                  from '../../components/form/Textarea'
-import Button                           from '../../components/ui/Buttons/Button'
-import Card                             from '../../components/ui/Card'
-import Spacer                           from '../../components/ui/Spacer'
-import Spinner                          from '../../components/ui/Spinner'
+import FilePicker from '@/components/form/FilePicker'
+import { InputRow } from '@/components/form/Input'
+import { SliderRow } from '@/components/form/Slider'
+import { TextareaRow } from '@/components/form/Textarea'
+import Button from '@/components/ui/Buttons/Button'
+import Card from '@/components/ui/Card'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
 
 /**
  * AddRecipe
  * 
- * A component that renders a form for 
- * adding a recipe. After submitting via 
- * the submit button, the recipe will be 
- * added by an API and the user gets 
- * forwarded to its detail page.
+ * A component that renders a form for adding a recipe. After submitting via the submit button, 
+ * the recipe will be added by an API and the user gets forwarded to its detail page.
  * 
  * @component
- * @param {object} props
- * @param {function} props.setSidebar
- * @param {function} props.setTopbar
- * @param {object} props.recipes
+ * 
+ * @todo Update form widgets
  */
-export default function AddRecipe({ recipes, ...props }) {
-    /**
-     * The name of the selected file.
-     * When no file is selected, show a placeholder text.
-     * 
-     * @type {[string, function]}
-     */
-    const [filename, setFilename] = useState('Datei auswählen')
+export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
+    recipes: FetchableEntity<Array<Recipe>>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
+    // The name of the selected file. When no file is selected, show a placeholder text.
+    const [filename, setFilename] = useState<string>('Datei auswählen')
+
+    // Whether the page is loading. Will be true while the form data is processed by the API.
+    const [isLoading, setLoading] = useState<boolean>(false)
+
+    // The ID of the new recipe. Will be provided be the API and can be used for redirecting.
+    const [id, setId] = useState<number>(0)
+
+    // A function that can change the location. Needed for the redirect after submit.
+    const navigate: NavigateFunction = useNavigate()
 
     /**
-     * Whether the page is loading. Will be 
-     * true while the form data is processed
-     * by the API.
+     * Changes the label of the upload button to the selected picture (or to the default text).
      * 
-     * @type {[boolean, function]}
+     * @param event
+     * 
+     * @todo Typing
      */
-    const [isLoading, setLoading] = useState(false)
-
-    /**
-     * The ID of the new recipe. Will be 
-     * provided be the API and can be used
-     * for redirecting.
-     * 
-     * @type {[number, function]}
-     */
-    const [id, setId] = useState(0)
-
-    /**
-     * A function that can change the location.
-     * Needed for the redirect after submit.
-     * 
-     * @type {NavigateFunction}
-     */
-    const navigate = useNavigate()
-
-    /**
-     * handleFilePick
-     * 
-     * Changes the label of the upload button to the selected 
-     * picture (or to the default text).
-     * 
-     * @param {*} event
-     */
-    const handleFilePick = (event) => {
-        const value = event.target.value
-
+    const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        const value: string = event.target.value
         setFilename((value != '') ? value : 'Datei auswählen')
     }
 
     /**
-     * handleSubmit
+     * Submits the form data to the Recipe Add API. Sets the ID of the new recipe to the 
+     * state variable id so that the component can redirect there after submitting.
      * 
-     * Submits the form data to the Recipe Add API.
-     * Sets the ID of the new recipe to the state
-     * variable id so that the component can redirect 
-     * there after submitting.
-     * 
-     * @param {*} event
+     * @param event A submit form event.
      */
-    const handleSubmit = (event) => {
-        const formData = new FormData(event.target)
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
+        const formData = new FormData(event.currentTarget)
 
         setLoading(true)
 
@@ -99,7 +70,7 @@ export default function AddRecipe({ recipes, ...props }) {
             .post('/api/recipes/add', formData)
             .then(response => {
                 // Reload recipes and get id
-                recipes.setLoading(true)
+                recipes.load()
                 setId(response.data)
 
                 // End loading screen
@@ -107,25 +78,17 @@ export default function AddRecipe({ recipes, ...props }) {
             })
     }
 
-    /**
-     * Redirect to the new recipe after 
-     * it has properly loaded.
-     */
+    // Redirect to the new recipe after it has properly loaded.
     useEffect(() => {
         if (id > 0) {
             navigate('/recipe/' + id)
         }
     }, [id])
 
-    /**
-     * Load layout
-     */
+    // Load layout
     useEffect(() => {
-        // Load sidebar
-        props.setSidebar('recipes')
-
-        // Load topbar
-        props.setTopbar({
+        setSidebar('recipes')
+        setTopbar({
             title: 'Neues Rezept',
             showBackButton: true,
             backButtonPath: '/recipes',
@@ -135,9 +98,7 @@ export default function AddRecipe({ recipes, ...props }) {
         window.scrollTo(0, 0)
     }, [])
     
-    /**
-     * Render AddRecipe
-     */
+    // Render AddRecipe
     return (
         <div className="pb-24 md:pb-4 md:max-w-[900px]">
             <Spacer height="6" />
@@ -181,6 +142,7 @@ export default function AddRecipe({ recipes, ...props }) {
                                         id="recipe_image"
                                         label={filename}
                                         onChange={handleFilePick}
+                                        enabled={true}
                                     />
                                 </div>
                             </Card>
@@ -215,9 +177,9 @@ export default function AddRecipe({ recipes, ...props }) {
                                 type="submit"
                                 icon="save" 
                                 label="Speichern" 
-                                elevated={true}
+                                isElevated={true}
                                 outlined={true}
-                                floating={true}
+                                isFloating={true}
                             />
                         </div>
                     </form>
