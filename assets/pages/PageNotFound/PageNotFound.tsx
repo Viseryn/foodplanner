@@ -1,6 +1,6 @@
-/***********************************************
- * ./assets/pages/PageNotFound/PageNotFound.js *
- ***********************************************/
+/************************************************
+ * ./assets/pages/PageNotFound/PageNotFound.tsx *
+ ************************************************/
 
 import React, { useEffect } from 'react'
 
