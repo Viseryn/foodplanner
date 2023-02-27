@@ -69,7 +69,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         // Collect all ingredients
         let ingredients: Array<string> = []
 
-        argRecipe.ingredients.forEach(ingredient => {
+        argRecipe.ingredients?.forEach(ingredient => {
             ingredients.push(getFullIngredientName(ingredient))
         })
 
@@ -102,7 +102,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         // Collect all ingredients
         let ingredients: Array<string> = []
 
-        argRecipe.ingredients.forEach(ingredient => {
+        argRecipe.ingredients?.forEach(ingredient => {
             ingredients.push(getFullIngredientName(ingredient))
         })
 
@@ -164,7 +164,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         newRecipe.ingredients = []
         newRecipe.portion_size = portionSize
 
-        recipe.ingredients.forEach(ingredient => {
+        recipe.ingredients?.forEach(ingredient => {
             let newIngredient: Ingredient = {...ingredient}
 
             let newQuantityValue: Fraction = new Fraction(ingredient.quantity_value ? ingredient.quantity_value : '0')
@@ -205,7 +205,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     // Load layout
     useEffect(() => {
         setTopbar({
-            title: recipe?.title,
+            title: recipe.title,
             showBackButton: true,
             backButtonPath: '/recipes',
             actionButtons: [
@@ -227,7 +227,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             <Spacer height="6" />
             {recipes.isLoading
                 ? /* Recipe Skeleton */ <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
-                : (recipe.image != null &&
+                : (recipe.image &&
                     <img 
                         className="rounded-3xl h-80 object-cover transition duration-300 w-full" 
                         src={recipe.image.directory + recipe.image.filename}
@@ -255,7 +255,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             </>
             : <>
                 {/* Ingredients */}
-                {recipe.ingredients.length > 0 &&
+                {tmpRecipe.ingredients?.length > 0 &&
                     <div className="mx-4 md:ml-0">
                         <Spacer height="10" />
 
@@ -293,7 +293,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                                 style={'shoppinglist-' + ingredient.id} 
                                                 onClick={() => { 
                                                     handleAddSingleToShoppingList(ingredient)
-                                                    document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild.innerHTML = "done"
+                                                    let element = document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild! as HTMLElement
+                                                    element.innerHTML = "done"
                                                 }}
                                                 icon="add_shopping_cart"
                                                 outlined={true}
@@ -304,7 +305,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                                     style={'pantry-' + ingredient.id} 
                                                     onClick={() => { 
                                                         handleAddSingleToPantry(ingredient) 
-                                                        document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild.innerHTML = "done"
+                                                        let element = document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild! as HTMLElement
+                                                        element.innerHTML = "done"
                                                     }}
                                                     icon="add_home"
                                                     outlined={true}
@@ -333,7 +335,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                 }
 
                 {/* Instructions */}
-                {recipe?.instructions?.length > 0 &&
+                {tmpRecipe.instructions?.length > 0 &&
                     <div className="mx-4 md:ml-0">
                         <Spacer height="10" />
 
@@ -342,7 +344,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                         <Spacer height="4" />
 
                         <Card style="space-y-2">
-                            {recipe?.instructions?.map((instruction, index) =>
+                            {recipe.instructions.map((instruction, index) =>
                                 <div key={instruction.id} className="flex">
                                     <span className="mr-2">{index + 1}.</span>
                                     {instruction.instruction}
@@ -353,7 +355,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                 }
 
                 {/* Show empty card if there is no image, no ingredients and no instructions */}
-                {recipe?.image === undefined && recipe?.ingredients?.length === 0 && recipe?.instructions?.length === 0 &&
+                {recipe.image == undefined && tmpRecipe.ingredients?.length === 0 && tmpRecipe.instructions?.length === 0 &&
                     <Card style="mx-4 md:ml-0 flex items-center">
                         <span className="material-symbols-rounded outlined mr-4">info</span>
                         Hier gibt es noch nichts zu sehen.
