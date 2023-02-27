@@ -2,46 +2,43 @@
  * ./assets/pages/Settings/Settings.tsx *
  ****************************************/
 
+import axios from 'axios'
 import React, { useEffect } from 'react'
-import axios                from 'axios'
+import swal from 'sweetalert'
 
-import Switch               from '../../components/form/Switch'
-import Button               from '../../components/ui/Buttons/Button'
-import IconButton           from '../../components/ui/Buttons/IconButton'
-import Card                 from '../../components/ui/Card'
-import { SecondHeading }    from '../../components/ui/Heading'
-import Spacer               from '../../components/ui/Spacer'
-import Spinner              from '../../components/ui/Spinner'
+import SwitchRow from '@/components/form/Switch/SwitchRow'
+import Button from '@/components/ui/Buttons/Button'
+import IconButton from '@/components/ui/Buttons/IconButton'
+import Card from '@/components/ui/Card'
+import { SecondHeading } from '@/components/ui/Heading'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
  
 /**
  * Settings
  * 
- * A component that renders some user-specific as 
- * well as global settings.
+ * A component that renders some user-specific as well as global settings.
  * 
  * @component
- * @param {object} props
- * @param {function} props.setSidebar
- * @param {function} props.setTopbar
- * @param {object} props.settings
- * @param {object} props.userGroups
- * @param {object} props.mealCategories
- * @param {object} props.days
  */
-export default function Settings({ settings, userGroups, mealCategories, ...props }) {
+export default function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar }: {
+    settings: FetchableEntity<Settings>
+    userGroups: FetchableEntity<Array<UserGroup>>
+    mealCategories: FetchableEntity<Array<MealCategory>>
+    days: FetchableEntity<Array<Day>>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}): JSX.Element {
     /**
-     * handleSetStandardGroup
+     * Changes the standard UserGroup to the one selected and updates the 
+     * UserGroups in the database via the UserGroups Update Standard API.
      * 
-     * Changes the standard UserGroup to the one selected 
-     * and updates the UserGroups in the database via 
-     * the UserGroups Update Standard API.
-     * 
-     * @param {number} index The index of the group that shall be the standard group.
+     * @param index The index of the group that shall be the standard group.
      */
-    const handleSetStandardGroup = (index) => {
-        let groups = [...userGroups.data]
+    const handleSetStandardGroup = (index: number) => {
+        let groups: Array<UserGroup> = [...userGroups.data]
 
-        groups?.forEach((group, i) => {
+        groups.forEach((group, i) => {
             if (index === i) {
                 group.isStandard = true
                 group.checked = 'checked'
@@ -59,18 +56,15 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
     }
 
     /**
-     * handleSetStandardMealCategory
+     * Changes the standard MealCategory to the one selected and updates the 
+     * MealCategories in the database via the MealCategory Update Standard API.
      * 
-     * Changes the standard MealCategory to the one selected 
-     * and updates the MealCategories in the database via 
-     * the MealCategory Update Standard API.
-     * 
-     * @param {number} index The index of the category that shall be the standard category.
+     * @param index The index of the category that shall be the standard category.
      */
-    const handleSetStandardMealCategory = (index) => {
-        let categories = [...mealCategories.data]
+    const handleSetStandardMealCategory = (index: number) => {
+        let categories: Array<MealCategory> = [...mealCategories.data]
 
-        categories?.forEach((category, i) => {
+        categories.forEach((category, i) => {
             if (index === i) {
                 category.isStandard = true
                 category.checked = 'checked'
@@ -88,23 +82,14 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
     }
 
     /**
-     * handleDeleteGroup
+     * When called, opens a SweetAlert. If it is confirmed, then the UserGroup Delete API 
+     * is called and the groups are updated. If cancelled, nothing happens.
      * 
-     * When called, opens a SweetAlert. If it is confirmed,
-     * then the UserGroup Delete API is called and the groups 
-     * are updated. If cancelled, nothing happens.
-     * 
-     * @param {number} index The index of the UserGroup that should be deleted.
+     * @param index The index of the UserGroup that shall be deleted.
      */
-    const handleDeleteGroup = (index) => {
+    const handleDeleteGroup = (index: number) => {
         // Get id
-        let id = 0
-
-        userGroups.data?.forEach((group, i) => {
-            if (index === i) {
-                id = userGroups.data?.[i].value
-            }
-        })
+        const id: number = userGroups.data[index].value ?? -1
 
         // Show warning with confirm and cancel buttons
         swal({
@@ -112,22 +97,24 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
             icon: 'error',
             title: 'Benutzergruppe wirklich löschen?',
             buttons: {
-                cancel: 'Abbrechen',
-                confirm: 'Löschen',
+                cancel: { text: 'Abbrechen' },
+                confirm: { text: 'Löschen' },
             },
         }).then(confirm => {
             // Cancel if not confirmed
-            if (!confirm) return
+            if (!confirm) {
+                return
+            }
 
             // Cancel if there is only one UserGroup left
-            if (userGroups.data?.length <= 1) {
+            if (userGroups.data.length <= 1) {
                 swal({
                     dangerMode: true,
                     icon: 'error',
                     title: 'Benutzergruppe konnte nicht gelöscht werden.',
                     text: 'Bitte erstelle zunächst eine andere Benutzergruppe, bevor du diese hier löschst.',
                     buttons: {
-                        confirm: 'Okay',
+                        confirm: { text: 'Okay' },
                     },
                 })
 
@@ -135,14 +122,14 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
             }
 
             // Cancel if the given group is standard
-            if (userGroups.data?.[index].isStandard) {
+            if (userGroups.data[index].isStandard) {
                 swal({
                     dangerMode: true,
                     icon: 'error',
                     title: 'Benutzergruppe konnte nicht gelöscht werden.',
                     text: 'Du kannst die Standardgruppe nicht löschen.',
                     buttons: {
-                        confirm: 'Okay',
+                        confirm: { text: 'Okay' },
                     },
                 })
 
@@ -154,8 +141,8 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
             axios
                 .get('/api/usergroups/delete/' + id)
                 .then(() => {
-                    userGroups.setLoading(true)
-                    props.days.setLoading(true)
+                    userGroups.load()
+                    days.load()
                 
                     // Refresh Data Timestamp
                     axios.get('/api/refresh-data-timestamp/set')
@@ -164,22 +151,17 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
     }
 
     /**
-     * handlePantrySettings
-     * 
-     * Updates the showPantry property of the Settings object.
-     * After each update, the Update Pantry Settings API will 
-     * be called (as long as the Settings are not loading).
+     * Updates the showPantry property of the Settings object. After each update, the 
+     * Update Pantry Settings API will  be called (as long as the Settings are not loading).
      */
-    const handlePantrySettings = (e) => {
+    const handlePantrySettings = () => {
         settings.setData({ 
             ...settings.data,
             showPantry: !settings.data.showPantry,
         })
     }
 
-    /**
-     * When settings data changes, call Settings API.
-     */
+    // When settings data changes, call Settings API.
     useEffect(() => {
         if (settings.isLoading) {
             return
@@ -188,15 +170,10 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
         axios.post('/api/settings/pantry', JSON.stringify(settings.data))
     }, [settings.data])
 
-    /**
-     * Load layout
-     */
+    // Load layout
     useEffect(() => {
-        // Load sidebar
-        props.setSidebar()
-
-        // Load topbar
-        props.setTopbar({
+        setSidebar()
+        setTopbar({
             title: 'Einstellungen',
         })
 
@@ -204,9 +181,7 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
         window.scrollTo(0, 0)
     }, [])
 
-    /** 
-     * Render Settings
-     */
+    // Render Settings
     return (
         <div className="pb-24 md:pb-4 md:w-[450px]">
             <Spacer height="6" />
@@ -215,28 +190,19 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
                 <SecondHeading style="pl-2 mb-2">Vorratskammer anzeigen</SecondHeading>
                 <Card>
                     <p className="text-sm">
-                        Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene
-                        Funktionen werden dann ebenfalls ein- oder ausgeblendet.
+                        Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene Funktionen werden dann ebenfalls ein- oder ausgeblendet.
                     </p>
 
                     <Spacer height="4" />
 
-                    <label htmlFor="showPantry" className="inline-flex items-center relative cursor-pointer">
-                        <input 
-                            type="checkbox" 
-                            id="showPantry" 
-                            name="showPantry" 
-                            className="sr-only peer" 
-                            value={settings.data?.showPantry} 
-                            checked={settings.data?.showPantry ? 'checked' : ''} 
-                            onChange={handlePantrySettings} 
-                        />
-                        <Switch />
-
-                        <span className="ml-3 text-sm font-semibold">
-                            Vorratskammer wird {!settings.data?.showPantry && ' nicht '} angezeigt
-                        </span>
-                    </label>
+                    <SwitchRow 
+                        id="showPantry"
+                        label={'Vorratskammer wird ' + (!settings.data.showPantry ? 'nicht ' : '') + 'angezeigt'}
+                        checked={settings.data.showPantry}
+                        {...{
+                            onClick: handlePantrySettings
+                        }}
+                    />
                 </Card>
 
                 <Spacer height="10" />
@@ -249,41 +215,48 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
 
                     <Spacer height="4" />
 
-                    {props.authentication.isLoading ? (
+                    {userGroups.isLoading ? (
                         <Spinner />
                     ) : (
-                        (userGroups.isLoading ? (
-                            <Spinner />
-                        ) : (
-                            <>
-                                <div className="space-y-2">
-                                    {userGroups.data?.map((group, index) => 
-                                        <div key={index} className="flex justify-between items-center">
-                                            <div className="flex items-center">
-                                                <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                                {group.name} ({group.users.join(', ')})
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <IconButton outlined="outlined" onClick={() => handleDeleteGroup(index)}>delete</IconButton>
-                                                <IconButton outlined={group.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardGroup(index)}>favorite</IconButton>
-                                            </div>
+                        <>
+                            <div className="space-y-2">
+                                {userGroups.data.map((group, index) => 
+                                    <div key={index} className="flex justify-between items-center">
+                                        <div className="flex items-center">
+                                            <span className="material-symbols-rounded mr-4">{group.icon}</span>
+                                            {group.name} ({group.users.join(', ')})
                                         </div>
-                                    )}
-                                </div>
-                                
-                                <Spacer height="4" />
+                                        <div className="flex gap-2">
+                                            <IconButton 
+                                                outlined={true} 
+                                                onClick={() => handleDeleteGroup(index)}
+                                            >
+                                                delete
+                                            </IconButton>
 
-                                <div className="flex justify-end">
-                                    <Button
-                                        role="secondary"
-                                        location="/settings/groups/add"
-                                        label="Neue Gruppe hinzufügen"
-                                        icon="add"
-                                        small={true}
-                                    />
-                                </div>
-                            </>
-                        ))
+                                            <IconButton 
+                                                outlined={!group.isStandard} 
+                                                onClick={() => handleSetStandardGroup(index)}
+                                            >
+                                                favorite
+                                            </IconButton>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            <Spacer height="4" />
+
+                            <div className="flex justify-end">
+                                <Button
+                                    role="secondary"
+                                    location="/settings/groups/add"
+                                    label="Neue Gruppe hinzufügen"
+                                    icon="add"
+                                    isSmall={true}
+                                />
+                            </div>
+                        </>
                     )}
                 </Card>
 
@@ -297,24 +270,24 @@ export default function Settings({ settings, userGroups, mealCategories, ...prop
 
                     <Spacer height="4" />
 
-                    {props.authentication.isLoading ? (
+                    {mealCategories.isLoading ? (
                         <Spinner />
                     ) : (
-                        (mealCategories.isLoading ? (
-                            <Spinner />
-                        ) : (
-                            <div className="space-y-2">
-                                {mealCategories.data?.map((category, index) => 
-                                    <div key={category.id} className="flex justify-between items-center">
-                                        <div className="flex items-center">
-                                            <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
-                                            {category.name}
-                                        </div>
-                                            <IconButton outlined={category.isStandard ? '' : 'outlined'} onClick={() => handleSetStandardMealCategory(index)}>favorite</IconButton>
+                        <div className="space-y-2">
+                            {mealCategories.data.map((category, index) => 
+                                <div key={category.id} className="flex justify-between items-center">
+                                    <div className="flex items-center">
+                                        <span className="material-symbols-rounded outlined mr-4">{category.icon}</span>
+                                        {category.name}
                                     </div>
-                                )}
-                            </div>
-                        ))
+                                        <IconButton 
+                                            outlined={!category.isStandard} 
+                                            onClick={() => handleSetStandardMealCategory(index)}>
+                                            favorite
+                                        </IconButton>
+                                </div>
+                            )}
+                        </div>
                     )}
                 </Card>
             </div>
