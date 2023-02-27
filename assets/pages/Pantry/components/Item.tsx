@@ -2,33 +2,33 @@
  * ./assets/pages/Pantry/components/Item.tsx *
  *********************************************/
 
-import React                    from 'react'
-import axios                    from 'axios'
+import axios from 'axios'
+import React from 'react'
 
-import IconButton               from '../../../components/ui/Buttons/IconButton'
-import getFullIngredientName    from '../../../util/getFullIngredientName'
+import IconButton from '@/components/ui/Buttons/IconButton'
+import getFullIngredientName from '@/util/getFullIngredientName'
 
 /**
  * Item
  * 
- * Renders an item of the ShoppingList and 
- * handles events related to that item.
+ * Renders an item of the ShoppingList and handles events related to that item.
  * 
  * @component
  * @param {object} props
- * @param {object} props.pantry
- * @param {object} props.item
+ * @param {object} props.pantry The pantry state variable.
+ * @param {object} props.item An Ingredient object from the pantry.
  */
-export default function Item({ pantry, item }) {
+export default function Item({ pantry, item }: {
+    pantry: FetchableEntity<Array<Ingredient>>
+    item: Ingredient
+}): JSX.Element {
     /**
-     * handleClickOnItem
-     * 
      * Handles clicks on an item of the list.
      * 
-     * @param {any} event
-     * @param {object} item A list item.
+     * @param event A click event.
+     * @param item A list item.
      */
-    const handleClickOnItem = (event, item) => {
+    const handleClickOnItem = (event: React.MouseEvent, item: Ingredient): void => {
         if (event.detail === 2) {
             // Double click action
             handleItemSetEditability(item)
@@ -51,20 +51,18 @@ export default function Item({ pantry, item }) {
         }
     }
 
-    let preventSingleClick = false
+    let preventSingleClick: boolean = false
 
     /**
-     * handleItemSetEditability
-     * 
-     * Changes an item's editability. Is performed on double clicks.
+     * Changes an item's editability. Is performed on double clicks. 
      * Does not trigger a reload or replacement of the pantry.
      * 
-     * @param {object} item A list item.
+     * @param item A list item.
      */
-    const handleItemSetEditability = (item) => {
+    const handleItemSetEditability = (item: Ingredient): void => {
         // Make a copy of pantry.data and find item
-        let newItemList = [...pantry.data]
-        const index = newItemList.indexOf(item)
+        let newItemList: Array<Ingredient> = [...pantry.data]
+        const index: number = newItemList.indexOf(item)
 
         // Make all items non-editable
         newItemList.forEach(item => {
@@ -77,22 +75,22 @@ export default function Item({ pantry, item }) {
     }
 
     /**
-     * handleEditItem
+     * Changes the data of the given item and makes it non-editable after. 
+     * Is called onBlur or onKeyDown when the Enter key was pressed.
      * 
-     * Changes the data of the given item and makes
-     * it non-editable after. Is called onBlur or 
-     * onKeyDown when the Enter key was pressed.
-     * 
-     * @param {any} event
-     * @param {object} item A list item.
+     * @param event A focus or keyboard event.
+     * @param item A list item.
      */
-    const handleEditItem = (event, item) => {
+    const handleEditItem = (
+        event: React.FocusEvent<HTMLInputElement, Element> | React.KeyboardEvent<HTMLInputElement>, 
+        item: Ingredient
+    ): void => {
         // Make a copy of pantry.data and find item
-        let newItemList = [...pantry.data]
-        const index = newItemList.indexOf(item)
+        let newItemList: Array<Ingredient> = [...pantry.data]
+        const index: number = newItemList.indexOf(item)
 
         // Return early if the value of the new item is empty
-        const newItem = event.target.value.replace(/(\s+)/g, ' ').trim()
+        const newItem: string = event.currentTarget.value.replace(/(\s+)/g, ' ').trim()
 
         if (newItem.length === 0) {
             return
@@ -116,17 +114,14 @@ export default function Item({ pantry, item }) {
     }
 
     /**
-     * handleDeleteItem
+     * Checks or unchecks an item. Is performed on single clicks on the item or the checkboxes.
      * 
-     * Checks or unchecks an item. Is performed on single clicks 
-     * on the item or the checkboxes.
-     * 
-     * @param {object} item A list item.
+     * @param item A list item.
      */
-    const handleDeleteItem = (item) => {
+    const handleDeleteItem = (item: Ingredient): void => {
         // Make a copy of pantry.data and find item
-        let newItemList = [...pantry.data]
-        const index = newItemList.indexOf(item)
+        let newItemList: Array<Ingredient> = [...pantry.data]
+        const index: number = newItemList.indexOf(item)
 
         // Remove item from list
         newItemList.splice(index, 1)
@@ -137,21 +132,19 @@ export default function Item({ pantry, item }) {
     }
 
     /**
-     * handleChangePosition
-     * 
      * Moves the given item up or down in the Pantry.
      * 
-     * @param {number} id The id of the given item.
-     * @param {number} direction Possible values are -1 (up) and 1 (down).
+     * @param item A list item.
+     * @param direction Possible values are -1 (up) and 1 (down).
      */
-    const handleChangePosition = (item, direction) => {
+    const handleChangePosition = (item: Ingredient, direction: -1 | 1) => {
         // Make a copy of pantry.data and find item
-        let newItemList = [...pantry.data]
-        const index = newItemList.indexOf(item)
-        const itemCopy = {...newItemList[index]}
+        let newItemList: Array<Ingredient> = [...pantry.data]
+        const index: number = newItemList.indexOf(item)
+        const itemCopy: Ingredient = {...newItemList[index]}
 
-        const oldPosition = newItemList[index].position
-        const newPosition = newItemList[index + direction]?.position
+        const oldPosition: number = newItemList[index].position
+        const newPosition: number = newItemList[index + direction].position
 
         // Move item up only when it is not the first item and 
         // move item down only when it is not the last item.
@@ -177,46 +170,42 @@ export default function Item({ pantry, item }) {
         }
     }
     
-    /**
-     * Render Item
-     */
-    return (
-        <div className="flex justify-between items-center gap-4" >
-            <div className="flex items-center grow gap-4" >
-                <div className="mr-2">
-                    <IconButton 
-                        onClick={() => handleDeleteItem(item)} 
-                        outlined={true}
-                    >
-                        delete_sweep
-                    </IconButton>
-                </div>
-
-                <div 
-                    className={'break-words grow' + (item.checked ? ' line-through text-[#74796d]' : '')} 
-                    onClick={event => handleClickOnItem(event, item)}
+    // Render Item
+    return <div className="flex justify-between items-center gap-4" >
+        <div className="flex items-center grow gap-4" >
+            <div className="mr-2">
+                <IconButton 
+                    onClick={() => handleDeleteItem(item)} 
+                    outlined={true}
                 >
-                    {item.editable ? (
-                        <input 
-                            className="bg-white border rounded-md h-10 w-full px-2"
-                            defaultValue={getFullIngredientName(item)}
-                            onBlur={event => handleEditItem(event, item)}
-                            onKeyDown={event => { 
-                                if (event.key === 'Enter') {
-                                    handleEditItem(event, item);
-                                }
-                            }}
-                        />
-                    ) : (
-                        getFullIngredientName(item)
-                    )}
-                </div>
+                    delete_sweep
+                </IconButton>
             </div>
 
-            <div className="flex gap-2">
-                <IconButton onClick={() => handleChangePosition(item, -1)}>expand_less</IconButton>
-                <IconButton onClick={() => handleChangePosition(item, 1)}>expand_more</IconButton>
+            <div 
+                className={'break-words grow' + (item.checked ? ' line-through text-[#74796d]' : '')} 
+                onClick={event => handleClickOnItem(event, item)}
+            >
+                {item.editable ? (
+                    <input 
+                        className="bg-white border rounded-md h-10 w-full px-2"
+                        defaultValue={getFullIngredientName(item)}
+                        onBlur={event => handleEditItem(event, item)}
+                        onKeyDown={event => { 
+                            if (event.key === 'Enter') {
+                                handleEditItem(event, item);
+                            }
+                        }}
+                    />
+                ) : (
+                    getFullIngredientName(item)
+                )}
             </div>
         </div>
-    )
+
+        <div className="flex gap-2">
+            <IconButton onClick={() => handleChangePosition(item, -1)}>expand_less</IconButton>
+            <IconButton onClick={() => handleChangePosition(item, 1)}>expand_more</IconButton>
+        </div>
+    </div>
 }
