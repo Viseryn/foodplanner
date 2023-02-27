@@ -1,6 +1,6 @@
-/***************************************
- * ./assets/pages/Settings/Settings.js *
- ***************************************/
+/****************************************
+ * ./assets/pages/Settings/Settings.tsx *
+ ****************************************/
 
 import React, { useEffect } from 'react'
 import axios                from 'axios'
