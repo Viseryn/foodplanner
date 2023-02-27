@@ -1,6 +1,6 @@
 # FoodPlanner
 
-Current version: v1.3.1b
+Current version: v1.3.2
 
 ## About
 
