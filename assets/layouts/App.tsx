@@ -203,7 +203,7 @@ export default function App({ version }: {
                         <Route 
                             path="/pantry"
                             element={<AuthChecker authentication={authentication} component={
-                                <Pantry {...props} />
+                                <Pantry {...{ pantry, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
