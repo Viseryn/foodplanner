@@ -2,33 +2,33 @@
  * ./assets/layouts/App.tsx *
  ****************************/
 
-import React, { useState }              from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import AuthChecker                      from './AuthChecker/AuthChecker'
-import Sidebar                          from './Sidebar/Sidebar'
-import SidebarDrawer                    from './Sidebar/SidebarDrawer'
-import SidebarDrawerButton              from './Sidebar/components/SidebarDrawerButton'
-import Topbar                           from './Topbar/Topbar'
+import AuthChecker from './AuthChecker/AuthChecker'
+import SidebarDrawerButton from './Sidebar/components/SidebarDrawerButton'
+import Sidebar from './Sidebar/Sidebar'
+import SidebarDrawer from './Sidebar/SidebarDrawer'
+import Topbar from './Topbar/Topbar'
 
-import useAuthentication                from '@/hooks/useAuthentication'
-import useFetch                         from '@/hooks/useFetch'
-import useRefreshDataTimestamp          from '@/hooks/useRefreshDataTimestamp'
+import useAuthentication from '@/hooks/useAuthentication'
+import useFetch from '@/hooks/useFetch'
+import useRefreshDataTimestamp from '@/hooks/useRefreshDataTimestamp'
 
-import Login                            from '@/pages/Login/Login'
-import Logout                           from '@/pages/Logout/Logout'
-import PageNotFound                     from '@/pages/PageNotFound/PageNotFound'
-import Pantry                           from '@/pages/Pantry/Pantry'
-import AddMeal                          from '@/pages/Planner/AddMeal'
-import Planner                          from '@/pages/Planner/Planner'
-import AddRecipe                        from '@/pages/Recipes/AddRecipe'
-import EditRecipe                       from '@/pages/Recipes/EditRecipe'
-import Recipes                          from '@/pages/Recipes/Recipes'
-import Recipe                           from '@/pages/Recipes/Recipe'
-import Registration                     from '@/pages/Registration/Registration'
-import AddGroup                         from '@/pages/Settings/AddGroup'
-import Settings                         from '@/pages/Settings/Settings'
-import ShoppingList                     from '@/pages/ShoppingList/ShoppingList'
+import Login from '@/pages/Login/Login'
+import Logout from '@/pages/Logout/Logout'
+import PageNotFound from '@/pages/PageNotFound/PageNotFound'
+import Pantry from '@/pages/Pantry/Pantry'
+import AddMeal from '@/pages/Planner/AddMeal'
+import Planner from '@/pages/Planner/Planner'
+import AddRecipe from '@/pages/Recipes/AddRecipe'
+import EditRecipe from '@/pages/Recipes/EditRecipe'
+import Recipe from '@/pages/Recipes/Recipe'
+import Recipes from '@/pages/Recipes/Recipes'
+import Registration from '@/pages/Registration/Registration'
+import AddGroup from '@/pages/Settings/AddGroup'
+import Settings from '@/pages/Settings/Settings'
+import ShoppingList from '@/pages/ShoppingList/ShoppingList'
 
 /**
  * App
@@ -52,8 +52,7 @@ export default function App({ version }: {
     const [user, authentication]: [FetchableEntity<User>, Authentication] = useAuthentication()
 
     // Will be updated by useRefreshDataTimestamp and set to true if the timestamp changed.
-    // Can e.g. be passed as dependency in a useFetch call to reload entity data without 
-    // showing a loading screen.
+    // Can e.g. be passed as dependency in a useFetch call to reload entity data without showing a loading screen.
     const [isLoading, setLoading] = useState<boolean>(false)
 
     // This hook will keep updating isLoading if the timestamp changes
@@ -72,13 +71,11 @@ export default function App({ version }: {
     const [sidebarActionButton, setSidebarActionButton] = useState<SidebarActionButtonConfiguration>({})
 
     /**
-     * Updates the active sidebar item and the SidebarActionButton. 
-     * If there is no argument given, the sidebar will have no active 
-     * item and the Sidebar Action Button is invisible.
-     * This method MUST be called by each page, otherwise the configuration
-     * of the last page will not be overriden.
-     * See the documentation of the SidebarActionButtonConfiguration 
-     * type alias for more information on the properties.
+     * Updates the active sidebar item and the SidebarActionButton. If there is no argument given, 
+     * the sidebar will have no active item and the Sidebar Action Button is invisible. This method 
+     * MUST be called by each page, otherwise the configuration of the last page will not be overriden. 
+     * See the documentation of the SidebarActionButtonConfiguration type alias for more information 
+     * on the properties.
      * 
      * @param sidebarActiveItem The sidebar item that should be active.
      * @param sidebarActionButton The configuration for the SidebarActionButton.
@@ -88,11 +85,18 @@ export default function App({ version }: {
         setSidebarActionButton(sidebarActionButton)
     }
 
-    // Fetch data
-    const fetch = <T,>(url: string) => { 
+    /**
+     * A shortcut function for fetching the global data. Returns the useFetch return value with the 
+     * given URL and the authentication and isLoading state variable as dependencies.
+     * 
+     * @param url The API url.
+     * @returns The useFetch return value.
+     */
+    const fetch = <T,>(url: string): FetchableEntity<T> => { 
         return useFetch<T>(url, authentication, [isLoading]) 
     }
 
+    // Fetch data
     const settings = fetch<Settings>('/api/settings')
     const mealCategories = fetch<Array<MealCategory>>('/api/mealcategories/list')
     const userGroups = fetch<Array<UserGroup>>('/api/usergroups/list')
@@ -101,34 +105,18 @@ export default function App({ version }: {
     const recipes = fetch<Array<Recipe>>('/api/recipes/list')
     const days = fetch<Array<Day>>('/api/days/list')
 
-    /**
-     * props for subcomponents.
-     * @todo Every component should have individual props.
-     */
-    const props = {
-        user, authentication, settings, userGroups, mealCategories,
-        recipes, days, shoppingList, pantry, setSidebar, setTopbar
-    }
-
     // Render App component
     return (
         <BrowserRouter>
             <div className="flex flex-col md:flex-row items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900 min-w-[375px]">
-                <SidebarDrawer
-                    isDrawerVisible={isDrawerVisible}
-                    setDrawerVisible={setDrawerVisible} 
-                    version={version}
-                    user={user}
-                />
+                <SidebarDrawer {...{
+                    isDrawerVisible, setDrawerVisible, version, user
+                }} />
 
-                <Sidebar 
-                    sidebarActiveItem={sidebarActiveItem} 
-                    sidebarActionButton={sidebarActionButton}
-                    isDrawerVisible={isDrawerVisible}
-                    setDrawerVisible={setDrawerVisible} 
-                    authentication={authentication}
-                    settings={settings}
-                />
+                <Sidebar {...{
+                    sidebarActiveItem, sidebarActionButton, isDrawerVisible, 
+                    setDrawerVisible, authentication, settings
+                }} />
                 
                 {/* Main Container */}
                 <div className="flex flex-col w-full">
@@ -185,19 +173,19 @@ export default function App({ version }: {
                         <Route 
                             path="/recipe/add"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddRecipe {...props} />
+                                <AddRecipe {...{ recipes, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
                             path="/recipe/:id"
                             element={<AuthChecker authentication={authentication} component={
-                                <Recipe {...props} />
+                                <Recipe {...{ recipes, shoppingList, pantry, settings, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
                             path="/recipe/:id/edit"
                             element={<AuthChecker authentication={authentication} component={
-                                <EditRecipe {...props} />
+                                <EditRecipe {...{ recipes, days, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
