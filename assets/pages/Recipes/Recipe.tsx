@@ -12,7 +12,9 @@ import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import { SecondHeading } from '@/components/ui/Heading'
 import Spacer from '@/components/ui/Spacer'
+import RecipeModel from '@/types/RecipeModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
+import IngredientModel from '@/types/IngredientModel'
 
 /**
  * Recipe
@@ -25,9 +27,9 @@ import getFullIngredientName from '@/util/getFullIngredientName'
  * @component
  */
 export default function Recipe({ recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<Recipe>>
-    shoppingList: FetchableEntity<Array<Ingredient>>
-    pantry: FetchableEntity<Array<Ingredient>>
+    recipes: FetchableEntity<Array<RecipeModel>>
+    shoppingList: FetchableEntity<Array<IngredientModel>>
+    pantry: FetchableEntity<Array<IngredientModel>>
     settings: FetchableEntity<Settings>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
@@ -44,10 +46,10 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     const navigate: NavigateFunction = useNavigate()
 
     // The currently selected recipe. Will be updated whenever id changes.
-    const [recipe, setRecipe] = useState<Recipe>({} as Recipe)
+    const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
 
     // A temporary state variable for the recipe. This object changes whenever recipe or portionSize change.
-    const [tmpRecipe, setTmpRecipe] = useState<Recipe>({} as Recipe)
+    const [tmpRecipe, setTmpRecipe] = useState<RecipeModel>({} as RecipeModel)
 
     // The portion size. Can be selected in an input field in the ingredients section.
     // Whenever this value is changed, tmpRecipe will be updated.
@@ -65,7 +67,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     /**
      * Handles adding the whole recipe to the ShoppingList. Is invoked by the SAB.
      */
-    const handleAddShoppingList = (argRecipe: Recipe): void => {
+    const handleAddShoppingList = (argRecipe: RecipeModel): void => {
         // Collect all ingredients
         let ingredients: Array<string> = []
 
@@ -89,7 +91,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * 
      * @todo Test this
      */
-    const handleAddSingleToShoppingList = async (ingredient: Ingredient): Promise<void> => {
+    const handleAddSingleToShoppingList = async (ingredient: IngredientModel): Promise<void> => {
         // API call
         await axios.post('/api/shoppinglist/add', [getFullIngredientName(ingredient)])
         shoppingList.load()
@@ -98,7 +100,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     /**
      * Handles adding the whole recipe to the Pantry. Is invoked by a button under the ingredient list.
      */
-    const handleAddPantry = (argRecipe: Recipe): void => {
+    const handleAddPantry = (argRecipe: RecipeModel): void => {
         // Collect all ingredients
         let ingredients: Array<string> = []
 
@@ -119,7 +121,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Handles adding a single ingredient to the Pantry. 
      * Can be invoked by the IconButtons next to each ingredient.
      */
-    const handleAddSingleToPantry = (ingredient: Ingredient): void => {
+    const handleAddSingleToPantry = (ingredient: IngredientModel): void => {
         // API call
         axios
             .post('/api/pantry/add', [getFullIngredientName(ingredient)])
@@ -134,7 +136,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         }
 
         // Find correct recipe
-        const queryResult: Array<Recipe> = recipes.data.filter(recipe => recipe.id.toString() == id)
+        const queryResult: Array<RecipeModel> = recipes.data.filter(recipe => recipe.id.toString() == id)
         setRecipe(queryResult[0])
 
         // If recipe does not exist, redirect to 404 page
@@ -151,7 +153,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         setTmpRecipe(recipe)
         
         // Set initial portion size
-        setPortionSize(recipe.portion_size)
+        setPortionSize(recipe.portionSize)
     }, [recipe, recipes.data])
 
     // Calculate the ingredient quantities depending on selected portionSize
@@ -160,22 +162,22 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             return
         }
             
-        let newRecipe: Recipe = {...recipe}
+        let newRecipe: RecipeModel = {...recipe}
         newRecipe.ingredients = []
-        newRecipe.portion_size = portionSize
+        newRecipe.portionSize = portionSize
 
         recipe.ingredients?.forEach(ingredient => {
-            let newIngredient: Ingredient = {...ingredient}
+            let newIngredient: IngredientModel = {...ingredient}
 
-            let newQuantityValue: Fraction = new Fraction(ingredient.quantity_value ? ingredient.quantity_value : '0')
+            let newQuantityValue: Fraction = new Fraction(ingredient.quantityValue ? ingredient.quantityValue : '0')
 
-            newIngredient['quantity_value'] = newQuantityValue
-                .div(new Fraction(recipe.portion_size))
+            newIngredient['quantityValue'] = newQuantityValue
+                .div(new Fraction(recipe.portionSize))
                 .mul(new Fraction(portionSize))
                 .toFraction(true)
             
-            if (newIngredient['quantity_value'] === '0') {
-                newIngredient['quantity_value'] = ''
+            if (newIngredient['quantityValue'] === '0') {
+                newIngredient['quantityValue'] = ''
             }
 
             newRecipe.ingredients.push(newIngredient)

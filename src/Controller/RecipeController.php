@@ -49,14 +49,17 @@ class RecipeController extends AbstractController
      *
      * @param RecipeRepository $recipeRepository
      * @return Response
+     * 
+     * @todo Documentation
      */
     #[Route('/list', name: 'api_recipes_list', methods: ['GET'])]
-    public function list(RecipeRepository $recipeRepository): Response
+    public function list(RecipeRepository $recipeRepository, RecipeUtil $recipeUtil): Response
     {
-        $recipes = $recipeRepository->findBy([], ['title' => 'ASC']);
+        $recipesResult = $recipeRepository->findBy([], ['title' => 'ASC']);
+        $preparedRecipes = $recipeUtil->getApiModels($recipesResult);
 
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($recipes, 'json');
+        $jsonContent = $serializer->serialize($preparedRecipes, 'json');
 
         return (new JsonResponse($jsonContent));
     }
