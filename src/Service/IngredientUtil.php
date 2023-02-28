@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\EntityModel;
 use App\Entity\Ingredient;
 use Doctrine\Common\Collections\Collection;
 
@@ -18,7 +19,7 @@ use Doctrine\Common\Collections\Collection;
  * @method Ingredient[] transformStringArrayToObjectArray(string[] $ingredientStrings)
  * @method array transformObjectArrayToStringArray(Ingredient[]|Collection<Ingredient> $ingredients)
  */
-class IngredientUtil 
+class IngredientUtil extends EntityUtil
 {
     /**
      * getQuantityValueAndRestFromString
@@ -214,5 +215,20 @@ class IngredientUtil
         }
 
         return $ingredientStrings;
+    }
+
+    /**
+     * @param Ingredient $ingredient
+     * @todo Check if this is correct.
+     */
+    public function getApiModel(EntityModel $ingredient): array {
+        return [
+            'id' => $ingredient->getId(),
+            'name' => $ingredient->getName(),
+            'quantityValue' => $ingredient->getQuantityValue(),
+            'quantityUnit' => $ingredient->getQuantityUnit(),
+            'position' => $ingredient->getPosition(),
+            'checked' => $ingredient->isChecked(),
+        ];
     }
 }

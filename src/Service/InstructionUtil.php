@@ -2,11 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\EntityModel;
 use App\Entity\Instruction;
 use Doctrine\Common\Collections\Collection;
 use Exception;
 
-class InstructionUtil 
+class InstructionUtil extends EntityUtil
 {
 
     /**
@@ -66,5 +67,16 @@ class InstructionUtil
         }
 
         return $instructionStrings;
+    }
+
+    /**
+     * @param Instruction $instruction
+     */
+    public function getApiModel(EntityModel $instruction): array
+    {
+        return [
+            'id' => $instruction->getId(),
+            'instruction' => $instruction->getInstruction(),
+        ];
     }
 }

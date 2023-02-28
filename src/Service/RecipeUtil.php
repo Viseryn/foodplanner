@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\EntityModel;
 use App\Entity\Recipe;
 use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
@@ -18,7 +19,7 @@ use Symfony\Component\Form\FormInterface;
  * @method RecipeUtil update(Recipe &$recipe, FormInterface $form)
  * @method
  */
-class RecipeUtil 
+class RecipeUtil extends EntityUtil
 {
     private IngredientUtil $ingredientUtil;
     private InstructionUtil $instructionUtil;
@@ -219,5 +220,24 @@ class RecipeUtil
         ;
 
         return $form;
+    }
+
+    /**
+     * @param Recipe $recipe
+     */
+    public function getApiModel(EntityModel $recipe): array
+    {
+        return [
+            'id' => $recipe->getId(),
+            'title' => $recipe->getTitle(),
+            'portionSize' => $recipe->getPortionSize(),
+            'ingredients' => $this->ingredientUtil->getApiModels($recipe->getIngredients()),
+            'instructions' => $this->instructionUtil->getApiModels($recipe->getInstructions()),
+            'image' => $recipe->getImage(),
+            'option' => [
+                'id' => $recipe->getId(),
+                'label' => $recipe->getTitle(),
+            ]
+        ];
     }
 }
