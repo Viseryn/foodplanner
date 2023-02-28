@@ -11,6 +11,9 @@ use Doctrine\Common\Collections\Collection;
  * methods getApiModel and getApiModels, of which the first one needs to be implemented.
  * This provides a unified way to transform some entity data into an array that is matching
  * the type specification in the TypeScript EntityModel.ts file.
+ * 
+ * @method array getApiModel(EntityModel $entity) abstract
+ * @method array getApiModels(EntityModel[]|Collection<int, EntityModel> $entities)
  */
 abstract class EntityUtil {
     /**
