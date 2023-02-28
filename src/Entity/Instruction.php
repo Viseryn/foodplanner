@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InstructionRepository::class)]
-class Instruction
+class Instruction implements EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
