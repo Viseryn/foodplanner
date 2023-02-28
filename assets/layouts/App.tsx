@@ -30,6 +30,7 @@ import AddGroup from '@/pages/Settings/AddGroup'
 import Settings from '@/pages/Settings/Settings'
 import ShoppingList from '@/pages/ShoppingList/ShoppingList'
 
+import RecipeModel from '@/types/RecipeModel'
 /**
  * App
  * 
@@ -102,8 +103,8 @@ export default function App({ version }: {
     const userGroups = fetch<Array<UserGroup>>('/api/usergroups/list')
     const shoppingList = fetch<Array<Ingredient>>('/api/shoppinglist/ingredients')
     const pantry = fetch<Array<Ingredient>>('/api/pantry/ingredients')
-    const recipes = fetch<Array<Recipe>>('/api/recipes/list')
     const days = fetch<Array<Day>>('/api/days/list')
+    const recipes = fetch<Array<RecipeModel>>('/api/recipes/list')
 
     // Render App component
     return (
