@@ -2,8 +2,6 @@
  * ./assets/types/InstructionModel.ts *
  **************************************/
 
-import RecipeModel from './RecipeModel'
-
 /**
  * Type specifications for Instruction objects returned by APIs
  */
