@@ -2,6 +2,8 @@
  * ./assets/util/getFullIngredientName.ts *
  ******************************************/
 
+import IngredientModel from '@/types/IngredientModel'
+
 /**
  * getFullIngredientName
  * 
@@ -12,13 +14,13 @@
  * @param ingredient An Ingredient object, e.g. from a recipe.
  * @returns The full name of the ingredient with quantity value and quantity unit.
  */
-const getFullIngredientName = (ingredient: Ingredient): string => {
-    let quantity: string = ingredient.quantity_value
+const getFullIngredientName = (ingredient: IngredientModel): string => {
+    let quantity: string = ingredient.quantityValue
 
-    if (quantity && ingredient.quantity_unit) {
-        quantity += ' ' + ingredient.quantity_unit
-    } else if (ingredient.quantity_unit) {
-        quantity += ingredient.quantity_unit
+    if (quantity && ingredient.quantityUnit) {
+        quantity += ' ' + ingredient.quantityUnit
+    } else if (ingredient.quantityUnit) {
+        quantity += ingredient.quantityUnit
     }
 
     const displayName: string = (quantity ? quantity + ' ' : '') + ingredient.name
