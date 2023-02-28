@@ -6,7 +6,7 @@ use App\Repository\MealCategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MealCategoryRepository::class)]
-class MealCategory
+class MealCategory implements EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

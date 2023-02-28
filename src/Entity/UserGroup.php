@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserGroupRepository::class)]
-class UserGroup
+class UserGroup implements EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
