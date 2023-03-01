@@ -14,6 +14,7 @@ import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import Item from './components/Item'
+import IngredientModel from '@/types/IngredientModel'
 
 /**
  * Pantry
@@ -28,7 +29,7 @@ import Item from './components/Item'
  * @component
  */
 export default function Pantry({ pantry, setSidebar, setTopbar }: {
-    pantry: FetchableEntity<Array<Ingredient>>
+    pantry: FetchableEntity<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -65,33 +66,33 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      */
     const handleAddUpIngredients = () => {
         // Make a copy of the pantry.data
-        const copyOfList: Array<Ingredient> = [...pantry.data]
+        const copyOfList: Array<IngredientModel> = [...pantry.data]
 
         // Create temporary map for ingredients.
-        let ingredientMap: Map<string, Ingredient> = new Map()
+        let ingredientMap: Map<string, IngredientModel> = new Map()
 
         // Go through each ingredient
         copyOfList.forEach(ingredient => {
             // Check if the ingredient has been added to the ingredientMap yet
             if (ingredientMap.has(ingredient.name)) {
                 // Get the ingredient from the map
-                let currentIngredient: Ingredient = ingredientMap.get(ingredient.name)!
+                let currentIngredient: IngredientModel = ingredientMap.get(ingredient.name)!
 
                 // Check if the quantity units match and the value is a number
-                if (currentIngredient.quantity_unit === ingredient.quantity_unit && ingredient.quantity_value) {
+                if (currentIngredient.quantityUnit === ingredient.quantityUnit && ingredient.quantityValue) {
                     // Calculate the new quantity value.
                     // Note that the values may be fractions.
-                    let currentVal: Fraction = new Fraction(currentIngredient.quantity_value)
-                    let newVal: Fraction = new Fraction(ingredient.quantity_value)
+                    let currentVal: Fraction = new Fraction(currentIngredient.quantityValue)
+                    let newVal: Fraction = new Fraction(ingredient.quantityValue)
                     let totalVal: Fraction = currentVal.add(newVal)
 
                     // Save new quantity value in currentIngredient
-                    currentIngredient.quantity_value = totalVal.toFraction(true)
+                    currentIngredient.quantityValue = totalVal.toFraction(true)
                     ingredientMap.set(ingredient.name, currentIngredient)
                 } else {
                     // If quantity units do not match or the value is not 
                     // a number, add the ingredient to the map with another key
-                    ingredientMap.set(ingredient.name + ingredient.quantity_unit, ingredient)
+                    ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
                 }
             } else {
                 // If ingredient is not in the ingredientMap, add it
@@ -100,7 +101,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         })
 
         // Create a new pantry from the ingredientMap
-        const newItemList: Array<Ingredient> = Array.from(ingredientMap.values())
+        const newItemList: Array<IngredientModel> = Array.from(ingredientMap.values())
 
         // Create array of strings of ingredients for API
         const ingredients: Array<string> = []
@@ -118,7 +119,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      * Sorts all items by alphabet.
      */
     const handleSort = (): void => {
-        const newItemList: Array<Ingredient> = [...pantry.data]
+        const newItemList: Array<IngredientModel> = [...pantry.data]
 
         // Sort ingredient list
         newItemList.sort((a, b) => {

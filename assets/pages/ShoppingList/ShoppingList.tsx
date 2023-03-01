@@ -15,6 +15,7 @@ import Spacer                           from '@/components/ui/Spacer'
 import Spinner                          from '@/components/ui/Spinner'
 
 import getFullIngredientName            from '@/util/getFullIngredientName'
+import IngredientModel from '@/types/IngredientModel'
 
 /**
  * ShoppingList
@@ -31,8 +32,8 @@ import getFullIngredientName            from '@/util/getFullIngredientName'
  * @param props.shoppingList
  */
 export default function ShoppingList({ shoppingList, pantry, settings, setSidebar, setTopbar }: {
-    shoppingList: FetchableEntity<Array<Ingredient>>
-    pantry: FetchableEntity<Array<Ingredient>>
+    shoppingList: FetchableEntity<Array<IngredientModel>>
+    pantry: FetchableEntity<Array<IngredientModel>>
     settings: FetchableEntity<Settings>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
@@ -80,34 +81,34 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
      */
     const handleAddUpIngredients = (): void => {
         // Make a copy of the shoppingList.data
-        const copyOfList: Array<Ingredient> = [...shoppingList.data]
+        const copyOfList: Array<IngredientModel> = [...shoppingList.data]
 
         // Create temporary map for ingredients.
-        let ingredientMap: Map<string, Ingredient> = new Map()
+        let ingredientMap: Map<string, IngredientModel> = new Map()
 
         // Go through each ingredient
         copyOfList.forEach(ingredient => {
             // Check if the ingredient has been added to the ingredientMap yet
             if (ingredientMap.has(ingredient.name)) {
                 // Get the ingredient from the map
-                let currentIngredient: Ingredient = ingredientMap.get(ingredient.name)!
+                let currentIngredient: IngredientModel = ingredientMap.get(ingredient.name)!
 
                 // Check if the quantity units match and the value is a number
-                if (currentIngredient.quantity_unit === ingredient.quantity_unit
-                    && ingredient.quantity_value) {
+                if (currentIngredient.quantityUnit === ingredient.quantityUnit
+                    && ingredient.quantityValue) {
                     // Calculate the new quantity value.
                     // Note that the values may be fractions.
-                    let currentVal: Fraction = new Fraction(currentIngredient.quantity_value)
-                    let newVal: Fraction = new Fraction(ingredient.quantity_value)
+                    let currentVal: Fraction = new Fraction(currentIngredient.quantityValue)
+                    let newVal: Fraction = new Fraction(ingredient.quantityValue)
                     let totalVal: Fraction = currentVal.add(newVal)
 
                     // Save new quantity value in currentIngredient
-                    currentIngredient.quantity_value = totalVal.toFraction(true)
+                    currentIngredient.quantityValue = totalVal.toFraction(true)
                     ingredientMap.set(ingredient.name, currentIngredient)
                 } else {
                     // If quantity units do not match or the value is not 
                     // a number, add the ingredient to the map with another key
-                    ingredientMap.set(ingredient.name + ingredient.quantity_unit, ingredient)
+                    ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
                 }
             } else {
                 // If ingredient is not in the ingredientMap, add it
@@ -116,7 +117,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         })
 
         // Create a new shoppingList from the ingredientMap
-        const newItemList: Array<Ingredient> = Array.from(ingredientMap.values())
+        const newItemList: Array<IngredientModel> = Array.from(ingredientMap.values())
 
         // Create array of strings of ingredients for API
         const ingredients: Array<string> = []
@@ -139,40 +140,40 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
      */
     const handleSubstractPantry = (): void => {
         // Make a copy of the shoppingList.data and pantry.data
-        const copyOfList: Array<Ingredient> = [...shoppingList.data]
-        const copyOfPantry: Array<Ingredient> = JSON.parse(JSON.stringify(pantry.data))
+        const copyOfList: Array<IngredientModel> = [...shoppingList.data]
+        const copyOfPantry: Array<IngredientModel> = JSON.parse(JSON.stringify(pantry.data))
 
         // Each pantry ingredient should have negative value
         copyOfPantry.forEach(item => {
-            item.quantity_value = '-' + item.quantity_value
+            item.quantityValue = '-' + item.quantityValue
         })
 
         // Create temporary map for ingredients.
-        let ingredientMap: Map<string, Ingredient> = new Map();
+        let ingredientMap: Map<string, IngredientModel> = new Map();
 
         // Go through each ingredient
         ([...copyOfList, ...copyOfPantry]).forEach(ingredient => {
             // Check if the ingredient has been added to the ingredientMap yet
             if (ingredientMap.has(ingredient.name)) {
                 // Get the ingredient from the map
-                let currentIngredient: Ingredient = ingredientMap.get(ingredient.name)!
+                let currentIngredient: IngredientModel = ingredientMap.get(ingredient.name)!
 
                 // Check if the quantity units match and the value is a number
-                if (currentIngredient.quantity_unit === ingredient.quantity_unit
-                    && ingredient.quantity_value) {
+                if (currentIngredient.quantityUnit === ingredient.quantityUnit
+                    && ingredient.quantityValue) {
                     // Calculate the new quantity value.
                     // Note that the values may be fractions.
-                    let currentVal: Fraction = new Fraction(currentIngredient.quantity_value == '' ? 0 : currentIngredient.quantity_value)
-                    let newVal: Fraction = new Fraction(ingredient.quantity_value == '' ? 0 : ingredient.quantity_value)
+                    let currentVal: Fraction = new Fraction(currentIngredient.quantityValue == '' ? 0 : currentIngredient.quantityValue)
+                    let newVal: Fraction = new Fraction(ingredient.quantityValue == '' ? 0 : ingredient.quantityValue)
                     let totalVal: Fraction = currentVal.add(newVal)
 
                     // Save new quantity value in currentIngredient
-                    currentIngredient.quantity_value = totalVal.toFraction(true)
+                    currentIngredient.quantityValue = totalVal.toFraction(true)
                     ingredientMap.set(ingredient.name, currentIngredient)
                 } else {
                     // If quantity units do not match or the value is not 
                     // a number, add the ingredient to the map with another key
-                    ingredientMap.set(ingredient.name + ingredient.quantity_unit, ingredient)
+                    ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
                 }
             } else {
                 // If ingredient is not in the ingredientMap, add it
@@ -181,11 +182,11 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         })
 
         // Create a new shoppingList from the ingredientMap
-        let newItemList: Array<Ingredient> = Array.from(ingredientMap.values())
+        let newItemList: Array<IngredientModel> = Array.from(ingredientMap.values())
 
         // Filter non-positive quantity values out
         newItemList = newItemList.filter(item => {
-            let quantityValue: Fraction = new Fraction(item.quantity_value == '' ? 0 : item.quantity_value)
+            let quantityValue: Fraction = new Fraction(item.quantityValue == '' ? 0 : item.quantityValue)
             // quantityValue = quantityValue.valueOf()
             return quantityValue.valueOf() > 0 || !quantityValue && quantityValue !== 0
         })
@@ -233,7 +234,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     const handleDeleteChecked = () => {
         // Make a copy of shoppingList.data and
         // filter out all items that are checked
-        const newItemList: Array<Ingredient> = [...shoppingList.data].filter(item => !item.checked)
+        const newItemList: Array<IngredientModel> = [...shoppingList.data].filter(item => !item.checked)
         shoppingList.setData(newItemList)
 
         // API call

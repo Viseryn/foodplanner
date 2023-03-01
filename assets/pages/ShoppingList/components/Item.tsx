@@ -7,6 +7,7 @@ import axios                    from 'axios'
 
 import IconButton               from '@/components/ui/Buttons/IconButton'
 import getFullIngredientName    from '@/util/getFullIngredientName'
+import IngredientModel from '@/types/IngredientModel'
 
 /**
  * Item
@@ -20,8 +21,8 @@ import getFullIngredientName    from '@/util/getFullIngredientName'
  * @param props.item
  */
 export default function Item({ shoppingList, item }: {
-    shoppingList: FetchableEntity<Array<Ingredient>>
-    item: Ingredient
+    shoppingList: FetchableEntity<Array<IngredientModel>>
+    item: IngredientModel
 }): JSX.Element {
     /**
      * handleClickOnItem
@@ -31,7 +32,7 @@ export default function Item({ shoppingList, item }: {
      * @param event A mouse event.
      * @param item A list item.
      */
-    const handleClickOnItem = (event: React.MouseEvent, item: Ingredient): void => {
+    const handleClickOnItem = (event: React.MouseEvent, item: IngredientModel): void => {
         if (event.detail === 2) {
             // Double click action
             handleItemSetEditability(item)
@@ -65,9 +66,9 @@ export default function Item({ shoppingList, item }: {
      * 
      * @param item A list item.
      */
-    const handleCheckboxChange = (item: Ingredient): void => {
+    const handleCheckboxChange = (item: IngredientModel): void => {
         // Make a copy of shoppingList.data and find item
-        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        let newItemList: Array<IngredientModel> = [...shoppingList.data]
         const index: number = newItemList.indexOf(item)
 
         // Check or uncheck the item and make it non-editable
@@ -87,9 +88,9 @@ export default function Item({ shoppingList, item }: {
      * 
      * @param item A list item.
      */
-    const handleItemSetEditability = (item: Ingredient) => {
+    const handleItemSetEditability = (item: IngredientModel) => {
         // Make a copy of shoppingList.data and find item
-        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        let newItemList: Array<IngredientModel> = [...shoppingList.data]
         const index: number = newItemList.indexOf(item)
 
         // Make all items non-editable
@@ -114,10 +115,10 @@ export default function Item({ shoppingList, item }: {
      */
     const handleEditItem = (
         event: React.FocusEvent<HTMLInputElement, Element> | React.KeyboardEvent<HTMLInputElement>, 
-        item: Ingredient
+        item: IngredientModel
     ) => {
         // Make a copy of shoppingList.data and find item
-        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        let newItemList: Array<IngredientModel> = [...shoppingList.data]
         const index: number = newItemList.indexOf(item)
 
         // Return early if the value of the new item is empty
@@ -132,8 +133,8 @@ export default function Item({ shoppingList, item }: {
         // so that the edit effect is visible immediately.
         // The item will be updated in the database via the API
         // and the list will refresh without loading screen.
-        newItemList[index].quantity_unit = ''
-        newItemList[index].quantity_value = ''
+        newItemList[index].quantityUnit = ''
+        newItemList[index].quantityValue = ''
         newItemList[index].name = newItem
         newItemList[index].editable = false
 
@@ -152,14 +153,14 @@ export default function Item({ shoppingList, item }: {
      * @param item A list item.
      * @param direction Possible values are -1 (up) and 1 (down).
      */
-    const handleChangePosition = (item: Ingredient, direction: -1 | 1) => {
+    const handleChangePosition = (item: IngredientModel, direction: -1 | 1) => {
         // Make a copy of shoppingList.data and find item
-        let newItemList: Array<Ingredient> = [...shoppingList.data]
+        let newItemList: Array<IngredientModel> = [...shoppingList.data]
         const index: number = newItemList.indexOf(item)
-        const itemCopy: Ingredient = {...newItemList[index]}
+        const itemCopy: IngredientModel = {...newItemList[index]}
 
-        const oldPosition: number = newItemList[index].position
-        const newPosition: number = newItemList[index + direction].position
+        const oldPosition: number = newItemList[index].position!
+        const newPosition: number = newItemList[index + direction].position!
 
         // Move item up only when it is not the first item and 
         // move item down only when it is not the last item.
