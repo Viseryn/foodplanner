@@ -1,20 +1,16 @@
-<?php
-
-namespace App\Service;
+<?php namespace App\Service;
 
 use App\Entity\EntityModel;
 use App\Entity\Instruction;
 use Doctrine\Common\Collections\Collection;
-use Exception;
 
+/**
+ * InstructionUtil
+ */
 class InstructionUtil extends EntityUtil
 {
-
     /**
-     * transformStringToObject
-     * 
-     * Turns a string which describes an instruction 
-     * into an Instruction object and returns it.
+     * Turns a string which describes an instruction into an Instruction object and returns it.
      * 
      * @param string $instructionString A string that describes an instruction.
      * @return Instruction
@@ -30,10 +26,7 @@ class InstructionUtil extends EntityUtil
     }
 
     /**
-     * transformStringArrayToObjectArray
-     * 
-     * Turns an array of strings, each describing an instruction,
-     * into an array of Instruction objects and returns it.
+     * Turns an array of strings, each describing an instruction, into an array of Instruction objects and returns it.
      * 
      * @param string[] $instructionStrings An array of strings that describe instructions.
      * @return Instruction[]
@@ -51,8 +44,6 @@ class InstructionUtil extends EntityUtil
     }
 
     /**
-     * transformObjectArrayToStringArray
-     * 
      * Turns an array of Instruction objects into an array of strings.
      *
      * @param Instruction[]|Collection<Instruction> $instructions An array or Collection of Instruction objects

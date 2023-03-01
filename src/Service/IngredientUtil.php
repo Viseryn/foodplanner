@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Service;
+<?php namespace App\Service;
 
 use App\Entity\EntityModel;
 use App\Entity\Ingredient;
@@ -8,26 +6,12 @@ use Doctrine\Common\Collections\Collection;
 
 /**
  * IngredientUtil
- * 
- * An Ingredient utility class that can translate
- * strings and Ingredient objects into one another.
- * 
- * @method string getQuantityValueFromString(string $ingredientString)
- * @method string getQuantityUnitFromString(string $ingredientString)
- * @method string getNameFromString(string $ingredientString)
- * @method Ingredient transformStringToObject(string $ingredientString)
- * @method Ingredient[] transformStringArrayToObjectArray(string[] $ingredientStrings)
- * @method array transformObjectArrayToStringArray(Ingredient[]|Collection<Ingredient> $ingredients)
  */
 class IngredientUtil extends EntityUtil
 {
     /**
-     * getQuantityValueAndRestFromString
-     * 
-     * Given a string that describes an Ingredient,
-     * returns the quantityValue and the rest of the 
-     * Ingredient description in an array. Is only a 
-     * helper method for getQuantityValueFromString() 
+     * Given a string that describes an Ingredient, returns the quantityValue and the rest of the 
+     * Ingredient description in an array. Is only a helper method for getQuantityValueFromString() 
      * and getQuantityUnitAndNameString().
      *
      * @param string $ingredientString A string that describes an ingredient.
@@ -36,8 +20,7 @@ class IngredientUtil extends EntityUtil
     private function getQuantityValueAndRestFromString(string $ingredientString): array
     {
        // Find quantity value with regular expression.
-       // Note that the second matching group doesn't allow
-       // numbers, but the third does, so we combine them.
+       // Note that the second matching group doesn't allow numbers, but the third does, so we combine them.
        preg_match('/^([\d\.\/\s]*)(\D+)(.*)/', $ingredientString, $matches);
 
        $quantityValue = trim($matches[1] ?? '');
@@ -47,12 +30,9 @@ class IngredientUtil extends EntityUtil
     }
 
     /**
-     * getQuantityUnitAndNameFromString
-     * 
-     * Given a string that describes an Ingredient,
-     * returns the quantityUnit and the name of the 
-     * Ingredient in an array. Is only a helper method
-     * for getQuantityUnitFromString() and getNameFromString().
+     * Given a string that describes an Ingredient, returns the quantityUnit and the name of the 
+     * Ingredient in an array. Is only a helper method for getQuantityUnitFromString() and 
+     * getNameFromString().
      *
      * @param string $ingredientString A string that describes an ingredient.
      * @return string[] The quantityUnit and the name of the Ingredient
@@ -60,9 +40,8 @@ class IngredientUtil extends EntityUtil
     private function getQuantityUnitAndNameFromString(string $ingredientString): array
     {
         /**
-         * The quantity units that are declared as allowed.
-         * If a unit appears that is not on this list, then 
-         * it will be considered part of the ingredient name.
+         * The quantity units that are declared as allowed. If a unit appears that is not on this 
+         * list, then it will be considered part of the ingredient name.
          * 
          * @var string[]
          */
@@ -84,14 +63,10 @@ class IngredientUtil extends EntityUtil
        ];
 
         // Get quantityUnit and name
-        $quantityUnitAndName = $this
-            ->getQuantityValueAndRestFromString($ingredientString)[1]
-        ;
+        $quantityUnitAndName = $this->getQuantityValueAndRestFromString($ingredientString)[1];
 
-        // Find quantity unit with regular expression.
-        // Note that the name will appear in the third matching 
-        // group, since the second group catches a whitespace 
-        // between unit and name.
+        // Find quantity unit with regular expression. Note that the name will appear in the third 
+        // matching group, since the second group catches a whitespace between unit and name.
         $regex = '/^((' . implode('|', $allowedUnits) . ')\s+)?(.*)/';
         preg_match($regex, $quantityUnitAndName, $matches);
 
@@ -105,10 +80,7 @@ class IngredientUtil extends EntityUtil
     }
 
     /**
-     * getQuantityValueFromString
-     * 
-     * Given a string that describes an Ingredient,
-     * returns the quantityValue of the Ingredient.
+     * Given a string that describes an Ingredient, returns the quantityValue of the Ingredient.
      *
      * @param string $ingredientString A string that describes an ingredient.
      * @return string The quantityValue of the Ingredient
@@ -119,10 +91,7 @@ class IngredientUtil extends EntityUtil
     }
 
     /**
-     * getQuantityUnitFromString
-     * 
-     * Given a string that describes an Ingredient,
-     * returns the quantityUnit of the Ingredient.
+     * Given a string that describes an Ingredient, returns the quantityUnit of the Ingredient.
      *
      * @param string $ingredientString A string that describes an ingredient.
      * @return string The quantityUnit of the Ingredient
@@ -133,10 +102,7 @@ class IngredientUtil extends EntityUtil
     }
 
     /**
-     * getNameFromString
-     * 
-     * Given a string that describes an Ingredient,
-     * returns the name of the Ingredient.
+     * Given a string that describes an Ingredient, returns the name of the Ingredient.
      *
      * @param string $ingredientString A string that describes an ingredient.
      * @return string The name of the Ingredient
@@ -147,12 +113,8 @@ class IngredientUtil extends EntityUtil
     }
 
     /**
-     * transformStringToObject
-     * 
-     * Turns a string which describes an ingredient 
-     * into an Ingredient object and returns it.
-     * The Ingredient object will have the following
-     * properties set: name, quantityValue, quantityUnit.
+     * Turns a string which describes an ingredient into an Ingredient object and returns it. The 
+     * Ingredient object will have the following properties set: name, quantityValue, quantityUnit.
      * 
      * @param string $ingredientString A string that describes an ingredient.
      * @return Ingredient
@@ -170,12 +132,9 @@ class IngredientUtil extends EntityUtil
     }
 
     /**
-     * transformStringArrayToObjectArray
-     * 
-     * Turns an array of strings, each describing an ingredient,
-     * into an array of Ingredient objects and returns it.
-     * The Ingredient objects will have the following
-     * properties set: name, quantityValue, quantityUnit.
+     * Turns an array of strings, each describing an ingredient, into an array of Ingredient 
+     * objects and returns it. The Ingredient objects will have the following properties set: 
+     * name, quantityValue, quantityUnit.
      * 
      * @param string[] $ingredientStrings An array of strings that describe ingredients.
      * @return Ingredient[]
@@ -193,10 +152,7 @@ class IngredientUtil extends EntityUtil
     }
 
     /**
-     * transformObjectArrayToStringArray
-     * 
-     * Turns an array of Ingredient objects into an array of 
-     * strings of the form '{quantityValue} {quantityUnit} {name}'.
+     * Turns an array of Ingredient objects into an array of strings of the form '{quantityValue} {quantityUnit} {name}'.
      *
      * @param Ingredient[]|Collection<Ingredient> $ingredients An array or Collection of Ingredient objects
      * @return string[]
@@ -217,10 +173,7 @@ class IngredientUtil extends EntityUtil
         return $ingredientStrings;
     }
 
-    /**
-     * @param Ingredient $ingredient
-     * @todo Check if this is correct.
-     */
+    /** @param Ingredient $ingredient */
     public function getApiModel(EntityModel $ingredient): array {
         return [
             'id' => $ingredient->getId(),

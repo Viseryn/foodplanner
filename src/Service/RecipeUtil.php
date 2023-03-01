@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Service;
+<?php namespace App\Service;
 
 use App\Entity\EntityModel;
 use App\Entity\Recipe;
@@ -13,43 +11,35 @@ use Symfony\Component\Form\FormInterface;
 
 /**
  * RecipeUtil
- * 
- * A utility class for Recipe objects.
- * 
- * @method RecipeUtil update(Recipe &$recipe, FormInterface $form)
- * @method
  */
 class RecipeUtil extends EntityUtil
 {
-    private IngredientUtil $ingredientUtil;
-    private InstructionUtil $instructionUtil;
     private FileUploader $fileUploader;
     private IngredientRepository $ingredientRepository;
+    private IngredientUtil $ingredientUtil;
     private InstructionRepository $instructionRepository;
+    private InstructionUtil $instructionUtil;
     private RecipeRepository $recipeRepository;
 
     public function __construct(
-        IngredientUtil $ingredientUtil,
-        InstructionUtil $instructionUtil,
         FileUploader $fileUploader,
         IngredientRepository $ingredientRepository,
+        IngredientUtil $ingredientUtil,
         InstructionRepository $instructionRepository,
+        InstructionUtil $instructionUtil,
         RecipeRepository $recipeRepository,
     ) {
-        $this->ingredientUtil = $ingredientUtil;
-        $this->instructionUtil = $instructionUtil;
         $this->fileUploader = $fileUploader;
         $this->ingredientRepository = $ingredientRepository;
+        $this->ingredientUtil = $ingredientUtil;
         $this->instructionRepository = $instructionRepository;
+        $this->instructionUtil = $instructionUtil;
         $this->recipeRepository = $recipeRepository;
     }
 
     /**
-     * update
-     * 
-     * Updates image, ingredients and instructions of a Recipe object
-     * through a given FormInterface that belongs to a form that was 
-     * submitted.
+     * Updates image, ingredients and instructions of a Recipe object through a given FormInterface 
+     * that belongs to a form that was submitted.
      *
      * @param Recipe $recipe
      * @param FormInterface $form
@@ -57,9 +47,8 @@ class RecipeUtil extends EntityUtil
      */
     public function update(Recipe &$recipe, FormInterface $form): self
     {
-        // In the EditRecipe.js form, the user can decide whether to 
-        // delete the current image. If they decide to do so, the 
-        // updateImage() method needs the third parameter set to true.
+        // In the EditRecipe.js form, the user can decide whether to delete the current image. If 
+        // they decide to do so, the updateImage() method needs the third parameter set to true.
         $deleteImage = (isset($form['image_remove'])) 
             ? (bool) $form['image_remove']->getData() 
             : false;
@@ -74,8 +63,6 @@ class RecipeUtil extends EntityUtil
     }
 
     /**
-     * updateImage
-     * 
      * Updates the image of a Recipe object.
      *
      * @param Recipe $recipe
@@ -100,10 +87,7 @@ class RecipeUtil extends EntityUtil
     }
 
     /**
-     * updateIngredients
-     * 
-     * Updates the Ingredient objects of a Recipe object if a 
-     * change was detected.
+     * Updates the Ingredient objects of a Recipe object if a change was detected.
      *
      * @param Recipe $recipe
      * @param string $new A string of ingredients, e.g. through a form.
@@ -140,10 +124,7 @@ class RecipeUtil extends EntityUtil
     }
 
     /**
-     * updateInstructions
-     * 
-     * Updates the Instruction objects of a Recipe object if a 
-     * change was detected.
+     * Updates the Instruction objects of a Recipe object if a change was detected.
      *
      * @param Recipe $recipe
      * @param string $newInstructions A string of instructions, e.g. through a form.
@@ -180,10 +161,7 @@ class RecipeUtil extends EntityUtil
     }
 
     /**
-     * prepareEditForm
-     * 
-     * Sets the default data for the FormInterface
-     * in the Recipe Edit API.
+     * Sets the default data for the FormInterface in the Recipe Edit API.
      *
      * @param Recipe $recipe
      * @param FormInterface $form
@@ -222,9 +200,7 @@ class RecipeUtil extends EntityUtil
         return $form;
     }
 
-    /**
-     * @param Recipe $recipe
-     */
+    /** @param Recipe $recipe */
     public function getApiModel(EntityModel $recipe): array
     {
         return [
