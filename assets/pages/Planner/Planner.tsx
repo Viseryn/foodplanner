@@ -69,7 +69,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
                     .get('/api/meals/delete/' + meal.id)
                     .then(() => {
                         // Update days
-                        days.setLoading(true)
+                        days.load()
 
                         // Refresh Data Timestamp
                         axios.get('/api/refresh-data-timestamp/set')
@@ -114,7 +114,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         (async () => {
             try {
                 await axios.post('/api/shoppinglist/add', JSON.stringify(ingredients))
-                shoppingList.setLoading(true)
+                shoppingList.load()
             } catch (error) {
                 console.log(error)
             }
