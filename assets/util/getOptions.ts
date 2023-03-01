@@ -15,5 +15,5 @@ import EntityWithOption from '@/types/EntityWithOption'
 export default function getOptions<OptionType, EntityModel extends EntityWithOption<OptionType>>(
     entities: Array<EntityModel>
 ): Array<OptionType> {
-    return entities.map(entity => entity.option)
+    return (Object.keys(entities).length !== 0 ? entities : []).map(entity => entity.option)
 }
