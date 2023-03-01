@@ -6,7 +6,6 @@ import React from 'react'
 
 import RadioOption from '@/types/RadioOption'
 import Label from '../Label'
-import rowStyle from '../util/rowStyle'
 import RadioWidget from './RadioWidget'
 
 /**
@@ -21,9 +20,9 @@ import RadioWidget from './RadioWidget'
  * @param props.options An array of objects that represent the radio options.
  * @param props.options.id The id of the option form field. NOT the entity id.
  * @param props.options.value Usually the entity id.
- * @param props.style Optional alternative styling classes for the div container.
+ * @param props.style Optional: alternative styling classes for the div container.
  */
-export default function RadioRow({ id, label, options, style = rowStyle, ...widgetProps }: {
+export default function RadioRow({ id, label, options, style, ...widgetProps }: {
     id: string
     label: string
     options: Array<RadioOption>
