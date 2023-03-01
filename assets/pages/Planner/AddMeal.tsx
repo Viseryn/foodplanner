@@ -2,17 +2,22 @@
  * ./assets/pages/Planner/AddMeal.tsx *
  **************************************/
 
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
 
-import { InputLabel } from '@/components/form/Input'
-import { RadioWidget } from '@/components/form/Radio'
-import { SelectWidget } from '@/components/form/Select'
+import Label from '@/components/form/Label'
+import RadioWidget from '@/components/form/Radio/RadioWidget'
+import SelectWidget from '@/components/form/Select/SelectWidget'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import DayModel from '@/types/DayModel'
+import MealCategoryModel from '@/types/MealCategoryModel'
+import RecipeModel from '@/types/RecipeModel'
+import UserGroupModel from '@/types/UserGroupModel'
+import getOptions from '@/util/getOptions'
 
 /**
  * AddMeal
@@ -24,11 +29,11 @@ import Spinner from '@/components/ui/Spinner'
  * 
  * @todo Skeleton colors and sizes
  */
-export default function AddMeal({ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }: {
-    days: FetchableEntity<Array<Day>>
-    mealCategories: FetchableEntity<Array<MealCategory>>
-    recipes: FetchableEntity<Array<Recipe>>
-    userGroups: FetchableEntity<Array<UserGroup>>
+export default function AddMeal({ days, recipes, mealCategories, userGroups, setSidebar, setTopbar }: {
+    days: FetchableEntity<Array<DayModel>>
+    recipes: FetchableEntity<Array<RecipeModel>>
+    mealCategories: FetchableEntity<Array<MealCategoryModel>>
+    userGroups: FetchableEntity<Array<UserGroupModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -102,8 +107,8 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                 <div className="mx-4 md:mx-0">
                     <form onSubmit={handleSubmit}>
                         <Card>
-                            <InputLabel htmlFor="meal_day" label="Für welchen Tag?" />
-                            {days.isLoading ? (
+                            <Label htmlFor="meal_day">Für welchen Tag?</Label>
+                            {days.isLoading ? ( /** @todo Update Skeleton size and color */
                                 <div role="status" className="animate-pulse">
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
@@ -111,14 +116,16 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                             ) : (
                                 <SelectWidget
                                     id="meal_day"
-                                    options={days.data}
-                                    defaultValue={id}
+                                    options={getOptions(days.data)}
+                                    {...{
+                                        defaultValue: id
+                                    }}
                                 />
                             )}
 
                             <Spacer height="6" />
 
-                            <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
+                            <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
                             {mealCategories.isLoading ? (
                                 <div role="status" className="animate-pulse">
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
@@ -126,9 +133,8 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                                 </div>
                             ) : (
                                 <RadioWidget
-                                    id="meal_mealCategory" 
-                                    options={mealCategories.data} /** @todo Make MealCategory type according to PHP Entity and create a separate options array here. */
-                                    required={true}
+                                    id="meal_mealCategory"
+                                    options={getOptions(mealCategories.data)}
                                 />
                             )}
                         </Card>
@@ -136,7 +142,7 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                         <Spacer height="4" />
 
                         <Card>
-                            <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
+                            <Label htmlFor="meal_recipe">Welches Rezept?</Label>
                             {recipes.isLoading ? (
                                 <div role="status" className="max-w-sm animate-pulse">
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
@@ -145,14 +151,13 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                             ) : (
                                 <SelectWidget
                                     id="meal_recipe"
-                                    options={recipes.data}
-                                    required="required"
+                                    options={getOptions(recipes.data)}
                                 />
                             )}
 
                             <Spacer height="6" />
 
-                            <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
+                            <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
                             {userGroups.isLoading ? (
                                 <div role="status" className="animate-pulse">
                                     <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
@@ -160,9 +165,8 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
                                 </div>
                             ) : (
                                 <RadioWidget
-                                    id="meal_userGroup" 
-                                    options={userGroups.data}
-                                    required={true}
+                                    id="meal_userGroup"
+                                    options={getOptions(userGroups.data)}
                                 />
                             )}
                         </Card>
