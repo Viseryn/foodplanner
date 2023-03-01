@@ -42,12 +42,6 @@ type FetchableEntity<Type = any> = {
     load: SetLoadingAction
 }
 
-type User = {
-    id?: number
-    username?: string
-    roles?: Array<string>
-}
-
 type Authentication = {
     isAuthenticated: boolean
     isLoading: boolean
@@ -55,79 +49,4 @@ type Authentication = {
 
 type Settings = {
     showPantry: boolean
-}
-
-/** @todo Refactor */
-type UserGroup = {
-    name: string
-    users: Array<string>
-    isStandard: boolean
-    icon: string
-    id: string
-    value: number
-    label: string
-    checked: "checked" | ""
-}
-
-/** @todo Refactor */
-type MealCategory = {
-    name: string
-    isStandard: boolean
-    icon: string
-    id: string
-    value: number
-    label: string
-    checked: "checked" | ""
-}
-
-/** @todo Refactor API */
-type Recipe = {
-    id: number
-    title: string
-    portion_size: number
-    instructions: Array<Instruction>
-    ingredients: Array<Ingredient>
-    image: Image
-}
-
-type Image = {
-    id: number
-    filename: string
-    directory: string
-    public: boolean
-}
-
-type Instruction = {
-    id: number
-    instruction: string
-}
-
-/** @todo Refactor API */
-type Ingredient = {
-    id: number
-    name: string
-    quantity_value: string
-    quantity_unit: string
-    storage: { id: number } /** @todo */
-    position: number
-    checked: boolean
-    editable?: boolean
-}
-
-/** @todo Refactor API */
-type Meal = {
-    [x: string]: ReactNode /** @deprecated */
-    id: number
-    meal_category: MealCategory
-    recipe: Recipe
-    user_group: UserGroup | string /** @deprecated */ | ReactNode /** @deprecated */
-    user_group_icon: string /** @deprecated */
-}
-
-type Day = {
-    id: number
-    weekday: string
-    title: string
-    date: string
-    meals: Array<Meal>
 }
