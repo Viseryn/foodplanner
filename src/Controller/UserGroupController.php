@@ -66,9 +66,9 @@ class UserGroupController extends AbstractController
             $setStandard = false;
 
             // Get UserGroup from db
-            $groupDb = $userGroupRepository->find($group->value);
+            $groupDb = $userGroupRepository->find($group->id);
             
-            if ($group->isStandard && !$setStandard) {
+            if ($group->standard && !$setStandard) {
                 $groupDb->setStandard(true);
                 $setStandard = true;
             } else {
