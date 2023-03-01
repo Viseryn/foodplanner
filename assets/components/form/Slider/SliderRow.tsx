@@ -6,7 +6,6 @@ import React from 'react'
 import { Slider } from '@mui/material'
 import Label from '../Label'
 import nameFromId from '../util/nameFromId'
-import rowStyle from '../util/rowStyle'
 
 /**
  * SliderRow
@@ -23,7 +22,7 @@ import rowStyle from '../util/rowStyle'
  * 
  * @todo Create custom SliderWidget component.
  */
-export default function SliderRow({ id, label, style = rowStyle, ...widgetProps }: {
+export default function SliderRow({ id, label, style, ...widgetProps }: {
     id: string
     label: string
     style?: string
