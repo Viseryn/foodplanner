@@ -35,10 +35,6 @@ class Ingredient implements EntityModel
     #[ORM\Column(nullable: true)]
     private ?bool $checked = null;
 
-    public function __toString() {
-        return $this->name;
-    }
-
     public function getId(): ?int
     {
         return $this->id;

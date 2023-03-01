@@ -21,10 +21,6 @@ class Instruction implements EntityModel
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
 
-    public function __toString() {
-        return $this->instruction;
-    }
-
     public function getId(): ?int
     {
         return $this->id;
