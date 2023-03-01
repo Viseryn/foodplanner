@@ -39,20 +39,6 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
     // Whether the page is loading. Will be true while the form data is processed by the API.
     const [isLoading, setLoading] = useState<boolean>(false)
 
-    // The options for the user multiselect
-    const [userOptions, setUserOptions] = useState<Array<{ id: string, label?: string }>>([])
-
-    // Update userOptions when users has been loaded
-    useEffect(() => {
-        if (!users.isLoading) {
-            setUserOptions(users.data?.map(user => {
-                return { id: user.id?.toString() ?? '', label: user.username }
-            }))
-        } else {
-            setUserOptions([{ id: '', label: 'Benutzer werden geladen ...'}])
-        }
-    }, [users.isLoading])
-
     /**
      * Submits the form data to the UserGroup Add API.
      * 
@@ -131,18 +117,21 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
                             
                             <Spacer height="6" />
 
-                            <SelectRow
-                                id="user_group_users"
-                                label="Welche Benutzer sollen zur Gruppe gehören?"
-                                options={userOptions}
-                                {...{
-                                    name: "user_group[users][]",
-                                    multiple: true,
-                                    required: true,
-                                    size: userOptions.length,
-                                    className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden'
-                                }}
-                            />
+                            {users.isLoading 
+                                ? <Spinner />
+                                : <SelectRow
+                                    id="user_group_users"
+                                    label="Welche Benutzer sollen zur Gruppe gehören?"
+                                    options={getOptions(users.data)}
+                                    {...{
+                                        name: "user_group[users][]",
+                                        multiple: true,
+                                        required: true,
+                                        size: getOptions(users.data).length,
+                                        className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden'
+                                    }}
+                                />
+                            }
                         </Card>
 
                         <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
