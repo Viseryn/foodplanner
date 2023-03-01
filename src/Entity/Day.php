@@ -24,12 +24,7 @@ class Day implements EntityModel
 
     public function __construct()
     {
-        $this->meal = new ArrayCollection();
-    }
-
-    public function __toString()
-    {
-        return $this->getDate() . ', ' . $this->getWeekday();
+        $this->meals = new ArrayCollection();
     }
 
     public function getId(): ?int
