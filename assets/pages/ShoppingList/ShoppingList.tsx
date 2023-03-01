@@ -62,7 +62,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         setInputValue('')
 
         // Load new shopping list
-        shoppingList.setLoading(true)
+        shoppingList.load()
 
         // API call
         axios.post('/api/shoppinglist/add', [value])
@@ -128,7 +128,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
 
         // API call
         axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
-        shoppingList.setLoading(true)
+        shoppingList.load()
     }
 
     /**
@@ -200,7 +200,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
 
         // API call
         axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
-        shoppingList.setLoading(true)
+        shoppingList.load()
     }
 
     /**
@@ -221,7 +221,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         }).then(confirm => {
             if (confirm) {
                 axios.get('/api/shoppinglist/delete-all')
-                shoppingList.setLoading(true)
+                shoppingList.load()
             }
         })
     }
