@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Service\UserUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,14 +19,10 @@ class UserController extends AbstractController
      * @return Response
      */
     #[Route('/', name: 'api_user')]
-    public function index(): Response
+    public function index(UserUtil $userUtil): Response
     {
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize([
-            'id' => $this->getUser()?->getId(),
-            'username' => $this->getUser()?->getUsername(),
-            'roles' => $this->getUser()?->getRoles(),
-        ], 'json');
+        $jsonContent = $serializer->serialize($userUtil->getApiModel($this->getUser()), 'json');
 
         return new JsonResponse($jsonContent);
     }
@@ -34,7 +31,7 @@ class UserController extends AbstractController
      * User List API
      */
     #[Route('/list', name: 'api_user_list')]
-    public function users(UserRepository $userRepository): Response
+    public function users(UserRepository $userRepository, UserUtil $userUtil): Response
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -42,21 +39,9 @@ class UserController extends AbstractController
         // Fetch all User objects from the database
         $users = $userRepository->findAll();
 
-        // Create array for response
-        $usersResponse = [];
-
-        // Add public data to the response array
-        foreach ($users as $user) {
-            $usersResponse[] = [
-                'username' => $user->getUsername(),
-                'id' => $user->getId(),
-                'value' => $user->getId(),
-            ];
-        }
-
         // Serialize data and respond
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($usersResponse, 'json');
+        $jsonContent = $serializer->serialize($userUtil->getApiModels($users), 'json');
 
         return new JsonResponse($jsonContent);
     }
