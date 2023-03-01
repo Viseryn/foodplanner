@@ -135,14 +135,14 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
                         </Card>
 
                         <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
-                            <Button
+                            {!users.isLoading && <Button
                                 type="submit" 
                                 icon="save" 
                                 label="Speichern" 
                                 outlined={true}
                                 isElevated={true}
                                 isFloating={true}
-                            />
+                            />}
                         </div>
                     </form>
                 </div>
