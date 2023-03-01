@@ -2,15 +2,19 @@
  * ./assets/pages/Planner/Planner.tsx *
  **************************************/
 
-import React, { useEffect, useState }   from 'react'
-import { Link }                         from 'react-router-dom'
-import axios                            from 'axios'
-import swal                             from 'sweetalert'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import swal from 'sweetalert'
 
-import Card                             from '@/components/ui/Card'
-import Spacer                           from '@/components/ui/Spacer'
-import Spinner                          from '@/components/ui/Spinner'
-import getFullIngredientName            from '@/util/getFullIngredientName'
+import Card from '@/components/ui/Card'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
+import DayModel from '@/types/DayModel'
+import IngredientModel from '@/types/IngredientModel'
+import MealModel from '@/types/MealModel'
+import RecipeModel from '@/types/RecipeModel'
+import getFullIngredientName from '@/util/getFullIngredientName'
 
 /**
  * Planner
@@ -29,9 +33,9 @@ import getFullIngredientName            from '@/util/getFullIngredientName'
  * @param props.setTopbar
  */
 export default function Planner({ days, recipes, shoppingList, setSidebar, setTopbar }: {
-    days: FetchableEntity<Array<Day>>
-    recipes: FetchableEntity<Array<Recipe>>
-    shoppingList: FetchableEntity<Array<Ingredient>>
+    days: FetchableEntity<Array<DayModel>>
+    recipes: FetchableEntity<Array<RecipeModel>>
+    shoppingList: FetchableEntity<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -50,7 +54,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
      * 
      * @param meal A Meal object.
      */
-    const deleteMeal = (meal: Meal): void => {
+    const deleteMeal = (meal: MealModel): void => {
         swal({
             dangerMode: true,
             icon: 'error',
@@ -85,13 +89,13 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         }
 
         // Collect all recipes
-        let recipesTmp: Array<Recipe> = []
+        let recipesTmp: Array<RecipeModel> = []
 
         days.data.forEach(day => {
             day.meals.forEach(meal => {
                 // Since the meal only has basic information of the recipe,
                 // find the full recipe object in props.recipes.
-                const recipeIds: Array<number> = recipes.data.map((recipe: Recipe) => recipe.id)
+                const recipeIds: Array<number> = recipes.data.map((recipe: RecipeModel) => recipe.id)
                 const index: number = recipeIds.indexOf(meal.recipe.id)
                 recipesTmp.push(recipes.data[index])
             })
@@ -188,8 +192,8 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
                                         <div className="relative group">
                                             <img 
                                                 className="rounded-2xl h-40 w-full object-cover brightness-[.7]" 
-                                                src={meal.recipe.image.filename != null 
-                                                    ? meal.recipe.image?.directory + meal.recipe.image.filename
+                                                src={meal.recipe.image?.filename != null 
+                                                    ? meal.recipe.image?.directory + meal.recipe.image?.filename
                                                     : '/img/default.jpg'
                                                 } 
                                                 alt={meal.recipe.title}
@@ -200,12 +204,12 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
                                             >
                                                 <div className="text-xl mr-4">{meal.recipe.title}</div>
                                                 <div className="text-md flex items-center mt-2">
-                                                    <span className="material-symbols-rounded mr-2">{meal.user_group_icon}</span>
-                                                    <span>{meal.user_group}</span>
+                                                    <span className="material-symbols-rounded mr-2">{meal.userGroup.icon}</span>
+                                                    <span>{meal.userGroup.name}</span>
                                                 </div>
                                                 <div className="text-md flex items-center mt-2">
-                                                    <span className="material-symbols-rounded mr-2">{meal.meal_category.icon}</span>
-                                                    <span>{meal.meal_category.name}</span>
+                                                    <span className="material-symbols-rounded mr-2">{meal.mealCategory.icon}</span>
+                                                    <span>{meal.mealCategory.name}</span>
                                                 </div>
                                             </Link>
                                             <span 

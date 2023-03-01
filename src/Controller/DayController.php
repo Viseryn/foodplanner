@@ -26,7 +26,7 @@ class DayController extends AbstractController
      * @return Response
      */
     #[Route('/list', name: 'api_days_list', methods: ['GET'])]
-    public function list(DayRepository $dayRepository, Security $security): Response
+    public function list(DayRepository $dayRepository, DayUtil $dayUtil, Security $security): Response
     {
         $user = $security->getUser();
         
@@ -36,48 +36,10 @@ class DayController extends AbstractController
         }
 
         $daysResult = $dayRepository->findBy([], ['timestamp' => 'ASC']);
-        $days = [];
-        $i = 0;
-
-        foreach ($daysResult as $day) {
-            // Simplify meals array
-            $meals = [];
-            $j = 0;
-
-            foreach ($day->getMeals() as $meal) {
-                $meals[$j] = [
-                    'id' => $meal->getId(),
-                    'meal_category' => $meal->getMealCategory(),
-                    'recipe' => [
-                        'id' => $meal->getRecipe()->getId(),
-                        'title' => $meal->getRecipe()->getTitle(),
-                        'image' => [
-                            'filename' => $meal->getRecipe()->getImage()?->getFilename(),
-                            'directory' => $meal->getRecipe()->getImage()?->getDirectory(),
-                        ],
-                    ],
-                    /** @todo */ // 'user_group' => $meal->getUserGroup(), // This reveals password hashes. 
-                    'user_group' => (string) $meal->getUserGroup(),
-                    'user_group_icon' => $meal->getUserGroup()->getIcon(),
-                ];
-
-                $j++;
-            }
-
-            // Setup days array entry
-            $days[$i] = [
-                'id' => $day->getId(),
-                'weekday' => $day->getWeekday(),
-                'title' => $day->getDate() . ', ' . $day->getWeekday(),
-                'date' => $day->getDate(),
-                'meals' => $meals,
-            ];
-
-            $i++;
-        }
+        $preparedDays = $dayUtil->getApiModels($daysResult);
 
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($days, 'json');
+        $jsonContent = $serializer->serialize($preparedDays, 'json');
 
         return (new JsonResponse($jsonContent));
     }
