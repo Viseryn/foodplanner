@@ -2,12 +2,13 @@
  * ./assets/types/MealCategoryModel.ts *
  ***************************************/
 
-import EntityWithRadioOption from './EntityWithRadioOption'
+import EntityWithOption from './EntityWithOption'
+import RadioOption from './RadioOption'
 
 /**
  * Type specifications for MealCategory objects returned by APIs
  */
-type MealCategoryModel = EntityWithRadioOption & {
+type MealCategoryModel = EntityWithOption<RadioOption> & {
     /** The entity id of the MealCategory object. */
     id: number
 

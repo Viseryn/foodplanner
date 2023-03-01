@@ -2,13 +2,14 @@
  * ./assets/types/UserGroupModel.ts *
  ************************************/
 
-import EntityWithRadioOption from './EntityWithRadioOption'
+import EntityWithOption from './EntityWithOption'
+import RadioOption from './RadioOption'
 import UserModel from './UserModel'
 
 /**
  * Type specifications for UserGroup objects returned by APIs
  */
-type UserGroupModel = EntityWithRadioOption & {
+type UserGroupModel = EntityWithOption<RadioOption> & {
     /** The entity id of the UserGroup object. */
     id: number
 
