@@ -48,12 +48,13 @@ class ShoppingListController extends AbstractController
      */
     #[Route('/ingredients', name: 'api_shoppinglist_ingredients', methods: ['GET'])]
     public function ingredients(
-        IngredientRepository $ingredientRepository
+        IngredientRepository $ingredientRepository,
+        IngredientUtil $ingredientUtil,
     ): Response {
         $ingredients = $ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
 
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($ingredients, 'json');
+        $jsonContent = $serializer->serialize($ingredientUtil->getApiModels($ingredients), 'json');
 
         return (new JsonResponse($jsonContent));
     }

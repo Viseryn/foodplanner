@@ -49,12 +49,13 @@ class PantryController extends AbstractController
      */
     #[Route('/ingredients', name: 'api_pantry_ingredients', methods: ['GET'])]
     public function ingredients(
-        IngredientRepository $ingredientRepository
+        IngredientRepository $ingredientRepository,
+        IngredientUtil $ingredientUtil,
     ): Response {
         $ingredients = $ingredientRepository->findBy(['storage' => '1'], ['position' => 'ASC']);
 
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($ingredients, 'json');
+        $jsonContent = $serializer->serialize($ingredientUtil->getApiModels($ingredients), 'json');
 
         return (new JsonResponse($jsonContent));
     }
