@@ -13,6 +13,9 @@ import Card from '@/components/ui/Card'
 import { SecondHeading } from '@/components/ui/Heading'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import DayModel from '@/types/DayModel'
+import MealCategoryModel from '@/types/MealCategoryModel'
+import UserGroupModel from '@/types/UserGroupModel'
  
 /**
  * Settings
@@ -23,9 +26,9 @@ import Spinner from '@/components/ui/Spinner'
  */
 export default function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar }: {
     settings: FetchableEntity<Settings>
-    userGroups: FetchableEntity<Array<UserGroup>>
-    mealCategories: FetchableEntity<Array<MealCategory>>
-    days: FetchableEntity<Array<Day>>
+    userGroups: FetchableEntity<Array<UserGroupModel>>
+    mealCategories: FetchableEntity<Array<MealCategoryModel>>
+    days: FetchableEntity<Array<DayModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -36,15 +39,13 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * @param index The index of the group that shall be the standard group.
      */
     const handleSetStandardGroup = (index: number) => {
-        let groups: Array<UserGroup> = [...userGroups.data]
+        let groups: Array<UserGroupModel> = [...userGroups.data]
 
         groups.forEach((group, i) => {
             if (index === i) {
-                group.isStandard = true
-                group.checked = 'checked'
+                group.standard = true
             } else {
-                group.isStandard = false
-                group.checked = ''
+                group.standard = false
             }
         })
 
@@ -62,15 +63,13 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * @param index The index of the category that shall be the standard category.
      */
     const handleSetStandardMealCategory = (index: number) => {
-        let categories: Array<MealCategory> = [...mealCategories.data]
+        let categories: Array<MealCategoryModel> = [...mealCategories.data]
 
         categories.forEach((category, i) => {
             if (index === i) {
-                category.isStandard = true
-                category.checked = 'checked'
+                category.standard = true
             } else {
-                category.isStandard = false
-                category.checked = ''
+                category.standard = false
             }
         })
 
@@ -89,7 +88,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      */
     const handleDeleteGroup = (index: number) => {
         // Get id
-        const id: number = userGroups.data[index].value ?? -1
+        const id: number = userGroups.data[index].id ?? -1
 
         // Show warning with confirm and cancel buttons
         swal({
@@ -122,7 +121,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             }
 
             // Cancel if the given group is standard
-            if (userGroups.data[index].isStandard) {
+            if (userGroups.data[index].standard) {
                 swal({
                     dangerMode: true,
                     icon: 'error',
@@ -224,7 +223,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                     <div key={index} className="flex justify-between items-center">
                                         <div className="flex items-center">
                                             <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                            {group.name} ({group.users.join(', ')})
+                                            {group.name} ({group.users.map(user => user.username).join(', ')})
                                         </div>
                                         <div className="flex gap-2">
                                             <IconButton 
@@ -235,7 +234,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                             </IconButton>
 
                                             <IconButton 
-                                                outlined={!group.isStandard} 
+                                                outlined={!group.standard} 
                                                 onClick={() => handleSetStandardGroup(index)}
                                             >
                                                 favorite
@@ -281,7 +280,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                         {category.name}
                                     </div>
                                         <IconButton 
-                                            outlined={!category.isStandard} 
+                                            outlined={!category.standard} 
                                             onClick={() => handleSetStandardMealCategory(index)}>
                                             favorite
                                         </IconButton>

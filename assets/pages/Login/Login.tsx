@@ -10,6 +10,7 @@ import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import UserModel from '@/types/UserModel'
 
 /**
  * Login
@@ -21,7 +22,7 @@ import Spinner from '@/components/ui/Spinner'
  * @param props.setLoading The setter for the state variable isLoading from the App component.
  */
 export default function Login({ user, authentication, setLoading, setSidebar, setTopbar }: {
-    user: FetchableEntity<User>
+    user: FetchableEntity<UserModel>
     authentication: Authentication
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     setSidebar: SetSidebarAction

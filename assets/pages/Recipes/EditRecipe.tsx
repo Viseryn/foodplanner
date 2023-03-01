@@ -17,6 +17,10 @@ import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import getFullIngredientName from '@/util/getFullIngredientName'
+import IngredientModel from '@/types/IngredientModel'
+import DayModel from '@/types/DayModel'
+import InstructionModel from '@/types/InstructionModel'
+import RecipeModel from '@/types/RecipeModel'
 
 /**
  * EditRecipe
@@ -27,8 +31,8 @@ import getFullIngredientName from '@/util/getFullIngredientName'
  * @component
  */
 export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<Recipe>>
-    days: FetchableEntity<Array<Day>>
+    recipes: FetchableEntity<Array<RecipeModel>>
+    days: FetchableEntity<Array<DayModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -44,7 +48,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
     const navigate: NavigateFunction = useNavigate()
 
     // The currently selected recipe. Will be updated whenever id changes.
-    const [recipe, setRecipe] = useState<Recipe>({} as Recipe)
+    const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
 
     // The name of the selected file. When no file is selected, show a placeholder text.
     const [filename, setFilename] = useState<string>('Datei auswählen')
@@ -66,7 +70,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         }
 
         // Find correct recipe
-        const queryResult: Array<Recipe> = recipes.data.filter(recipe => recipe.id.toString() == id)
+        const queryResult: Array<RecipeModel> = recipes.data.filter(recipe => recipe.id.toString() == id)
         setRecipe(queryResult[0])
 
         // If recipe does not exist, redirect to 404 page
@@ -84,7 +88,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
      * @param arr An array of ingredients, e.g. received from the Recipe API.
      * @returns A list of all ingredients, separated by linebreaks.
      */
-    const getIngredients = (arr: Array<Ingredient>): string => {
+    const getIngredients = (arr: Array<IngredientModel>): string => {
         let ingredients: string = ''
         let l: number = arr?.length
 
@@ -107,7 +111,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
      * @param arr An array of instructions, e.g. received from the Recipe API.
      * @returns A list of all instructions, separated by linebreaks.
      */
-    const getInstructions = (arr: Array<Instruction>): string => {
+    const getInstructions = (arr: Array<InstructionModel>): string => {
         let instructions: string = ''
         let l: number = arr?.length
 

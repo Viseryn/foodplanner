@@ -13,6 +13,9 @@ import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import useFetch from '@/hooks/useFetch'
+import UserGroupModel from '@/types/UserGroupModel'
+import UserModel from '@/types/UserModel'
+import getOptions from '@/util/getOptions'
 
 /**
  * AddGroup
@@ -23,12 +26,12 @@ import useFetch from '@/hooks/useFetch'
  */
 export default function AddGroup({ authentication, userGroups, setSidebar, setTopbar, ...props }: {
     authentication: Authentication
-    userGroups: FetchableEntity<Array<UserGroup>>
+    userGroups: FetchableEntity<Array<UserGroupModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }) {
     // A list of all users
-    const users = useFetch<Array<User>>('/api/user/list', authentication)
+    const users = useFetch<Array<UserModel>>('/api/user/list', authentication)
 
     // A function that can change the location. Needed for the redirect after submit.
     const navigate: NavigateFunction = useNavigate()

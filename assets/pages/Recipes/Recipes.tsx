@@ -9,6 +9,7 @@ import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
 import SearchWidget from './components/SearchWidget'
+import RecipeModel from '@/types/RecipeModel'
 
 /**
  * Recipes
@@ -19,7 +20,7 @@ import SearchWidget from './components/SearchWidget'
  * @component
  */
 export default function Recipes({ recipes, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<Recipe>>
+    recipes: FetchableEntity<Array<RecipeModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -32,7 +33,7 @@ export default function Recipes({ recipes, setSidebar, setTopbar }: {
      * 
      * @todo Implement a more intelligent search with more filters.
      */
-    const recipesFiltered: Array<Recipe> = recipes.isLoading 
+    const recipesFiltered: Array<RecipeModel> = recipes.isLoading 
         ? []
         : recipes.data.filter(recipe => {
             // Return true if there is no search input
@@ -107,7 +108,7 @@ export default function Recipes({ recipes, setSidebar, setTopbar }: {
                                     <Link to={'/recipe/' + recipe.id}>
                                         <img 
                                             className="rounded-xl h-36 w-full object-cover brightness-[.7]" 
-                                            src={recipe.image?.filename != null 
+                                            src={recipe.image
                                                 ? recipe.image?.directory + recipe.image?.filename
                                                 : '/img/default.jpg'
                                             } 

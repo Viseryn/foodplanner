@@ -14,6 +14,7 @@ import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import RecipeModel from '@/types/RecipeModel'
 
 /**
  * AddRecipe
@@ -26,7 +27,7 @@ import Spinner from '@/components/ui/Spinner'
  * @todo Update form widgets
  */
 export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<Recipe>>
+    recipes: FetchableEntity<Array<RecipeModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {

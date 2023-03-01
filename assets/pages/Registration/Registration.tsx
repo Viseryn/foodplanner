@@ -12,6 +12,7 @@ import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import UserModel from '@/types/UserModel'
 
 /**
  * Registration
@@ -21,7 +22,7 @@ import Spinner from '@/components/ui/Spinner'
  * @component
  */
 export default function Registration({ user, setSidebar, setTopbar }: {
-    user: FetchableEntity<User>
+    user: FetchableEntity<UserModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
