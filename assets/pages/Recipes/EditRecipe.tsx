@@ -8,10 +8,10 @@ import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import swal from 'sweetalert'
 
 import FilePicker from '@/components/form/FilePicker'
-import { InputRow } from '@/components/form/Input'
-import { SliderRow } from '@/components/form/Slider'
-import Switch from '@/components/form/Switch'
-import { TextareaRow } from '@/components/form/Textarea'
+import SwitchRow from '@/components/form/Switch/SwitchRow'
+import InputRow from '@/components/form/Input/InputRow'
+import SliderRow from '@/components/form/Slider/SliderRow'
+import TextareaRow from '@/components/form/Textarea/TextareaRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
@@ -250,12 +250,11 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                 <InputRow
                                     id="recipe_title"
                                     label="Titel"
-                                    inputProps={{
+                                    {...{
                                         required: 'required', 
                                         maxLength: 255,
                                         defaultValue: recipe?.title
                                     }}
-                                    className=""
                                 />
 
                                 <Spacer height="6" />
@@ -264,7 +263,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                     key={recipe?.id}
                                     id="recipe_portionSize"
                                     label="Wie viele Portionen?"
-                                    sliderProps={{
+                                    {...{
                                         min: 1,
                                         max: 10,
                                         step: 1,
@@ -272,9 +271,8 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                             value: index + 1,
                                             label: index + 1,
                                         })),
-                                        defaultValue: recipe.portion_size
+                                        defaultValue: recipe.portionSize
                                     }}
-                                    className=""
                                 />
 
                                 <Spacer height="6" />
@@ -318,12 +316,15 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                         />
                                     </div>
 
-                                    {recipe?.image != null &&
-                                        <label htmlFor="recipe_image_remove" className="inline-flex relative items-center cursor-pointer">
-                                            <input type="checkbox" value="" id="recipe_image_remove" name="recipe[image_remove]" className="sr-only peer" onChange={handleFileRemove} />
-                                            <Switch />
-                                            <span className="ml-3 text-sm font-semibold">Entfernen</span>
-                                        </label>
+                                    {recipe?.image != null &&<>
+                                        <SwitchRow
+                                            id="recipe_image_remove"
+                                            label="Entfernen"
+                                            {...{
+                                                name: "recipe[image_remove]",
+                                                onChange: handleFileRemove,
+                                            }}
+                                        /></>
                                     }
                                 </div>
                             </Card>
@@ -332,12 +333,11 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                 <TextareaRow
                                     id="recipe_ingredients"
                                     label="Zutaten"
-                                    textareaProps={{
+                                    {...{
                                         rows: 10, 
                                         placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
                                         defaultValue: getIngredients(recipe.ingredients)
                                     }}
-                                    className=""
                                 />
 
                                 <Spacer height="6" />
@@ -345,12 +345,11 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                 <TextareaRow 
                                     id="recipe_instructions"
                                     label="Zubereitung"
-                                    textareaProps={{
+                                    {...{
                                         rows: 10,
                                         placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
                                         defaultValue: getInstructions(recipe.instructions)
                                     }}
-                                    className=""
                                 />
                             </Card>
                         </div>

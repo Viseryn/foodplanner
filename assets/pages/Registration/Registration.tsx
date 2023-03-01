@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import axios from 'axios'
 
-import { InputRow } from '@/components/form/Input'
+import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
@@ -87,22 +87,26 @@ export default function Registration({ user, setSidebar, setTopbar }: {
                 {user.data.username === undefined && !user.isLoading && !isLoadingSubmit &&
                     <form onSubmit={handleSubmit} autoComplete="off">
                         <Card>
-                            <InputRow 
+                            <InputRow
                                 id="registration_form_username"
                                 label="Dein Benutzername"
-                                inputProps={{
-                                    required: 'required', 
+                                {...{
+                                    'required': true,
                                 }}
                             />
 
-                            <InputRow 
+                            <Spacer height="6" />
+
+                            <InputRow
                                 id="registration_form_plainPassword"
-                                label="Dein Passwort"
-                                inputProps={{
-                                    required: 'required', 
-                                    type: 'password',
+                                label="Dein Password"
+                                {...{
+                                    'type': 'password',
+                                    'required': true,
                                 }}
                             />
+
+                            <Spacer height="6" />
 
                             <div className="flex items-center">
                                 <input 

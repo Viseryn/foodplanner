@@ -7,9 +7,9 @@ import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 import FilePicker from '@/components/form/FilePicker'
-import { InputRow } from '@/components/form/Input'
-import { SliderRow } from '@/components/form/Slider'
-import { TextareaRow } from '@/components/form/Textarea'
+import InputRow from '@/components/form/Input/InputRow'
+import SliderRow from '@/components/form/Slider/SliderRow'
+import TextareaRow from '@/components/form/Textarea/TextareaRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
@@ -114,8 +114,10 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                                 <InputRow
                                     id="recipe_title"
                                     label="Titel"
-                                    inputProps={{required: 'required', maxLength: 255}}
-                                    className=""
+                                    {...{
+                                        required: true, 
+                                        maxLength: 255,
+                                    }}
                                 />
 
                                 <Spacer height="6" />
@@ -123,7 +125,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                                 <SliderRow
                                     id="recipe_portionSize"
                                     label="Wie viele Portionen?"
-                                    sliderProps={{
+                                    {...{
                                         min: 1,
                                         max: 10,
                                         step: 1,
@@ -132,7 +134,6 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                                             label: index + 1,
                                         }))
                                     }}
-                                    className=""
                                 />
 
                                 <Spacer height="6" />
@@ -152,23 +153,21 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                                 <TextareaRow
                                     id="recipe_ingredients"
                                     label="Zutaten"
-                                    textareaProps={{
+                                    {...{
                                         rows: 10, 
-                                        placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"
+                                        placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
                                     }}
-                                    className=""
                                 />
 
                                 <Spacer height="6" />
 
-                                <TextareaRow 
+                                <TextareaRow
                                     id="recipe_instructions"
                                     label="Zubereitung"
-                                    textareaProps={{
+                                    {...{
                                         rows: 10,
-                                        placeholder: "Schreibe jeden Schritt in eine eigene Zeile."
+                                        placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
                                     }}
-                                    className=""
                                 />
                             </Card>
                         </div>
