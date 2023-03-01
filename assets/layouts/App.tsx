@@ -30,7 +30,13 @@ import AddGroup from '@/pages/Settings/AddGroup'
 import Settings from '@/pages/Settings/Settings'
 import ShoppingList from '@/pages/ShoppingList/ShoppingList'
 
+import DayModel from '@/types/DayModel'
+import IngredientModel from '@/types/IngredientModel'
+import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
+import UserGroupModel from '@/types/UserGroupModel'
+import UserModel from '@/types/UserModel'
+
 /**
  * App
  * 
@@ -50,7 +56,7 @@ export default function App({ version }: {
     version: string
 }): JSX.Element {
     // The User and Authentication objects
-    const [user, authentication]: [FetchableEntity<User>, Authentication] = useAuthentication()
+    const [user, authentication]: [FetchableEntity<UserModel>, Authentication] = useAuthentication()
 
     // Will be updated by useRefreshDataTimestamp and set to true if the timestamp changed.
     // Can e.g. be passed as dependency in a useFetch call to reload entity data without showing a loading screen.
@@ -99,12 +105,12 @@ export default function App({ version }: {
 
     // Fetch data
     const settings = fetch<Settings>('/api/settings')
-    const mealCategories = fetch<Array<MealCategory>>('/api/mealcategories/list')
-    const userGroups = fetch<Array<UserGroup>>('/api/usergroups/list')
-    const shoppingList = fetch<Array<Ingredient>>('/api/shoppinglist/ingredients')
-    const pantry = fetch<Array<Ingredient>>('/api/pantry/ingredients')
-    const days = fetch<Array<Day>>('/api/days/list')
+    const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories/list')
+    const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups/list')
+    const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
+    const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
     const recipes = fetch<Array<RecipeModel>>('/api/recipes/list')
+    const days = fetch<Array<DayModel>>('/api/days/list')
 
     // Render App component
     return (
