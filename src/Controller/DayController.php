@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Day;
 use App\Repository\DayRepository;
+use App\Service\DayUtil;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -91,55 +92,12 @@ class DayController extends AbstractController
      * @return Response
      */
     #[Route('/update', name: 'api_days_update', methods: ['GET'])]
-    public function updateDays(DayRepository $dayRepository): Response
+    public function updateDays(DayUtil $dayUtil): Response
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Fetch current days
-        $currentDays = $dayRepository->findBy([], ['timestamp' => 'ASC']);
-        $today = strtotime('today');
-
-        $newDays = [];
-
-        foreach ($currentDays as $day) {
-            if ($day->getTimestamp() < $today) {
-                // Delete all Day objects before today
-                $dayRepository->remove($day, true);
-            } else {
-                // Save timestamps of all currently existing Day objects
-                $newDays[] = $day->getTimestamp();
-            }
-        }
-
-        // Create a single Day object if $newDays is empty
-        if (count($newDays) === 0) {
-            $day = (new Day())->setTimestamp($today);
-
-            $dayRepository->add($day, true);
-            $newDays[] = $day->getTimestamp();
-        }
-
-        // Create new Day objects if there are now less than ten Day objects
-        if (count($newDays) < 10) {
-            while (count($newDays) < 10) {
-                $day = (new Day())->setTimestamp(strtotime('+1 day', end($newDays)));
-
-                $dayRepository->add($day, true);
-                $newDays[] = $day->getTimestamp();
-            }
-        }
-
-        // Delete everything after ten days in the future
-        if (count($newDays) > 10) {
-            $currentDays = $dayRepository->findBy([], ['timestamp' => 'ASC']);
-
-            for ($i = count($newDays) - 1; count($newDays) > 10; $i--) {
-                $dayRepository->remove($currentDays[$i], true);
-
-                array_pop($newDays);
-            }
-        }
+        $dayUtil->updateDays();
 
         return new Response();
     }
