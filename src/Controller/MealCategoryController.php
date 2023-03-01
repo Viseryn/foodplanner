@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\MealCategoryRepository;
+use App\Service\MealCategoryUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,33 +23,18 @@ class MealCategoryController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/list', name: 'api_mealcategories_list', methods: ['GET'])]
-    public function mealCategoriesAPI(MealCategoryRepository $mealCategoryRepository): JsonResponse
+    public function mealCategoriesAPI(MealCategoryRepository $mealCategoryRepository, MealCategoryUtil $mealCategoryUtil): JsonResponse
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch all MealCategory objects from the database
         $mealCategories = $mealCategoryRepository->findAll();
-
-        // Create array for response
-        $mealCategoriesResponse = [];
-
-        // Add public data to the response array
-        foreach ($mealCategories as $mealCategory) {
-            $mealCategoriesResponse[] = [
-                'name' => $mealCategory->getName(),
-                'isStandard' => $mealCategory->isStandard(),
-                'icon' => $mealCategory->getIcon(),
-                'id' => 'mealCategory_' . $mealCategory->getName(),        // For radio buttons
-                'value' => $mealCategory->getId(),                         // For radio buttons
-                'label' => $mealCategory->getName(),                       // For radio buttons
-                'checked' => $mealCategory->isStandard() ? 'checked' : '', // For radio buttons
-            ];
-        }
+        $preparedMealCategories = $mealCategoryUtil->getApiModels($mealCategories);
 
         // Serialize data and respond
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($mealCategoriesResponse, 'json');
+        $jsonContent = $serializer->serialize($preparedMealCategories, 'json');
 
         return new JsonResponse($jsonContent);
     }

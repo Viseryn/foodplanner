@@ -6,6 +6,7 @@ use App\Entity\UserGroup;
 use App\Form\UserGroupType;
 use App\Repository\MealRepository;
 use App\Repository\UserGroupRepository;
+use App\Service\UserGroupUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,42 +26,18 @@ class UserGroupController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/list', name: 'api_usergroups_list', methods: ['GET'])]
-    public function userGroupsAPI(UserGroupRepository $userGroupRepository): JsonResponse
+    public function userGroupsAPI(UserGroupRepository $userGroupRepository, UserGroupUtil $userGroupUtil): JsonResponse
     {
         // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch all UserGroup objects from the database
         $userGroups = $userGroupRepository->findAll();
-
-        // Create array for response
-        $userGroupsResponse = [];
-
-        // Add public data to the response array
-        foreach ($userGroups as $userGroup) {
-            $userGroupsResponse[] = [
-                'name' => $userGroup->getName(),
-                'users' => [],
-                'isStandard' => $userGroup->isStandard(),
-                'icon' => $userGroup->getIcon(),
-                'id' => 'userGroup_' . $userGroup->getName(),           // For radio buttons
-                'value' => $userGroup->getId(),                         // For radio buttons
-                'label' => $userGroup->getName(),                       // For radio buttons
-                'checked' => $userGroup->isStandard() ? 'checked' : '', // For radio buttons
-            ];
-
-            // Only add the usernames to the response, not the rest of the user data
-            foreach ($userGroup->getUsers() as $user) {
-                array_push(
-                    $userGroupsResponse[count($userGroupsResponse) - 1]['users'],
-                    $user->getUsername()
-                );
-            }
-        }
+        $preparedUserGroups = $userGroupUtil->getApiModels($userGroups);
 
         // Serialize data and respond
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($userGroupsResponse, 'json');
+        $jsonContent = $serializer->serialize($preparedUserGroups, 'json');
 
         return new JsonResponse($jsonContent);
     }
