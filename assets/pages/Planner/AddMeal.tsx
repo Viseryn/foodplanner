@@ -66,7 +66,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
             try {
                 // Send form data to Meal Add API
                 await axios.post('/api/meals/add', formData)
-                days.setLoading(true)
+                days.load()
                 
                 // Refresh Data Timestamp
                 await axios.get('/api/refresh-data-timestamp/set')
@@ -181,7 +181,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                     icon="save" 
                                     label="Speichern" 
                                     outlined={true}
-                                    floating={true}
+                                    isFloating={true}
                                 />
                             }
                         </div> 
