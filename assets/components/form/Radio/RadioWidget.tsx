@@ -3,6 +3,8 @@
  *********************************************/
 
 import React from 'react'
+
+import RadioOption from '@/types/RadioOption'
 import nameFromId from '../util/nameFromId'
 
 /**
@@ -19,19 +21,7 @@ import nameFromId from '../util/nameFromId'
  */
 export default function RadioWidget({ id, options, ...props }: {
     id: string
-    options: Array<{ 
-        /**
-         * @example mealCategory_nameOfSomeCategory
-         */
-        id: string
-        icon?: string
-        label: string 
-        /**
-         * @example $mealCategory->getId()
-         */
-        value?: string | number
-        checked?: boolean
-    }>
+    options: Array<RadioOption>
 }): JSX.Element {
     return <div className="flex flex-wrap justify-between gap-2" {...props}>
         {options.map(option => 

@@ -1,8 +1,9 @@
 /*********************************************
  * ./assets/components/form/SelectWidget.tsx *
  *********************************************/
-
 import React from 'react'
+
+import SelectOption from '@/types/SelectOption'
 import nameFromId from '../util/nameFromId'
 import widgetStyle from '../util/widgetStyle'
 
@@ -19,7 +20,7 @@ import widgetStyle from '../util/widgetStyle'
  */
 export default function SelectWidget({ id, options, disabledOption, ...props }: {
     id: string
-    options?: Array<{ id: string, label?: string }>
+    options?: Array<SelectOption>
     disabledOption?: string
 }): JSX.Element {
     return <select

@@ -3,6 +3,8 @@
  *****************************************/
 
 import React from 'react'
+
+import RadioOption from '@/types/RadioOption'
 import Label from '../Label'
 import rowStyle from '../util/rowStyle'
 import RadioWidget from './RadioWidget'
@@ -24,19 +26,7 @@ import RadioWidget from './RadioWidget'
 export default function RadioRow({ id, label, options, style = rowStyle, ...widgetProps }: {
     id: string
     label: string
-    options: Array<{ 
-        /**
-         * @example mealCategory_nameOfSomeCategory
-         */
-        id: string
-        icon?: string
-        label: string 
-        /**
-         * @example $mealCategory->getId()
-         */
-        value?: string | number
-        checked?: boolean
-    }>
+    options: Array<RadioOption>
     style?: string
 }): JSX.Element {
     return <div className={style}>

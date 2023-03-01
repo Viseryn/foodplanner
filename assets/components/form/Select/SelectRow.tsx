@@ -3,6 +3,8 @@
  ******************************************/
 
 import React from 'react'
+
+import SelectOption from '@/types/SelectOption'
 import Label from '../Label'
 import SelectWidget from './SelectWidget'
 
@@ -22,7 +24,7 @@ import SelectWidget from './SelectWidget'
 export default function SelectRow({ id, label, options, disabledOption, style, ...widgetProps }: {
     id: string
     label: string
-    options?: Array<{ id: string, title?: string }>
+    options?: Array<SelectOption>
     disabledOption?: string
     style?: string
 }): JSX.Element {
