@@ -5,6 +5,7 @@
 import { useEffect, useState }  from 'react'
 
 import useFetch                 from './useFetch'
+import UserModel from '@/types/UserModel'
 
 /**
  * useAuthentication
@@ -15,7 +16,7 @@ import useFetch                 from './useFetch'
  * 
  * @returns An array of a User object and an Authentication object.
  */
-function useAuthentication(): [FetchableEntity<User>, Authentication] {
+function useAuthentication(): [FetchableEntity<UserModel>, Authentication] {
     // Whether the authentication process is still loading. This will only be 
     // false after the user data has been loaded and isAuthenticated has been set 
     // for the last time.
@@ -25,7 +26,7 @@ function useAuthentication(): [FetchableEntity<User>, Authentication] {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
 
     // User and Authentication objects
-    const user: FetchableEntity<User> = useFetch<User>('/api/user')
+    const user: FetchableEntity<UserModel> = useFetch<UserModel>('/api/user')
     const authentication: Authentication = { isAuthenticated, isLoading }
 
     // Each time the user data changes, check if authenticated

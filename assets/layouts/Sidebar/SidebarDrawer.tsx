@@ -4,6 +4,7 @@
 
 import React                from 'react'
 
+import UserModel from '@/types/UserModel'
 import SidebarDrawerButton  from './components/SidebarDrawerButton'
 import SidebarDrawerItem    from './components/SidebarDrawerItem'
 
@@ -33,7 +34,7 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, versi
     isDrawerVisible: boolean
     setDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>
     version: string
-    user: FetchableEntity<User>
+    user: FetchableEntity<UserModel>
 }): JSX.Element {
     return (
         <>
