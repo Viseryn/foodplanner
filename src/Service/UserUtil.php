@@ -5,8 +5,6 @@ use App\Entity\User;
 
 /**
  * UserUtil
- * 
- * @todo Add option
  */
 class UserUtil extends EntityUtil
 {
@@ -18,7 +16,8 @@ class UserUtil extends EntityUtil
             'username' => $user->getUsername(),
             'roles' => $user->getRoles(),
             'option' => [
-
+                'id' => $user->getId(),
+                'label' => $user->getUsername(),
             ],
         ];
     }
