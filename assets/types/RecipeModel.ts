@@ -27,7 +27,7 @@ type RecipeModel = EntityWithSelectOption & {
     instructions: Array<InstructionModel>
 
     /** The Image object belonging to the Recipe object. */
-    image: FileModel
+    image?: FileModel
 }
 
 export default RecipeModel
