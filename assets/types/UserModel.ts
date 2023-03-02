@@ -16,7 +16,7 @@ type UserModel = EntityWithOption<SelectOption> & {
     username?: string
 
     /** The roles of the User object. */
-    roles?: Array<string>
+    roles: Array<string>
 }
 
 export default UserModel

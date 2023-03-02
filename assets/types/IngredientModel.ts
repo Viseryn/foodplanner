@@ -1,8 +1,6 @@
-/**************************************
+/*************************************
  * ./assets/types/IngredientModel.ts *
- **************************************/
-
-import RecipeModel from './RecipeModel'
+ *************************************/
 
 /**
  * Type specifications for Ingredient objects returned by APIs

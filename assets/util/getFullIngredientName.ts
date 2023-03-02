@@ -5,13 +5,10 @@
 import IngredientModel from '@/types/IngredientModel'
 
 /**
- * getFullIngredientName
+ * Given an IngredientModel, e.g. recipe.ingredients[someIndex], will return the full name of the 
+ * ingredient with quantity value and quantity unit.
  * 
- * Given an Ingredient object, e.g. recipe.ingredients[someIndex],
- * will return the full name of the ingredient with quantity value and 
- * quantity unit.
- * 
- * @param ingredient An Ingredient object, e.g. from a recipe.
+ * @param ingredient An IngredientModel, e.g. from a recipe.
  * @returns The full name of the ingredient with quantity value and quantity unit.
  */
 const getFullIngredientName = (ingredient: IngredientModel): string => {
@@ -24,7 +21,6 @@ const getFullIngredientName = (ingredient: IngredientModel): string => {
     }
 
     const displayName: string = (quantity ? quantity + ' ' : '') + ingredient.name
-
     return displayName
 }
 
