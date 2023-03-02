@@ -8,16 +8,12 @@ import RadioOption from '@/types/RadioOption'
 import nameFromId from '../util/nameFromId'
 
 /**
- * RadioWidget
- * 
  * A component that renders a radio input field.
  * 
  * @component
  * @param props
  * @param props.id The id of the whole radio input field.
  * @param props.options An array of objects that represent the radio options.
- * @param props.options.id The id of the option form field. NOT the entity id.
- * @param props.options.value Usually the entity id.
  */
 export default function RadioWidget({ id, options, ...props }: {
     id: string

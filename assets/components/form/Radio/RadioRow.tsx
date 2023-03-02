@@ -9,8 +9,6 @@ import Label from '../Label'
 import RadioWidget from './RadioWidget'
 
 /**
- * RadioRow
- * 
  * A component that renders a radio input field with a corresponding label inside a div container.
  * 
  * @component
@@ -18,9 +16,7 @@ import RadioWidget from './RadioWidget'
  * @param props.id The id of the whole radio input field.
  * @param props.label The label of the select input field.
  * @param props.options An array of objects that represent the radio options.
- * @param props.options.id The id of the option form field. NOT the entity id.
- * @param props.options.value Usually the entity id.
- * @param props.style Optional: alternative styling classes for the div container.
+ * @param props.style Optional: Styling classes for the div container.
  */
 export default function RadioRow({ id, label, options, style, ...widgetProps }: {
     id: string

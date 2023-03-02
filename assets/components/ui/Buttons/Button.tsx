@@ -2,44 +2,10 @@
  * ./assets/components/ui/Buttons/Button.tsx *
  *********************************************/
 
-import React    from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 /**
- * Types for Button component
- */
-type ButtonType = '' | 'submit'
-type ButtonRole = 'primary' | 'secondary' | 'tertiary'
-type ButtonOptions = {
-    style?: string
-    type?: ButtonType
-    role?: ButtonRole
-    location?: string
-    icon?: string
-    label?: string
-    title?: string
-    outlined?: boolean
-    /**
-     * @deprecated Use isElevated instead.
-     */
-    elevated?: boolean
-    isElevated?: boolean
-    /**
-     * @deprecated Use isFloating instead.
-     */
-    floating?: boolean
-    isFloating?: boolean
-    /**
-     * @deprecated Use isSmall instead.
-     */
-    small?: boolean
-    isSmall?: boolean
-    onClick?: () => void
-}
-
-/**
- * Button
- * 
  * A component that renders a button. Depending on the type argument, can be either a submit button 
  * or a link button. The role argument determines the color of the Button. Primary buttons are dark 
  * green with light font color, while secondary buttons are light green with darker font color. 
@@ -48,7 +14,7 @@ type ButtonOptions = {
  * @component
  * @param props
  * @param props.style Additional styling classes.
- * @param props.type For submit buttons, set this to 'submit'. Empty by default.
+ * @param props.type For submit buttons, set this to 'submit'. Default is 'link'.
  * @param props.role Can be 'primary' (default), 'secondary' or 'tertiary'.
  * @param props.location The path of the button. Default is '#'.
  * @param props.icon The icon on the left of the button. Default is empty.
@@ -74,8 +40,8 @@ type ButtonOptions = {
  * />
  */
 export default function Button({ 
-    style, type, role = 'primary', location = '#', icon, label, title = '', outlined, 
-    elevated, isElevated, floating, isFloating, small, isSmall, onClick 
+    style, type = 'link', role = 'primary', location = '#', icon, label, title = '', 
+    outlined, elevated, isElevated, floating, isFloating, small, isSmall, onClick 
 }: ButtonOptions): JSX.Element {
     // Generate styling classes for the button
     const stylingClasses: string = buttonStyle(
@@ -105,9 +71,7 @@ export default function Button({
 }
 
 /**
- * ButtonContent
- * 
- * Helper component for Button.
+ * PRIVATE: Helper component for Button.
  * 
  * @component
  * @param props
@@ -121,33 +85,27 @@ function ButtonContent({ icon, label, outlined }: {
     outlined?: boolean
 }): JSX.Element {
     return <>
-        {icon &&
-            <span className={'material-symbols-rounded' + (outlined ? ' outlined' : '')}>
-                {icon}
-            </span>
-        } 
+        {icon && <span className={'material-symbols-rounded' + (outlined ? ' outlined' : '')}>
+            {icon}
+        </span>} 
         
-        {label &&
-            <>
-                {icon != '' 
-                    ? <span className="mr-2 ml-3">{label}</span>
-                    : <span className="mx-2">{label}</span>
-                }
-            </>
+        {label && (
+            icon != '' 
+                ? <span className="mr-2 ml-3">{label}</span>
+                : <span className="mx-2">{label}</span>
+            )
         }
     </>
 }
 
 /**
- * buttonStyle
- * 
  * Returns the appropriate styling classes for the given parameters.
  * 
  * @param role The role of the button.
- * @param isElevated Whether the button is elevated.
- * @param isSmall Whether the button is small.
- * @param isFloating Whether the button is floating.
- * @param label The label of the button.
+ * @param isElevated Optional: Whether the button is elevated.
+ * @param isSmall Optional: Whether the button is small.
+ * @param isFloating Optional: Whether the button is floating.
+ * @param label Optional: The label of the button.
  * @returns The styling classes for the button.
  */
 const buttonStyle = (
@@ -183,4 +141,36 @@ const buttonStyle = (
     style += (isFloating) ? ' ' + styles.floating : ''
 
     return style
+}
+
+/**
+ * Type specifications for Button components
+ */
+
+/** Whether a Button is a Submit Button or a Link Button. */
+type ButtonType = 'submit' | 'link'
+
+/** Whether a Button is a primary, secondary or tertiary button. */
+type ButtonRole = 'primary' | 'secondary' | 'tertiary'
+
+/** Type for Button props. */
+type ButtonOptions = {
+    style?: string
+    type?: ButtonType
+    role?: ButtonRole
+    location?: string
+    icon?: string
+    label?: string
+    title?: string
+    outlined?: boolean
+    /** @deprecated Use isElevated instead. */
+    elevated?: boolean
+    isElevated?: boolean
+    /** @deprecated Use isFloating instead. */
+    floating?: boolean
+    isFloating?: boolean
+    /** @deprecated Use isSmall instead. */
+    small?: boolean
+    isSmall?: boolean
+    onClick?: () => void
 }

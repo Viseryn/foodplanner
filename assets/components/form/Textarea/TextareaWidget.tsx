@@ -3,11 +3,10 @@
  ********************************************************/
 
 import React from 'react'
+
 import nameFromId from '../util/nameFromId'
 
 /**
- * TextareaWidget
- * 
  * A component that renders a textarea field.
  * 
  * @component

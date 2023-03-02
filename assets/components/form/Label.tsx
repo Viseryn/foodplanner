@@ -5,8 +5,6 @@
 import React from 'react'
 
 /**
- * Label
- * 
  * A component that renders a form widget label.
  * 
  * @component
