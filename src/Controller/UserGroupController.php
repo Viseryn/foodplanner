@@ -58,7 +58,7 @@ class UserGroupController extends AbstractController
      * @todo Move this to utils.
      */
     #[Route('/standard', name: 'api_usergroups_standard', methods: ['GET', 'POST'])]
-    public function standard(
+    public function updateStandard(
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
         Request $request, 
         UserGroupRepository $userGroupRepository,
