@@ -46,12 +46,11 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
      * 
      * @param value A trimmed string that describes an Ingredient object.
      */
-    const handleEnterKeyDown = (value: string): void => {
+    const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
-        shoppingList.load()
 
-        // API call
-        axios.post('/api/shoppinglist/add', [value])
+        await axios.post('/api/shoppinglist/add', [value])
+        shoppingList.load()
     }
 
     /**

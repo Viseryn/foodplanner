@@ -50,11 +50,11 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      * 
      * @param value A trimmed string that describes an Ingredient object.
      */
-    const handleEnterKeyDown = (value: string): void => {
+    const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
-        pantry.load()
 
-        axios.post('/api/pantry/add', [value])
+        await axios.post('/api/pantry/add', [value])
+        pantry.load()
     }
 
     /**
