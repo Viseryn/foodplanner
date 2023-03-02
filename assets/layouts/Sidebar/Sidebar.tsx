@@ -5,6 +5,7 @@
 import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
+import SettingsModel from '@/types/SettingsModel'
 import SidebarActionButton from './components/SidebarActionButton'
 import SidebarDrawerButton from './components/SidebarDrawerButton'
 import SidebarItem from './components/SidebarItem'
@@ -37,7 +38,7 @@ export default function Sidebar({
     isDrawerVisible: boolean
     setDrawerVisible: SetState<boolean>
     authentication: Authentication
-    settings: FetchableEntity<Settings>
+    settings: EntityState<SettingsModel>
 }): JSX.Element {
     // Close drawer when location changes
     const location = useLocation()

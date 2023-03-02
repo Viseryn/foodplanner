@@ -34,6 +34,7 @@ import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
+import SettingsModel from '@/types/SettingsModel'
 import UserGroupModel from '@/types/UserGroupModel'
 import UserModel from '@/types/UserModel'
 
@@ -54,7 +55,7 @@ export default function App({ version }: {
     version: string
 }): JSX.Element {
     // The User and Authentication objects
-    const [user, authentication]: [FetchableEntity<UserModel>, Authentication] = useAuthentication()
+    const [user, authentication]: [EntityState<UserModel>, Authentication] = useAuthentication()
 
     // Will be updated by useRefreshDataTimestamp and set to true if the timestamp changed.
     // Can e.g. be passed as dependency in a useFetch call to reload entity data without showing a loading screen.
@@ -97,12 +98,12 @@ export default function App({ version }: {
      * @param url The API url.
      * @returns The useFetch return value.
      */
-    const fetch = <T,>(url: string): FetchableEntity<T> => { 
+    const fetch = <T,>(url: string): EntityState<T> => { 
         return useFetch<T>(url, authentication, [isLoading]) 
     }
 
     // Fetch data
-    const settings = fetch<Settings>('/api/settings/detail')
+    const settings = fetch<SettingsModel>('/api/settings/detail')
     const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories/list')
     const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups/list')
     const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
