@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
  * 'data' that contains the data of the entity, as well as a state variable 'isLoading' that is true 
  * while the data is loading. 
  * 
- * The hook returns an object of the FetchableEntity<DataType> type, i.e. an object that consists of 
+ * The hook returns an object of the EntityState<DataType> type, i.e. an object that consists of 
  * the 'data' and 'isLoading' state variables as well as their setter functions and a 'load' function.
  * 
  * Usually, one can use the 'isLoading' property to decide in a component whether a loading screen 
@@ -52,7 +52,7 @@ function useFetch<DataType = any>(
         setData: SetState<DataType>,
         setLoading: SetState<boolean>,
     ) => void,
-): FetchableEntity<DataType> {
+): EntityState<DataType> {
     /**
      * The data that the API provides. Can usually be an object or an array of objects, but any 
      * other type is also allowed.

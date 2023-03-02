@@ -33,12 +33,12 @@ type SetState<T> = React.Dispatch<React.SetStateAction<T>>
 
 type SetLoadingAction = (value?: React.SetStateAction<boolean>) => void
 
-type FetchableEntity<Type = any> = {
+type EntityState<Type = any> = {
     data: Type
-    setData: React.Dispatch<React.SetStateAction<Type>>
+    setData: SetState<Type>
     isLoading: boolean
     /** @deprecated Use load instead. */
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setLoading: SetState<boolean>
     load: SetLoadingAction
 }
 
