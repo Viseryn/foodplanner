@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Service;
+<?php namespace App\Service;
 
 use App\Entity\File;
 use App\Repository\FileRepository;
@@ -10,19 +8,21 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class FileUploader 
 {
+    private FileRepository $fileRepository;
+    private SluggerInterface $slugger;
+    private string $targetDirectory;
+
     public function __construct(
-        $targetDirectory, 
-        SluggerInterface $slugger, 
         FileRepository $fileRepository,
+        SluggerInterface $slugger, 
+        string $targetDirectory, 
     ) {
-        $this->targetDirectory = $targetDirectory;
-        $this->slugger = $slugger;
         $this->fileRepository = $fileRepository;
+        $this->slugger = $slugger;
+        $this->targetDirectory = $targetDirectory;
     }
 
     /**
-     * getTargetDirectory
-     *
      * @return string The configured targetDirectory in /config/services.yaml.
      */
     public function getTargetDirectory(): string
@@ -31,11 +31,8 @@ class FileUploader
     }
 
     /**
-     * upload
-     * 
-     * Uploads a file to a specified directory.
-     * If $public is true, the file is uploaded to /public/$directory/,
-     * otherwise to /data/upload/$directory/.
+     * Uploads a file to a specified directory. If $public is true, the file is uploaded to 
+     * /public/$directory/, otherwise to /data/upload/$directory/.
      *
      * @param UploadedFile $file File data, e.g. input delivered through a form.
      * @param string|null $directory Addition to the configured $targetDirectory, e.g. /img/.
@@ -83,11 +80,7 @@ class FileUploader
     }
 
     /**
-     * getExtension
-     * 
-     * Returns the extension of a File object 
-     * or a string that is a filename (with or 
-     * without directory).
+     * Returns the extension of a File object or a string that is a filename (with or without directory).
      *
      * @param File|string $file A File object or a filename.
      * @return string|null The extension of the file.
@@ -104,10 +97,7 @@ class FileUploader
     }
 
     /**
-     * isImage
-     * 
-     * Checks whether a File object or a string 
-     * that contains a filename is an image file.
+     * Checks whether a File object or a string that contains a filename is an image file.
      *
      * @param File|string $file A File object or a filename.
      * @return boolean Returns true if $file is an image and false otherwise.
@@ -123,10 +113,7 @@ class FileUploader
     }
 
     /**
-     * exists
-     * 
-     * Checks whether a File object, or a string, 
-     * corresponds to an actual file on the server.
+     * Checks whether a File object, or a string, corresponds to an actual file on the server.
      *
      * @param File|string $file A File object, e.g. from the database, or a filename (including the path).
      * @return boolean Returns true if a file corresponding to the argument exists.
@@ -146,10 +133,7 @@ class FileUploader
     }
 
     /**
-     * remove
-     * 
-     * Removes a file corresponding to a File object or 
-     * a string containing a path from the server.
+     * Removes a file corresponding to a File object or a string containing a path from the server. 
      * Also removes a corresponding database entry.
      *
      * @param File|string $file A File object, e.g. from the database, or a filename (including the path).

@@ -2,16 +2,14 @@
  * ./assets/pages/Logout/Logout.tsx *
  ************************************/
 
+import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 
 /**
- * Logout
- * 
  * A component that logs a user out and redirects to the login page.
  * 
  * @component

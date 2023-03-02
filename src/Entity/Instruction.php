@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InstructionRepository::class)]
-class Instruction
+class Instruction implements EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,10 +20,6 @@ class Instruction
     #[ORM\ManyToOne(inversedBy: 'instructions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
-
-    public function __toString() {
-        return $this->instruction;
-    }
 
     public function getId(): ?int
     {

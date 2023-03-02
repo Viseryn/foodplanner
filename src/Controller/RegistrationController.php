@@ -6,6 +6,7 @@ use App\Entity\Settings;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\SettingsRepository;
+use App\Service\RefreshDataTimestampUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,14 +14,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Registration API
+ */
 class RegistrationController extends AbstractController
 {
+    /**
+     * Registration Register API
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param Request $request
+     * @param SettingsRepository $settingsRepository
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @return Response
+     */
     #[Route('/api/register', name: 'api_register')]
     public function register(
+        EntityManagerInterface $entityManager, 
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
         Request $request, 
-        UserPasswordHasherInterface $userPasswordHasher, 
-        EntityManagerInterface $entityManager,
         SettingsRepository $settingsRepository,
+        UserPasswordHasherInterface $userPasswordHasher,
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -46,7 +61,7 @@ class RegistrationController extends AbstractController
             ;
             $settingsRepository->save($settings, true);
 
-            return new Response();
+            $refreshDataTimestampUtil->updateTimestamp();
         }
         
         return new Response();

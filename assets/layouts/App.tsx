@@ -30,9 +30,15 @@ import AddGroup from '@/pages/Settings/AddGroup'
 import Settings from '@/pages/Settings/Settings'
 import ShoppingList from '@/pages/ShoppingList/ShoppingList'
 
+import DayModel from '@/types/DayModel'
+import IngredientModel from '@/types/IngredientModel'
+import MealCategoryModel from '@/types/MealCategoryModel'
+import RecipeModel from '@/types/RecipeModel'
+import SettingsModel from '@/types/SettingsModel'
+import UserGroupModel from '@/types/UserGroupModel'
+import UserModel from '@/types/UserModel'
+
 /**
- * App
- * 
  * Main component of the application. Handles the routing and provides state variables and 
  * setter functions for various global components, such as the sidebar or the shopping list.
  * 
@@ -49,7 +55,7 @@ export default function App({ version }: {
     version: string
 }): JSX.Element {
     // The User and Authentication objects
-    const [user, authentication]: [FetchableEntity<User>, Authentication] = useAuthentication()
+    const [user, authentication]: [EntityState<UserModel>, Authentication] = useAuthentication()
 
     // Will be updated by useRefreshDataTimestamp and set to true if the timestamp changed.
     // Can e.g. be passed as dependency in a useFetch call to reload entity data without showing a loading screen.
@@ -92,25 +98,25 @@ export default function App({ version }: {
      * @param url The API url.
      * @returns The useFetch return value.
      */
-    const fetch = <T,>(url: string): FetchableEntity<T> => { 
+    const fetch = <T,>(url: string): EntityState<T> => { 
         return useFetch<T>(url, authentication, [isLoading]) 
     }
 
     // Fetch data
-    const settings = fetch<Settings>('/api/settings')
-    const mealCategories = fetch<Array<MealCategory>>('/api/mealcategories/list')
-    const userGroups = fetch<Array<UserGroup>>('/api/usergroups/list')
-    const shoppingList = fetch<Array<Ingredient>>('/api/shoppinglist/ingredients')
-    const pantry = fetch<Array<Ingredient>>('/api/pantry/ingredients')
-    const recipes = fetch<Array<Recipe>>('/api/recipes/list')
-    const days = fetch<Array<Day>>('/api/days/list')
+    const settings = fetch<SettingsModel>('/api/settings/detail')
+    const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories/list')
+    const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups/list')
+    const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
+    const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
+    const recipes = fetch<Array<RecipeModel>>('/api/recipes/list')
+    const days = fetch<Array<DayModel>>('/api/days/list')
 
     // Render App component
     return (
         <BrowserRouter>
             <div className="flex flex-col md:flex-row items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900 min-w-[375px]">
                 <SidebarDrawer {...{
-                    isDrawerVisible, setDrawerVisible, version, user
+                    isDrawerVisible, setDrawerVisible, version, authentication
                 }} />
 
                 <Sidebar {...{

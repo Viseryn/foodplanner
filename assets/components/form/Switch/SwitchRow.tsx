@@ -3,11 +3,10 @@
  ******************************************/
 
 import React from 'react'
+
 import SwitchWidget from './SwitchWidget'
 
 /**
- * SwitchRow
- * 
  * A component that renders a Switch button with a corresponding label inside a div container.
  * 
  * @component

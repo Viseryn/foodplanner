@@ -5,26 +5,23 @@
 import React from 'react'
 
 /**
- * Notification
- * 
- * A component that renders a colored notification box
- * containing a message. 
+ * A component that renders a colored notification box containing a message. 
  * 
  * @component
  * @param props
- * @param props.title The title of the notification box.
- * @param props.color The color of the notification box. Default is gray.
- * @param props.icon The Material Symbols identifier for the icon. Default is 'info'.
- * @param props.children The DOM children of the Notification component.
+ * @param props.title Optional: The title of the notification box.
+ * @param props.color Optional: The color of the notification box. Default is 'gray'.
+ * @param props.icon Optional: The Material Symbols identifier for the icon. Default is 'info'.
+ * @param props.children Optional: The DOM children of the Notification component.
  * 
  * @example
  * <Notification color="red" icon="info" title="Error 404">
  *     The page you requested could not be found.
  * </Notification>
  */
-export default function Notification({ title, color = '', icon = 'info', children }: {
+export default function Notification({ title, color = 'gray', icon = 'info', children }: {
     title?: string
-    color?: string
+    color?: 'red' | 'green' | 'gray'
     icon?: string
     children?: React.ReactNode
 }): JSX.Element {
@@ -44,10 +41,10 @@ export default function Notification({ title, color = '', icon = 'info', childre
                 {icon}
             </span>
             <div>
-                <div className="font-semibold">{title}</div>
+                {title && <div className="font-semibold">{title}</div>}
 
-                {children !== undefined &&
-                    <div className={title !== undefined ? 'mt-2' : ''}>
+                {children &&
+                    <div className={title ? 'mt-2' : ''}>
                         {children}
                     </div>
                 }

@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -37,11 +37,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->userGroups = new ArrayCollection();
-    }
-
-    public function __toString()
-    {
-        return $this->username;
     }
 
     public function getId(): ?int

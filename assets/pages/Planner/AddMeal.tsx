@@ -2,21 +2,24 @@
  * ./assets/pages/Planner/AddMeal.tsx *
  **************************************/
 
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
 
-import { InputLabel } from '@/components/form/Input'
-import { RadioWidget } from '@/components/form/Radio'
-import { SelectWidget } from '@/components/form/Select'
+import Label from '@/components/form/Label'
+import RadioWidget from '@/components/form/Radio/RadioWidget'
+import SelectWidget from '@/components/form/Select/SelectWidget'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import DayModel from '@/types/DayModel'
+import MealCategoryModel from '@/types/MealCategoryModel'
+import RecipeModel from '@/types/RecipeModel'
+import UserGroupModel from '@/types/UserGroupModel'
+import getOptions from '@/util/getOptions'
 
 /**
- * AddMeal
- * 
  * A component that renders a form to add a new meal. 
  * Consists of a list of Days, UserGroups, Recipes and MealCategories.
  * 
@@ -24,11 +27,11 @@ import Spinner from '@/components/ui/Spinner'
  * 
  * @todo Skeleton colors and sizes
  */
-export default function AddMeal({ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }: {
-    days: FetchableEntity<Array<Day>>
-    mealCategories: FetchableEntity<Array<MealCategory>>
-    recipes: FetchableEntity<Array<Recipe>>
-    userGroups: FetchableEntity<Array<UserGroup>>
+export default function AddMeal({ days, recipes, mealCategories, userGroups, setSidebar, setTopbar }: {
+    days: EntityState<Array<DayModel>>
+    recipes: EntityState<Array<RecipeModel>>
+    mealCategories: EntityState<Array<MealCategoryModel>>
+    userGroups: EntityState<Array<UserGroupModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -61,10 +64,7 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
             try {
                 // Send form data to Meal Add API
                 await axios.post('/api/meals/add', formData)
-                days.setLoading(true)
-                
-                // Refresh Data Timestamp
-                await axios.get('/api/refresh-data-timestamp/set')
+                days.load()
             } catch (error) {
                 console.log(error)
             }
@@ -92,98 +92,95 @@ export default function AddMeal({ days, mealCategories, recipes, userGroups, set
     }, [])
 
     // Render AddMeal
-    return (
-        <div className="pb-24 md:pb-4 md:w-[450px]">
-            <Spacer height="6" />
+    return <div className="pb-24 md:pb-4 md:w-[450px]">
+        <Spacer height="6" />
 
-            {isLoading ? (
-                <Spinner />
-            ) : (
-                <div className="mx-4 md:mx-0">
-                    <form onSubmit={handleSubmit}>
-                        <Card>
-                            <InputLabel htmlFor="meal_day" label="Für welchen Tag?" />
-                            {days.isLoading ? (
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <SelectWidget
-                                    id="meal_day"
-                                    options={days.data}
-                                    defaultValue={id}
-                                />
-                            )}
+        {isLoading ? (
+            <Spinner />
+        ) : (
+            <div className="mx-4 md:mx-0">
+                <form onSubmit={handleSubmit}>
+                    <Card>
+                        <Label htmlFor="meal_day">Für welchen Tag?</Label>
+                        {days.isLoading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <SelectWidget
+                                id="meal_day"
+                                options={getOptions(days.data)}
+                                {...{
+                                    defaultValue: id
+                                }}
+                            />
+                        )}
 
-                            <Spacer height="6" />
+                        <Spacer height="6" />
 
-                            <InputLabel htmlFor="meal_mealCategory" label="Wann ist die Mahlzeit?" />
-                            {mealCategories.isLoading ? (
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <RadioWidget
-                                    id="meal_mealCategory" 
-                                    options={mealCategories.data} /** @todo Make MealCategory type according to PHP Entity and create a separate options array here. */
-                                    required={true}
-                                />
-                            )}
-                        </Card>
+                        <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
+                        {mealCategories.isLoading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <RadioWidget
+                                id="meal_mealCategory"
+                                options={getOptions(mealCategories.data)}
+                            />
+                        )}
+                    </Card>
 
-                        <Spacer height="4" />
+                    <Spacer height="4" />
 
-                        <Card>
-                            <InputLabel htmlFor="meal_recipe" label="Welches Rezept?" />
-                            {recipes.isLoading ? (
-                                <div role="status" className="max-w-sm animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <SelectWidget
-                                    id="meal_recipe"
-                                    options={recipes.data}
-                                    required="required"
-                                />
-                            )}
+                    <Card>
+                        <Label htmlFor="meal_recipe">Welches Rezept?</Label>
+                        {recipes.isLoading ? (
+                            <div role="status" className="max-w-sm animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <SelectWidget
+                                id="meal_recipe"
+                                options={getOptions(recipes.data)}
+                            />
+                        )}
 
-                            <Spacer height="6" />
+                        <Spacer height="6" />
 
-                            <InputLabel htmlFor="meal_userGroup" label="Für wen ist die Mahlzeit?" />
-                            {userGroups.isLoading ? (
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <RadioWidget
-                                    id="meal_userGroup" 
-                                    options={userGroups.data}
-                                    required={true}
-                                />
-                            )}
-                        </Card>
+                        <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
+                        {userGroups.isLoading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <RadioWidget
+                                id="meal_userGroup"
+                                options={getOptions(userGroups.data)}
+                            />
+                        )}
+                    </Card>
 
-                        <div className="flex justify-end pb-[5.5rem] md:pb-0 md:pt-4">
-                            {!days.isLoading 
-                                && !mealCategories.isLoading 
-                                && !recipes.isLoading 
-                                && !userGroups.isLoading 
-                                && <Button
-                                    type="submit"
-                                    icon="save" 
-                                    label="Speichern" 
-                                    outlined={true}
-                                    floating={true}
-                                />
-                            }
-                        </div> 
-                    </form>
-                </div>
-            )}
-        </div>
-    )
+                    <div className="flex justify-end pb-[5.5rem] md:pb-0 md:pt-4">
+                        {!days.isLoading 
+                            && !mealCategories.isLoading 
+                            && !recipes.isLoading 
+                            && !userGroups.isLoading 
+                            && <Button
+                                type="submit"
+                                icon="save" 
+                                label="Speichern" 
+                                outlined={true}
+                                isFloating={true}
+                            />
+                        }
+                    </div> 
+                </form>
+            </div>
+        )}
+    </div>
 }

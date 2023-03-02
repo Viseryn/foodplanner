@@ -1,7 +1,8 @@
-<?php
+<?php namespace App\Service;
 
-namespace App\Service;
-
+/**
+ * PantryUtil
+ */
 class PantryUtil extends StorageUtil
 {
     public function deleteAll(): StorageUtil 

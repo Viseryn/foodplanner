@@ -5,12 +5,10 @@
 import { useEffect, useState } from 'react'
 
 /**
- * useScrollDirection
- * 
  * @returns Returns the scroll direction as string. Return value is "up" or "down".
  */
-function useScrollDirection(): string {
-    const [scrollDirection, setScrollDirection] = useState<string>('');
+function useScrollDirection(): 'up' | 'down' {
+    const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up')
 
     useEffect(() => {
         let lastScroll = window.pageYOffset
@@ -20,12 +18,10 @@ function useScrollDirection(): string {
             const scroll: number = window.pageYOffset
 
             // Check the direction of the scrolling
-            const direction: string = (scroll > lastScroll) ? "down" : "up"
+            const direction = (scroll > lastScroll) ? "down" : "up"
 
             // Only update the state if the scroll is sufficiently large
-            if (direction !== scrollDirection && 
-                (scroll - lastScroll > 5 || scroll - lastScroll < -5)
-            ) {
+            if (direction != scrollDirection && (scroll - lastScroll > 5 || scroll - lastScroll < -5)) {
                 setScrollDirection(direction)
             }
             

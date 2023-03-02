@@ -3,8 +3,6 @@
  ***********************************************/
 
 /**
- * nameFromId
- * 
  * @param id The id of some form field.
  * @returns The name for the corresponding Symfony form field.
  * 

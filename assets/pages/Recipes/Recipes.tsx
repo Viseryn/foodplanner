@@ -7,19 +7,18 @@ import { Link } from 'react-router-dom'
 
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
+import RecipeModel from '@/types/RecipeModel'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
 import SearchWidget from './components/SearchWidget'
 
 /**
- * Recipes
- * 
- * A component that renders a list of all recipes. At the top, a search bar 
- * can be used to filter the list by recipe title and ingredient names.
+ * A component that renders a list of all recipes. At the top, a search bar can be used to filter 
+ * the list by recipe title and ingredient names.
  * 
  * @component
  */
 export default function Recipes({ recipes, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<Recipe>>
+    recipes: EntityState<Array<RecipeModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -32,7 +31,7 @@ export default function Recipes({ recipes, setSidebar, setTopbar }: {
      * 
      * @todo Implement a more intelligent search with more filters.
      */
-    const recipesFiltered: Array<Recipe> = recipes.isLoading 
+    const recipesFiltered: Array<RecipeModel> = recipes.isLoading 
         ? []
         : recipes.data.filter(recipe => {
             // Return true if there is no search input
@@ -107,7 +106,7 @@ export default function Recipes({ recipes, setSidebar, setTopbar }: {
                                     <Link to={'/recipe/' + recipe.id}>
                                         <img 
                                             className="rounded-xl h-36 w-full object-cover brightness-[.7]" 
-                                            src={recipe.image?.filename != null 
+                                            src={recipe.image
                                                 ? recipe.image?.directory + recipe.image?.filename
                                                 : '/img/default.jpg'
                                             } 

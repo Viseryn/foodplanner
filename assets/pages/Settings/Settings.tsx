@@ -10,22 +10,24 @@ import SwitchRow from '@/components/form/Switch/SwitchRow'
 import Button from '@/components/ui/Buttons/Button'
 import IconButton from '@/components/ui/Buttons/IconButton'
 import Card from '@/components/ui/Card'
-import { SecondHeading } from '@/components/ui/Heading'
+import Heading from '@/components/ui/Heading'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import DayModel from '@/types/DayModel'
+import MealCategoryModel from '@/types/MealCategoryModel'
+import SettingsModel from '@/types/SettingsModel'
+import UserGroupModel from '@/types/UserGroupModel'
  
 /**
- * Settings
- * 
  * A component that renders some user-specific as well as global settings.
  * 
  * @component
  */
 export default function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar }: {
-    settings: FetchableEntity<Settings>
-    userGroups: FetchableEntity<Array<UserGroup>>
-    mealCategories: FetchableEntity<Array<MealCategory>>
-    days: FetchableEntity<Array<Day>>
+    settings: EntityState<SettingsModel>
+    userGroups: EntityState<Array<UserGroupModel>>
+    mealCategories: EntityState<Array<MealCategoryModel>>
+    days: EntityState<Array<DayModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -35,24 +37,15 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * 
      * @param index The index of the group that shall be the standard group.
      */
-    const handleSetStandardGroup = (index: number) => {
-        let groups: Array<UserGroup> = [...userGroups.data]
+    const handleSetStandardGroup = (index: number): void => {
+        let groups: Array<UserGroupModel> = [...userGroups.data]
 
         groups.forEach((group, i) => {
-            if (index === i) {
-                group.isStandard = true
-                group.checked = 'checked'
-            } else {
-                group.isStandard = false
-                group.checked = ''
-            }
+            group.standard = (index === i)
         })
 
         userGroups.setData(groups)
         axios.post('/api/usergroups/standard', JSON.stringify(groups))
-                
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
     }
 
     /**
@@ -61,24 +54,15 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * 
      * @param index The index of the category that shall be the standard category.
      */
-    const handleSetStandardMealCategory = (index: number) => {
-        let categories: Array<MealCategory> = [...mealCategories.data]
+    const handleSetStandardMealCategory = (index: number): void => {
+        let categories: Array<MealCategoryModel> = [...mealCategories.data]
 
         categories.forEach((category, i) => {
-            if (index === i) {
-                category.isStandard = true
-                category.checked = 'checked'
-            } else {
-                category.isStandard = false
-                category.checked = ''
-            }
+            category.standard = (index === i)
         })
 
         mealCategories.setData(categories)
         axios.post('/api/mealcategories/standard', JSON.stringify(categories))
-                
-        // Refresh Data Timestamp
-        axios.get('/api/refresh-data-timestamp/set')
     }
 
     /**
@@ -87,9 +71,9 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * 
      * @param index The index of the UserGroup that shall be deleted.
      */
-    const handleDeleteGroup = (index: number) => {
+    const handleDeleteGroup = (index: number): void => {
         // Get id
-        const id: number = userGroups.data[index].value ?? -1
+        const id: number = userGroups.data[index].id ?? -1
 
         // Show warning with confirm and cancel buttons
         swal({
@@ -122,7 +106,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             }
 
             // Cancel if the given group is standard
-            if (userGroups.data[index].isStandard) {
+            if (userGroups.data[index].standard) {
                 swal({
                     dangerMode: true,
                     icon: 'error',
@@ -143,9 +127,6 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                 .then(() => {
                     userGroups.load()
                     days.load()
-                
-                    // Refresh Data Timestamp
-                    axios.get('/api/refresh-data-timestamp/set')
                 })
         })
     }
@@ -154,7 +135,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * Updates the showPantry property of the Settings object. After each update, the 
      * Update Pantry Settings API will  be called (as long as the Settings are not loading).
      */
-    const handlePantrySettings = () => {
+    const handlePantrySettings = (): void => {
         settings.setData({ 
             ...settings.data,
             showPantry: !settings.data.showPantry,
@@ -167,7 +148,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             return
         }
 
-        axios.post('/api/settings/pantry', JSON.stringify(settings.data))
+        axios.post('/api/settings/updatePantry', JSON.stringify(settings.data))
     }, [settings.data])
 
     // Load layout
@@ -187,7 +168,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             <Spacer height="6" />
 
             <div className="mx-4 md:mx-0">
-                <SecondHeading style="pl-2 mb-2">Vorratskammer anzeigen</SecondHeading>
+                <Heading size="xl" style="pl-2 mb-2">Vorratskammer anzeigen</Heading>
                 <Card>
                     <p className="text-sm">
                         Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt werden soll oder nicht. Damit verbundene Funktionen werden dann ebenfalls ein- oder ausgeblendet.
@@ -207,7 +188,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
 
                 <Spacer height="10" />
 
-                <SecondHeading style="pl-2 mb-2">Benutzergruppen verwalten</SecondHeading>
+                <Heading size="xl" style="pl-2 mb-2">Benutzergruppen verwalten</Heading>
                 <Card>
                     <p className="text-sm">
                         Hier kannst du neue Benutzergruppen hinzufügen, bestehende Gruppen entfernen und eine Standardgruppe für neue Mahlzeiten festlegen.
@@ -224,7 +205,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                     <div key={index} className="flex justify-between items-center">
                                         <div className="flex items-center">
                                             <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                            {group.name} ({group.users.join(', ')})
+                                            {group.name} ({group.users.map(user => user.username).join(', ')})
                                         </div>
                                         <div className="flex gap-2">
                                             <IconButton 
@@ -235,7 +216,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                             </IconButton>
 
                                             <IconButton 
-                                                outlined={!group.isStandard} 
+                                                outlined={!group.standard} 
                                                 onClick={() => handleSetStandardGroup(index)}
                                             >
                                                 favorite
@@ -262,7 +243,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
 
                 <Spacer height="10" />
 
-                <SecondHeading style="pl-2 mb-2">Standardzeit für Mahlzeiten</SecondHeading>
+                <Heading size="xl" style="pl-2 mb-2">Standardzeit für Mahlzeiten</Heading>
                 <Card>
                     <p className="text-sm">
                         Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
@@ -281,7 +262,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                         {category.name}
                                     </div>
                                         <IconButton 
-                                            outlined={!category.isStandard} 
+                                            outlined={!category.standard} 
                                             onClick={() => handleSetStandardMealCategory(index)}>
                                             favorite
                                         </IconButton>

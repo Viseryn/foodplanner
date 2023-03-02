@@ -5,8 +5,6 @@
 import React from 'react'
 
 /**
- * IconButton
- * 
  * A component that renders a button with only an icon, for example for the topbar.
  * 
  * @component

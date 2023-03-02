@@ -13,22 +13,23 @@ import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import useFetch from '@/hooks/useFetch'
+import UserGroupModel from '@/types/UserGroupModel'
+import UserModel from '@/types/UserModel'
+import getOptions from '@/util/getOptions'
 
 /**
- * AddGroup
- * 
  * A component that renders a form for adding new UserGroups.
  * 
  * @component
  */
-export default function AddGroup({ authentication, userGroups, setSidebar, setTopbar, ...props }: {
+export default function AddGroup({ authentication, userGroups, setSidebar, setTopbar }: {
     authentication: Authentication
-    userGroups: FetchableEntity<Array<UserGroup>>
+    userGroups: EntityState<Array<UserGroupModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }) {
     // A list of all users
-    const users = useFetch<Array<User>>('/api/user/list', authentication)
+    const users = useFetch<Array<UserModel>>('/api/user/list', authentication)
 
     // A function that can change the location. Needed for the redirect after submit.
     const navigate: NavigateFunction = useNavigate()
@@ -36,26 +37,10 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
     // Whether the page is loading. Will be true while the form data is processed by the API.
     const [isLoading, setLoading] = useState<boolean>(false)
 
-    // The options for the user multiselect
-    const [userOptions, setUserOptions] = useState<Array<{ id: string, label?: string }>>([])
-
-    // Update userOptions when users has been loaded
-    useEffect(() => {
-        if (!users.isLoading) {
-            setUserOptions(users.data?.map(user => {
-                return { id: user.id?.toString() ?? '', label: user.username }
-            }))
-        } else {
-            setUserOptions([{ id: '', label: 'Benutzer werden geladen ...'}])
-        }
-    }, [users.isLoading])
-
     /**
      * Submits the form data to the UserGroup Add API.
      * 
      * @param event A form submit event.
-     * 
-     * @todo Test this.
      */
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         if (users.isLoading) {
@@ -68,7 +53,6 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
         setLoading(true)
 
         await axios.post('/api/usergroups/add', formData)
-        await axios.get('/api/refresh-data-timestamp/set')
 
         userGroups.load()
         navigate('/settings')
@@ -128,29 +112,32 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
                             
                             <Spacer height="6" />
 
-                            <SelectRow
-                                id="user_group_users"
-                                label="Welche Benutzer sollen zur Gruppe gehören?"
-                                options={userOptions}
-                                {...{
-                                    name: "user_group[users][]",
-                                    multiple: true,
-                                    required: true,
-                                    size: userOptions.length,
-                                    className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden'
-                                }}
-                            />
+                            {users.isLoading 
+                                ? <Spinner />
+                                : <SelectRow
+                                    id="user_group_users"
+                                    label="Welche Benutzer sollen zur Gruppe gehören?"
+                                    options={getOptions(users.data)}
+                                    {...{
+                                        name: "user_group[users][]",
+                                        multiple: true,
+                                        required: true,
+                                        size: getOptions(users.data).length,
+                                        className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden'
+                                    }}
+                                />
+                            }
                         </Card>
 
                         <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
-                            <Button
+                            {!users.isLoading && <Button
                                 type="submit" 
                                 icon="save" 
                                 label="Speichern" 
                                 outlined={true}
                                 isElevated={true}
                                 isFloating={true}
-                            />
+                            />}
                         </div>
                     </form>
                 </div>

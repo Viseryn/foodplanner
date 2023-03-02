@@ -23,11 +23,6 @@ class File
     #[ORM\Column]
     private ?bool $public = null;
 
-    public function __toString() 
-    {
-        return $this->getDirectory() . $this->getFilename();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -81,6 +76,9 @@ class File
      *
      * @param array<string, bool>|null $config An array with the possible keys "showRootDir", "showFilename", which can be set to a boolean value. By default, showRootDir is false and showFilename is true.
      * @return string The path of the File object, dependent of the configuration. Always begins with a '/'.
+     * 
+     * @deprecated 
+     * @todo Move this to utils.
      */
     public function getPath(?array $config = []): string 
     {

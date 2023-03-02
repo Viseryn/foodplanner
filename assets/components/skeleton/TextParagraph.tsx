@@ -5,12 +5,12 @@
 import React from 'react'
 
 /**
- * TextParagraph
- * 
  * A component that renders a text skeleton, e.g. for loading screens.
  * 
  * @component
  * @example <TextParagraph />
+ * 
+ * @todo Make this customizable.
  */
 export default function TextParagraph(): JSX.Element {
     return (

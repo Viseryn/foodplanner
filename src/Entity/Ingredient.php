@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
-class Ingredient
+class Ingredient implements EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,10 +34,6 @@ class Ingredient
 
     #[ORM\Column(nullable: true)]
     private ?bool $checked = null;
-
-    public function __toString() {
-        return $this->name;
-    }
 
     public function getId(): ?int
     {

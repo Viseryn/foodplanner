@@ -9,10 +9,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * InstallController
+ */
 class InstallController extends AbstractController
 {
     /**
      * Installation API
+     * 
+     * This API should be directly called after creating the first user.
+     * The file will self-destroy after the procedure:
+     * 
+     * 1) Gives the first user admin rights (necessary for using the app).
+     * 2) Creates the first UserGroup object (necessary for creating meals).
+     * 
+     * Further steps may be added in the future.
      * 
      * @return Response
      */
@@ -41,6 +52,7 @@ class InstallController extends AbstractController
 
         // Self destruct
         unlink(__FILE__);
+
         return new Response('Success! You can use FoodPlanner now.');
     }
 }

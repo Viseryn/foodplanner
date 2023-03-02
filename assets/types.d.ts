@@ -29,105 +29,20 @@ type TopbarConfiguration = {
     style?: string                            /** Additional styling classes for the topbar on larger screns (e.g. a max-width to match the main container). */
 }
 
+type SetState<T> = React.Dispatch<React.SetStateAction<T>>
+
 type SetLoadingAction = (value?: React.SetStateAction<boolean>) => void
 
-type FetchableEntity<Type = any> = {
+type EntityState<Type = any> = {
     data: Type
-    setData: React.Dispatch<React.SetStateAction<Type>>
+    setData: SetState<Type>
     isLoading: boolean
-    /**
-     * @deprecated Use load instead.
-     */
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    /** @deprecated Use load instead. */
+    setLoading: SetState<boolean>
     load: SetLoadingAction
-}
-
-type User = {
-    id?: number
-    username?: string
-    roles?: Array<string>
 }
 
 type Authentication = {
     isAuthenticated: boolean
     isLoading: boolean
-}
-
-type Settings = {
-    showPantry: boolean
-}
-
-/** @todo Refactor */
-type UserGroup = {
-    name: string
-    users: Array<string>
-    isStandard: boolean
-    icon: string
-    id: string
-    value: number
-    label: string
-    checked: "checked" | ""
-}
-
-/** @todo Refactor */
-type MealCategory = {
-    name: string
-    isStandard: boolean
-    icon: string
-    id: string
-    value: number
-    label: string
-    checked: "checked" | ""
-}
-
-/** @todo Refactor API */
-type Recipe = {
-    id: number
-    title: string
-    portion_size: number
-    instructions: Array<Instruction>
-    ingredients: Array<Ingredient>
-    image: Image
-}
-
-type Image = {
-    id: number
-    filename: string
-    directory: string
-    public: boolean
-}
-
-type Instruction = {
-    id: number
-    instruction: string
-}
-
-/** @todo Refactor API */
-type Ingredient = {
-    id: number
-    name: string
-    quantity_value: string
-    quantity_unit: string
-    storage: { id: number } /** @todo */
-    position: number
-    checked: boolean
-    editable?: boolean
-}
-
-/** @todo Refactor API */
-type Meal = {
-    [x: string]: ReactNode /** @deprecated */
-    id: number
-    meal_category: MealCategory
-    recipe: Recipe
-    user_group: UserGroup | string /** @deprecated */ | ReactNode /** @deprecated */
-    user_group_icon: string /** @deprecated */
-}
-
-type Day = {
-    id: number
-    weekday: string
-    title: string
-    date: string
-    meals: Array<Meal>
 }

@@ -10,8 +10,11 @@ import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import TextParagraph from '@/components/skeleton/TextParagraph'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
-import { SecondHeading } from '@/components/ui/Heading'
+import Heading from '@/components/ui/Heading'
 import Spacer from '@/components/ui/Spacer'
+import IngredientModel from '@/types/IngredientModel'
+import RecipeModel from '@/types/RecipeModel'
+import SettingsModel from '@/types/SettingsModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 
 /**
@@ -20,15 +23,15 @@ import getFullIngredientName from '@/util/getFullIngredientName'
  * A component that shows a single recipe in detail.
  * 
  * @todo Change the color of the select arrow.
- * @todo Fix TypeScript errors due to document.getElement...
+ * @todo Write an easier to read skeleton.
  * 
  * @component
  */
 export default function Recipe({ recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<Recipe>>
-    shoppingList: FetchableEntity<Array<Ingredient>>
-    pantry: FetchableEntity<Array<Ingredient>>
-    settings: FetchableEntity<Settings>
+    recipes: EntityState<Array<RecipeModel>>
+    shoppingList: EntityState<Array<IngredientModel>>
+    pantry: EntityState<Array<IngredientModel>>
+    settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }) {
@@ -44,10 +47,10 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     const navigate: NavigateFunction = useNavigate()
 
     // The currently selected recipe. Will be updated whenever id changes.
-    const [recipe, setRecipe] = useState<Recipe>({} as Recipe)
+    const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
 
     // A temporary state variable for the recipe. This object changes whenever recipe or portionSize change.
-    const [tmpRecipe, setTmpRecipe] = useState<Recipe>({} as Recipe)
+    const [tmpRecipe, setTmpRecipe] = useState<RecipeModel>({} as RecipeModel)
 
     // The portion size. Can be selected in an input field in the ingredients section.
     // Whenever this value is changed, tmpRecipe will be updated.
@@ -65,7 +68,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     /**
      * Handles adding the whole recipe to the ShoppingList. Is invoked by the SAB.
      */
-    const handleAddShoppingList = (argRecipe: Recipe): void => {
+    const handleAddShoppingList = (argRecipe: RecipeModel): void => {
         // Collect all ingredients
         let ingredients: Array<string> = []
 
@@ -86,11 +89,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     /**
      * Handles adding a single ingredient to the ShoppingList. 
      * Can be invoked by the IconButtons next to each ingredient.
-     * 
-     * @todo Test this
      */
-    const handleAddSingleToShoppingList = async (ingredient: Ingredient): Promise<void> => {
-        // API call
+    const handleAddSingleToShoppingList = async (ingredient: IngredientModel): Promise<void> => {
         await axios.post('/api/shoppinglist/add', [getFullIngredientName(ingredient)])
         shoppingList.load()
     }
@@ -98,7 +98,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     /**
      * Handles adding the whole recipe to the Pantry. Is invoked by a button under the ingredient list.
      */
-    const handleAddPantry = (argRecipe: Recipe): void => {
+    const handleAddPantry = (argRecipe: RecipeModel): void => {
         // Collect all ingredients
         let ingredients: Array<string> = []
 
@@ -119,11 +119,9 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Handles adding a single ingredient to the Pantry. 
      * Can be invoked by the IconButtons next to each ingredient.
      */
-    const handleAddSingleToPantry = (ingredient: Ingredient): void => {
-        // API call
-        axios
-            .post('/api/pantry/add', [getFullIngredientName(ingredient)])
-            .then(() => pantry.load())
+    const handleAddSingleToPantry = async (ingredient: IngredientModel): Promise<void> => {
+        await axios.post('/api/pantry/add', [getFullIngredientName(ingredient)])
+        pantry.load()
     }
     
     // Initializes the recipe state variable. Each time the id parameter changes, the 
@@ -134,7 +132,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         }
 
         // Find correct recipe
-        const queryResult: Array<Recipe> = recipes.data.filter(recipe => recipe.id.toString() == id)
+        const queryResult: Array<RecipeModel> = recipes.data.filter(recipe => recipe.id.toString() == id)
         setRecipe(queryResult[0])
 
         // If recipe does not exist, redirect to 404 page
@@ -151,7 +149,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         setTmpRecipe(recipe)
         
         // Set initial portion size
-        setPortionSize(recipe.portion_size)
+        setPortionSize(recipe.portionSize)
     }, [recipe, recipes.data])
 
     // Calculate the ingredient quantities depending on selected portionSize
@@ -160,29 +158,28 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             return
         }
             
-        let newRecipe: Recipe = {...recipe}
+        let newRecipe: RecipeModel = {...recipe}
         newRecipe.ingredients = []
-        newRecipe.portion_size = portionSize
+        newRecipe.portionSize = portionSize
 
         recipe.ingredients?.forEach(ingredient => {
-            let newIngredient: Ingredient = {...ingredient}
+            let newIngredient: IngredientModel = {...ingredient}
 
-            let newQuantityValue: Fraction = new Fraction(ingredient.quantity_value ? ingredient.quantity_value : '0')
+            let newQuantityValue: Fraction = new Fraction(ingredient.quantityValue ? ingredient.quantityValue : '0')
 
-            newIngredient['quantity_value'] = newQuantityValue
-                .div(new Fraction(recipe.portion_size))
+            newIngredient['quantityValue'] = newQuantityValue
+                .div(new Fraction(recipe.portionSize))
                 .mul(new Fraction(portionSize))
                 .toFraction(true)
             
-            if (newIngredient['quantity_value'] === '0') {
-                newIngredient['quantity_value'] = ''
+            if (newIngredient['quantityValue'] === '0') {
+                newIngredient['quantityValue'] = ''
             }
 
             newRecipe.ingredients.push(newIngredient)
         })
 
-        // Set the new calculated recipe in tmpRecipe.
-        // This does NOT trigger a reassignment of portionSize.
+        // Set the new calculated recipe in tmpRecipe. This does NOT trigger a reassignment of portionSize.
         setTmpRecipe(newRecipe)
     }, [portionSize])
 
@@ -259,7 +256,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                     <div className="mx-4 md:ml-0">
                         <Spacer height="10" />
 
-                        <SecondHeading style="ml-2">
+                        <Heading size="xl" style="ml-2">
                             Zutaten für 
                             <select
                                 value={portionSize}
@@ -276,7 +273,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                 )}
                             </select>
                             {portionSize == 1 ? 'Portion' : 'Portionen'}
-                        </SecondHeading>
+                        </Heading>
 
                         <Spacer height="4" />
 
@@ -339,7 +336,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                     <div className="mx-4 md:ml-0">
                         <Spacer height="10" />
 
-                        <SecondHeading style="ml-2">Zubereitung</SecondHeading>
+                        <Heading size="xl" style="ml-2">Zubereitung</Heading>
 
                         <Spacer height="4" />
 

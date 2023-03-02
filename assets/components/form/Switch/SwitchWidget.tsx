@@ -3,11 +3,10 @@
  *********************************************/
 
 import React from 'react'
+
 import nameFromId from '../util/nameFromId'
 
 /**
- * SwitchWidget
- * 
  * A component that renders a switch button.
  * 
  * @component

@@ -1,7 +1,8 @@
-<?php
+<?php namespace App\Service;
 
-namespace App\Service;
-
+/**
+ * ShoppingListUtil
+ */
 class ShoppingListUtil extends StorageUtil
 {
     public function deleteAll(): StorageUtil

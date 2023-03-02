@@ -9,66 +9,65 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Settings API
+ */
 #[Route('/api/settings')]
 class SettingsController extends AbstractController
 {
     /**
-     * Settings API
+     * Settings Detail API
      * 
      * Responds with an array of settings.
      *
      * @param SettingsRepository $settingsRepository
      * @return Response
+     * 
+     * @todo Create a type specification.
+     * @todo How do you assert getId()'s existence?
      */
-    #[Route('/', name: 'api_settings')]
-    public function settings(
-        SettingsRepository $settingsRepository
-    ): Response {
-        // Deny access if not logged in
+    #[Route('/detail', name: 'api_settings_detail')]
+    public function detail(SettingsRepository $settingsRepository): Response
+    {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Fetch settings from database
         $settings = $settingsRepository->findOneBy([
             'user' => $this->getUser()?->getId()
         ]);
 
-        // Prepare response
         $response = json_encode([
             'showPantry' => $settings->isShowPantry(),
         ]);
 
-        // Respond pantry settings
         return new JsonResponse($response);
     }
     
     /**
-     * Update Pantry Settings API
+     * Settings Update Pantry API
      * 
      * Updates the Pantry Settings.
      *
      * @param Request $request
      * @param SettingsRepository $settingsRepository
      * @return Response
+     * 
+     * @todo How do you assert getId()'s existence?
      */
-    #[Route('/pantry', name: 'api_settings_pantry', methods: ['GET', 'POST'])]
+    #[Route('/updatePantry', name: 'api_settings_update_pantry', methods: ['GET', 'POST'])]
     public function updatePantry(
         Request $request,
         SettingsRepository $settingsRepository
     ): Response {
-        // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Fetch request content
         $requestContent = json_decode($request->getContent(), true);
 
-        // Update pantry settings
         $settings = $settingsRepository->findOneBy([
             'user' => $this->getUser()?->getId()
         ]);
         $settings->setShowPantry($requestContent['showPantry']);
         $settingsRepository->save($settings, true);
 
-        // Empty response
         return new Response();
     }
 }

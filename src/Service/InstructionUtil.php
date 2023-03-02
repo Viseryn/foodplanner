@@ -1,19 +1,16 @@
-<?php
+<?php namespace App\Service;
 
-namespace App\Service;
-
+use App\Entity\EntityModel;
 use App\Entity\Instruction;
 use Doctrine\Common\Collections\Collection;
-use Exception;
 
-class InstructionUtil 
+/**
+ * InstructionUtil
+ */
+class InstructionUtil extends EntityUtil
 {
-
     /**
-     * transformStringToObject
-     * 
-     * Turns a string which describes an instruction 
-     * into an Instruction object and returns it.
+     * Turns a string which describes an instruction into an Instruction object and returns it.
      * 
      * @param string $instructionString A string that describes an instruction.
      * @return Instruction
@@ -29,10 +26,7 @@ class InstructionUtil
     }
 
     /**
-     * transformStringArrayToObjectArray
-     * 
-     * Turns an array of strings, each describing an instruction,
-     * into an array of Instruction objects and returns it.
+     * Turns an array of strings, each describing an instruction, into an array of Instruction objects and returns it.
      * 
      * @param string[] $instructionStrings An array of strings that describe instructions.
      * @return Instruction[]
@@ -50,8 +44,6 @@ class InstructionUtil
     }
 
     /**
-     * transformObjectArrayToStringArray
-     * 
      * Turns an array of Instruction objects into an array of strings.
      *
      * @param Instruction[]|Collection<Instruction> $instructions An array or Collection of Instruction objects
@@ -66,5 +58,16 @@ class InstructionUtil
         }
 
         return $instructionStrings;
+    }
+
+    /**
+     * @param Instruction $instruction
+     */
+    public function getApiModel(EntityModel $instruction): array
+    {
+        return [
+            'id' => $instruction->getId(),
+            'instruction' => $instruction->getInstruction(),
+        ];
     }
 }

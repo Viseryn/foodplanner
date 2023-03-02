@@ -2,36 +2,32 @@
  * ./assets/pages/Planner/Planner.tsx *
  **************************************/
 
-import React, { useEffect, useState }   from 'react'
-import { Link }                         from 'react-router-dom'
-import axios                            from 'axios'
-import swal                             from 'sweetalert'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import swal from 'sweetalert'
 
-import Card                             from '@/components/ui/Card'
-import Spacer                           from '@/components/ui/Spacer'
-import Spinner                          from '@/components/ui/Spinner'
-import getFullIngredientName            from '@/util/getFullIngredientName'
+import Card from '@/components/ui/Card'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
+import DayModel from '@/types/DayModel'
+import IngredientModel from '@/types/IngredientModel'
+import MealModel from '@/types/MealModel'
+import RecipeModel from '@/types/RecipeModel'
+import getFullIngredientName from '@/util/getFullIngredientName'
 
 /**
- * Planner
- * 
- * A component that renders the Weekly Planner. Shows a list of ten Day entities 
- * which each have a variable amount of Meal entities. At the bottom of each day, 
- * there is a button for  adding a meal to that specific day. There is  lso a 
- * SidebarActionButton that puts all ingredients of all meals into the ShoppingList.
+ * A component that renders the Weekly Planner. Shows a list of ten Day entities which each have a 
+ * variable amount of Meal entities. At the bottom of each day, there is a button for adding a meal 
+ * to that specific day. There is also a SidebarActionButton that puts all ingredients of all meals 
+ * into the ShoppingList.
  * 
  * @component
- * @param props
- * @param props.days
- * @param props.recipes
- * @param props.shoppingList
- * @param props.setSidebar
- * @param props.setTopbar
  */
 export default function Planner({ days, recipes, shoppingList, setSidebar, setTopbar }: {
-    days: FetchableEntity<Array<Day>>
-    recipes: FetchableEntity<Array<Recipe>>
-    shoppingList: FetchableEntity<Array<Ingredient>>
+    days: EntityState<Array<DayModel>>
+    recipes: EntityState<Array<RecipeModel>>
+    shoppingList: EntityState<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -42,15 +38,12 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
     const [showSabDone, setShowSabDone] = useState<boolean>(false)
 
     /**
-     * deleteMeal
-     * 
-     * When called, opens a SweetAlert. If it is confirmed,
-     * then the Meal Delete API is called and the days are 
-     * updated. If cancelled, nothing happens.
+     * When called, opens a SweetAlert. If it is confirmed, then the Meal Delete API is called and 
+     * the days are updated. If cancelled, nothing happens.
      * 
      * @param meal A Meal object.
      */
-    const deleteMeal = (meal: Meal): void => {
+    const deleteMeal = (meal: MealModel): void => {
         swal({
             dangerMode: true,
             icon: 'error',
@@ -60,23 +53,17 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
                 confirm: { text: 'Löschen' },
             },
         }).then(confirm => {
-            if (confirm) {
-                axios
-                    .get('/api/meals/delete/' + meal.id)
-                    .then(() => {
-                        // Update days
-                        days.setLoading(true)
-
-                        // Refresh Data Timestamp
-                        axios.get('/api/refresh-data-timestamp/set')
-                    })
+            if (!confirm) {
+                return
             }
+            
+            axios.get('/api/meals/delete/' + meal.id).then(() => { 
+                days.load() 
+            })
         })
     }
 
     /**
-     * handleAddShoppingList
-     * 
      * Adds the ingredients of all meals to the shopping list via the ShoppingList Add API.
      */
     const handleAddShoppingList = (): void => {
@@ -85,13 +72,12 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         }
 
         // Collect all recipes
-        let recipesTmp: Array<Recipe> = []
+        let recipesTmp: Array<RecipeModel> = []
 
         days.data.forEach(day => {
             day.meals.forEach(meal => {
-                // Since the meal only has basic information of the recipe,
-                // find the full recipe object in props.recipes.
-                const recipeIds: Array<number> = recipes.data.map((recipe: Recipe) => recipe.id)
+                // Since the meal only has basic information of the recipe, find the full recipe object in props.recipes.
+                const recipeIds: Array<number> = recipes.data.map((recipe: RecipeModel) => recipe.id)
                 const index: number = recipeIds.indexOf(meal.recipe.id)
                 recipesTmp.push(recipes.data[index])
             })
@@ -110,7 +96,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         (async () => {
             try {
                 await axios.post('/api/shoppinglist/add', JSON.stringify(ingredients))
-                shoppingList.setLoading(true)
+                shoppingList.load()
             } catch (error) {
                 console.log(error)
             }
@@ -121,8 +107,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         setCountSabClicks(count => count + 1)
     }
 
-    // Calls the Update Days API, which removes all unnecessary Day objects
-    // (past days and days further away than ten).
+    // Calls the Update Days API, which removes all unnecessary Day object (past days and days further away than ten).
     useEffect(() => {
         if (days.isLoading) { 
             return
@@ -155,7 +140,6 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
 
     // Load layout
     useEffect(() => {
-        // Load topbar
         setTopbar({
             title: 'Wochenplan',
         })
@@ -165,72 +149,70 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
     }, [])
     
     // Render Planner component
-    return (
-        <div className="pb-24 md:pb-4 w-full md:w-fit md:min-w-[450px] md:max-w-[900px]">
-            <Spacer height="6" />
+    return <div className="pb-24 md:pb-4 w-full md:w-fit md:min-w-[450px] md:max-w-[900px]">
+        <Spacer height="6" />
 
-            {days.isLoading ? (
-                <Spinner /> /** @todo Add skeletons */
-            ) : (
-                <div className="pb-[5.5rem] md:pb-0 mx-4 md:ml-0 flex flex-col gap-4">
-                {/* The container might be bigger than the screen (md+), so leave extra margin to the right. */}
-                    {days.data.map(day =>
-                        <Card key={day.id}>
-                            <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900">
-                                <span>{day.weekday}, {day.date}</span>
-                            </div>
+        {days.isLoading ? (
+            <Spinner /> /** @todo Add skeletons */
+        ) : (
+            <div className="pb-[5.5rem] md:pb-0 mx-4 md:ml-0 flex flex-col gap-4">
+            {/* The container might be bigger than the screen (md+), so leave extra margin to the right. */}
+                {days.data.map(day =>
+                    <Card key={day.id}>
+                        <div className="text-xl font-semibold text-primary-200 dark:text-secondary-dark-900">
+                            <span>{day.weekday}, {day.date}</span>
+                        </div>
 
-                            <Spacer height="4" />
+                        <Spacer height="4" />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {day.meals.map(meal =>
-                                    <div key={meal.id} className="h-40 w-full rounded-2xl transition duration-300">
-                                        <div className="relative group">
-                                            <img 
-                                                className="rounded-2xl h-40 w-full object-cover brightness-[.7]" 
-                                                src={meal.recipe.image.filename != null 
-                                                    ? meal.recipe.image?.directory + meal.recipe.image.filename
-                                                    : '/img/default.jpg'
-                                                } 
-                                                alt={meal.recipe.title}
-                                            />
-                                            <Link 
-                                                to={'/recipe/' + meal.recipe.id} 
-                                                className="absolute w-full bottom-4 px-6 text-white font-semibold"
-                                            >
-                                                <div className="text-xl mr-4">{meal.recipe.title}</div>
-                                                <div className="text-md flex items-center mt-2">
-                                                    <span className="material-symbols-rounded mr-2">{meal.user_group_icon}</span>
-                                                    <span>{meal.user_group}</span>
-                                                </div>
-                                                <div className="text-md flex items-center mt-2">
-                                                    <span className="material-symbols-rounded mr-2">{meal.meal_category.icon}</span>
-                                                    <span>{meal.meal_category.name}</span>
-                                                </div>
-                                            </Link>
-                                            <span 
-                                                onClick={() => deleteMeal(meal)}
-                                                className="cursor-pointer transition duration-300 group-hover:block material-symbols-rounded text-white absolute top-2 right-2
-                                                hover:bg-gray-600/40 p-1 rounded-full"
-                                            >
-                                                close
-                                            </span>
-                                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {day.meals.map(meal =>
+                                <div key={meal.id} className="h-40 w-full rounded-2xl transition duration-300">
+                                    <div className="relative group">
+                                        <img 
+                                            className="rounded-2xl h-40 w-full object-cover brightness-[.7]" 
+                                            src={meal.recipe.image?.filename != null 
+                                                ? meal.recipe.image?.directory + meal.recipe.image?.filename
+                                                : '/img/default.jpg'
+                                            } 
+                                            alt={meal.recipe.title}
+                                        />
+                                        <Link 
+                                            to={'/recipe/' + meal.recipe.id} 
+                                            className="absolute w-full bottom-4 px-6 text-white font-semibold"
+                                        >
+                                            <div className="text-xl mr-4">{meal.recipe.title}</div>
+                                            <div className="text-md flex items-center mt-2">
+                                                <span className="material-symbols-rounded mr-2">{meal.userGroup.icon}</span>
+                                                <span>{meal.userGroup.name}</span>
+                                            </div>
+                                            <div className="text-md flex items-center mt-2">
+                                                <span className="material-symbols-rounded mr-2">{meal.mealCategory.icon}</span>
+                                                <span>{meal.mealCategory.name}</span>
+                                            </div>
+                                        </Link>
+                                        <span 
+                                            onClick={() => deleteMeal(meal)}
+                                            className="cursor-pointer transition duration-300 group-hover:block material-symbols-rounded text-white absolute top-2 right-2
+                                            hover:bg-gray-600/40 p-1 rounded-full"
+                                        >
+                                            close
+                                        </span>
                                     </div>
-                                )}
+                                </div>
+                            )}
 
-                                <Link 
-                                    to={'/planner/add/' + day.id} 
-                                    className={(day.meals.length > 0 ? 'h-14 md:h-40' : 'h-40') + ' w-full rounded-2xl transition duration-300 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300 font-semibold text-lg flex justify-center items-center flex-row md:flex-col gap-4'}
-                                >
-                                    <span className="material-symbols-rounded">add</span>
-                                    <span className="mx-6">Neue Mahlzeit</span>
-                                </Link>
-                            </div>
-                        </Card>
-                    )}
-                </div>
-            )}
-        </div>
-    )
+                            <Link 
+                                to={'/planner/add/' + day.id} 
+                                className={(day.meals.length > 0 ? 'h-14 md:h-40' : 'h-40') + ' w-full rounded-2xl transition duration-300 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300 font-semibold text-lg flex justify-center items-center flex-row md:flex-col gap-4'}
+                            >
+                                <span className="material-symbols-rounded">add</span>
+                                <span className="mx-6">Neue Mahlzeit</span>
+                            </Link>
+                        </div>
+                    </Card>
+                )}
+            </div>
+        )}
+    </div>
 }

@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserGroupRepository::class)]
-class UserGroup
+class UserGroup implements EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,11 +30,6 @@ class UserGroup
     public function __construct()
     {
         $this->users = new ArrayCollection();
-    }
-
-    public function __toString()
-    {
-        return $this->getName();
     }
 
     public function getId(): ?int

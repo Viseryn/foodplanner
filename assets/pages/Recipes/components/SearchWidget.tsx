@@ -5,19 +5,18 @@
 import React from 'react'
 
 /**
- * SearchWidget
- * 
- * A component that renders a search bar. The inputValue state variable and 
- * its setter method need to be passed down by a parent component.
+ * A component that renders a search bar. The inputValue state variable and its setter method need 
+ * to be passed down by a parent component.
  * 
  * @component
- * @property {string} inputValue A state variable for the input value.
- * @property {React.Dispatch<React.SetStateAction<string>>} setInputValue The setter method for inputValue.
- * @property {string} placeholder An optional string for the placeholder of the input field. Default is 'Suche ...'.
+ * @param props
+ * @param props.inputValue A state variable for the input value.
+ * @param props.setInputValue The setter method for inputValue.
+ * @param props.placeholder An optional string for the placeholder of the input field. Default is 'Suche ...'.
  */
 export default function SearchWidget({ inputValue, setInputValue, placeholder = 'Suche ...' }: {
     inputValue: string
-    setInputValue: React.Dispatch<React.SetStateAction<string>>
+    setInputValue: SetState<string>
     placeholder?: string
 }): JSX.Element {
     // Render SearchWidget

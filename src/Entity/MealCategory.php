@@ -6,7 +6,7 @@ use App\Repository\MealCategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MealCategoryRepository::class)]
-class MealCategory
+class MealCategory implements EntityModel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,11 +21,6 @@ class MealCategory
 
     #[ORM\Column(length: 255)]
     private ?string $icon = null;
-
-    public function __toString()
-    {
-        return $this->name;
-    }
 
     public function getId(): ?int
     {
