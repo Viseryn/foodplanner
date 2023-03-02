@@ -148,7 +148,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             return
         }
 
-        axios.post('/api/settings/pantry', JSON.stringify(settings.data))
+        axios.post('/api/settings/updatePantry', JSON.stringify(settings.data))
     }, [settings.data])
 
     // Load layout
