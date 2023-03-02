@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\MealCategoryRepository;
 use App\Service\MealCategoryUtil;
+use App\Service\RefreshDataTimestampUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
