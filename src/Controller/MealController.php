@@ -5,29 +5,35 @@ namespace App\Controller;
 use App\Entity\Meal;
 use App\Form\MealType;
 use App\Repository\MealRepository;
+use App\Service\RefreshDataTimestampUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Meal API
+ */
 #[Route('/api/meals')]
 class MealController extends AbstractController
 {
     /**
-     * Meals Add API
+     * Meal Add API
      * 
-     * Adds a new Meal to the database when the form
-     * in the Request was submitted. Returns an empty 
-     * Response. If no form was submitted, responds 
-     * with an Error 500.
+     * Adds a new Meal to the database when the form in the Request was submitted. Returns an empty 
+     * Response. If no form was submitted, responds with an Error 500.
      *
-     * @param Request $request
      * @param MealRepository $mealRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
+     * @param Request $request
      * @return Response
      */
     #[Route('/add', name: 'api_meals_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, MealRepository $mealRepository): Response {
-        // Deny access if not logged in
+    public function add(
+        MealRepository $mealRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        Request $request, 
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $meal = new Meal();
@@ -37,6 +43,7 @@ class MealController extends AbstractController
 
         if ($form->isSubmitted()) {
             $mealRepository->add($meal, true);
+            $refreshDataTimestampUtil->updateTimestamp();
 
             return new Response();
         }
@@ -46,22 +53,26 @@ class MealController extends AbstractController
     }
 
     /**
-     * Meals Delete API
+     * Meal Delete API
      * 
-     * Deletes the Meal with the given ID and responds
-     * with an empty Response.
+     * Deletes the Meal with the given ID and responds with an empty Response.
      *
      * @param Meal $meal
      * @param MealRepository $mealRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/delete/{id}', name: 'api_meals_delete', methods: ['GET'])]
-    public function delete(Meal $meal, MealRepository $mealRepository): Response
-    {
-        // Deny access if not logged in
+    public function delete(
+        Meal $meal, 
+        MealRepository $mealRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $mealRepository->remove($meal, true);
+
+        $refreshDataTimestampUtil->updateTimestamp();
 
         return new Response();
     }

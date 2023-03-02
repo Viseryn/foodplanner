@@ -11,47 +11,49 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerBuilder;
 
+/**
+ * MealCategory API
+ */
 #[Route('/api/mealcategories')]
 class MealCategoryController extends AbstractController
 {
     /**
-     * MealCategories List API
+     * MealCategory List API
      * 
-     * Responds with an array of MealCategories.
+     * Responds with an array of JSON objects matching the type specifications of MealCategoryModel.ts.
      *
      * @param MealCategoryRepository $mealCategoryRepository
      * @return JsonResponse
      */
     #[Route('/list', name: 'api_mealcategories_list', methods: ['GET'])]
-    public function mealCategoriesAPI(MealCategoryRepository $mealCategoryRepository, MealCategoryUtil $mealCategoryUtil): JsonResponse
-    {
-        // Deny access if not logged in
+    public function list(
+        MealCategoryRepository $mealCategoryRepository, 
+        MealCategoryUtil $mealCategoryUtil,
+    ): JsonResponse {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Fetch all MealCategory objects from the database
         $mealCategories = $mealCategoryRepository->findAll();
-        $preparedMealCategories = $mealCategoryUtil->getApiModels($mealCategories);
 
-        // Serialize data and respond
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($preparedMealCategories, 'json');
+        $jsonContent = $serializer->serialize($mealCategoryUtil->getApiModels($mealCategories), 'json');
 
         return new JsonResponse($jsonContent);
     }
 
     /**
-     * MealCategories Standard API
+     * MealCategory Standard API
      * 
      * Updates the standard MealCategory.
      *
      * @param Request $request
      * @param MealCategoryRepository $mealCategoryRepository
      * @return Response
+     * 
+     * @todo Move this to utils.
      */
     #[Route('/standard', name: 'api_mealcategories_standard', methods: ['GET', 'POST'])]
     public function updateStandard(Request $request, MealCategoryRepository $mealCategoryRepository): Response 
     {
-        // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch request content
@@ -76,7 +78,6 @@ class MealCategoryController extends AbstractController
             $mealCategoryRepository->add($categoryDb, true);
         }
 
-        // Empty response
         return new Response();
     }
 }

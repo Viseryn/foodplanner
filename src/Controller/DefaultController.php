@@ -9,8 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * DefaultController
  * 
- * All requests are handled by this controller and 
- * render the base template. All further rendering
+ * All requests are handled by this controller and render the base template. All further rendering 
  * is done by React in /assets/app.js.
  */
 class DefaultController extends AbstractController

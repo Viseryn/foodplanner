@@ -14,47 +14,50 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerBuilder;
 
+/**
+ * UserGroup API
+ */
 #[Route('/api/usergroups')]
 class UserGroupController extends AbstractController
 {
     /**
-     * UserGroups List API
+     * UserGroup List API
      * 
-     * Responds with an array of UserGroups.
+     * Responds with an array of JSON objects matching the type specifications of UserGroupModel.ts.
      *
      * @param UserGroupRepository $userGroupRepository
+     * @param UserGroupUtil $userGroupUtil
      * @return JsonResponse
      */
     #[Route('/list', name: 'api_usergroups_list', methods: ['GET'])]
-    public function userGroupsAPI(UserGroupRepository $userGroupRepository, UserGroupUtil $userGroupUtil): JsonResponse
-    {
-        // Deny access if not logged in
+    public function list(
+        UserGroupRepository $userGroupRepository, 
+        UserGroupUtil $userGroupUtil
+    ): JsonResponse {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Fetch all UserGroup objects from the database
         $userGroups = $userGroupRepository->findAll();
-        $preparedUserGroups = $userGroupUtil->getApiModels($userGroups);
 
-        // Serialize data and respond
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($preparedUserGroups, 'json');
+        $jsonContent = $serializer->serialize($userGroupUtil->getApiModels($userGroups), 'json');
 
         return new JsonResponse($jsonContent);
     }
 
     /**
-     * UserGroups Standard API
+     * UserGroup Standard API
      * 
      * Updates the standard UserGroup.
      *
      * @param Request $request
      * @param UserGroupRepository $userGroupRepository
      * @return Response
+     * 
+     * @todo Move this to utils.
      */
     #[Route('/standard', name: 'api_usergroups_standard', methods: ['GET', 'POST'])]
-    public function updateStandard(Request $request, UserGroupRepository $userGroupRepository): Response 
+    public function standard(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
-        // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch request content
@@ -79,36 +82,33 @@ class UserGroupController extends AbstractController
             $userGroupRepository->add($groupDb, true);
         }
 
-        // Empty response
         return new Response();
     }
 
     /**
      * UserGroups Delete API
      * 
-     * Deletes the UserGroup with the given ID and responds
-     * with an empty Response.
+     * Deletes the UserGroup with the given ID and responds with an empty Response.
      *
+     * @param MealRepository $mealRepository
      * @param UserGroup $userGroup
      * @param UserGroupRepository $userGroupRepository
-     * @param MealRepository $mealRepository
      * @return Response
      */
     #[Route('/delete/{id}', name: 'api_usergroups_delete', methods: ['GET'])]
-    public function delete(UserGroup $userGroup, UserGroupRepository $userGroupRepository, MealRepository $mealRepository): Response
-    {
-        // Deny access if not logged in
+    public function delete(
+        MealRepository $mealRepository,
+        UserGroup $userGroup, 
+        UserGroupRepository $userGroupRepository, 
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Get all meals for that UserGroup
         $meals = $mealRepository->findBy(['userGroup' => $userGroup->getId()]);
 
-        // Delete all meals first
         foreach ($meals as $meal) {
             $mealRepository->remove($meal, true);
         }
 
-        // Delete UserGroup
         $userGroupRepository->remove($userGroup, true);
 
         return new Response();
@@ -117,9 +117,8 @@ class UserGroupController extends AbstractController
     /**
      * UserGroups Add API
      * 
-     * Adds a new UserGroup to the database when the form 
-     * in the Request was submitted. If no form was submitted, 
-     * responds with an Error 500.
+     * Adds a new UserGroup to the database when the form in the Request was submitted. If no form 
+     * was submitted, responds with an Error 500.
      *
      * @param Request $request
      * @param UserGroupRepository $userGroupRepository
@@ -128,10 +127,8 @@ class UserGroupController extends AbstractController
     #[Route('/add', name: 'api_usergroups_add', methods: ['GET', 'POST'])]
     public function add(Request $request, UserGroupRepository $userGroupRepository): Response 
     {
-        // Deny access if not logged in
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Create empty UserGroup object
         $userGroup = new UserGroup();
 
         // Handle form data and pass to UserGroup object
