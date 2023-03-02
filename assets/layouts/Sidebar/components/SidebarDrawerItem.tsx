@@ -2,12 +2,10 @@
  * ./assets/layouts/Sidebar/components/SidebarDrawerItem.tsx *
  *************************************************************/
 
-import React    from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 /**
- * SidebarDrawerItem
- * 
  * A component that renders a single sidebar drawer item.
  * 
  * @component
@@ -52,27 +50,26 @@ export default function SidebarDrawerItem({ id, icon, label, path, onClick }: {
         </div>
     )
 
+    // Render SidebarDrawerItem
     return (
         <li>
-            {path ? (
-                <a href={path} className={
-                    'group transition duration-300 '
-                    + 'flex items-center p-4 rounded-full '
-                    + 'hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 '
-                    + 'active:scale-90 '
-                } target="_blank" rel="noopener noreferrer">
+            {path 
+                ? <a 
+                    href={path} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="group transition duration-300 flex items-center p-4 rounded-full hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 active:scale-90" 
+                >
                     {SidebarDrawerItemContent}
                 </a>
-            ) : (
-                <Link to={linkLocation} onClick={onClickHandler} className={
-                    'group transition duration-300 '
-                    + 'flex items-center p-4 rounded-full '
-                    + 'hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 '
-                    + 'active:scale-90 '
-                }>
+                : <Link 
+                    to={linkLocation} 
+                    onClick={onClickHandler} 
+                    className="group transition duration-300 flex items-center p-4 rounded-full hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 active:scale-90"
+                >
                     {SidebarDrawerItemContent}
                 </Link>
-            )}
+            }
         </li>
     )
 }

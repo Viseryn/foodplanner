@@ -2,39 +2,33 @@
  * ./assets/layouts/Sidebar/SidebarDrawer.tsx *
  **********************************************/
 
-import React                from 'react'
+import React from 'react'
 
-import UserModel from '@/types/UserModel'
-import SidebarDrawerButton  from './components/SidebarDrawerButton'
-import SidebarDrawerItem    from './components/SidebarDrawerItem'
+import SidebarDrawerButton from './components/SidebarDrawerButton'
+import SidebarDrawerItem from './components/SidebarDrawerItem'
 
 /**
- * SidebarDrawer
+ * A layout component that renders the sidebar drawer. The sidebar drawer is controlled by the state 
+ * variable isDrawerVisible from the parent component. When this variable is set to true, the sidebar 
+ * drawer will move into the display area together with some semi-transparent overlay for the rest 
+ * of the screen. 
  * 
- * A layout component that renders the sidebar drawer.
- * The sidebar drawer is controlled by the state variable
- * isDrawerVisible from the parent component. When this 
- * variable is set to true, the sidebar drawer will move 
- * into the display area together with some semi-transparent
- * overlay for the rest of the screen. 
- * 
- * The sidebar drawer has a SidebarDrawerButton that can 
- * close the drawer again, and contains several links to 
- * less important pages (or even external websites). Lastly,
- * the drawer also shows the current version number of the app.
+ * The sidebar drawer has a SidebarDrawerButton that can close the drawer again, and contains several 
+ * links to less important pages (or even external websites). Lastly, the drawer also shows the 
+ * current version number of the app.
  * 
  * @component
  * @param props
  * @param props.isDrawerVisible A state variable that describes whether or not the sidebar drawer is visible.
  * @param props.setDrawerVisible The setter method of isDrawerVisible.
  * @param props.version The current version number of the app.
- * @param props.user A user object.
+ * @param props.authentication The Authentication object.
  */
-export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, version, user }: {
+export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, version, authentication }: {
     isDrawerVisible: boolean
-    setDrawerVisible: React.Dispatch<React.SetStateAction<boolean>>
+    setDrawerVisible: SetState<boolean>
     version: string
-    user: FetchableEntity<UserModel>
+    authentication: Authentication
 }): JSX.Element {
     return (
         <>
@@ -53,7 +47,7 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, versi
                     </ul>
 
                     <ul className="flex flex-col space-y-2">
-                        {user.data?.username === undefined ? (
+                        {!authentication.isAuthenticated ? (
                             <>
                                 <SidebarDrawerItem 
                                     id="login"
@@ -101,7 +95,7 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, versi
                             onClick={() => location.reload()}
                             id="refresh"
                             icon="refresh"
-                            label="App neuladen"
+                            label="Aktualisieren"
                         />
                     </ul>
 

@@ -38,8 +38,6 @@ import UserGroupModel from '@/types/UserGroupModel'
 import UserModel from '@/types/UserModel'
 
 /**
- * App
- * 
  * Main component of the application. Handles the routing and provides state variables and 
  * setter functions for various global components, such as the sidebar or the shopping list.
  * 
@@ -104,7 +102,7 @@ export default function App({ version }: {
     }
 
     // Fetch data
-    const settings = fetch<Settings>('/api/settings')
+    const settings = fetch<Settings>('/api/settings/detail')
     const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories/list')
     const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups/list')
     const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
@@ -117,7 +115,7 @@ export default function App({ version }: {
         <BrowserRouter>
             <div className="flex flex-col md:flex-row items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900 min-w-[375px]">
                 <SidebarDrawer {...{
-                    isDrawerVisible, setDrawerVisible, version, user
+                    isDrawerVisible, setDrawerVisible, version, authentication
                 }} />
 
                 <Sidebar {...{
