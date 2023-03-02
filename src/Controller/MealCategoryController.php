@@ -44,7 +44,8 @@ class MealCategoryController extends AbstractController
      * MealCategory Standard API
      * 
      * Updates the standard MealCategory.
-     *
+     * 
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
      * @param MealCategoryRepository $mealCategoryRepository
      * @return Response
@@ -52,8 +53,11 @@ class MealCategoryController extends AbstractController
      * @todo Move this to utils.
      */
     #[Route('/standard', name: 'api_mealcategories_standard', methods: ['GET', 'POST'])]
-    public function updateStandard(Request $request, MealCategoryRepository $mealCategoryRepository): Response 
-    {
+    public function updateStandard(
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        Request $request, 
+        MealCategoryRepository $mealCategoryRepository,
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch request content
@@ -77,6 +81,8 @@ class MealCategoryController extends AbstractController
             // Update group in database
             $mealCategoryRepository->add($categoryDb, true);
         }
+
+        $refreshDataTimestampUtil->updateTimestamp();
 
         return new Response();
     }

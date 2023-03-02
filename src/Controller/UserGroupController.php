@@ -49,6 +49,7 @@ class UserGroupController extends AbstractController
      * 
      * Updates the standard UserGroup.
      *
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
      * @param UserGroupRepository $userGroupRepository
      * @return Response
@@ -56,8 +57,11 @@ class UserGroupController extends AbstractController
      * @todo Move this to utils.
      */
     #[Route('/standard', name: 'api_usergroups_standard', methods: ['GET', 'POST'])]
-    public function standard(Request $request, UserGroupRepository $userGroupRepository): Response 
-    {
+    public function standard(
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        Request $request, 
+        UserGroupRepository $userGroupRepository,
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // Fetch request content
@@ -82,6 +86,8 @@ class UserGroupController extends AbstractController
             $userGroupRepository->add($groupDb, true);
         }
 
+        $refreshDataTimestampUtil->updateTimestamp();
+
         return new Response();
     }
 
@@ -91,6 +97,7 @@ class UserGroupController extends AbstractController
      * Deletes the UserGroup with the given ID and responds with an empty Response.
      *
      * @param MealRepository $mealRepository
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param UserGroup $userGroup
      * @param UserGroupRepository $userGroupRepository
      * @return Response
@@ -98,6 +105,7 @@ class UserGroupController extends AbstractController
     #[Route('/delete/{id}', name: 'api_usergroups_delete', methods: ['GET'])]
     public function delete(
         MealRepository $mealRepository,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
         UserGroup $userGroup, 
         UserGroupRepository $userGroupRepository, 
     ): Response {
@@ -111,6 +119,8 @@ class UserGroupController extends AbstractController
 
         $userGroupRepository->remove($userGroup, true);
 
+        $refreshDataTimestampUtil->updateTimestamp();
+
         return new Response();
     }
 
@@ -120,13 +130,17 @@ class UserGroupController extends AbstractController
      * Adds a new UserGroup to the database when the form in the Request was submitted. If no form 
      * was submitted, responds with an Error 500.
      *
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
      * @param UserGroupRepository $userGroupRepository
      * @return Response
      */
     #[Route('/add', name: 'api_usergroups_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, UserGroupRepository $userGroupRepository): Response 
-    {
+    public function add(
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        Request $request, 
+        UserGroupRepository $userGroupRepository,
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $userGroup = new UserGroup();
@@ -138,6 +152,8 @@ class UserGroupController extends AbstractController
         // If form is submitted, add UserGroup to database
         if ($form->isSubmitted()) {
             $userGroupRepository->add($userGroup, true);
+
+            $refreshDataTimestampUtil->updateTimestamp();
 
             return new Response();
         }
