@@ -7,14 +7,14 @@ import Fraction from 'fraction.js'
 import React, { useEffect, useState } from 'react'
 import swal from 'sweetalert'
 
-import AddItemInputWidget from '@/components/ui/AddItemInputWidget'
+import AddIngredientWidget from '@/components/ui/AddIngredientWidget'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import IngredientModel from '@/types/IngredientModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import Item from './components/Item'
-import IngredientModel from '@/types/IngredientModel'
 
 /**
  * Pantry
@@ -27,9 +27,11 @@ import IngredientModel from '@/types/IngredientModel'
  * Settings.tsx; the settings is stored in settings.data.showPantry.
  * 
  * @component
+ * 
+ * @todo Add a skeleton for the loading time.
  */
 export default function Pantry({ pantry, setSidebar, setTopbar }: {
-    pantry: FetchableEntity<Array<IngredientModel>>
+    pantry: EntityState<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -38,7 +40,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     const [sortingOrder, setSortingOrder] = useState<boolean>(true)
 
     // The input value of the Add Item Widget at the top. Will be passed to the 
-    // AddItemInputWidget component together with its setter method.
+    // AddIngredientWidget component together with its setter method.
     const [inputValue, setInputValue] = useState<string>('')
 
     /**
@@ -48,14 +50,10 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      * 
      * @param value A trimmed string that describes an Ingredient object.
      */
-    const handleEnterKeyDown = (value: string) => {
-        // Clear input field
+    const handleEnterKeyDown = (value: string): void => {
         setInputValue('')
-
-        // Load new pantry list
         pantry.load()
 
-        // API call
         axios.post('/api/pantry/add', [value])
     }
 
@@ -64,7 +62,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      * quantity_values. Since the items can contain fractions, the Fraction class is imported and 
      * used. The resulting item list will be sent to the Pantry Replace API and a reload is done.
      */
-    const handleAddUpIngredients = () => {
+    const handleAddUpIngredients = (): void => {
         // Make a copy of the pantry.data
         const copyOfList: Array<IngredientModel> = [...pantry.data]
 
@@ -80,8 +78,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
 
                 // Check if the quantity units match and the value is a number
                 if (currentIngredient.quantityUnit === ingredient.quantityUnit && ingredient.quantityValue) {
-                    // Calculate the new quantity value.
-                    // Note that the values may be fractions.
+                    // Calculate the new quantity value. Note that the values may be fractions.
                     let currentVal: Fraction = new Fraction(currentIngredient.quantityValue)
                     let newVal: Fraction = new Fraction(ingredient.quantityValue)
                     let totalVal: Fraction = currentVal.add(newVal)
@@ -90,8 +87,8 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
                     currentIngredient.quantityValue = totalVal.toFraction(true)
                     ingredientMap.set(ingredient.name, currentIngredient)
                 } else {
-                    // If quantity units do not match or the value is not 
-                    // a number, add the ingredient to the map with another key
+                    // If quantity units do not match or the value is not a number, 
+                    // add the ingredient to the map with another key
                     ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
                 }
             } else {
@@ -173,7 +170,6 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         setTopbar({
             title: 'Vorratskammer',
             actionButtons: [
-                // { icon: 'sort', onClick: handleSort },
                 { icon: 'delete_forever', onClick: handleDeleteAll },
             ],
             style: 'md:w-[450px]',
@@ -188,7 +184,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         <Spacer height="6" />
 
         <div className="mx-4 md:mx-0">
-            <AddItemInputWidget
+            <AddIngredientWidget
                 inputValue={inputValue}
                 setInputValue={setInputValue}
                 handleEnterKeyDown={handleEnterKeyDown}
@@ -198,7 +194,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         <Spacer height="10" />
 
         {pantry.isLoading ? (
-            <Spinner /> /** @todo Add Skeleton here */
+            <Spinner />
         ) : (
             <>
                 <Card style="mx-4 md:mx-0">

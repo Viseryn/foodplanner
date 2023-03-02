@@ -7,20 +7,18 @@ import { Link } from 'react-router-dom'
 
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
+import RecipeModel from '@/types/RecipeModel'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
 import SearchWidget from './components/SearchWidget'
-import RecipeModel from '@/types/RecipeModel'
 
 /**
- * Recipes
- * 
- * A component that renders a list of all recipes. At the top, a search bar 
- * can be used to filter the list by recipe title and ingredient names.
+ * A component that renders a list of all recipes. At the top, a search bar can be used to filter 
+ * the list by recipe title and ingredient names.
  * 
  * @component
  */
 export default function Recipes({ recipes, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<RecipeModel>>
+    recipes: EntityState<Array<RecipeModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {

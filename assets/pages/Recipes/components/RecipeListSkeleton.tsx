@@ -5,8 +5,6 @@
 import React from 'react'
 
 /**
- * RecipeListSkeleton
- * 
  * A component that renders a skeleton for the recipe list when it is still loading. 
  * 
  * @component

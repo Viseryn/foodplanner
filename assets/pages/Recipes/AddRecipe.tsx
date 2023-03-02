@@ -6,11 +6,11 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
-import FilePicker from '@/components/form/FilePicker'
 import InputRow from '@/components/form/Input/InputRow'
 import SliderRow from '@/components/form/Slider/SliderRow'
 import TextareaRow from '@/components/form/Textarea/TextareaRow'
 import Button from '@/components/ui/Buttons/Button'
+import FileSelectButton from '@/components/ui/Buttons/FileSelectButton'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
@@ -23,11 +23,9 @@ import RecipeModel from '@/types/RecipeModel'
  * the recipe will be added by an API and the user gets forwarded to its detail page.
  * 
  * @component
- * 
- * @todo Update form widgets
  */
 export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<RecipeModel>>
+    recipes: EntityState<Array<RecipeModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -47,8 +45,6 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
      * Changes the label of the upload button to the selected picture (or to the default text).
      * 
      * @param event
-     * 
-     * @todo Typing
      */
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const value: string = event.target.value
@@ -100,91 +96,89 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
     }, [])
     
     // Render AddRecipe
-    return (
-        <div className="pb-24 md:pb-4 md:max-w-[900px]">
-            <Spacer height="6" />
+    return <div className="pb-24 md:pb-4 md:max-w-[900px]">
+        <Spacer height="6" />
 
-            {isLoading || recipes.isLoading ? (
-                <Spinner />
-            ) : (
-                <div className="mx-4 md:ml-0 ">
-                    <form onSubmit={handleSubmit}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Card>
-                                <InputRow
-                                    id="recipe_title"
-                                    label="Titel"
-                                    {...{
-                                        required: true, 
-                                        maxLength: 255,
-                                    }}
-                                />
-
-                                <Spacer height="6" />
-
-                                <SliderRow
-                                    id="recipe_portionSize"
-                                    label="Wie viele Portionen?"
-                                    {...{
-                                        min: 1,
-                                        max: 10,
-                                        step: 1,
-                                        marks: [...Array(10)].map((value, index) => ({
-                                            value: index + 1,
-                                            label: index + 1,
-                                        }))
-                                    }}
-                                />
-
-                                <Spacer height="6" />
-
-                                <div>
-                                    <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
-                                    <FilePicker
-                                        id="recipe_image"
-                                        label={filename}
-                                        onChange={handleFilePick}
-                                        enabled={true}
-                                    />
-                                </div>
-                            </Card>
-
-                            <Card>
-                                <TextareaRow
-                                    id="recipe_ingredients"
-                                    label="Zutaten"
-                                    {...{
-                                        rows: 10, 
-                                        placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
-                                    }}
-                                />
-
-                                <Spacer height="6" />
-
-                                <TextareaRow
-                                    id="recipe_instructions"
-                                    label="Zubereitung"
-                                    {...{
-                                        rows: 10,
-                                        placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
-                                    }}
-                                />
-                            </Card>
-                        </div>
-
-                        <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
-                            <Button
-                                type="submit"
-                                icon="save" 
-                                label="Speichern" 
-                                isElevated={true}
-                                outlined={true}
-                                isFloating={true}
+        {isLoading || recipes.isLoading ? (
+            <Spinner />
+        ) : (
+            <div className="mx-4 md:ml-0 ">
+                <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Card>
+                            <InputRow
+                                id="recipe_title"
+                                label="Titel"
+                                {...{
+                                    required: true, 
+                                    maxLength: 255,
+                                }}
                             />
-                        </div>
-                    </form>
-                </div>
-            )}
-        </div>
-    )
+
+                            <Spacer height="6" />
+
+                            <SliderRow
+                                id="recipe_portionSize"
+                                label="Wie viele Portionen?"
+                                {...{
+                                    min: 1,
+                                    max: 10,
+                                    step: 1,
+                                    marks: [...Array(10)].map((value, index) => ({
+                                        value: index + 1,
+                                        label: index + 1,
+                                    }))
+                                }}
+                            />
+
+                            <Spacer height="6" />
+
+                            <div>
+                                <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
+                                <FileSelectButton
+                                    id="recipe_image"
+                                    label={filename}
+                                    onChange={handleFilePick}
+                                    enabled={true}
+                                />
+                            </div>
+                        </Card>
+
+                        <Card>
+                            <TextareaRow
+                                id="recipe_ingredients"
+                                label="Zutaten"
+                                {...{
+                                    rows: 10, 
+                                    placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
+                                }}
+                            />
+
+                            <Spacer height="6" />
+
+                            <TextareaRow
+                                id="recipe_instructions"
+                                label="Zubereitung"
+                                {...{
+                                    rows: 10,
+                                    placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
+                                }}
+                            />
+                        </Card>
+                    </div>
+
+                    <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
+                        <Button
+                            type="submit"
+                            icon="save" 
+                            label="Speichern" 
+                            isElevated={true}
+                            outlined={true}
+                            isFloating={true}
+                        />
+                    </div>
+                </form>
+            </div>
+        )}
+    </div>
 }

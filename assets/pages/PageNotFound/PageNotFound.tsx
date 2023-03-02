@@ -8,8 +8,6 @@ import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 
 /**
- * PageNotFound
- * 
  * A component that is shown when an Error 404 occurs.
  * 
  * @component
@@ -17,7 +15,7 @@ import Spacer from '@/components/ui/Spacer'
 export default function PageNotFound({ setSidebar, setTopbar }: {
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}) {
+}): JSX.Element {
     // Load layout
     useEffect(() => {
         setSidebar()

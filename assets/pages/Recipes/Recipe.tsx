@@ -10,11 +10,12 @@ import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import TextParagraph from '@/components/skeleton/TextParagraph'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
-import { SecondHeading } from '@/components/ui/Heading'
+import Heading from '@/components/ui/Heading'
 import Spacer from '@/components/ui/Spacer'
-import RecipeModel from '@/types/RecipeModel'
-import getFullIngredientName from '@/util/getFullIngredientName'
 import IngredientModel from '@/types/IngredientModel'
+import RecipeModel from '@/types/RecipeModel'
+import SettingsModel from '@/types/SettingsModel'
+import getFullIngredientName from '@/util/getFullIngredientName'
 
 /**
  * Recipe
@@ -22,15 +23,15 @@ import IngredientModel from '@/types/IngredientModel'
  * A component that shows a single recipe in detail.
  * 
  * @todo Change the color of the select arrow.
- * @todo Fix TypeScript errors due to document.getElement...
+ * @todo Write an easier to read skeleton.
  * 
  * @component
  */
 export default function Recipe({ recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: {
-    recipes: FetchableEntity<Array<RecipeModel>>
-    shoppingList: FetchableEntity<Array<IngredientModel>>
-    pantry: FetchableEntity<Array<IngredientModel>>
-    settings: FetchableEntity<Settings>
+    recipes: EntityState<Array<RecipeModel>>
+    shoppingList: EntityState<Array<IngredientModel>>
+    pantry: EntityState<Array<IngredientModel>>
+    settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }) {
@@ -88,11 +89,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     /**
      * Handles adding a single ingredient to the ShoppingList. 
      * Can be invoked by the IconButtons next to each ingredient.
-     * 
-     * @todo Test this
      */
     const handleAddSingleToShoppingList = async (ingredient: IngredientModel): Promise<void> => {
-        // API call
         await axios.post('/api/shoppinglist/add', [getFullIngredientName(ingredient)])
         shoppingList.load()
     }
@@ -121,11 +119,9 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Handles adding a single ingredient to the Pantry. 
      * Can be invoked by the IconButtons next to each ingredient.
      */
-    const handleAddSingleToPantry = (ingredient: IngredientModel): void => {
-        // API call
-        axios
-            .post('/api/pantry/add', [getFullIngredientName(ingredient)])
-            .then(() => pantry.load())
+    const handleAddSingleToPantry = async (ingredient: IngredientModel): Promise<void> => {
+        await axios.post('/api/pantry/add', [getFullIngredientName(ingredient)])
+        pantry.load()
     }
     
     // Initializes the recipe state variable. Each time the id parameter changes, the 
@@ -183,8 +179,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             newRecipe.ingredients.push(newIngredient)
         })
 
-        // Set the new calculated recipe in tmpRecipe.
-        // This does NOT trigger a reassignment of portionSize.
+        // Set the new calculated recipe in tmpRecipe. This does NOT trigger a reassignment of portionSize.
         setTmpRecipe(newRecipe)
     }, [portionSize])
 
@@ -261,7 +256,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                     <div className="mx-4 md:ml-0">
                         <Spacer height="10" />
 
-                        <SecondHeading style="ml-2">
+                        <Heading size="xl" style="ml-2">
                             Zutaten für 
                             <select
                                 value={portionSize}
@@ -278,7 +273,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                 )}
                             </select>
                             {portionSize == 1 ? 'Portion' : 'Portionen'}
-                        </SecondHeading>
+                        </Heading>
 
                         <Spacer height="4" />
 
@@ -341,7 +336,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                     <div className="mx-4 md:ml-0">
                         <Spacer height="10" />
 
-                        <SecondHeading style="ml-2">Zubereitung</SecondHeading>
+                        <Heading size="xl" style="ml-2">Zubereitung</Heading>
 
                         <Spacer height="4" />
 

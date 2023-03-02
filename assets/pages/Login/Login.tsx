@@ -2,8 +2,9 @@
  * ./assets/pages/Login/Login.tsx *
  **********************************/
 
-import React, { useEffect, useState } from 'react'
 import axios, { AxiosResponse } from 'axios'
+import React, { useEffect, useState } from 'react'
+
 import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
@@ -13,8 +14,6 @@ import Spinner from '@/components/ui/Spinner'
 import UserModel from '@/types/UserModel'
 
 /**
- * Login
- * 
  * A component that renders a login form for unauthenticated users or a success/error notification.
  * 
  * @component
@@ -22,9 +21,9 @@ import UserModel from '@/types/UserModel'
  * @param props.setLoading The setter for the state variable isLoading from the App component.
  */
 export default function Login({ user, authentication, setLoading, setSidebar, setTopbar }: {
-    user: FetchableEntity<UserModel>
+    user: EntityState<UserModel>
     authentication: Authentication
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setLoading: SetState<boolean>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {

@@ -18,15 +18,13 @@ import UserModel from '@/types/UserModel'
 import getOptions from '@/util/getOptions'
 
 /**
- * AddGroup
- * 
  * A component that renders a form for adding new UserGroups.
  * 
  * @component
  */
-export default function AddGroup({ authentication, userGroups, setSidebar, setTopbar, ...props }: {
+export default function AddGroup({ authentication, userGroups, setSidebar, setTopbar }: {
     authentication: Authentication
-    userGroups: FetchableEntity<Array<UserGroupModel>>
+    userGroups: EntityState<Array<UserGroupModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }) {
@@ -43,8 +41,6 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
      * Submits the form data to the UserGroup Add API.
      * 
      * @param event A form submit event.
-     * 
-     * @todo Test this.
      */
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         if (users.isLoading) {
@@ -57,7 +53,6 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
         setLoading(true)
 
         await axios.post('/api/usergroups/add', formData)
-        await axios.get('/api/refresh-data-timestamp/set')
 
         userGroups.load()
         navigate('/settings')

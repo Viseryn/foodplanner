@@ -6,12 +6,10 @@ import axios from 'axios'
 import React from 'react'
 
 import IconButton from '@/components/ui/Buttons/IconButton'
-import getFullIngredientName from '@/util/getFullIngredientName'
 import IngredientModel from '@/types/IngredientModel'
+import getFullIngredientName from '@/util/getFullIngredientName'
 
 /**
- * Item
- * 
  * Renders an item of the ShoppingList and handles events related to that item.
  * 
  * @component
@@ -20,7 +18,7 @@ import IngredientModel from '@/types/IngredientModel'
  * @param {object} props.item An Ingredient object from the pantry.
  */
 export default function Item({ pantry, item }: {
-    pantry: FetchableEntity<Array<IngredientModel>>
+    pantry: EntityState<Array<IngredientModel>>
     item: IngredientModel
 }): JSX.Element {
     /**
@@ -34,16 +32,14 @@ export default function Item({ pantry, item }: {
             // Double click action
             handleItemSetEditability(item)
 
-            // When a double click is registered, the 
-            // actions for a single click should be prevented.
+            // When a double click is registered, the actions for a single click should be prevented.
             preventSingleClick = true
 
             // After a certain delay, allow registering single clicks again.
             setTimeout(() => preventSingleClick = false, 200)
         } else {
-            // Only do the single click action if after a short 
-            // delay no double click was registered. Also, do not 
-            // do the single click action if the item is editable.
+            // Only do the single click action if after a short delay no double click was registered. 
+            // Also, do not do the single click action if the item is editable.
             setTimeout(() => {
                 if (!preventSingleClick && !item.editable) {
                     // Single click action
@@ -97,10 +93,8 @@ export default function Item({ pantry, item }: {
             return
         }
 
-        // Change data of the item.
-        // Note that the change to the state is only temporary
-        // so that the edit effect is visible immediately.
-        // The item will be updated in the database via the API
+        // Change data of the item. Note that the change to the state is only temporary so that the 
+        // edit effect is visible immediately. The item will be updated in the database via the API 
         // and the list will refresh without loading screen.
         newItemList[index].quantityUnit = ''
         newItemList[index].quantityValue = ''
@@ -120,7 +114,6 @@ export default function Item({ pantry, item }: {
      * @param item A list item.
      */
     const handleDeleteItem = (item: IngredientModel): void => {
-        // Make a copy of pantry.data and find item
         let newItemList: Array<IngredientModel> = [...pantry.data]
         const index: number = newItemList.indexOf(item)
 
@@ -138,7 +131,7 @@ export default function Item({ pantry, item }: {
      * @param item A list item.
      * @param direction Possible values are -1 (up) and 1 (down).
      */
-    const handleChangePosition = (item: IngredientModel, direction: -1 | 1) => {
+    const handleChangePosition = (item: IngredientModel, direction: -1 | 1): void => {
         // Make a copy of pantry.data and find item
         let newItemList: Array<IngredientModel> = [...pantry.data]
         const index: number = newItemList.indexOf(item)
@@ -147,12 +140,8 @@ export default function Item({ pantry, item }: {
         const oldPosition: number = newItemList[index].position!
         const newPosition: number = newItemList[index + direction].position!
 
-        // Move item up only when it is not the first item and 
-        // move item down only when it is not the last item.
-        if (
-            (direction === -1 && index !== 0)
-            || (direction === 1 && index !== pantry.data?.length - 1)
-        ) {
+        // Move item up only when it is not the first item and move item down only when it is not the last item.
+        if ((direction === -1 && index !== 0) || (direction === 1 && index !== pantry.data?.length - 1)) {
             itemCopy.position = newPosition
             newItemList[index].position = newPosition
             newItemList[index + direction].position = oldPosition

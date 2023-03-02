@@ -2,66 +2,52 @@
  * ./assets/pages/ShoppingList/ShoppingList.tsx *
  ************************************************/
 
-import React, { useEffect, useState }   from 'react'
-import axios                            from 'axios'
-import Fraction                         from 'fraction.js'
-import swal                             from 'sweetalert'
+import axios from 'axios'
+import Fraction from 'fraction.js'
+import React, { useEffect, useState } from 'react'
+import swal from 'sweetalert'
 
-import Item                             from './components/Item'
-import AddItemInputWidget               from '@/components/ui/AddItemInputWidget'
-import Button                           from '@/components/ui/Buttons/Button'
-import Card                             from '@/components/ui/Card'
-import Spacer                           from '@/components/ui/Spacer'
-import Spinner                          from '@/components/ui/Spinner'
-
-import getFullIngredientName            from '@/util/getFullIngredientName'
+import AddIngredientWidget from '@/components/ui/AddIngredientWidget'
+import Button from '@/components/ui/Buttons/Button'
+import Card from '@/components/ui/Card'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
 import IngredientModel from '@/types/IngredientModel'
+import SettingsModel from '@/types/SettingsModel'
+import getFullIngredientName from '@/util/getFullIngredientName'
+import Item from './components/Item'
 
 /**
  * ShoppingList
  * 
- * A component that renders a shopping list that consists 
- * of Ingredient objects. An input widget is rendered at 
- * top for adding new items. Items can be checked, 
- * repositioned, deleted and edited, as well as added up 
- * together or amounts being reduced by the ingredients 
- * that are stored in the pantry.
+ * A component that renders a shopping list that consists of Ingredient objects. An input widget is 
+ * rendered at top for adding new items. Items can be checked, repositioned, deleted and edited, as 
+ * well as added up together or amounts being reduced by the ingredients that are stored in the pantry.
  * 
  * @component
- * @param props
- * @param props.shoppingList
+ * 
+ * @todo Add a skeleton for the loading time.
  */
 export default function ShoppingList({ shoppingList, pantry, settings, setSidebar, setTopbar }: {
-    shoppingList: FetchableEntity<Array<IngredientModel>>
-    pantry: FetchableEntity<Array<IngredientModel>>
-    settings: FetchableEntity<Settings>
+    shoppingList: EntityState<Array<IngredientModel>>
+    pantry: EntityState<Array<IngredientModel>>
+    settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
-    /**
-     * The input value of the Add Item Widget at the top.
-     * Will be passed to the AddItemInputWidget component
-     * together with its setter method.
-     */
+    // The input value of the Add Item Widget at the top. 
+    // Will be passed to the AddIngredientWidget component together with its setter method.
     const [inputValue, setInputValue] = useState<string>('')
 
     /**
-     * handleEnterKeyDown
-     * 
-     * A function that is called when the enter key is 
-     * pressed with the trimmed inputValue as argument.
-     * Adds the argument to the ShoppingList via the 
-     * ShoppingList Add API and reloads the list afterwards.
-     * The reload is required because the API generates
-     * IDs and other fields.
+     * A function that is called when the enter key is pressed with the trimmed inputValue as 
+     * argument. Adds the argument to the ShoppingList via the ShoppingList Add API and reloads the 
+     * list afterwards. The reload is required because the API generates IDs and other fields.
      * 
      * @param value A trimmed string that describes an Ingredient object.
      */
-    const handleEnterKeyDown = (value: string) => {
-        // Clear input field
+    const handleEnterKeyDown = (value: string): void => {
         setInputValue('')
-
-        // Load new shopping list
         shoppingList.load()
 
         // API call
@@ -69,15 +55,9 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     }
 
     /**
-     * handleAddUpIngredients
-     * 
-     * Combines items with the same name and same 
-     * quantity_unit to a single item and adds up
-     * the quantity_values. Since the items can contain
-     * fractions, the Fraction class is imported and 
-     * used. The resulting item list will be sent 
-     * to the ShoppingList Replace API and a reload 
-     * is done.
+     * Combines items with the same name and same quantityUnit to a single item and adds up the 
+     * quantityValues. Since the items can contain fractions, the Fraction class is imported and 
+     * used. The resulting item list will be sent to the ShoppingList Replace API and a reload is done.
      */
     const handleAddUpIngredients = (): void => {
         // Make a copy of the shoppingList.data
@@ -96,8 +76,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                 // Check if the quantity units match and the value is a number
                 if (currentIngredient.quantityUnit === ingredient.quantityUnit
                     && ingredient.quantityValue) {
-                    // Calculate the new quantity value.
-                    // Note that the values may be fractions.
+                    // Calculate the new quantity value. Note that the values may be fractions.
                     let currentVal: Fraction = new Fraction(currentIngredient.quantityValue)
                     let newVal: Fraction = new Fraction(ingredient.quantityValue)
                     let totalVal: Fraction = currentVal.add(newVal)
@@ -106,8 +85,8 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                     currentIngredient.quantityValue = totalVal.toFraction(true)
                     ingredientMap.set(ingredient.name, currentIngredient)
                 } else {
-                    // If quantity units do not match or the value is not 
-                    // a number, add the ingredient to the map with another key
+                    // If quantity units do not match or the value is not a number, 
+                    // add the ingredient to the map with another key
                     ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
                 }
             } else {
@@ -132,11 +111,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     }
 
     /**
-     * handleSubstractPantry
-     * 
-     * Does the same as handleAddUpIngredients,
-     * but additionally substracts all ingredients 
-     * that are in the pantry.
+     * Does the same as handleAddUpIngredients, but additionally substracts all ingredients that are in the pantry.
      */
     const handleSubstractPantry = (): void => {
         // Make a copy of the shoppingList.data and pantry.data
@@ -161,8 +136,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                 // Check if the quantity units match and the value is a number
                 if (currentIngredient.quantityUnit === ingredient.quantityUnit
                     && ingredient.quantityValue) {
-                    // Calculate the new quantity value.
-                    // Note that the values may be fractions.
+                    // Calculate the new quantity value. Note that the values may be fractions.
                     let currentVal: Fraction = new Fraction(currentIngredient.quantityValue == '' ? 0 : currentIngredient.quantityValue)
                     let newVal: Fraction = new Fraction(ingredient.quantityValue == '' ? 0 : ingredient.quantityValue)
                     let totalVal: Fraction = currentVal.add(newVal)
@@ -171,8 +145,8 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                     currentIngredient.quantityValue = totalVal.toFraction(true)
                     ingredientMap.set(ingredient.name, currentIngredient)
                 } else {
-                    // If quantity units do not match or the value is not 
-                    // a number, add the ingredient to the map with another key
+                    // If quantity units do not match or the value is not a number, 
+                    // add the ingredient to the map with another key
                     ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
                 }
             } else {
@@ -204,12 +178,9 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     }
 
     /**
-     * handleDeleteAll
-     * 
-     * Deletes all items on the list after confirming
-     * a SweetAlert.
+     * Deletes all items on the list after confirming a SweetAlert.
      */
-    const handleDeleteAll = () => {
+    const handleDeleteAll = (): void => {
         swal({
             dangerMode: true,
             icon: 'error',
@@ -227,13 +198,10 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     }
 
     /**
-     * handleDeleteChecked
-     * 
      * Deletes all checked items.
      */
     const handleDeleteChecked = () => {
-        // Make a copy of shoppingList.data and
-        // filter out all items that are checked
+        // Make a copy of shoppingList.data and filter out all items that are checked
         const newItemList: Array<IngredientModel> = [...shoppingList.data].filter(item => !item.checked)
         shoppingList.setData(newItemList)
 
@@ -241,14 +209,9 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         axios.get('/api/shoppinglist/delete-checked')
     }
 
-    /**
-     * Load layout
-     */ 
+    // Load layout 
     useEffect(() => {
-        // Load sidebar
         setSidebar('shoppinglist')
-
-        // Load topbar
         setTopbar({
             title: 'Einkaufsliste',
             actionButtons: [
@@ -261,10 +224,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         window.scrollTo(0, 0)
     }, [])
 
-    /**
-     * Update SidebarActionButton when 
-     * shoppingList.data changes
-     */
+    // Update SidebarActionButton when shoppingList.data changes
     useEffect(() => {
         setSidebar('shoppinglist', {
             visible: true, 
@@ -274,70 +234,66 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         })
     }, [shoppingList.data])
 
-    /**
-     * Render ShoppingList
-     */
-    return (
-        <div className="pb-24 md:pb-4 md:w-[450px]">
-            <Spacer height="6" />
-            
-            <div className="mx-4 md:mx-0">
-                <AddItemInputWidget
-                    inputValue={inputValue}
-                    setInputValue={setInputValue}
-                    handleEnterKeyDown={handleEnterKeyDown}
-                />
-            </div>
+    // Render ShoppingList
+    return <div className="pb-24 md:pb-4 md:w-[450px]">
+        <Spacer height="6" />
+        
+        <div className="mx-4 md:mx-0">
+            <AddIngredientWidget
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                handleEnterKeyDown={handleEnterKeyDown}
+            />
+        </div>
 
-            <Spacer height="10" />
+        <Spacer height="10" />
 
-            {shoppingList.isLoading ? (
-                <Spinner /> /** @todo Add Skeleton here */
-            ) : (
-                <>
-                    <Card style="mx-4 md:mx-0">
-                        <div className="space-y-2 justify-center">
-                            {shoppingList.data?.length === 0 &&
-                                <div className="flex justify-between items-center">
-                                    <div className="flex items-center">
-                                        <span className="material-symbols-rounded outlined mr-4">info</span>
-                                        Die Einkaufsliste ist leer.
-                                    </div>
+        {shoppingList.isLoading ? (
+            <Spinner />
+        ) : (
+            <>
+                <Card style="mx-4 md:mx-0">
+                    <div className="space-y-2 justify-center">
+                        {shoppingList.data?.length === 0 &&
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center">
+                                    <span className="material-symbols-rounded outlined mr-4">info</span>
+                                    Die Einkaufsliste ist leer.
                                 </div>
-                            }
+                            </div>
+                        }
 
-                            {shoppingList.data?.map(item =>
-                                <Item  
-                                    key={item.id}
-                                    shoppingList={shoppingList}
-                                    item={item}
-                                />
-                            )}
-                        </div>
-                    </Card>
+                        {shoppingList.data?.map(item =>
+                            <Item  
+                                key={item.id}
+                                shoppingList={shoppingList}
+                                item={item}
+                            />
+                        )}
+                    </div>
+                </Card>
 
-                    {shoppingList.data !== undefined && shoppingList.data.length >= 1 &&
-                        <div className="flex flex-col items-end justify-end gap-4 mt-4 mx-4 md:mx-0 pb-[5.5rem] md:pb-0">
-                            {settings.data?.showPantry && pantry.data != undefined && pantry.data.length > 0 &&
-                                <Button
-                                    onClick={handleSubstractPantry}
-                                    label="Vorräte verrechnen"
-                                    icon="cell_merge"
-                                    role="tertiary"
-                                    isSmall={true}
-                                />
-                            }
+                {shoppingList.data !== undefined && shoppingList.data.length >= 1 &&
+                    <div className="flex flex-col items-end justify-end gap-4 mt-4 mx-4 md:mx-0 pb-[5.5rem] md:pb-0">
+                        {settings.data?.showPantry && pantry.data != undefined && pantry.data.length > 0 &&
                             <Button
-                                onClick={handleAddUpIngredients}
-                                icon="low_priority"
-                                label="Zutaten zusammenfassen"
+                                onClick={handleSubstractPantry}
+                                label="Vorräte verrechnen"
+                                icon="cell_merge"
                                 role="tertiary"
                                 isSmall={true}
                             />
-                        </div>
-                    }
-                </>
-            )}
-        </div>
-    )
+                        }
+                        <Button
+                            onClick={handleAddUpIngredients}
+                            icon="low_priority"
+                            label="Zutaten zusammenfassen"
+                            role="tertiary"
+                            isSmall={true}
+                        />
+                    </div>
+                }
+            </>
+        )}
+    </div>
 }

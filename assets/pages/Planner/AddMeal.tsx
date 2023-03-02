@@ -20,8 +20,6 @@ import UserGroupModel from '@/types/UserGroupModel'
 import getOptions from '@/util/getOptions'
 
 /**
- * AddMeal
- * 
  * A component that renders a form to add a new meal. 
  * Consists of a list of Days, UserGroups, Recipes and MealCategories.
  * 
@@ -30,10 +28,10 @@ import getOptions from '@/util/getOptions'
  * @todo Skeleton colors and sizes
  */
 export default function AddMeal({ days, recipes, mealCategories, userGroups, setSidebar, setTopbar }: {
-    days: FetchableEntity<Array<DayModel>>
-    recipes: FetchableEntity<Array<RecipeModel>>
-    mealCategories: FetchableEntity<Array<MealCategoryModel>>
-    userGroups: FetchableEntity<Array<UserGroupModel>>
+    days: EntityState<Array<DayModel>>
+    recipes: EntityState<Array<RecipeModel>>
+    mealCategories: EntityState<Array<MealCategoryModel>>
+    userGroups: EntityState<Array<UserGroupModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -67,9 +65,6 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                 // Send form data to Meal Add API
                 await axios.post('/api/meals/add', formData)
                 days.load()
-                
-                // Refresh Data Timestamp
-                await axios.get('/api/refresh-data-timestamp/set')
             } catch (error) {
                 console.log(error)
             }
@@ -97,97 +92,95 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     }, [])
 
     // Render AddMeal
-    return (
-        <div className="pb-24 md:pb-4 md:w-[450px]">
-            <Spacer height="6" />
+    return <div className="pb-24 md:pb-4 md:w-[450px]">
+        <Spacer height="6" />
 
-            {isLoading ? (
-                <Spinner />
-            ) : (
-                <div className="mx-4 md:mx-0">
-                    <form onSubmit={handleSubmit}>
-                        <Card>
-                            <Label htmlFor="meal_day">Für welchen Tag?</Label>
-                            {days.isLoading ? ( /** @todo Update Skeleton size and color */
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <SelectWidget
-                                    id="meal_day"
-                                    options={getOptions(days.data)}
-                                    {...{
-                                        defaultValue: id
-                                    }}
-                                />
-                            )}
+        {isLoading ? (
+            <Spinner />
+        ) : (
+            <div className="mx-4 md:mx-0">
+                <form onSubmit={handleSubmit}>
+                    <Card>
+                        <Label htmlFor="meal_day">Für welchen Tag?</Label>
+                        {days.isLoading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <SelectWidget
+                                id="meal_day"
+                                options={getOptions(days.data)}
+                                {...{
+                                    defaultValue: id
+                                }}
+                            />
+                        )}
 
-                            <Spacer height="6" />
+                        <Spacer height="6" />
 
-                            <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
-                            {mealCategories.isLoading ? (
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <RadioWidget
-                                    id="meal_mealCategory"
-                                    options={getOptions(mealCategories.data)}
-                                />
-                            )}
-                        </Card>
+                        <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
+                        {mealCategories.isLoading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <RadioWidget
+                                id="meal_mealCategory"
+                                options={getOptions(mealCategories.data)}
+                            />
+                        )}
+                    </Card>
 
-                        <Spacer height="4" />
+                    <Spacer height="4" />
 
-                        <Card>
-                            <Label htmlFor="meal_recipe">Welches Rezept?</Label>
-                            {recipes.isLoading ? (
-                                <div role="status" className="max-w-sm animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <SelectWidget
-                                    id="meal_recipe"
-                                    options={getOptions(recipes.data)}
-                                />
-                            )}
+                    <Card>
+                        <Label htmlFor="meal_recipe">Welches Rezept?</Label>
+                        {recipes.isLoading ? (
+                            <div role="status" className="max-w-sm animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <SelectWidget
+                                id="meal_recipe"
+                                options={getOptions(recipes.data)}
+                            />
+                        )}
 
-                            <Spacer height="6" />
+                        <Spacer height="6" />
 
-                            <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
-                            {userGroups.isLoading ? (
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                                </div>
-                            ) : (
-                                <RadioWidget
-                                    id="meal_userGroup"
-                                    options={getOptions(userGroups.data)}
-                                />
-                            )}
-                        </Card>
+                        <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
+                        {userGroups.isLoading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
+                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            </div>
+                        ) : (
+                            <RadioWidget
+                                id="meal_userGroup"
+                                options={getOptions(userGroups.data)}
+                            />
+                        )}
+                    </Card>
 
-                        <div className="flex justify-end pb-[5.5rem] md:pb-0 md:pt-4">
-                            {!days.isLoading 
-                                && !mealCategories.isLoading 
-                                && !recipes.isLoading 
-                                && !userGroups.isLoading 
-                                && <Button
-                                    type="submit"
-                                    icon="save" 
-                                    label="Speichern" 
-                                    outlined={true}
-                                    isFloating={true}
-                                />
-                            }
-                        </div> 
-                    </form>
-                </div>
-            )}
-        </div>
-    )
+                    <div className="flex justify-end pb-[5.5rem] md:pb-0 md:pt-4">
+                        {!days.isLoading 
+                            && !mealCategories.isLoading 
+                            && !recipes.isLoading 
+                            && !userGroups.isLoading 
+                            && <Button
+                                type="submit"
+                                icon="save" 
+                                label="Speichern" 
+                                outlined={true}
+                                isFloating={true}
+                            />
+                        }
+                    </div> 
+                </form>
+            </div>
+        )}
+    </div>
 }
