@@ -2,31 +2,27 @@
  * ./assets/hooks/useAuthentication.ts *
  ***************************************/
 
-import { useEffect, useState }  from 'react'
+import { useEffect, useState } from 'react'
 
-import useFetch                 from './useFetch'
 import UserModel from '@/types/UserModel'
+import useFetch from './useFetch'
 
 /**
- * useAuthentication
+ * Returns the current state of the user data state variable and the authentication, especially 
+ * whether the user is authenticated at the moment and whether the authentication is done loading.
  * 
- * Returns the current state of the user data state variable and the authentication, 
- * especially whether the user is authenticated at the moment and whether the 
- * authentication is done loading.
- * 
- * @returns An array of a User object and an Authentication object.
+ * @returns An array of a FetchableEntity<UserModel> and an Authentication object.
  */
 function useAuthentication(): [FetchableEntity<UserModel>, Authentication] {
-    // Whether the authentication process is still loading. This will only be 
-    // false after the user data has been loaded and isAuthenticated has been set 
-    // for the last time.
+    // Whether the authentication process is still loading. This will only be false after the user 
+    // data has been loaded and isAuthenticated has been set for the last time.
     const [isLoading, setLoading] = useState<boolean>(true)
 
     // Whether the user is currently authenticated.
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
 
-    // User and Authentication objects
-    const user: FetchableEntity<UserModel> = useFetch<UserModel>('/api/user')
+    // UserModel and Authentication objects
+    const user: FetchableEntity<UserModel> = useFetch<UserModel>('/api/user/detail')
     const authentication: Authentication = { isAuthenticated, isLoading }
 
     // Each time the user data changes, check if authenticated

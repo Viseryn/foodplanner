@@ -2,26 +2,22 @@
  * ./assets/hooks/useRefreshDataTimestamp.ts *
  *********************************************/
 
-import axios                    from 'axios'
-import React, { useEffect }     from 'react'
+import axios from 'axios'
+import { useEffect } from 'react'
 
-import useFetch                 from './useFetch'
+import useFetch from './useFetch'
 
 /**
  * useRefreshDataTimestamp
  * 
- * A hook that fetches the current RefreshDataTimestamp value
- * stored in the database. It updates itself every 10 seconds
- * and will set the isLoading state variable that was passed 
- * as argument to true if there was a change in the timestamp.
+ * A hook that fetches the current RefreshDataTimestamp value stored in the database. It updates 
+ * itself every 10 seconds and will set the isLoading state variable that was passed as argument to 
+ * true if there was a change in the timestamp.
  * 
- * @param isLoading A boolean state variable.
+ * @param isLoading A boolean state variable that should be updated by this hook.
  * @param setLoading The setter method of the state variable isLoading.
  */
-function useRefreshDataTimestamp(
-    isLoading: boolean, 
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-) {
+function useRefreshDataTimestamp(isLoading: boolean, setLoading: SetState<boolean>): void {
     // Fetch the current RefreshDataTimestamp
     const refreshDataTimestamp = useFetch<string>('/api/refresh-data-timestamp')
 
@@ -34,8 +30,7 @@ function useRefreshDataTimestamp(
                 .then(response => {
                     const timestamp = JSON.parse(response.data)
 
-                    // Check if timestamp has changed.
-                    // If yes, update and set the state variable argument to true.
+                    // Check if timestamp has changed. If yes, update and set the state variable argument to true.
                     if (timestamp !== refreshDataTimestamp.data) {
                         refreshDataTimestamp.setData(timestamp)
                         setLoading(true)
@@ -49,9 +44,7 @@ function useRefreshDataTimestamp(
         }, 10000)
 
         // Clear interval
-        return () => { 
-            clearInterval(interval)
-        }
+        return () => { clearInterval(interval) }
     })
 }
 

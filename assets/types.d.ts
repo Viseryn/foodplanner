@@ -29,15 +29,15 @@ type TopbarConfiguration = {
     style?: string                            /** Additional styling classes for the topbar on larger screns (e.g. a max-width to match the main container). */
 }
 
+type SetState<T> = React.Dispatch<React.SetStateAction<T>>
+
 type SetLoadingAction = (value?: React.SetStateAction<boolean>) => void
 
 type FetchableEntity<Type = any> = {
     data: Type
     setData: React.Dispatch<React.SetStateAction<Type>>
     isLoading: boolean
-    /**
-     * @deprecated Use load instead.
-     */
+    /** @deprecated Use load instead. */
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     load: SetLoadingAction
 }
