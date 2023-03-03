@@ -220,15 +220,15 @@ class ShoppingListController extends AbstractController
      * A ShoppingList API that swaps the position of two Ingredient objects.
      *
      * @param IngredientRepository $ingredientRepository
+     * @param IngredientUtil $ingredientUtil
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
      * @return Response
-     * 
-     * @todo Move this to IngredientUtil
      */
     #[Route('/change-position', name: 'api_shoppinglist_change_position', methods: ['GET', 'POST'])]
     public function changePosition(
         IngredientRepository $ingredientRepository,
+        IngredientUtil $ingredientUtil,
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
         Request $request,
     ): Response {
@@ -239,14 +239,7 @@ class ShoppingListController extends AbstractController
         $ingredient1 = $ingredientRepository->find($requestContent[0]);
         $ingredient2 = $ingredientRepository->find($requestContent[1]);
 
-        $position1 = $ingredient1->getPosition();
-        $position2 = $ingredient2->getPosition();
-
-        $ingredient1->setPosition($position2);
-        $ingredient2->setPosition($position1);
-
-        $ingredientRepository->save($ingredient1, true);
-        $ingredientRepository->save($ingredient2, true);
+        $ingredientUtil->swapIngredients($ingredient1, $ingredient2);
 
         $refreshDataTimestampUtil->updateTimestamp();
 

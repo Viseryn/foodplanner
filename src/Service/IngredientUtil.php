@@ -2,6 +2,7 @@
 
 use App\Entity\EntityModel;
 use App\Entity\Ingredient;
+use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -9,6 +10,13 @@ use Doctrine\Common\Collections\Collection;
  */
 class IngredientUtil extends EntityUtil
 {
+    private IngredientRepository $ingredientRepository;
+
+    public function __construct(IngredientRepository $ingredientRepository)
+    {
+        $this->ingredientRepository = $ingredientRepository;
+    }
+
     /**
      * Given a string that describes an Ingredient, returns the quantityValue and the rest of the 
      * Ingredient description in an array. Is only a helper method for getQuantityValueFromString() 
@@ -183,5 +191,24 @@ class IngredientUtil extends EntityUtil
             'position' => $ingredient->getPosition(),
             'checked' => $ingredient->isChecked(),
         ];
+    }
+
+    /**
+     * Swaps the position of two Ingredient objects.
+     *
+     * @param Ingredient $ingredient1
+     * @param Ingredient $ingredient2
+     * @return void
+     */
+    public function swapIngredients(Ingredient $ingredient1, Ingredient $ingredient2): void 
+    {
+        $position1 = $ingredient1->getPosition();
+        $position2 = $ingredient2->getPosition();
+
+        $ingredient1->setPosition($position2);
+        $ingredient2->setPosition($position1);
+
+        $this->ingredientRepository->save($ingredient1, true);
+        $this->ingredientRepository->save($ingredient2, true);
     }
 }
