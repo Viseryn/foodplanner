@@ -123,7 +123,7 @@ class FileUploader
     public function exists(File|string $file): bool 
     {
         if (is_a($file, File::class)) {
-            $path = $file->getPath(['showRootDir' => true]);
+            $path = $this->getPath($file, ['showRootDir' => true]);
             return is_file($path);
         }
 
@@ -149,7 +149,7 @@ class FileUploader
         // Path to file
         $path = is_string($file) 
             ? $file 
-            : $file->getPath(['showRootDir' => true]);
+            : $this->getPath($file, ['showRootDir' => true]);
         ;
         
         if (!is_a($file, File::class)) {
@@ -171,5 +171,35 @@ class FileUploader
         if (is_file($path)) {
             unlink($path);
         }
+    }
+
+    /**
+     * Returns the path of the File object. Can be configured to add the root directory or remove 
+     * the filename. By default, returns the file path without the root directory but with the 
+     * filename, e.g. '/someDir/filename.ext'.
+     *
+     * @param array<string, bool>|null $config An array with the possible keys "showRootDir", "showFilename", which can be set to a boolean value. By default, showRootDir is false and showFilename is true.
+     * @return string The path of the File object, dependent of the configuration. Always begins with a '/'.
+     */
+    private function getPath(File $file, ?array $config = []): string 
+    {
+        // Configuration of return value
+        $showRootDir = (bool) ($config['showRootDir'] ?? false);
+        $showFilename = (bool) ($config['showFilename'] ?? true);
+
+        // Determine the root directory
+        $rootDir = $file->isPublic() ? '/public/' : '/data/upload';
+
+        // Set the return value
+        $returnValue = '/';
+        $returnValue .= $showRootDir ? $rootDir : '';
+        $returnValue .= $file->getDirectory();
+        $returnValue .= $showFilename ? $file->getFilename() : '';
+        
+        // Remove unnecessary slashes
+        $returnValue = preg_replace('#/+#', '/', $returnValue);
+
+        // Return path
+        return $returnValue;
     }
 }
