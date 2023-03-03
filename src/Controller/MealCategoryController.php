@@ -43,44 +43,24 @@ class MealCategoryController extends AbstractController
     /**
      * MealCategory Standard API
      * 
-     * Updates the standard MealCategory.
+     * Updates the standard MealCategory. 
+     * The request data should be an array of MealCategoryModel JSON objects.
      * 
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
-     * @param MealCategoryRepository $mealCategoryRepository
+     * @param MealCategoryUtil $mealCategoryUtil
      * @return Response
-     * 
-     * @todo Move this to utils.
      */
     #[Route('/standard', name: 'api_mealcategories_standard', methods: ['GET', 'POST'])]
     public function updateStandard(
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
         Request $request, 
-        MealCategoryRepository $mealCategoryRepository,
+        MealCategoryUtil $mealCategoryUtil,
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Fetch request content
         $requestContent = json_decode($request->getContent());
-
-        // Update each UserGroup in the database according to the request array
-        foreach ($requestContent as $category) {
-            // Set this to true when standard is set, so there is only one standard group
-            $setStandard = false;
-
-            // Get UserGroup from db
-            $categoryDb = $mealCategoryRepository->find($category->id);
-            
-            if ($category->standard && !$setStandard) {
-                $categoryDb->setStandard(true);
-                $setStandard = true;
-            } else {
-                $categoryDb->setStandard(false);
-            }
-
-            // Update group in database
-            $mealCategoryRepository->add($categoryDb, true);
-        }
+        $mealCategoryUtil->updateStandard($requestContent);
 
         $refreshDataTimestampUtil->updateTimestamp();
 
