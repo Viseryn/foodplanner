@@ -32,7 +32,9 @@ export default function DaySkeletonDesktop({ gap, columns }: {
                 <Button icon="add" role="disabled" />
             </div>
 
-            <div className="h-40 w-40 rounded-2xl object-cover bg-notification-500 dark:bg-notification-700" />
+            <div className="animate-pulse">
+                <div className="h-40 w-40 rounded-2xl object-cover bg-notification-500 dark:bg-notification-700" />
+            </div>
         </div>
     )
 
@@ -49,8 +51,10 @@ export default function DaySkeletonDesktop({ gap, columns }: {
                 <Button icon="add" role="disabled" />
             </div>
 
-            <div className="h-40 w-40 rounded-2xl object-cover bg-notification-500 dark:bg-notification-700" />
-            <div className="h-40 w-40 rounded-2xl object-cover bg-notification-500 dark:bg-notification-700" />
+            <div className="flex flex-col gap-2 animate-pulse">
+                <div className="h-40 w-40 rounded-2xl object-cover bg-notification-500 dark:bg-notification-700" />
+                <div className="h-40 w-40 rounded-2xl object-cover bg-notification-500 dark:bg-notification-700" />
+            </div>
         </div>
     )
 
