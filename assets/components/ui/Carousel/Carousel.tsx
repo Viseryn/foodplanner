@@ -77,7 +77,7 @@ export default function Carousel({ visibleItems = 1, gap = 0, translation, infin
                 <div className={`overflow-hidden w-full h-full`}>
                     <div 
                         className="flex transition-all duration-300" 
-                        style={{ transform: `translateX(-${translationValue})`, gap: `${4 * gap}px`}}
+                        style={{ transform: `translateX(-${translationValue})`, gap: `${4 * gap}px` }}
                     >
                         {Children.map(children, (child, index) => 
                             <CarouselItem key={index} visibleItems={visibleItems}>
