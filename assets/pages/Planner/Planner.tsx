@@ -4,22 +4,21 @@
 
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import swal from 'sweetalert'
 
-import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Carousel from '@/components/ui/Carousel/Carousel'
-import Heading from '@/components/ui/Heading'
 import Spacer from '@/components/ui/Spacer'
-import Spinner from '@/components/ui/Spinner'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
 import MealModel from '@/types/MealModel'
 import RecipeModel from '@/types/RecipeModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
-import MealTile from './components/MealTile'
+import DayCardDesktop from './components/DayCardDesktop'
+import DayCardMobile from './components/DayCardMobile'
+import DaySkeletonDesktop from './components/DaySkeletonDesktop'
+import DaySkeletonMobile from './components/DaySkeletonMobile'
 
 /**
  * A component that renders the Weekly Planner. Shows a list of ten Day entities which each have a 
@@ -181,60 +180,32 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
     return <div className={`pb-24 md:pb-4 w-full`} style={mediumStyle.get(medium)}>
         <Spacer height="6" />
 
-        {days.isLoading ? (
-            <Spinner /> /** @todo Add skeletons */
-        ) : (
-            mediaColumnMap.has(medium)
-            ? <Card>
-                <Carousel visibleItems={mediaColumnMap.get(medium)} gap={gap} translation={160 + gap * 4}>
+        {mediaColumnMap.has(medium) ? ( /* Desktop view (>= md) */
+            days.isLoading ? (
+                <DaySkeletonDesktop gap={gap} columns={mediaColumnMap.get(medium)!} />
+            ) : (
+                <Card>
+                    <Carousel visibleItems={mediaColumnMap.get(medium)} gap={gap} translation={160 + gap * 4}>
+                        {days.data.map(day => 
+                            <DayCardDesktop key={day.id} day={day} deleteMeal={deleteMeal} />
+                        )}
+                    </Carousel>
+                </Card>
+            )
+        ) : ( /* Mobile view (<= sm) */
+            days.isLoading ? (
+                <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
+                    <DaySkeletonMobile />
+                    <DaySkeletonMobile />
+                    <DaySkeletonMobile />
+                </div>
+            ) : (
+                <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
                     {days.data.map(day => 
-                        <div key={day.id} className="flex flex-col gap-2 w-40">
-                            <div className="flex justify-between items-center pb-2">
-                                <Heading size="lg" style="pl-2">
-                                    {day.weekday},<br />
-                                    {day.date}
-                                </Heading>
-
-                                <Button
-                                    location={`/planner/add/${day.id}`}
-                                    icon="add"
-                                    role="secondary"
-                                />
-                            </div>
-
-                            {day.meals.map(meal =>
-                                <MealTile key={meal.id} meal={meal} deleteMeal={deleteMeal} isSmall={true} />
-                            )}
-                        </div>
+                        <DayCardMobile key={day.id} day={day} deleteMeal={deleteMeal} />
                     )}
-                </Carousel>
-            </Card>
-            : <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
-                {days.data.map(day =>
-                    <Card key={day.id}>
-                        <Heading size="xl">{day.weekday}, {day.date}</Heading>
-
-                        <Spacer height="4" />
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {day.meals.map(meal =>
-                                <MealTile key={meal.id} meal={meal} deleteMeal={deleteMeal} />
-                            )}
-
-                            <Link
-                                to={'/planner/add/' + day.id}
-                                className={
-                                    (day.meals.length > 0 ? ('h-14' + (day.meals.length % 2 === 0 ? ' sm:col-span-2' : ' sm:h-40') ) : 'h-40') 
-                                    + ' w-full rounded-2xl transition duration-300 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300 font-semibold text-lg flex justify-center items-center flex-row md:flex-col gap-4'
-                                }
-                            >
-                                <span className="material-symbols-rounded">add</span>
-                                <span className="mx-6">Neue Mahlzeit</span>
-                            </Link>
-                        </div>
-                    </Card>
-                )}
-            </div>
+                </div>
+            )
         )}
     </div>
 }
