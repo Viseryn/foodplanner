@@ -234,7 +234,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                 
                                         {recipeQuery !== '' &&
                                             <span 
-                                                className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 p-2 rounded-full"
+                                                className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-100 dark:hover:bg-secondary-dark-100 p-2 rounded-full"
                                                 onClick={() => setRecipeQuery('')}
                                             >close</span>
                                         }
