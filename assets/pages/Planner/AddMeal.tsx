@@ -20,6 +20,10 @@ import RecipeModel from '@/types/RecipeModel'
 import UserGroupModel from '@/types/UserGroupModel'
 import getOptions from '@/util/getOptions'
 
+import DayRadioSkeleton from './components/DayRadioSkeleton'
+import RadioSkeleton from './components/RadioSkeleton'
+import RecipeListSkeleton from './components/RecipeListSkeleton'
+
 /**
  * A component that renders a form to add a new meal. 
  * Consists of a list of Days, UserGroups, Recipes and MealCategories.
@@ -142,19 +146,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         <Card>
                             <Label htmlFor="meal_day">Für welchen Tag?</Label>
                             {days.isLoading ? (
-                                <div className="grid grid-cols-5 gap-2">
-                                    {[...Array(10)].map((value, index) => 
-                                        <div key={index}>
-                                            <div 
-                                                className="rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 border border-secondary-200 dark:border-secondary-dark-200 animate-pulse"
-                                            >
-                                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-1/3" />
-                                                <Spacer height="1" />
-                                                <div className="h-3 bg-notification-500 dark:bg-notification-700 rounded-full w-3/5" />
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                                <DayRadioSkeleton />
                             ) : (
                                 <div className="grid grid-cols-5 gap-2">
                                     {days.data.map(day => 
@@ -183,11 +175,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
 
                             <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
                             {mealCategories.isLoading ? (
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
-                                    <Spacer height="1" />
-                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
-                                </div>
+                                <RadioSkeleton />
                             ) : (
                                 <RadioWidget
                                     id="meal_mealCategory"
@@ -199,11 +187,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
 
                             <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
                             {userGroups.isLoading ? (
-                                <div role="status" className="animate-pulse">
-                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
-                                    <Spacer height="1" />
-                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
-                                </div>
+                                <RadioSkeleton />
                             ) : (
                                 <RadioWidget
                                     id="meal_userGroup"
@@ -215,12 +199,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         <Card>
                             <Label htmlFor="meal_recipe">Welches Rezept?</Label>
                             {recipes.isLoading ? (
-                                /** @todo Skeleton for list */
-                                <div role="status" className="max-w-sm animate-pulse">
-                                    <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
-                                    <Spacer height="2" />
-                                    <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
-                                </div>
+                                <RecipeListSkeleton />
                             ) : (
                                 <div>
                                     {showWarning &&
