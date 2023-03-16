@@ -143,58 +143,72 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
             <div className="mx-4 md:mx-0">
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                        <Card>
-                            <Label htmlFor="meal_day">Für welchen Tag?</Label>
-                            {days.isLoading ? (
-                                <DayRadioSkeleton />
-                            ) : (
-                                <div className="grid grid-cols-5 gap-2">
-                                    {days.data.map(day => 
-                                        <div key={day.id}>
-                                            <input
-                                                id={`day_${day.id}`}
-                                                name={nameFromId("meal_day")}
-                                                type="radio"
-                                                defaultValue={day.id}
-                                                defaultChecked={id == day.id.toString()}
-                                                className="peer hidden"
-                                            />
-                                            <label 
-                                                htmlFor={`day_${day.id}`}
-                                                className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
-                                            >
-                                                <span className="text-sm font-semibold">{day.weekday.slice(0, 2)}</span>
-                                                <span className="text-xs">{day.date.slice(0, day.date.lastIndexOf('.') + 1)}</span>
-                                            </label>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
+                        <div className="md:order-last">
+                            <Card>
+                                <Label htmlFor="meal_day">Für welchen Tag?</Label>
+                                {days.isLoading ? (
+                                    <DayRadioSkeleton />
+                                ) : (
+                                    <div className="grid grid-cols-5 gap-2">
+                                        {days.data.map(day => 
+                                            <div key={day.id}>
+                                                <input
+                                                    id={`day_${day.id}`}
+                                                    name={nameFromId("meal_day")}
+                                                    type="radio"
+                                                    defaultValue={day.id}
+                                                    defaultChecked={id == day.id.toString()}
+                                                    className="peer hidden"
+                                                />
+                                                <label 
+                                                    htmlFor={`day_${day.id}`}
+                                                    className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                                >
+                                                    <span className="text-sm font-semibold">{day.weekday.slice(0, 2)}</span>
+                                                    <span className="text-xs">{day.date.slice(0, day.date.lastIndexOf('.') + 1)}</span>
+                                                </label>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
 
-                            <Spacer height="6" />
+                                <Spacer height="6" />
 
-                            <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
-                            {mealCategories.isLoading ? (
-                                <RadioSkeleton />
-                            ) : (
-                                <RadioWidget
-                                    id="meal_mealCategory"
-                                    options={getOptions(mealCategories.data)}
-                                />
-                            )}
+                                <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
+                                {mealCategories.isLoading ? (
+                                    <RadioSkeleton />
+                                ) : (
+                                    <RadioWidget
+                                        id="meal_mealCategory"
+                                        options={getOptions(mealCategories.data)}
+                                    />
+                                )}
 
-                            <Spacer height="6" />
+                                <Spacer height="6" />
 
-                            <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
-                            {userGroups.isLoading ? (
-                                <RadioSkeleton />
-                            ) : (
-                                <RadioWidget
-                                    id="meal_userGroup"
-                                    options={getOptions(userGroups.data)}
-                                />
-                            )}
-                        </Card>
+                                <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
+                                {userGroups.isLoading ? (
+                                    <RadioSkeleton />
+                                ) : (
+                                    <RadioWidget
+                                        id="meal_userGroup"
+                                        options={getOptions(userGroups.data)}
+                                    />
+                                )}
+                            </Card>
+
+                            <div className="flex justify-end md:pt-4">
+                                {!days.isLoading && !mealCategories.isLoading && !recipes.isLoading && !userGroups.isLoading && 
+                                    <Button
+                                        type="submit"
+                                        icon="save" 
+                                        label="Speichern" 
+                                        outlined={true}
+                                        isFloating={true}
+                                    />
+                                }
+                            </div> 
+                        </div>
 
                         <Card>
                             <Label htmlFor="meal_recipe">Welches Rezept?</Label>
