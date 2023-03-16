@@ -9,6 +9,7 @@ import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import Label from '@/components/form/Label'
 import RadioWidget from '@/components/form/Radio/RadioWidget'
 import SelectWidget from '@/components/form/Select/SelectWidget'
+import nameFromId from '@/components/form/util/nameFromId'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
@@ -108,13 +109,27 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                 <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
                             </div>
                         ) : (
-                            <SelectWidget
-                                id="meal_day"
-                                options={getOptions(days.data)}
-                                {...{
-                                    defaultValue: id
-                                }}
-                            />
+                            <div className="grid grid-cols-5 gap-2">
+                                {days.data.map(day => 
+                                    <div key={day.id}>
+                                        <input
+                                            id={`day_${day.id}`}
+                                            name={nameFromId("meal_day")}
+                                            type="radio"
+                                            defaultValue={day.id}
+                                            defaultChecked={id == day.id.toString()}
+                                            className="peer hidden"
+                                        />
+                                        <label 
+                                            htmlFor={`day_${day.id}`}
+                                            className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200  dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                        >
+                                            <span className="text-sm font-semibold">{day.weekday.slice(0, 2)}</span>
+                                            <span className="text-xs">{day.date.slice(0, day.date.lastIndexOf('.') + 1)}</span>
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
                         )}
 
                         <Spacer height="6" />
