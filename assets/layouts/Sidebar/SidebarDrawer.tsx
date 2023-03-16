@@ -74,6 +74,13 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, versi
                                 />
                             </>
                         )}
+                        
+                        <SidebarDrawerItem
+                            onClick={() => location.reload()}
+                            id="refresh"
+                            icon="refresh"
+                            label="Aktualisieren"
+                        />
                     </ul>
 
                     <hr className="m-4 md:mx-0 border-t-secondary-dark-300" />
@@ -84,18 +91,6 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, versi
                             id="github"
                             icon="developer_mode"
                             label="GitHub"
-                        />
-                        <SidebarDrawerItem 
-                            path="https://yusel.net/blog"
-                            id="blog"
-                            icon="web"
-                            label="Blog"
-                        />
-                        <SidebarDrawerItem
-                            onClick={() => location.reload()}
-                            id="refresh"
-                            icon="refresh"
-                            label="Aktualisieren"
                         />
                     </ul>
 
