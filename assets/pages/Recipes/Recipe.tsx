@@ -204,7 +204,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         setTopbar({
             title: recipe.title,
             showBackButton: true,
-            backButtonPath: '/recipes',
+            onBackButtonClick: () => navigate(-1),
             actionButtons: [
                 { icon: 'edit', onClick: () => navigate('/recipe/' + id + '/edit') },
             ],
