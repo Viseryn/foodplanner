@@ -57,9 +57,9 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
 
-        setLoading(true);
+        setLoading(true)
 
-        (async () => {
+        const apiCall = async (): Promise<void> => {
             try {
                 // Send form data to Meal Add API
                 await axios.post('/api/meals/add', formData)
@@ -67,7 +67,9 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
             } catch (error) {
                 console.log(error)
             }
-        })()
+        }
+
+        apiCall()
     }
 
     // Navigate back to Planner component when Meal was saved
