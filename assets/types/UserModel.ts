@@ -2,13 +2,13 @@
  * ./assets/types/UserModel.ts *
  ************************************/
 
-import EntityWithOption from './EntityWithOption'
+import ModelWithOption from './ModelWithOption'
 import SelectOption from './SelectOption'
 
 /**
  * Type specifications for User objects returned by APIs
  */
-type UserModel = EntityWithOption<SelectOption> & {
+type UserModel = ModelWithOption<SelectOption> & {
     /** The entity id of the User object. */
     id?: number
 

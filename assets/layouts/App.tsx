@@ -50,6 +50,8 @@ import UserModel from '@/types/UserModel'
  * @component
  * @param props
  * @param props.version The current version number.
+ * 
+ * @todo SWAL cancel buttons are broken.
  */
 export default function App({ version }: { 
     version: string

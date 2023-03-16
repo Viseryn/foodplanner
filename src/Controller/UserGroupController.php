@@ -49,43 +49,23 @@ class UserGroupController extends AbstractController
      * UserGroup Standard API
      * 
      * Updates the standard UserGroup.
+     * The request data should be an array of MealCategoryModel JSON objects.
      *
      * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
-     * @param UserGroupRepository $userGroupRepository
+     * @param UserGroupUtil $userGroupUtil
      * @return Response
-     * 
-     * @todo Move this to utils.
      */
     #[Route('/standard', name: 'api_usergroups_standard', methods: ['GET', 'POST'])]
     public function updateStandard(
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
         Request $request, 
-        UserGroupRepository $userGroupRepository,
+        UserGroupUtil $userGroupUtil,
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Fetch request content
         $requestContent = json_decode($request->getContent());
-
-        // Update each UserGroup in the database according to the request array
-        foreach ($requestContent as $group) {
-            // Set this to true when standard is set, so there is only one standard group
-            $setStandard = false;
-
-            // Get UserGroup from db
-            $groupDb = $userGroupRepository->find($group->id);
-            
-            if ($group->standard && !$setStandard) {
-                $groupDb->setStandard(true);
-                $setStandard = true;
-            } else {
-                $groupDb->setStandard(false);
-            }
-
-            // Update group in database
-            $userGroupRepository->add($groupDb, true);
-        }
+        $userGroupUtil->updateStandard($requestContent);
 
         $refreshDataTimestampUtil->updateTimestamp();
 

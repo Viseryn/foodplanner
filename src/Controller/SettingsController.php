@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\SettingsRepository;
+use App\Service\SettingsUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use JMS\Serializer\SerializerBuilder;
 
 /**
  * Settings API
@@ -21,25 +24,28 @@ class SettingsController extends AbstractController
      * Responds with an array of settings.
      *
      * @param SettingsRepository $settingsRepository
+     * @param SettingsUtil $settingsUtil
      * @return Response
-     * 
-     * @todo Create a type specification.
-     * @todo How do you assert getId()'s existence?
      */
     #[Route('/detail', name: 'api_settings_detail')]
-    public function detail(SettingsRepository $settingsRepository): Response
-    {
+    public function detail(
+        SettingsRepository $settingsRepository, 
+        SettingsUtil $settingsUtil,
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $castToUser = function(null|UserInterface|User $userParam): User {
+            return $userParam ?: new User;
+        };
+
         $settings = $settingsRepository->findOneBy([
-            'user' => $this->getUser()?->getId()
+            'user' => $castToUser($this->getUser())?->getId()
         ]);
 
-        $response = json_encode([
-            'showPantry' => $settings->isShowPantry(),
-        ]);
+        $serializer = SerializerBuilder::create()->build();
+        $jsonContent = $serializer->serialize($settingsUtil->getApiModel($settings), 'json');
 
-        return new JsonResponse($response);
+        return new JsonResponse($jsonContent);
     }
     
     /**
@@ -50,8 +56,6 @@ class SettingsController extends AbstractController
      * @param Request $request
      * @param SettingsRepository $settingsRepository
      * @return Response
-     * 
-     * @todo How do you assert getId()'s existence?
      */
     #[Route('/updatePantry', name: 'api_settings_update_pantry', methods: ['GET', 'POST'])]
     public function updatePantry(
@@ -62,9 +66,14 @@ class SettingsController extends AbstractController
 
         $requestContent = json_decode($request->getContent(), true);
 
+        $castToUser = function(null|UserInterface|User $userParam): User {
+            return $userParam ?: new User;
+        };
+
         $settings = $settingsRepository->findOneBy([
-            'user' => $this->getUser()?->getId()
+            'user' => $castToUser($this->getUser())?->getId()
         ]);
+
         $settings->setShowPantry($requestContent['showPantry']);
         $settingsRepository->save($settings, true);
 

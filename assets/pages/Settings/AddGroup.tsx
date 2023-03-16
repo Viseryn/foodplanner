@@ -113,16 +113,16 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
                             <Spacer height="6" />
 
                             {users.isLoading 
-                                ? <Spinner />
+                                ? <Spinner verticalMargin={10} />
                                 : <SelectRow
                                     id="user_group_users"
                                     label="Welche Benutzer sollen zur Gruppe gehören?"
-                                    options={getOptions(users.data)}
+                                    options={getOptions(users)}
                                     {...{
                                         name: "user_group[users][]",
                                         multiple: true,
                                         required: true,
-                                        size: getOptions(users.data).length,
+                                        size: getOptions(users).length,
                                         className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden'
                                     }}
                                 />

@@ -63,42 +63,4 @@ class File
 
         return $this;
     }
-
-    /**
-     * getPath
-     * 
-     * Returns the path of the File object.
-     * Can be configured to add the root directory 
-     * or remove the filename.
-     * By default, returns the file path without the 
-     * root directory but with the filename, e.g. 
-     * '/someDir/filename.ext'.
-     *
-     * @param array<string, bool>|null $config An array with the possible keys "showRootDir", "showFilename", which can be set to a boolean value. By default, showRootDir is false and showFilename is true.
-     * @return string The path of the File object, dependent of the configuration. Always begins with a '/'.
-     * 
-     * @deprecated 
-     * @todo Move this to utils.
-     */
-    public function getPath(?array $config = []): string 
-    {
-        // Configuration of return value
-        $showRootDir = (bool) ($config['showRootDir'] ?? false);
-        $showFilename = (bool) ($config['showFilename'] ?? true);
-
-        // Determine the root directory
-        $rootDir = $this->isPublic() ? '/public/' : '/data/upload';
-
-        // Set the return value
-        $returnValue = '/';
-        $returnValue .= $showRootDir ? $rootDir : '';
-        $returnValue .= $this->getDirectory();
-        $returnValue .= $showFilename ? $this->getFilename() : '';
-        
-        // Remove unnecessary slashes
-        $returnValue = preg_replace('#/+#', '/', $returnValue);
-
-        // Return path
-        return $returnValue;
-    }
 }
