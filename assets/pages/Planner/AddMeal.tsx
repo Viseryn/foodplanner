@@ -83,7 +83,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
         setTopbar({
             title: 'Neue Mahlzeit',
             showBackButton: true,
-            backButtonPath: '/planner',
+            onBackButtonClick: () => navigate(-1),
         })
 
         // Scroll to top on rerender
