@@ -8,10 +8,10 @@ import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 
 import Label from '@/components/form/Label'
 import RadioWidget from '@/components/form/Radio/RadioWidget'
-import SelectWidget from '@/components/form/Select/SelectWidget'
 import nameFromId from '@/components/form/util/nameFromId'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
+import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import DayModel from '@/types/DayModel'
@@ -48,6 +48,37 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     // Whether the page is loading. Will be true while the form data is processed by the API.
     const [isLoading, setLoading] = useState<boolean>(false)
 
+    // The input value of the recipe search field
+    const [recipeQuery, setRecipeQuery] = useState<string>('')
+
+    // The ID of the currently selected recipe
+    const [selectedRecipe, setSelectedRecipe] = useState<number>(0)
+
+    // Whether a warning should be shown
+    const [showWarning, setShowWarning] = useState<boolean>(false)
+
+    // Everytime the query changes, check if the currently selected recipe is still in the seach 
+    // result and if not, deselect it
+    useEffect(() => {
+        let isRecipeInResults: boolean = false
+
+        if (recipes.isLoading) {
+            return
+        }
+
+        recipes.data
+            ?.filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase()))
+            ?.forEach(recipe => {
+                if (recipe.id == selectedRecipe) {
+                    isRecipeInResults = true
+                }
+            })
+        
+        if (!isRecipeInResults) {
+            setSelectedRecipe(0)
+        }
+    }, [recipeQuery])
+
     /**
      * Submits the form data to the Meal Add API.
      * 
@@ -56,6 +87,12 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
+
+        // If no recipe was collected, don't submit form
+        if (selectedRecipe == 0) {
+            setShowWarning(true)
+            return
+        }
 
         setLoading(true)
 
@@ -93,7 +130,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     }, [])
 
     // Render AddMeal
-    return <div className="pb-24 md:pb-4 md:w-[450px]">
+    return <div className="pb-24 md:pb-4 md:pr-4 md:max-w-[900px]">
         <Spacer height="6" />
 
         {isLoading ? (
@@ -101,96 +138,163 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
         ) : (
             <div className="mx-4 md:mx-0">
                 <form onSubmit={handleSubmit}>
-                    <Card>
-                        <Label htmlFor="meal_day">Für welchen Tag?</Label>
-                        {days.isLoading ? (
-                            <div className="grid grid-cols-5 gap-2">
-                                {[...Array(10)].map((value, index) => 
-                                    <div key={index}>
-                                        <div 
-                                            className="rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 border border-secondary-200 dark:border-secondary-dark-200 animate-pulse"
-                                        >
-                                            <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-1/3" />
-                                            <Spacer height="1" />
-                                            <div className="h-3 bg-notification-500 dark:bg-notification-700 rounded-full w-3/5" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                        <Card>
+                            <Label htmlFor="meal_day">Für welchen Tag?</Label>
+                            {days.isLoading ? (
+                                <div className="grid grid-cols-5 gap-2">
+                                    {[...Array(10)].map((value, index) => 
+                                        <div key={index}>
+                                            <div 
+                                                className="rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 border border-secondary-200 dark:border-secondary-dark-200 animate-pulse"
+                                            >
+                                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-1/3" />
+                                                <Spacer height="1" />
+                                                <div className="h-3 bg-notification-500 dark:bg-notification-700 rounded-full w-3/5" />
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-5 gap-2">
-                                {days.data.map(day => 
-                                    <div key={day.id}>
-                                        <input
-                                            id={`day_${day.id}`}
-                                            name={nameFromId("meal_day")}
-                                            type="radio"
-                                            defaultValue={day.id}
-                                            defaultChecked={id == day.id.toString()}
-                                            className="peer hidden"
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-5 gap-2">
+                                    {days.data.map(day => 
+                                        <div key={day.id}>
+                                            <input
+                                                id={`day_${day.id}`}
+                                                name={nameFromId("meal_day")}
+                                                type="radio"
+                                                defaultValue={day.id}
+                                                defaultChecked={id == day.id.toString()}
+                                                className="peer hidden"
+                                            />
+                                            <label 
+                                                htmlFor={`day_${day.id}`}
+                                                className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                            >
+                                                <span className="text-sm font-semibold">{day.weekday.slice(0, 2)}</span>
+                                                <span className="text-xs">{day.date.slice(0, day.date.lastIndexOf('.') + 1)}</span>
+                                            </label>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            <Spacer height="6" />
+
+                            <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
+                            {mealCategories.isLoading ? (
+                                <div role="status" className="animate-pulse">
+                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
+                                    <Spacer height="1" />
+                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
+                                </div>
+                            ) : (
+                                <RadioWidget
+                                    id="meal_mealCategory"
+                                    options={getOptions(mealCategories.data)}
+                                />
+                            )}
+
+                            <Spacer height="6" />
+
+                            <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
+                            {userGroups.isLoading ? (
+                                <div role="status" className="animate-pulse">
+                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
+                                    <Spacer height="1" />
+                                    <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
+                                </div>
+                            ) : (
+                                <RadioWidget
+                                    id="meal_userGroup"
+                                    options={getOptions(userGroups.data)}
+                                />
+                            )}
+                        </Card>
+
+                        <Card>
+                            <Label htmlFor="meal_recipe">Welches Rezept?</Label>
+                            {recipes.isLoading ? (
+                                /** @todo Skeleton for list */
+                                <div role="status" className="max-w-sm animate-pulse">
+                                    <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
+                                    <Spacer height="2" />
+                                    <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
+                                </div>
+                            ) : (
+                                <div>
+                                    {showWarning &&
+                                        <>
+                                            <Notification
+                                                title="Du musst ein Rezept auswählen!"
+                                                color="red"
+                                                icon="error"
+                                            />
+
+                                            <Spacer height="4" />
+                                        </>
+                                    }
+
+                                    <div className="rounded-xl flex items-center h-12 pl-6 pr-4 font-semibold bg-white dark:bg-secondary-dark-200">
+                                        <span className="material-symbols-rounded mr-2 cursor-default">search</span>
+                                
+                                        <input 
+                                            className="bg-white dark:bg-secondary-dark-200 placeholder-[#55624c] dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
+                                            placeholder="Suche nach Rezepten ..."
+                                            id="search"
+                                            name="search"
+                                            type="text"
+                                            value={recipeQuery}
+                                            onChange={e => {
+                                                setRecipeQuery(e.target.value)
+                                            }} 
                                         />
-                                        <label 
-                                            htmlFor={`day_${day.id}`}
-                                            className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200  dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
-                                        >
-                                            <span className="text-sm font-semibold">{day.weekday.slice(0, 2)}</span>
-                                            <span className="text-xs">{day.date.slice(0, day.date.lastIndexOf('.') + 1)}</span>
-                                        </label>
+                                
+                                        {recipeQuery !== '' &&
+                                            <span 
+                                                className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 p-2 rounded-full"
+                                                onClick={() => setRecipeQuery('')}
+                                            >close</span>
+                                        }
                                     </div>
-                                )}
-                            </div>
-                        )}
 
-                        <Spacer height="6" />
+                                    <Spacer height="4" />
 
-                        <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
-                        {mealCategories.isLoading ? (
-                            <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
-                                <Spacer height="1" />
-                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
-                            </div>
-                        ) : (
-                            <RadioWidget
-                                id="meal_mealCategory"
-                                options={getOptions(mealCategories.data)}
-                            />
-                        )}
-
-                        <Spacer height="6" />
-
-                        <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
-                        {userGroups.isLoading ? (
-                            <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
-                                <Spacer height="1" />
-                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
-                            </div>
-                        ) : (
-                            <RadioWidget
-                                id="meal_userGroup"
-                                options={getOptions(userGroups.data)}
-                            />
-                        )}
-                    </Card>
-
-                    <Spacer height="4" />
-
-                    <Card>
-                        <Label htmlFor="meal_recipe">Welches Rezept?</Label>
-                        {recipes.isLoading ? (
-                            <div role="status" className="max-w-sm animate-pulse">
-                                <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
-                                <Spacer height="2" />
-                                <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
-                            </div>
-                        ) : (
-                            <SelectWidget
-                                id="meal_recipe"
-                                options={getOptions(recipes.data)}
-                            />
-                        )}
-                    </Card>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {recipes.data
+                                            .filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase()))
+                                            .map(recipe =>
+                                                <div key={recipe.id}>
+                                                    <input
+                                                        id={`recipe_${recipe.id}`}
+                                                        name={nameFromId("meal_recipe")}
+                                                        type="radio"
+                                                        defaultValue={recipe.id}
+                                                        className="peer hidden"
+                                                    />
+                                                    <label 
+                                                        htmlFor={`recipe_${recipe.id}`}
+                                                        className="flex flex-row items-center cursor-pointer rounded-md h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 peer-checked:bg-secondary-200  dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                                        onClick={() => {
+                                                            setSelectedRecipe(recipe.id)
+                                                            setShowWarning(false)
+                                                        }}
+                                                    >
+                                                        <img 
+                                                            className="rounded-md h-12 w-12 object-cover transition duration-300" 
+                                                            src={recipe.image ? (recipe.image.directory + recipe.image.filename) : '/img/default.jpg'}
+                                                            alt={recipe.title}
+                                                        />
+                                                        <div className="px-4 whitespace-nowrap overflow-hidden text-ellipsis">{recipe.title}</div>
+                                                    </label>
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            )}
+                        </Card>
+                    </div>
 
                     <div className="flex justify-end pb-[5.5rem] md:pb-0 md:pt-4">
                         {!days.isLoading && !mealCategories.isLoading && !recipes.isLoading && !userGroups.isLoading && 
