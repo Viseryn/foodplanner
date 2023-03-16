@@ -2,7 +2,7 @@
  * ./assets/util/getOptions.ts *
  *******************************/
 
-import EntityWithOption from '@/types/EntityWithOption'
+import ModelWithOption from '@/types/ModelWithOption'
 
 /**
  * Given some entities, returns an appropriate array of option objects for form input widgets.
@@ -13,13 +13,13 @@ import EntityWithOption from '@/types/EntityWithOption'
  * @returns An array of the option properties of each entity.
  * 
  * @example getOptionsForEntities<SelectOption>(recipes.data) = [recipes.data[0].option, ...]
- * 
- * @todo There shouldn't be a need to null check the argument. Instead, the EntityModels should have some null-safety.
  * @see useFetch
  */
-export default function getOptions<OptionType>(
-    entities: Array<EntityWithOption<OptionType>>
+function getOptions<OptionType, Model extends ModelWithOption<OptionType>>(
+    entities: EntityState<Array<Model>>
 ): Array<OptionType> {
-    // If the entities are an empty object (e.g. due to not being loaded yet), assume they are an empty array.
-    return (Object.keys(entities).length !== 0 ? entities : []).map(entity => entity.option)
+    // If the entities are not being loaded yet, assume they are an empty array.
+    return (entities.isLoading ? [] : entities.data).map(entity => entity.option)
 }
+
+export default getOptions

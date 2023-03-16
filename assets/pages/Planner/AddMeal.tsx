@@ -110,7 +110,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         ) : (
                             <SelectWidget
                                 id="meal_day"
-                                options={getOptions(days.data)}
+                                options={getOptions(days)}
                                 {...{
                                     defaultValue: id
                                 }}
@@ -128,7 +128,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         ) : (
                             <RadioWidget
                                 id="meal_mealCategory"
-                                options={getOptions(mealCategories.data)}
+                                options={getOptions(mealCategories)}
                             />
                         )}
                     </Card>
@@ -145,7 +145,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         ) : (
                             <SelectWidget
                                 id="meal_recipe"
-                                options={getOptions(recipes.data)}
+                                options={getOptions(recipes)}
                             />
                         )}
 
@@ -160,7 +160,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         ) : (
                             <RadioWidget
                                 id="meal_userGroup"
-                                options={getOptions(userGroups.data)}
+                                options={getOptions(userGroups)}
                             />
                         )}
                     </Card>
