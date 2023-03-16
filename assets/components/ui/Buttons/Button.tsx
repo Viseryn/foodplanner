@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
  * @param props
  * @param props.style Additional styling classes.
  * @param props.type For submit buttons, set this to 'submit'. Default is 'link'.
- * @param props.role Can be 'primary' (default), 'secondary' or 'tertiary'.
+ * @param props.role Can be 'primary' (default), 'secondary', 'tertiary' or 'disabled'.
  * @param props.location The path of the button. Default is '#'.
  * @param props.icon The icon on the left of the button. Default is empty.
  * @param props.label The label of the button. Default is empty.
@@ -28,6 +28,7 @@ import { Link } from 'react-router-dom'
  * @param props.small Deprecated: Use isSmall instead.
  * @param props.isSmall If set to true, the button has a little less height. Default is false.
  * @param props.onClick An onClick handler function.
+ * @param props.isIconRight Whether the icon should be on the right side of the button. Default is false.
  * 
  * @example
  * <Button
@@ -41,7 +42,7 @@ import { Link } from 'react-router-dom'
  */
 export default function Button({ 
     style, type = 'link', role = 'primary', location = '#', icon, label, title = '', 
-    outlined, elevated, isElevated, floating, isFloating, small, isSmall, onClick 
+    outlined, elevated, isElevated, floating, isFloating, small, isSmall, onClick, isIconRight,
 }: ButtonOptions): JSX.Element {
     // Generate styling classes for the button
     const stylingClasses: string = buttonStyle(
@@ -55,17 +56,17 @@ export default function Button({
     // Props for the button/Link component
     const componentProps = {
         title: title,
-        onClick: onClick,
+        onClick: role === 'disabled' ? (() => {}) : onClick,
         className: stylingClasses,
     }
 
-    return type === 'submit' ? (
+    return type === 'submit' && role !== 'disabled' ? (
         <button type="submit" {...componentProps}>
-            <ButtonContent icon={icon} label={label} outlined={outlined} />
+            <ButtonContent icon={icon} label={label} outlined={outlined} isIconRight={isIconRight} />
         </button>
     ) : (
-        <Link to={location } {...componentProps}>
-            <ButtonContent icon={icon} label={label} outlined={outlined} />
+        <Link to={role === 'disabled' ? '#' : location} {...componentProps}>
+            <ButtonContent icon={icon} label={label} outlined={outlined} isIconRight={isIconRight} />
         </Link>
     )
 }
@@ -78,24 +79,45 @@ export default function Button({
  * @param props.icon The icon on the left of the button. Default is empty.
  * @param props.label The label of the button. Default is empty.
  * @param props.outlined Whether the icon should only have outlines. Default is false.
+ * @param props.isIconRight Whether the icon should be on the right side of the button. Default is false.
  */
-function ButtonContent({ icon, label, outlined }: {
+function ButtonContent({ icon, label, outlined, isIconRight }: {
     icon?: string
     label?: string
     outlined?: boolean
+    isIconRight?: boolean
 }): JSX.Element {
-    return <>
-        {icon && <span className={'material-symbols-rounded' + (outlined ? ' outlined' : '')}>
-            {icon}
-        </span>} 
-        
-        {label && (
-            icon != '' 
-                ? <span className="mr-2 ml-3">{label}</span>
-                : <span className="mx-2">{label}</span>
-            )
-        }
-    </>
+    const iconLeftElement: JSX.Element = (
+        <>
+            {icon && <span className={'material-symbols-rounded' + (outlined ? ' outlined' : '')}>
+                {icon}
+            </span>} 
+            
+            {label && (
+                icon != '' 
+                    ? <span className="mr-2 ml-3">{label}</span>
+                    : <span className="mx-2">{label}</span>
+                )
+            }
+        </>
+    )
+
+    const iconRightElement: JSX.Element = (
+        <>
+            {label && (
+                icon != '' 
+                    ? <span className="mr-3 ml-2">{label}</span>
+                    : <span className="mx-2">{label}</span>
+                )
+            }
+
+            {icon && <span className={'material-symbols-rounded' + (outlined ? ' outlined' : '')}>
+                {icon}
+            </span>} 
+        </>
+    )
+
+    return isIconRight ? iconRightElement : iconLeftElement
 }
 
 /**
@@ -126,6 +148,7 @@ const buttonStyle = (
         elevatedTertiary: 'border border-gray-100 dark:border-[#252f38]',
         floating: 'fixed bottom-[6.5rem] right-6 md:right-0 z-[60] md:relative md:bottom-0 !text-primary-100 !dark:text-primary-dark-100 !bg-secondary-200 !dark:bg-secondary-dark-200 !hover:bg-secondary-300 !dark:hover:bg-secondary-dark-300 !rounded-2xl !h-14 !shadow-xl',
         small: 'h-10 px-3',
+        disabled: 'text-notification-600 dark:text-notification-800 bg-notification-500 dark:bg-notification-600 active:!scale-100 cursor-text'
     }
 
     let style: string = styles.base + ' ' + styles?.[role]
@@ -151,7 +174,7 @@ const buttonStyle = (
 type ButtonType = 'submit' | 'link'
 
 /** Whether a Button is a primary, secondary or tertiary button. */
-type ButtonRole = 'primary' | 'secondary' | 'tertiary'
+type ButtonRole = 'primary' | 'secondary' | 'tertiary' | 'disabled'
 
 /** Type for Button props. */
 type ButtonOptions = {
@@ -173,4 +196,5 @@ type ButtonOptions = {
     small?: boolean
     isSmall?: boolean
     onClick?: () => void
+    isIconRight?: boolean
 }

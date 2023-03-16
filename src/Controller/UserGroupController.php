@@ -6,6 +6,7 @@ use App\Entity\UserGroup;
 use App\Form\UserGroupType;
 use App\Repository\MealRepository;
 use App\Repository\UserGroupRepository;
+use App\Service\RefreshDataTimestampUtil;
 use App\Service\UserGroupUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,7 +57,7 @@ class UserGroupController extends AbstractController
      * @return Response
      */
     #[Route('/standard', name: 'api_usergroups_standard', methods: ['GET', 'POST'])]
-    public function standard(
+    public function updateStandard(
         RefreshDataTimestampUtil $refreshDataTimestampUtil,
         Request $request, 
         UserGroupUtil $userGroupUtil,

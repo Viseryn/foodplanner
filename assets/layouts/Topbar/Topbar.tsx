@@ -66,7 +66,10 @@ export default function Topbar({ topbar, SidebarDrawerButton }: {
         <div className={`hidden md:flex justify-between items-center h-14 mt-6 ${topbar?.style}`}>
             <div>
                 {topbar?.showBackButton ? (
-                    <TopbarHeading location={topbar?.backButtonPath}>
+                    <TopbarHeading
+                        location={topbar?.backButtonPath} 
+                        onClick={topbar?.onBackButtonClick}
+                    >
                         {!topbar?.isLoading ? topbar?.title : <TopbarTitleSkeleton />}
                     </TopbarHeading>
                 ) : (
