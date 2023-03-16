@@ -146,6 +146,22 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                 options={getOptions(mealCategories.data)}
                             />
                         )}
+
+                        <Spacer height="6" />
+
+                        <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
+                        {userGroups.isLoading ? (
+                            <div role="status" className="animate-pulse">
+                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
+                                <Spacer height="1" />
+                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
+                            </div>
+                        ) : (
+                            <RadioWidget
+                                id="meal_userGroup"
+                                options={getOptions(userGroups.data)}
+                            />
+                        )}
                     </Card>
 
                     <Spacer height="4" />
@@ -161,21 +177,6 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                             <SelectWidget
                                 id="meal_recipe"
                                 options={getOptions(recipes.data)}
-                            />
-                        )}
-
-                        <Spacer height="6" />
-
-                        <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
-                        {userGroups.isLoading ? (
-                            <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
-                            </div>
-                        ) : (
-                            <RadioWidget
-                                id="meal_userGroup"
-                                options={getOptions(userGroups.data)}
                             />
                         )}
                     </Card>
