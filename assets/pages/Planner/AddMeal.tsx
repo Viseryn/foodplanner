@@ -25,8 +25,6 @@ import getOptions from '@/util/getOptions'
  * Consists of a list of Days, UserGroups, Recipes and MealCategories.
  * 
  * @component
- * 
- * @todo Skeleton colors and sizes
  */
 export default function AddMeal({ days, recipes, mealCategories, userGroups, setSidebar, setTopbar }: {
     days: EntityState<Array<DayModel>>
@@ -104,9 +102,18 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                     <Card>
                         <Label htmlFor="meal_day">Für welchen Tag?</Label>
                         {days.isLoading ? (
-                            <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                            <div className="grid grid-cols-5 gap-2">
+                                {[...Array(10)].map((value, index) => 
+                                    <div key={index}>
+                                        <div 
+                                            className="rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 border border-secondary-200 dark:border-secondary-dark-200 animate-pulse"
+                                        >
+                                            <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-1/3" />
+                                            <Spacer height="1" />
+                                            <div className="h-3 bg-notification-500 dark:bg-notification-700 rounded-full w-3/5" />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="grid grid-cols-5 gap-2">
@@ -137,8 +144,9 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
                         {mealCategories.isLoading ? (
                             <div role="status" className="animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
+                                <Spacer height="1" />
+                                <div className="h-4 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
                             </div>
                         ) : (
                             <RadioWidget
@@ -170,8 +178,9 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         <Label htmlFor="meal_recipe">Welches Rezept?</Label>
                         {recipes.isLoading ? (
                             <div role="status" className="max-w-sm animate-pulse">
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-2/3 mb-2"></div>
-                                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded-full w-3/4"></div>
+                                <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-2/3" />
+                                <Spacer height="2" />
+                                <div className="h-6 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4" />
                             </div>
                         ) : (
                             <SelectWidget
