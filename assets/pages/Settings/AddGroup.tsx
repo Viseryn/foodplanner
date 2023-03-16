@@ -113,7 +113,7 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
                             <Spacer height="6" />
 
                             {users.isLoading 
-                                ? <Spinner />
+                                ? <Spinner verticalMargin={10} />
                                 : <SelectRow
                                     id="user_group_users"
                                     label="Welche Benutzer sollen zur Gruppe gehören?"
