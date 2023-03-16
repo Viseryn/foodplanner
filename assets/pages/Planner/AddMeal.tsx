@@ -284,6 +284,12 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                                 </div>
                                             )
                                         }
+
+                                        {recipes.data.filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())).length == 0 &&
+                                            <div className="col-span-2">
+                                                <Notification title="Keine Rezepte gefunden." />
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             )}
