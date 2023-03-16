@@ -216,17 +216,6 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                 <RecipeListSkeleton />
                             ) : (
                                 <div>
-                                    {showWarning &&
-                                        <>
-                                            <Notification
-                                                title="Du musst ein Rezept auswählen!"
-                                                color="red"
-                                                icon="error"
-                                            />
-
-                                            <Spacer height="4" />
-                                        </>
-                                    }
 
                                     <div className="rounded-xl flex items-center h-12 pl-6 pr-4 font-semibold bg-white dark:bg-secondary-dark-200">
                                         <span className="material-symbols-rounded mr-2 cursor-default">search</span>
@@ -250,6 +239,18 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                             >close</span>
                                         }
                                     </div>
+
+                                    {showWarning &&
+                                        <>
+                                            <Spacer height="4" />
+                                        
+                                            <Notification
+                                                title="Du musst ein Rezept auswählen!"
+                                                color="red"
+                                                icon="error"
+                                            />
+                                        </>
+                                    }
 
                                     <Spacer height="4" />
 
