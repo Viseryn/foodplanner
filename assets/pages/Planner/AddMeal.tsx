@@ -290,17 +290,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                         </Card>
                     </div>
 
-                    <div className="flex justify-end pb-[5.5rem] md:pb-0 md:pt-4">
-                        {!days.isLoading && !mealCategories.isLoading && !recipes.isLoading && !userGroups.isLoading && 
-                            <Button
-                                type="submit"
-                                icon="save" 
-                                label="Speichern" 
-                                outlined={true}
-                                isFloating={true}
-                            />
-                        }
-                    </div> 
+                    <div className="pb-[5.5rem] md:pb-0" />
                 </form>
             </div>
         )}
