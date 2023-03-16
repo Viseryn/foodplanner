@@ -23,6 +23,7 @@ import getOptions from '@/util/getOptions'
 import DayRadioSkeleton from './components/DayRadioSkeleton'
 import RadioSkeleton from './components/RadioSkeleton'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
+import SearchWidget from './components/SearchWidget'
 
 /**
  * A component that renders a form to add a new meal. 
@@ -216,29 +217,11 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                 <RecipeListSkeleton />
                             ) : (
                                 <div>
-
-                                    <div className="rounded-xl flex items-center h-12 pl-6 pr-4 font-semibold bg-white dark:bg-secondary-dark-200">
-                                        <span className="material-symbols-rounded mr-2 cursor-default">search</span>
-                                
-                                        <input 
-                                            className="bg-white dark:bg-secondary-dark-200 placeholder-[#55624c] dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
-                                            placeholder="Suche nach Rezepten ..."
-                                            id="search"
-                                            name="search"
-                                            type="text"
-                                            value={recipeQuery}
-                                            onChange={e => {
-                                                setRecipeQuery(e.target.value)
-                                            }} 
-                                        />
-                                
-                                        {recipeQuery !== '' &&
-                                            <span 
-                                                className="material-symbols-rounded ml-2 cursor-pointer transition duration-300 hover:bg-secondary-100 dark:hover:bg-secondary-dark-100 p-2 rounded-full"
-                                                onClick={() => setRecipeQuery('')}
-                                            >close</span>
-                                        }
-                                    </div>
+                                    <SearchWidget
+                                        inputValue={recipeQuery}
+                                        setInputValue={setRecipeQuery}
+                                        placeholder="Suche nach Rezepten ..."
+                                    />
 
                                     {showWarning &&
                                         <>
