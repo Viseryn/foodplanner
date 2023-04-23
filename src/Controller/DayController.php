@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\DayRepository;
 use App\Service\DayUtil;
+use App\Service\RefreshDataTimestampUtil;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,14 +45,19 @@ class DayController extends AbstractController
      * Deletes all past Day objects and creates new Day objects up to ten days in the future.
      *
      * @param DayUtil $dayUtil
+     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/update', name: 'api_days_update', methods: ['GET'])]
-    public function updateDays(DayUtil $dayUtil): Response
-    {
+    public function updateDays(
+        DayUtil $dayUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $dayUtil->updateDays();
+
+        $refreshDataTimestampUtil->updateTimestamp();
 
         return new Response();
     }
