@@ -43,7 +43,7 @@ class DayController extends AbstractController
      * 
      * Deletes all past Day objects and creates new Day objects up to ten days in the future.
      *
-     * @param DayRepository $dayRepository
+     * @param DayUtil $dayUtil
      * @return Response
      */
     #[Route('/update', name: 'api_days_update', methods: ['GET'])]
