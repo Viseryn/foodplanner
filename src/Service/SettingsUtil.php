@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 
 /**
  * SettingsUtil
@@ -8,7 +8,7 @@ use App\Entity\EntityModel;
 class SettingsUtil extends EntityUtil
 {
     /** @param Settings $settings */
-    public function getApiModel(EntityModel $settings): array
+    public function getApiModel(EntityInterface $settings): array
     {
         return [
             'showPantry' => $settings->isShowPantry(),

@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use App\Entity\MealCategory;
 use App\Repository\MealCategoryRepository;
 
@@ -17,7 +17,7 @@ class MealCategoryUtil extends EntityUtil
     }
 
     /** @param MealCategory $mealCategory */
-    public function getApiModel(EntityModel $mealCategory): array
+    public function getApiModel(EntityInterface $mealCategory): array
     {
         return [
             'id' => $mealCategory->getId(),

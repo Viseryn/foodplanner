@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FileRepository::class)]
-class File
+class File implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

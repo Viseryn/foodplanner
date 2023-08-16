@@ -6,7 +6,7 @@ use App\Repository\SettingsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SettingsRepository::class)]
-class Settings implements EntityModel
+class Settings implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

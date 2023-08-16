@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StorageRepository::class)]
-class Storage
+class Storage implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

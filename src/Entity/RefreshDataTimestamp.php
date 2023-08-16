@@ -6,7 +6,7 @@ use App\Repository\RefreshDataTimestampRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RefreshDataTimestampRepository::class)]
-class RefreshDataTimestamp
+class RefreshDataTimestamp implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
