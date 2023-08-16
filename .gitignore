@@ -25,6 +25,9 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
+/.idea/
+foodplanner.iml
+
 /public/img/
 /data/
 /migrations
