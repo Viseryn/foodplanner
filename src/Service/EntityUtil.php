@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -12,8 +12,8 @@ use Doctrine\Common\Collections\Collection;
  * This provides a unified way to transform some entity data into an array that is matching
  * the type specification in the TypeScript EntityModel.ts file.
  * 
- * @method array getApiModel(EntityModel $entity) abstract
- * @method array getApiModels(EntityModel[]|Collection<int, EntityModel> $entities)
+ * @method array getApiModel(EntityInterface $entity) abstract
+ * @method array getApiModels(EntityInterface[]|Collection<int, EntityModel> $entities)
  */
 abstract class EntityUtil {
     /**
@@ -23,7 +23,7 @@ abstract class EntityUtil {
      * with the specifications given in the corresponding entity type definition in the
      * /assets/types/<Entity>Model.ts file.
      * 
-     * @param EntityModel $entity An entity object that implements EntityModel.
+     * @param EntityInterface $entity An entity object that implements EntityModel.
      * @return array Returns an array matching the ts-type definition for that entity.
      *
      * @see ./assets/types/EntityModel.ts
@@ -32,7 +32,7 @@ abstract class EntityUtil {
      *     type RecipeModel = { id: number, title: string, ... }
      *     -> getApiModel($recipe) = ['id' => int, 'title' => string, ...]
      */
-    abstract public function getApiModel(EntityModel $entity): array;
+    abstract public function getApiModel(EntityInterface $entity): array;
 
     /**
      * getApiModels
@@ -40,7 +40,7 @@ abstract class EntityUtil {
      * Given a collection (or an array) of entity objects, calls getApiModel on each and 
      * returns the results in an array.
      *
-     * @param EntityModel[]|Collection<int, EntityModel> $entities A collection of entity objects that implement EntityModel.
+     * @param EntityInterface[]|Collection<int, EntityInterface> $entities A collection of entity objects that implement EntityModel.
      * @return array Returns an array with the results from getApiModel on each entity of the argument.
      */
     public function getApiModels(array|Collection $entities): array

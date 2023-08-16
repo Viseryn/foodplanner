@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use App\Entity\Day;
 use App\Repository\DayRepository;
 use DateTime;
@@ -71,7 +71,7 @@ class DayUtil extends EntityUtil
     }
 
     /** @param Day $day */
-    public function getApiModel(EntityModel $day): array
+    public function getApiModel(EntityInterface $day): array
     {
         return [
             'id' => $day->getId(),
