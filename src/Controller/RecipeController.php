@@ -35,10 +35,7 @@ class RecipeController extends AbstractController
     #[Route('', name: 'api_recipes_getAll', methods: ['GET'])]
     public function getAll(): Response
     {
-        $recipeDTOs = (new ArrayCollection(
-            $this->recipeRepository->findBy([], ['title' => 'ASC'])
-        ))->map(fn ($recipe) => new RecipeDTO($recipe));
-
+        $recipeDTOs = $this->recipeControllerService->getAllRecipes();
         return DTOSerializer::getResponse($recipeDTOs);
     }
 
