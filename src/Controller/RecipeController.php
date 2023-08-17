@@ -21,22 +21,37 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/recipes')]
 class RecipeController extends AbstractController
 {
+    private MealRepository $mealRepository;
+    private RecipeRepository $recipeRepository;
+    private RecipeUtil $recipeUtil;
+    private RefreshDataTimestampUtil $refreshDataTimestampUtil;
+
+    public function __construct(
+        MealRepository $mealRepository,
+        RecipeRepository $recipeRepository,
+        RecipeUtil $recipeUtil,
+        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ) {
+        $this->mealRepository = $mealRepository;
+        $this->recipeRepository = $recipeRepository;
+        $this->recipeUtil = $recipeUtil;
+        $this->refreshDataTimestampUtil = $refreshDataTimestampUtil;
+    }
+
     /**
      * Recipe List API
      * 
      * Responds with an array of JSON objects matching the type specifications of RecipeModel.ts.
      *
-     * @param RecipeRepository $recipeRepository
-     * @param RecipeUtil $recipeUtil
      * @return Response
      */
     #[Route('/list', name: 'api_recipes_list', methods: ['GET'])]
-    public function list(RecipeRepository $recipeRepository, RecipeUtil $recipeUtil): Response
+    public function list(): Response
     {
-        $recipesResult = $recipeRepository->findBy([], ['title' => 'ASC']);
+        $recipesResult = $this->recipeRepository->findBy([], ['title' => 'ASC']);
 
         $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($recipeUtil->getApiModels($recipesResult), 'json');
+        $jsonContent = $serializer->serialize($this->recipeUtil->getApiModels($recipesResult), 'json');
 
         return (new JsonResponse($jsonContent));
     }
@@ -48,17 +63,11 @@ class RecipeController extends AbstractController
      * submitted. Responds with the ID of the newly created Recipe object. If no form was submitted, 
      * responds with an Error 500.
      *
-     * @param RecipeRepository $recipeRepository
-     * @param RecipeUtil $recipeUtil
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
      * @return Response
      */
     #[Route('/add', name: 'api_recipe_add', methods: ['GET', 'POST'])]
     public function add(
-        RecipeRepository $recipeRepository,
-        RecipeUtil $recipeUtil,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
         Request $request, 
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -72,10 +81,10 @@ class RecipeController extends AbstractController
             return (new Response)->setStatusCode(500);
         }
 
-        $recipeRepository->save($recipe, true);
-        $recipeUtil->update($recipe, $form);
+        $this->recipeRepository->save($recipe, true);
+        $this->recipeUtil->update($recipe, $form);
 
-        $refreshDataTimestampUtil->updateTimestamp();
+        $this->refreshDataTimestampUtil->updateTimestamp();
 
         return new Response($recipe->getId());
     }
@@ -88,68 +97,56 @@ class RecipeController extends AbstractController
      * submitted, responds with an Error 500.
      * 
      * @param Recipe $recipe
-     * @param RecipeRepository $recipeRepository
-     * @param RecipeUtil $recipeUtil
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @param Request $request
      * @return Response
      */
     #[Route('/edit/{id}', name: 'api_recipes_edit', methods: ['GET', 'POST'])]
     public function edit(
-        Recipe $recipe, 
-        RecipeRepository $recipeRepository,
-        RecipeUtil  $recipeUtil,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        Recipe $recipe,
         Request $request, 
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $form = $this->createForm(RecipeType::class, $recipe);
-        $form = $recipeUtil->prepareEditForm($recipe, $form);
+        $form = $this->recipeUtil->prepareEditForm($recipe, $form);
         $form->handleRequest($request);
 
         if (!$form->isSubmitted()) {
             return (new Response)->setStatusCode(500);
         }
 
-        $recipeUtil->update($recipe, $form);
-        $recipeRepository->save($recipe, true);
+        $this->recipeUtil->update($recipe, $form);
+        $this->recipeRepository->save($recipe, true);
 
-        $refreshDataTimestampUtil->updateTimestamp();
+        $this->refreshDataTimestampUtil->updateTimestamp();
 
         return new Response($recipe->getId());
     }
 
     /**
      * Recipes Delete API
-     * 
+     *
      * Deletes the Recipe object with the given ID.
      *
-     * @param MealRepository $mealRepository
      * @param Recipe $recipe
-     * @param RecipeRepository $recipeRepository
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
      * @return Response
      */
     #[Route('/delete/{id}', name: 'api_recipes_delete', methods: ['GET'])]
     public function delete(
-        MealRepository $mealRepository, 
-        Recipe $recipe, 
-        RecipeRepository $recipeRepository,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        Recipe $recipe,
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         
-        $meals = $mealRepository->findBy(['recipe' => $recipe->getId()]);
+        $meals = $this->mealRepository->findBy(['recipe' => $recipe->getId()]);
         
         foreach ($meals as $meal) {
-            $mealRepository->remove($meal, true);
+            $this->mealRepository->remove($meal, true);
         }
 
-        $recipeRepository->remove($recipe, true);
+        $this->recipeRepository->remove($recipe, true);
 
-        $refreshDataTimestampUtil->updateTimestamp();
+        $this->refreshDataTimestampUtil->updateTimestamp();
 
         return new Response();
     }
