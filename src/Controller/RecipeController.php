@@ -53,8 +53,6 @@ class RecipeController extends AbstractController
     public function add(
         Request $request, 
     ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         $recipe = new Recipe();
 
         $form = $this->createForm(RecipeType::class, $recipe);
@@ -88,8 +86,6 @@ class RecipeController extends AbstractController
         Recipe $recipe,
         Request $request, 
     ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         $form = $this->createForm(RecipeType::class, $recipe);
         $form = $this->recipeUtil->prepareEditForm($recipe, $form);
         $form->handleRequest($request);
@@ -112,8 +108,6 @@ class RecipeController extends AbstractController
     #[Route('/{id}', name: 'api_recipes_delete', methods: ['DELETE'])]
     public function delete(Recipe $recipe): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         $this->recipeControllerService->removeRecipe($recipe);
         $this->refreshDataTimestampUtil->updateTimestamp();
 
