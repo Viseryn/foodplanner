@@ -29,7 +29,7 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
     setTopbar: SetTopbarAction
 }) {
     // A list of all users
-    const users = useFetch<Array<UserModel>>('/api/user/list', authentication)
+    const users = useFetch<Array<UserModel>>('/api/users', authentication, undefined, false)
 
     // A function that can change the location. Needed for the redirect after submit.
     const navigate: NavigateFunction = useNavigate()

@@ -2,61 +2,45 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\DataTransferObject\DTOSerializer;
+use App\DataTransferObject\UserDTO;
 use App\Repository\UserRepository;
+use App\Service\UserControllerService;
 use App\Service\UserUtil;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use JMS\Serializer\SerializerBuilder;
 
 /**
  * User API
  */
-#[Route('/api/user')]
+#[Route('/api')]
 class UserController extends AbstractController
 {
+    public function __construct(
+        private UserControllerService $userControllerService,
+        private UserRepository $userRepository,
+    ) {}
+
     /**
-     * User Detail API
-     * 
-     * Responds with a JSON object matching the type specifications of UserModel.ts.
-     *
-     * @return Response
+     * Responds with the User object of the currently signed in user.
      */
-    #[Route('/detail', name: 'api_user_detail')]
-    public function detail(UserUtil $userUtil): Response
+    #[Route('/user', name: 'api_user_getCurrentlySignedInUser', methods: ['GET'])]
+    public function getCurrentlySignedInUser(): Response
     {
-        // For the User object we need a little workaround, since $this->getUser() returns a 
-        // UserInterface and not a User object (which is what we need). Hence, we use this little 
-        // helper function to cast the result of $this->getUser() to a User object. If the former 
-        // is null, we just return an empty User object. (In fact, it will have the ROLE_USER role,
-        // but a user needs ROLE_ADMIN to access anything.)
-        $castToUser = function(null|UserInterface|User $userParam): User {
-            return $userParam ?: new User;
-        };
-
-        $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($userUtil->getApiModel($castToUser($this->getUser())), 'json');
-
-        return new JsonResponse($jsonContent);
+        $userDTO = new UserDTO($this->userControllerService->getUser());
+        return DTOSerializer::getResponse($userDTO);
     }
 
     /**
-     * User List API
-     * 
-     * Responds with an array of JSON object matching the type specifications of UserGroupModel.ts.
+     * Responds with a list of all User objects.
      */
-    #[Route('/list', name: 'api_user_list')]
-    public function users(UserRepository $userRepository, UserUtil $userUtil): Response
+    #[Route('/users', name: 'api_user_getAll', methods: ['GET'])]
+    public function getAll(UserRepository $userRepository, UserUtil $userUtil): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        $users = $userRepository->findAll();
-
-        $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($userUtil->getApiModels($users), 'json');
-
-        return new JsonResponse($jsonContent);
+        $userDTOs = (new ArrayCollection($this->userRepository->findAll()))
+            ->map(fn ($user) => new UserDTO($user));
+        return DTOSerializer::getResponse($userDTOs);
     }
 }

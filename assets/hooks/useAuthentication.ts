@@ -22,7 +22,7 @@ function useAuthentication(): [EntityState<UserModel>, Authentication] {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
 
     // UserModel and Authentication objects
-    const user: EntityState<UserModel> = useFetch<UserModel>('/api/user/detail')
+    const user: EntityState<UserModel> = useFetch<UserModel>('/api/user', undefined, undefined,false)
     const authentication: Authentication = { isAuthenticated, isLoading }
 
     // Each time the user data changes, check if authenticated
