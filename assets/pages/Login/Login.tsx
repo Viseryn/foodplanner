@@ -89,7 +89,7 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
             </div>
         }
 
-        {user.data.username !== undefined && !user.isLoading && !isLoadingSubmit &&
+        {user.data.username !== null && !user.isLoading && !isLoadingSubmit &&
             <div className="mx-4 md:mx-0">
                 <Notification color="green" title="Erfolgreich eingeloggt!">
                     Willkommen, {user.data.username}.
@@ -116,7 +116,7 @@ export default function Login({ user, authentication, setLoading, setSidebar, se
             </div>
         }
 
-        {user.data.username === undefined && !user.isLoading && !isLoadingSubmit &&
+        {user.data.username === null && !user.isLoading && !isLoadingSubmit &&
             <div className="mx-4 md:mx-0">
                 <form onSubmit={handleSubmit}>
                     <Card>
