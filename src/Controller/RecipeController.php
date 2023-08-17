@@ -6,8 +6,8 @@ use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\RecipeDTO;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
-use App\Repository\MealRepository;
 use App\Repository\RecipeRepository;
+use App\Service\RecipeControllerService;
 use App\Service\RecipeUtil;
 use App\Service\RefreshDataTimestampUtil;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,22 +22,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/recipes')]
 class RecipeController extends AbstractController
 {
-    private MealRepository $mealRepository;
-    private RecipeRepository $recipeRepository;
-    private RecipeUtil $recipeUtil;
-    private RefreshDataTimestampUtil $refreshDataTimestampUtil;
-
     public function __construct(
-        MealRepository $mealRepository,
-        RecipeRepository $recipeRepository,
-        RecipeUtil $recipeUtil,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
-    ) {
-        $this->mealRepository = $mealRepository;
-        $this->recipeRepository = $recipeRepository;
-        $this->recipeUtil = $recipeUtil;
-        $this->refreshDataTimestampUtil = $refreshDataTimestampUtil;
-    }
+        private RecipeControllerService $recipeControllerService,
+        private RecipeRepository $recipeRepository,
+        private RecipeUtil $recipeUtil,
+        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ) {}
 
     /**
      * Responds with a list of all Recipe objects.
@@ -127,15 +117,7 @@ class RecipeController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // TODO: Refactor this into its own method.
-        $meals = $this->mealRepository->findBy(['recipe' => $recipe->getId()]);
-
-        foreach ($meals as $meal) {
-            $this->mealRepository->remove($meal, true);
-        }
-
-        $this->recipeRepository->remove($recipe, true);
-
+        $this->recipeControllerService->removeRecipe($recipe);
         $this->refreshDataTimestampUtil->updateTimestamp();
 
         return DTOSerializer::getResponse(new RecipeDTO($recipe));
