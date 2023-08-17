@@ -94,14 +94,15 @@ export default function App({ version }: {
     }
 
     /**
-     * A shortcut function for fetching the global data. Returns the useFetch return value with the 
+     * A shortcut function for fetching the global data. Returns the useFetch return value with the
      * given URL and the authentication and isLoading state variable as dependencies.
-     * 
+     *
      * @param url The API url.
+     * @param parse Whether or not the response data needs to be parsed. Default is true. Set to false if the response is prettified JSON.
      * @returns The useFetch return value.
      */
-    const fetch = <T,>(url: string): EntityState<T> => { 
-        return useFetch<T>(url, authentication, [isLoading]) 
+    const fetch = <T,>(url: string, parse: boolean = true): EntityState<T> => {
+        return useFetch<T>(url, authentication, [isLoading], parse)
     }
     const fetchWithoutParse = <T,>(url: string): EntityState<T> => {
         return useFetch<T>(url, authentication, [isLoading], false)
