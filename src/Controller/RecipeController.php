@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Controller;
+<?php namespace App\Controller;
 
 use App\Entity\Recipe;
 use App\Form\RecipeType;

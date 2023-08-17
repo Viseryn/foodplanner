@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Controller;
+<?php namespace App\Controller;
 
 use App\Component\Response\PrettyJsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
