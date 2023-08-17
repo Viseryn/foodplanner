@@ -103,6 +103,9 @@ export default function App({ version }: {
     const fetch = <T,>(url: string): EntityState<T> => { 
         return useFetch<T>(url, authentication, [isLoading]) 
     }
+    const fetchWithoutParse = <T,>(url: string): EntityState<T> => {
+        return useFetch<T>(url, authentication, [isLoading], false)
+    }
 
     // Fetch data
     const settings = fetch<SettingsModel>('/api/settings/detail')
@@ -110,7 +113,7 @@ export default function App({ version }: {
     const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups/list')
     const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
     const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
-    const recipes = fetch<Array<RecipeModel>>('/api/recipes/list')
+    const recipes = fetchWithoutParse<Array<RecipeModel>>('/api/recipes')
     const days = fetch<Array<DayModel>>('/api/days/list')
 
     // Render App component

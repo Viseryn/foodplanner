@@ -10,11 +10,10 @@ use App\Repository\MealRepository;
 use App\Repository\RecipeRepository;
 use App\Service\RecipeUtil;
 use App\Service\RefreshDataTimestampUtil;
-use JMS\Serializer\SerializerBuilder;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -41,21 +40,16 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipe List API
-     * 
-     * Responds with an array of JSON objects matching the type specifications of RecipeModel.ts.
-     *
-     * @return Response
+     * Responds with a list of all Recipe objects.
      */
-    #[Route('/list', name: 'api_recipes_list', methods: ['GET'])]
-    public function list(): Response
+    #[Route('', name: 'api_recipes_getAll', methods: ['GET'])]
+    public function getAll(): Response
     {
-        $recipesResult = $this->recipeRepository->findBy([], ['title' => 'ASC']);
+        $recipeDTOs = (new ArrayCollection(
+            $this->recipeRepository->findBy([], ['title' => 'ASC'])
+        ))->map(fn ($recipe) => new RecipeDTO($recipe));
 
-        $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($this->recipeUtil->getApiModels($recipesResult), 'json');
-
-        return (new JsonResponse($jsonContent));
+        return DTOSerializer::getResponse($recipeDTOs);
     }
 
     /**
@@ -132,9 +126,10 @@ class RecipeController extends AbstractController
     public function delete(Recipe $recipe): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
+
+        // TODO: Refactor this into its own method.
         $meals = $this->mealRepository->findBy(['recipe' => $recipe->getId()]);
-        
+
         foreach ($meals as $meal) {
             $this->mealRepository->remove($meal, true);
         }
