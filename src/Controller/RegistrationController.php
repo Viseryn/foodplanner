@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Settings;
+use App\DataTransferObject\DTOSerializer;
+use App\DataTransferObject\UserDTO;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Repository\SettingsRepository;
 use App\Service\RefreshDataTimestampUtil;
+use App\Service\RegistrationControllerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,51 +20,38 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class RegistrationController extends AbstractController
 {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        private RegistrationControllerService $registrationControllerService,
+        private UserPasswordHasherInterface $userPasswordHasher,
+    ) {}
+
     /**
-     * Registration Register API
-     *
-     * @param EntityManagerInterface $entityManager
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
-     * @param Request $request
-     * @param SettingsRepository $settingsRepository
-     * @param UserPasswordHasherInterface $userPasswordHasher
-     * @return Response
+     * Registers a new user, creates their settings and responds with the User object.
      */
-    #[Route('/api/register', name: 'api_register')]
-    public function register(
-        EntityManagerInterface $entityManager, 
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
-        Request $request, 
-        SettingsRepository $settingsRepository,
-        UserPasswordHasherInterface $userPasswordHasher,
-    ): Response {
+    #[Route('/api/register', name: 'api_register', methods: ['POST'])]
+    public function register(Request $request): Response
+    {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            // encode the plain password
             $user->setPassword(
-                $userPasswordHasher->hashPassword(
+                $this->userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
 
-            $entityManager->persist($user);
-            $entityManager->flush();
-            
-            // Add user specific settings
-            $settings = new Settings();
-            $settings
-                ->setUser($user)
-                ->setShowPantry(true)
-            ;
-            $settingsRepository->save($settings, true);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
-            $refreshDataTimestampUtil->updateTimestamp();
+            $this->registrationControllerService->createUserSettings($user);
+            $this->refreshDataTimestampUtil->updateTimestamp();
         }
         
-        return new Response();
+        return DTOSerializer::getResponse(new UserDTO($user));
     }
 }
