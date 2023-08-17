@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\DataTransferObject\DTOSerializer;
+use App\DataTransferObject\RecipeDTO;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
 use App\Repository\MealRepository;
@@ -124,17 +126,10 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipes Delete API
-     *
-     * Deletes the Recipe object with the given ID.
-     *
-     * @param Recipe $recipe
-     * @return Response
+     * Deletes the given Recipe object and responds with the deleted object.
      */
-    #[Route('/delete/{id}', name: 'api_recipes_delete', methods: ['GET'])]
-    public function delete(
-        Recipe $recipe,
-    ): Response
+    #[Route('/{id}', name: 'api_recipes_delete', methods: ['DELETE'])]
+    public function delete(Recipe $recipe): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         
@@ -148,6 +143,6 @@ class RecipeController extends AbstractController
 
         $this->refreshDataTimestampUtil->updateTimestamp();
 
-        return new Response();
+        return DTOSerializer::getResponse(new RecipeDTO($recipe));
     }
 }

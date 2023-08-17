@@ -197,7 +197,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         }).then(confirm => {
             if (confirm) {
                 axios
-                    .get('/api/recipes/delete/' + id)
+                    .delete('/api/recipes/' + id)
                     .then(() => {
                         // Reload recipes and days
                         recipes.load()
