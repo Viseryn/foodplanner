@@ -10,7 +10,6 @@ use App\Repository\RecipeRepository;
 use App\Service\RecipeControllerService;
 use App\Service\RecipeUtil;
 use App\Service\RefreshDataTimestampUtil;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
