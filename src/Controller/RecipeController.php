@@ -37,26 +37,19 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipe Add API
-     * 
-     * A Recipe API that adds a new Recipe object to the database when the form in AddRecipe.js was 
-     * submitted. Responds with the ID of the newly created Recipe object. If no form was submitted, 
-     * responds with an Error 500.
-     *
-     * @param Request $request
-     * @return Response
+     * Handles form data sent by AddRecipe.tsx. Responds with the new Recipe Object or an Error 400.
+     * @todo Instead of using formData, the request object should be a RecipeModel JSON object.
      */
-    #[Route('/add', name: 'api_recipe_add', methods: ['GET', 'POST'])]
-    public function add(
-        Request $request, 
-    ): Response {
+    #[Route('', name: 'api_recipe_post', methods: ['POST'])]
+    public function post(Request $request): Response
+    {
         $recipe = new Recipe();
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
         if (!$form->isSubmitted()) {
-            return (new Response)->setStatusCode(500);
+            return (new Response)->setStatusCode(400);
         }
 
         $this->recipeRepository->save($recipe, true);
@@ -64,7 +57,7 @@ class RecipeController extends AbstractController
 
         $this->refreshDataTimestampUtil->updateTimestamp();
 
-        return new Response($recipe->getId());
+        return DTOSerializer::getResponse(new RecipeDTO($recipe));
     }
 
     /**
