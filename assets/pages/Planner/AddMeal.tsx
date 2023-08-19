@@ -13,7 +13,6 @@ import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
-import Spinner from '@/components/ui/Spinner'
 import DayModel from '@/types/DayModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
@@ -24,6 +23,9 @@ import DayRadioSkeleton from './components/DayRadioSkeleton'
 import RadioSkeleton from './components/RadioSkeleton'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
 import SearchWidget from './components/SearchWidget'
+import getEntityOptions from '@/util/getEntityOptions'
+import UserGroupOption from '@/types/UserGroupOption'
+import MealCategoryOption from '@/types/MealCategoryOption'
 
 /**
  * A component that renders a form to add a new meal. 
@@ -43,6 +45,10 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     type AddMealRouteParams = {
         id?: string
     }
+
+    // Options
+    const userGroupOptions = getEntityOptions(userGroups, UserGroupOption)
+    const mealCategoryOptions = getEntityOptions(mealCategories, MealCategoryOption)
 
     // The id parameter of the route '/planner/add/:id'
     const { id }: AddMealRouteParams = useParams()
@@ -99,7 +105,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
         const apiCall = async (): Promise<void> => {
             try {
                 // Send form data to Meal Add API
-                await axios.post('/api/meals/add', formData)
+                await axios.post('/api/meals', formData)
                 days.load()
                 navigate('/planner')
             } catch (error) {
@@ -167,7 +173,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                             ) : (
                                 <RadioWidget
                                     id="meal_mealCategory"
-                                    options={getOptions(mealCategories)}
+                                    options={getOptions(mealCategoryOptions)}
                                 />
                             )}
 
@@ -179,7 +185,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                             ) : (
                                 <RadioWidget
                                     id="meal_userGroup"
-                                    options={getOptions(userGroups)}
+                                    options={getOptions(userGroupOptions)}
                                 />
                             )}
                         </Card>

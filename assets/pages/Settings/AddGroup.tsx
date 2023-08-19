@@ -16,6 +16,8 @@ import useFetch from '@/hooks/useFetch'
 import UserGroupModel from '@/types/UserGroupModel'
 import UserModel from '@/types/UserModel'
 import getOptions from '@/util/getOptions'
+import getEntityOptions from '@/util/getEntityOptions'
+import UserOption from '@/types/UserOption'
 
 /**
  * A component that renders a form for adding new UserGroups.
@@ -30,6 +32,7 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
 }) {
     // A list of all users
     const users = useFetch<Array<UserModel>>('/api/users', authentication, undefined, false)
+    const userOptions = getEntityOptions(users, UserOption)
 
     // A function that can change the location. Needed for the redirect after submit.
     const navigate: NavigateFunction = useNavigate()
@@ -52,7 +55,7 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
         
         setLoading(true)
 
-        await axios.post('/api/usergroups/add', formData)
+        await axios.post('/api/usergroups', formData)
 
         userGroups.load()
         navigate('/settings')
@@ -117,12 +120,12 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
                                 : <SelectRow
                                     id="user_group_users"
                                     label="Welche Benutzer sollen zur Gruppe gehören?"
-                                    options={getOptions(users)}
+                                    options={getOptions(userOptions)}
                                     {...{
                                         name: "user_group[users][]",
                                         multiple: true,
                                         required: true,
-                                        size: getOptions(users).length,
+                                        size: getOptions(userOptions).length,
                                         className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden'
                                     }}
                                 />

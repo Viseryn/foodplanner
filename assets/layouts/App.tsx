@@ -104,18 +104,15 @@ export default function App({ version }: {
     const fetch = <T,>(url: string, parse: boolean = true): EntityState<T> => {
         return useFetch<T>(url, authentication, [isLoading], parse)
     }
-    const fetchWithoutParse = <T,>(url: string): EntityState<T> => {
-        return useFetch<T>(url, authentication, [isLoading], false)
-    }
 
     // Fetch data
-    const settings = fetch<SettingsModel>('/api/settings/detail')
-    const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories/list')
-    const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups/list')
+    const settings = fetch<SettingsModel>('/api/settings?userid=' + user.data.id, false)
+    const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups', false)
+    const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories', false)
     const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
     const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
-    const recipes = fetchWithoutParse<Array<RecipeModel>>('/api/recipes')
-    const days = fetch<Array<DayModel>>('/api/days/list')
+    const recipes = fetch<Array<RecipeModel>>('/api/recipes', false)
+    const days = fetch<Array<DayModel>>('/api/days', false)
 
     // Render App component
     return (

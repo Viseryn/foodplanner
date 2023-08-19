@@ -4,7 +4,7 @@ use App\Entity\Day;
 use DateTime;
 use Doctrine\Common\Collections\Collection;
 
-class DayDTO implements DataTransferObjectWithOptionField
+class DayDTO implements DataTransferObject
 {
     private ?int $id;
     private ?int $timestamp;
@@ -12,7 +12,6 @@ class DayDTO implements DataTransferObjectWithOptionField
     private ?string $date;
     /** @var Collection<MealDTO> */
     private Collection $meals;
-    private ?FormOptionFieldDTO $option;
 
     public function __construct(Day $day)
     {
@@ -21,7 +20,6 @@ class DayDTO implements DataTransferObjectWithOptionField
         $this->weekday = $this->calculateWeekday();
         $this->date = date('d.m.Y', $this->getTimestamp());
         $this->meals = $day->getMeals()->map(fn ($meal) => new MealDTO($meal));
-        $this->option = new SelectOptionDTO($this->getId(), $this->getDate() . ', ' . $this->getWeekday());
     }
 
     public function getId(): ?int
@@ -67,10 +65,5 @@ class DayDTO implements DataTransferObjectWithOptionField
     public function getMeals(): Collection
     {
         return $this->meals;
-    }
-
-    public function getOption(): ?FormOptionFieldDTO
-    {
-        return $this->option;
     }
 }
