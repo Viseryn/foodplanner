@@ -3,14 +3,13 @@
 use App\Entity\UserGroup;
 use Doctrine\Common\Collections\Collection;
 
-class UserGroupDTO implements DataTransferObjectWithOptionField
+class UserGroupDTO implements DataTransferObject
 {
     private ?int $id;
     private ?string $name;
     private ?string $icon;
     /** @var Collection<UserDTO> */
     private Collection $users;
-    private ?FormOptionFieldDTO $option;
 
     public function __construct(UserGroup $userGroup)
     {
@@ -18,13 +17,6 @@ class UserGroupDTO implements DataTransferObjectWithOptionField
         $this->name = $userGroup->getName();
         $this->icon = $userGroup->getIcon();
         $this->users = $userGroup->getUsers()->map(fn ($user) => new UserDTO($user));
-        $this->option = new RadioOptionDTO(
-            'userGroup_' . $this->getName(),
-            $this->getName(),
-            $this->getIcon(),
-            false,
-            $this->getId()
-        );
     }
 
     public function getId(): ?int 
@@ -46,10 +38,5 @@ class UserGroupDTO implements DataTransferObjectWithOptionField
     public function getUsers(): Collection
     {
         return $this->users;
-    }
-
-    public function getOption(): ?FormOptionFieldDTO
-    {
-        return $this->option;
     }
 }

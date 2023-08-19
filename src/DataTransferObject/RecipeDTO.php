@@ -3,7 +3,7 @@
 use App\Entity\Recipe;
 use Doctrine\Common\Collections\Collection;
 
-class RecipeDTO implements DataTransferObjectWithOptionField
+class RecipeDTO implements DataTransferObject
 {
     private ?int $id;
     private ?string $title;
@@ -13,7 +13,6 @@ class RecipeDTO implements DataTransferObjectWithOptionField
     /** @var Collection<InstructionDTO> */
     private Collection $instructions;
     private ?FileDTO $image;
-    private ?FormOptionFieldDTO $option;
 
     public function __construct(Recipe $recipe)
     {
@@ -23,7 +22,6 @@ class RecipeDTO implements DataTransferObjectWithOptionField
         $this->ingredients = $recipe->getIngredients()->map(fn ($ingredient) => new IngredientDTO($ingredient));
         $this->instructions = $recipe->getInstructions()->map(fn ($instructions) => new InstructionDTO($instructions));
         $this->image = $recipe->getImage() !== null ? new FileDTO($recipe->getImage()) : null;
-        $this->option = new SelectOptionDTO($this->getId(), $this->getTitle());
     }
 
     public function getId(): ?int
@@ -56,10 +54,5 @@ class RecipeDTO implements DataTransferObjectWithOptionField
     public function getImage(): ?FileDTO
     {
         return $this->image;
-    }
-
-    public function getOption(): ?FormOptionFieldDTO
-    {
-        return $this->option;
     }
 }
