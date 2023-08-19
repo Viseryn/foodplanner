@@ -2,13 +2,19 @@
 
 namespace App\Controller;
 
+use App\Component\Response\PrettyJsonResponse;
+use App\DataTransferObject\DTOSerializer;
+use App\DataTransferObject\SettingsDTO;
 use App\Entity\User;
 use App\Repository\SettingsRepository;
+use App\Repository\UserRepository;
 use App\Service\SettingsUtil;
+use App\Service\UserControllerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 use JMS\Serializer\SerializerBuilder;
 
@@ -18,34 +24,22 @@ use JMS\Serializer\SerializerBuilder;
 #[Route('/api/settings')]
 class SettingsController extends AbstractController
 {
-    /**
-     * Settings Detail API
-     * 
-     * Responds with an array of settings.
-     *
-     * @param SettingsRepository $settingsRepository
-     * @param SettingsUtil $settingsUtil
-     * @return Response
-     */
-    #[Route('/detail', name: 'api_settings_detail')]
-    public function detail(
-        SettingsRepository $settingsRepository, 
-        SettingsUtil $settingsUtil,
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    public function __construct(
+        private SettingsRepository $settingsRepository,
+        private UserRepository $userRepository,
+        private UserControllerService $userControllerService,
+    ) {}
 
-        $castToUser = function(null|UserInterface|User $userParam): User {
-            return $userParam ?: new User;
-        };
+    #[Route('', name: 'api_settings_get', methods: ['GET'])]
+    public function get(#[MapQueryParameter] int $userid = 1): Response
+    {
+        $user = $this->userRepository->find($userid);
+        if ($user?->getId() !== $this->userControllerService->getUser()->getId()) {
+            return new PrettyJsonResponse(null, 403);
+        }
 
-        $settings = $settingsRepository->findOneBy([
-            'user' => $castToUser($this->getUser())?->getId()
-        ]);
-
-        $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($settingsUtil->getApiModel($settings), 'json');
-
-        return new JsonResponse($jsonContent);
+        $settings = $this->settingsRepository->findOneBy(['user' => $user->getId()]);
+        return DTOSerializer::getResponse(new SettingsDTO($settings));
     }
     
     /**
