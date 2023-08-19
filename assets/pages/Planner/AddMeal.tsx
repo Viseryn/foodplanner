@@ -105,7 +105,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
         const apiCall = async (): Promise<void> => {
             try {
                 // Send form data to Meal Add API
-                await axios.post('/api/meals/add', formData)
+                await axios.post('/api/meals', formData)
                 days.load()
                 navigate('/planner')
             } catch (error) {
