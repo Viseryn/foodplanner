@@ -122,7 +122,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
 
         (async () => {
             try {
-                await axios.get('/api/days/update')
+                await axios.patch('/api/days')
             } catch (error) {
                 console.log(error)
             }
