@@ -17,9 +17,6 @@ type MealCategoryModel = ModelWithOption<RadioOption> & {
 
     /** The icon of the MealCategory object. */
     icon: string
-
-    /** Whether the MealCategory object is the standard option. */
-    standard: boolean
 }
 
 export default MealCategoryModel

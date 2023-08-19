@@ -19,9 +19,6 @@ type UserGroupModel = ModelWithOption<RadioOption> & {
     /** The icon of the UserGroup object. */
     icon: string
 
-    /** Whether the UserGroup object is the standard option. */
-    standard: boolean
-
     /** The User objects that belong to the UserGroup object. */
     users: Array<UserModel>
 }

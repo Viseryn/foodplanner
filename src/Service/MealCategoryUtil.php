@@ -23,12 +23,11 @@ class MealCategoryUtil extends EntityUtil
             'id' => $mealCategory->getId(),
             'name' => $mealCategory->getName(),
             'icon' => $mealCategory->getIcon(),
-            'standard' => $mealCategory->isStandard(),
             'option' => [
                 'id' => 'mealCategory_' . $mealCategory->getName(),
                 'label' => $mealCategory->getName(),
                 'icon' => $mealCategory->getIcon(),
-                'checked' => $mealCategory->isStandard(),
+                'checked' => false,
                 'value' => $mealCategory->getId(),
             ],
         ];

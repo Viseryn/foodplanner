@@ -8,7 +8,6 @@ class UserGroupDTO implements DataTransferObjectWithOptionField
     private ?int $id;
     private ?string $name;
     private ?string $icon;
-    private ?bool $standard;
     /** @var Collection<UserDTO> */
     private Collection $users;
     private ?FormOptionFieldDTO $option;
@@ -18,13 +17,12 @@ class UserGroupDTO implements DataTransferObjectWithOptionField
         $this->id = $userGroup->getId();
         $this->name = $userGroup->getName();
         $this->icon = $userGroup->getIcon();
-        $this->standard = $userGroup->isStandard();
         $this->users = $userGroup->getUsers()->map(fn ($user) => new UserDTO($user));
         $this->option = new RadioOptionDTO(
             'userGroup_' . $this->getName(),
             $this->getName(),
             $this->getIcon(),
-            $this->getStandard(),
+            false,
             $this->getId()
         );
     }
@@ -42,11 +40,6 @@ class UserGroupDTO implements DataTransferObjectWithOptionField
     public function getIcon(): ?string 
     {
         return $this->icon;
-    }
-
-    public function getStandard(): ?bool 
-    {
-        return $this->standard;
     }
 
     /** @return Collection<UserDTO> */

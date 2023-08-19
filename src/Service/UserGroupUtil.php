@@ -27,13 +27,12 @@ class UserGroupUtil extends EntityUtil
             'id' => $userGroup->getId(),
             'name' => $userGroup->getName(),
             'icon' => $userGroup->getIcon(),
-            'standard' => $userGroup->isStandard(),
             'users' => $this->userUtil->getApiModels($userGroup->getUsers()),
             'option' => [
                 'id' => 'userGroup_' . $userGroup->getName(),
                 'label' => $userGroup->getName(),
                 'icon' => $userGroup->getIcon(),
-                'checked' => $userGroup->isStandard(),
+                'checked' => false,
                 'value' => $userGroup->getId(),
             ],
         ];

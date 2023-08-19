@@ -16,9 +16,6 @@ class MealCategory implements EntityInterface
     #[ORM\Column(length: 64)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?bool $standard = null;
-
     #[ORM\Column(length: 255)]
     private ?string $icon = null;
 
@@ -35,18 +32,6 @@ class MealCategory implements EntityInterface
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function isStandard(): ?bool
-    {
-        return $this->standard;
-    }
-
-    public function setStandard(bool $standard): self
-    {
-        $this->standard = $standard;
 
         return $this;
     }
