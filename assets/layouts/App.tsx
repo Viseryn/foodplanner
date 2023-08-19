@@ -112,7 +112,7 @@ export default function App({ version }: {
     const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
     const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
     const recipes = fetch<Array<RecipeModel>>('/api/recipes/list')
-    const days = fetch<Array<DayModel>>('/api/days/list')
+    const days = fetch<Array<DayModel>>('/api/days', false)
 
     // Render App component
     return (
