@@ -35,34 +35,28 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * Changes the standard UserGroup to the one selected and updates the 
      * UserGroups in the database via the UserGroups Update Standard API.
      * 
-     * @param index The index of the group that shall be the standard group.
+     * @param userGroup
      */
-    const handleSetStandardGroup = (index: number): void => {
-        let groups: Array<UserGroupModel> = [...userGroups.data]
-
-        groups.forEach((group, i) => {
-            group.standard = (index === i)
-        })
-
-        userGroups.setData(groups)
-        axios.post('/api/usergroups/standard', JSON.stringify(groups))
+    const handleSetStandardGroup = (userGroup: UserGroupModel): void => {
+        axios.patch('/api/settings/' + settings.data.id, {
+            standardUserGroup: userGroup
+        }).then(response =>
+            settings.setData(response.data)
+        )
     }
 
     /**
      * Changes the standard MealCategory to the one selected and updates the 
      * MealCategories in the database via the MealCategory Update Standard API.
      * 
-     * @param index The index of the category that shall be the standard category.
+     * @param mealCategory
      */
-    const handleSetStandardMealCategory = (index: number): void => {
-        let categories: Array<MealCategoryModel> = [...mealCategories.data]
-
-        categories.forEach((category, i) => {
-            category.standard = (index === i)
-        })
-
-        mealCategories.setData(categories)
-        axios.post('/api/mealcategories/standard', JSON.stringify(categories))
+    const handleSetStandardMealCategory = (mealCategory: MealCategoryModel): void => {
+        axios.patch('/api/settings/' + settings.data.id, {
+            standardMealCategory: mealCategory
+        }).then(response =>
+            settings.setData(response.data)
+        )
     }
 
     /**
@@ -106,7 +100,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             }
 
             // Cancel if the given group is standard
-            if (userGroups.data[index].standard) {
+            if (id === settings.data.standardUserGroup?.id) {
                 swal({
                     dangerMode: true,
                     icon: 'error',
@@ -136,20 +130,12 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * Update Pantry Settings API will  be called (as long as the Settings are not loading).
      */
     const handlePantrySettings = (): void => {
-        settings.setData({ 
-            ...settings.data,
-            showPantry: !settings.data.showPantry,
-        })
+        axios.patch('/api/settings/' + settings.data.id, {
+            showPantry: !settings.data.showPantry
+        }).then(response =>
+            settings.setData(response.data)
+        )
     }
-
-    // When settings data changes, call Settings API.
-    useEffect(() => {
-        if (settings.isLoading) {
-            return
-        }
-
-        axios.post('/api/settings/updatePantry', JSON.stringify(settings.data))
-    }, [settings.data])
 
     // Load layout
     useEffect(() => {
@@ -176,14 +162,18 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
 
                     <Spacer height="4" />
 
-                    <SwitchRow 
-                        id="showPantry"
-                        label={'Vorratskammer wird ' + (!settings.data.showPantry ? 'nicht ' : '') + 'angezeigt'}
-                        checked={settings.data.showPantry}
-                        {...{
-                            onClick: handlePantrySettings
-                        }}
-                    />
+                    {settings.isLoading ? (
+                        <Spinner />
+                    ) : (
+                        <SwitchRow
+                            id="showPantry"
+                            label={'Vorratskammer wird ' + (!settings.data.showPantry ? 'nicht ' : '') + 'angezeigt'}
+                            checked={settings.data.showPantry}
+                            {...{
+                                onClick: handlePantrySettings
+                            }}
+                        />
+                    )}
                 </Card>
 
                 <Spacer height="10" />
@@ -196,7 +186,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
 
                     <Spacer height="4" />
 
-                    {userGroups.isLoading ? (
+                    {userGroups.isLoading || settings.isLoading ? (
                         <Spinner />
                     ) : (
                         <>
@@ -215,9 +205,9 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                                 delete
                                             </IconButton>
 
-                                            <IconButton 
-                                                outlined={!group.standard} 
-                                                onClick={() => handleSetStandardGroup(index)}
+                                            <IconButton
+                                                outlined={settings.data.standardUserGroup?.id !== group.id}
+                                                onClick={() => handleSetStandardGroup(group)}
                                             >
                                                 favorite
                                             </IconButton>
@@ -251,7 +241,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
 
                     <Spacer height="4" />
 
-                    {mealCategories.isLoading ? (
+                    {mealCategories.isLoading || settings.isLoading ? (
                         <Spinner />
                     ) : (
                         <div className="space-y-2">
@@ -262,8 +252,8 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                         {category.name}
                                     </div>
                                         <IconButton 
-                                            outlined={!category.standard} 
-                                            onClick={() => handleSetStandardMealCategory(index)}>
+                                            outlined={settings.data.standardMealCategory?.id !== category.id}
+                                            onClick={() => handleSetStandardMealCategory(category)}>
                                             favorite
                                         </IconButton>
                                 </div>
