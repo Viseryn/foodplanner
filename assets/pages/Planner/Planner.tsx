@@ -64,7 +64,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
                 return
             }
             
-            axios.get('/api/meals/delete/' + meal.id).then(() => { 
+            axios.delete('/api/meals/' + meal.id).then(() => {
                 days.load() 
             })
         })
