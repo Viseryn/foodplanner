@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\DataTransferObject\DTOSerializer;
 use App\Service\DayControllerService;
-use App\Service\DayUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,7 +29,7 @@ class DayController extends AbstractController
      * Deletes all past Day objects and creates new Day objects up to ten days in the future.
      */
     #[Route('', name: 'api_days_patch', methods: ['PATCH'])]
-    public function patch(DayUtil $dayUtil): Response
+    public function patch(): Response
     {
         $this->dayControllerService->updateDays();
         return new Response(null, 200);
