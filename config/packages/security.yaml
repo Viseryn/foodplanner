@@ -41,6 +41,7 @@ security:
         - { path: ^/api/users, roles: ROLE_ADMIN }
         - { path: ^/api/settings, roles: ROLE_USER }
         - { path: ^/api/usergroups, roles: ROLE_ADMIN }
+        - { path: ^/api/mealcategories, role: ROLE_ADMIN }
         #- { path: ^/, roles: ROLE_ADMIN }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
