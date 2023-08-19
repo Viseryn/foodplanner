@@ -117,7 +117,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             // Call UserGroup Delete API if alert was confirmed and 
             // the group is not the last one or the standard group.
             axios
-                .get('/api/usergroups/delete/' + id)
+                .delete('/api/usergroups/' + id)
                 .then(() => {
                     userGroups.load()
                     days.load()

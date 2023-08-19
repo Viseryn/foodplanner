@@ -16,7 +16,6 @@ class UserGroupType extends AbstractType
         $builder
             ->add('name')
             ->add('icon')
-            ->add('standard')
             ->add('users', EntityType::class, [
                 'class' => User::class,
                 'multiple' => true,

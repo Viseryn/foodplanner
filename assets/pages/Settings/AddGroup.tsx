@@ -52,7 +52,7 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
         
         setLoading(true)
 
-        await axios.post('/api/usergroups/add', formData)
+        await axios.post('/api/usergroups', formData)
 
         userGroups.load()
         navigate('/settings')
