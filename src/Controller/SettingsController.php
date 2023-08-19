@@ -5,18 +5,15 @@ namespace App\Controller;
 use App\Component\Response\PrettyJsonResponse;
 use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\SettingsDTO;
-use App\Entity\User;
+use App\Entity\Settings;
 use App\Repository\SettingsRepository;
 use App\Repository\UserRepository;
-use App\Service\SettingsUtil;
 use App\Service\UserControllerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
-use JMS\Serializer\SerializerBuilder;
 
 /**
  * Settings API
@@ -41,36 +38,20 @@ class SettingsController extends AbstractController
         $settings = $this->settingsRepository->findOneBy(['user' => $user->getId()]);
         return DTOSerializer::getResponse(new SettingsDTO($settings));
     }
-    
-    /**
-     * Settings Update Pantry API
-     * 
-     * Updates the Pantry Settings.
-     *
-     * @param Request $request
-     * @param SettingsRepository $settingsRepository
-     * @return Response
-     */
-    #[Route('/updatePantry', name: 'api_settings_update_pantry', methods: ['GET', 'POST'])]
-    public function updatePantry(
-        Request $request,
-        SettingsRepository $settingsRepository
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $requestContent = json_decode($request->getContent(), true);
+    #[Route('/{id}', name: 'api_settings_patch', methods: ['PATCH'])]
+    public function patch(Request $request, Settings $settings): Response
+    {
+        $data = json_decode($request->getContent(), false);
 
-        $castToUser = function(null|UserInterface|User $userParam): User {
-            return $userParam ?: new User;
-        };
+        if (is_bool($data->showPantry)) {
+            $settings->setShowPantry($data->showPantry);
+        }
 
-        $settings = $settingsRepository->findOneBy([
-            'user' => $castToUser($this->getUser())?->getId()
-        ]);
+        // TODO: Implement PATCH for standardUserGroup
+        // TODO: Implement PATCH for standardMealCategory
 
-        $settings->setShowPantry($requestContent['showPantry']);
-        $settingsRepository->save($settings, true);
-
-        return new Response();
+        $this->settingsRepository->save($settings, true);
+        return DTOSerializer::getResponse(new SettingsDTO($settings));
     }
 }

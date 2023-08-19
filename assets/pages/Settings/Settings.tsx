@@ -136,20 +136,12 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
      * Update Pantry Settings API will  be called (as long as the Settings are not loading).
      */
     const handlePantrySettings = (): void => {
-        settings.setData({ 
-            ...settings.data,
-            showPantry: !settings.data.showPantry,
-        })
+        axios.patch('/api/settings/' + settings.data.id, {
+            showPantry: !settings.data.showPantry
+        }).then(response =>
+            settings.setData(response.data)
+        )
     }
-
-    // When settings data changes, call Settings API.
-    useEffect(() => {
-        if (settings.isLoading) {
-            return
-        }
-
-        axios.post('/api/settings/updatePantry', JSON.stringify(settings.data))
-    }, [settings.data])
 
     // Load layout
     useEffect(() => {
@@ -176,14 +168,18 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
 
                     <Spacer height="4" />
 
-                    <SwitchRow 
-                        id="showPantry"
-                        label={'Vorratskammer wird ' + (!settings.data.showPantry ? 'nicht ' : '') + 'angezeigt'}
-                        checked={settings.data.showPantry}
-                        {...{
-                            onClick: handlePantrySettings
-                        }}
-                    />
+                    {settings.isLoading ? (
+                        <Spinner />
+                    ) : (
+                        <SwitchRow
+                            id="showPantry"
+                            label={'Vorratskammer wird ' + (!settings.data.showPantry ? 'nicht ' : '') + 'angezeigt'}
+                            checked={settings.data.showPantry}
+                            {...{
+                                onClick: handlePantrySettings
+                            }}
+                        />
+                    )}
                 </Card>
 
                 <Spacer height="10" />
