@@ -26,9 +26,6 @@ class RecipeController extends AbstractController
         private RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ) {}
 
-    /**
-     * Responds with a list of all Recipe objects.
-     */
     #[Route('', name: 'api_recipes_getAll', methods: ['GET'])]
     public function getAll(): Response
     {
@@ -36,10 +33,6 @@ class RecipeController extends AbstractController
         return DTOSerializer::getResponse($recipeDTOs);
     }
 
-    /**
-     * Handles form data sent by AddRecipe.tsx. Responds with the new Recipe Object or an Error 400.
-     * @todo Instead of using formData, the request object should be a RecipeModel JSON object.
-     */
     #[Route('', name: 'api_recipe_post', methods: ['POST'])]
     public function post(Request $request): Response
     {
@@ -61,27 +54,17 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Recipes Edit API
-     * 
-     * A Recipe API that edit an existing Recipe object in the database when the form in 
-     * EditRecipe.js was submitted. Responds with the ID of the Recipe object. If no form was 
-     * submitted, responds with an Error 500.
-     * 
-     * @param Recipe $recipe
-     * @param Request $request
-     * @return Response
+     * @todo PUT method is not working.
      */
-    #[Route('/edit/{id}', name: 'api_recipes_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Recipe $recipe,
-        Request $request, 
-    ): Response {
+    #[Route('/{id}', name: 'api_recipes_put', methods: ['POST'])]
+    public function put(Recipe $recipe, Request $request): Response
+    {
         $form = $this->createForm(RecipeType::class, $recipe);
         $form = $this->recipeUtil->prepareEditForm($recipe, $form);
         $form->handleRequest($request);
 
         if (!$form->isSubmitted()) {
-            return (new Response)->setStatusCode(500);
+            return (new Response)->setStatusCode(400);
         }
 
         $this->recipeUtil->update($recipe, $form);
@@ -89,12 +72,9 @@ class RecipeController extends AbstractController
 
         $this->refreshDataTimestampUtil->updateTimestamp();
 
-        return new Response($recipe->getId());
+        return DTOSerializer::getResponse(new RecipeDTO($recipe));
     }
 
-    /**
-     * Deletes the given Recipe object and responds with the deleted object.
-     */
     #[Route('/{id}', name: 'api_recipes_delete', methods: ['DELETE'])]
     public function delete(Recipe $recipe): Response
     {
