@@ -15,8 +15,12 @@ class SettingsDTO implements DataTransferObject
         $this->id = $settings->getId();
         $this->user = new UserDTO($settings->getUser());
         $this->showPantry = $settings->isShowPantry();
-        $this->standardUserGroup = new UserGroupDTO($settings->getStandardUserGroup());
-        $this->standardMealCategory = new MealCategoryDTO($settings->getStandardMealCategory());
+        $this->standardUserGroup = $settings->getStandardUserGroup() !== null
+            ? new UserGroupDTO($settings->getStandardUserGroup())
+            : null;
+        $this->standardMealCategory = $settings->getStandardMealCategory() !== null
+            ? new MealCategoryDTO($settings->getStandardMealCategory())
+            : null;
     }
 
     public function getId(): ?int

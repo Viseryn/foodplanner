@@ -44,14 +44,13 @@ class InstallController extends AbstractController
         $userGroup = new UserGroup();
         $userGroup
             ->setName($firstUser->getUsername())
-            ->setStandard(true)
             ->setIcon('face')
             ->addUser($firstUser)
         ;
         $userGroupRepository->add($userGroup, true);
 
         // Self destruct
-        unlink(__FILE__);
+        // unlink(__FILE__);
 
         return new Response('Success! You can use FoodPlanner now.');
     }
