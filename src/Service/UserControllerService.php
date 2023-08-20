@@ -1,7 +1,7 @@
 <?php namespace App\Service;
 
 use App\Entity\User;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 final class UserControllerService
