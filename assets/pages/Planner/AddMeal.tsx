@@ -18,7 +18,7 @@ import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
 import UserGroupModel from '@/types/UserGroupModel'
 import getOptions from '@/util/getOptions'
-
+import setChecked from '@/util/setChecked'
 import DayRadioSkeleton from './components/DayRadioSkeleton'
 import RadioSkeleton from './components/RadioSkeleton'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
@@ -26,6 +26,7 @@ import SearchWidget from './components/SearchWidget'
 import getEntityOptions from '@/util/getEntityOptions'
 import UserGroupOption from '@/types/UserGroupOption'
 import MealCategoryOption from '@/types/MealCategoryOption'
+import SettingsModel from '@/types/SettingsModel'
 
 /**
  * A component that renders a form to add a new meal. 
@@ -33,11 +34,12 @@ import MealCategoryOption from '@/types/MealCategoryOption'
  * 
  * @component
  */
-export default function AddMeal({ days, recipes, mealCategories, userGroups, setSidebar, setTopbar }: {
+export default function AddMeal({ days, recipes, mealCategories, userGroups, settings, setSidebar, setTopbar }: {
     days: EntityState<Array<DayModel>>
     recipes: EntityState<Array<RecipeModel>>
     mealCategories: EntityState<Array<MealCategoryModel>>
     userGroups: EntityState<Array<UserGroupModel>>
+    settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -168,24 +170,24 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                             <Spacer height="6" />
 
                             <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
-                            {mealCategories.isLoading ? (
+                            {mealCategories.isLoading || settings.isLoading ? (
                                 <RadioSkeleton />
                             ) : (
                                 <RadioWidget
                                     id="meal_mealCategory"
-                                    options={getOptions(mealCategoryOptions)}
+                                    options={setChecked(getOptions(mealCategoryOptions), settings.data.standardMealCategory?.id)}
                                 />
                             )}
 
                             <Spacer height="6" />
 
                             <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
-                            {userGroups.isLoading ? (
+                            {userGroups.isLoading || settings.isLoading ? (
                                 <RadioSkeleton />
                             ) : (
                                 <RadioWidget
                                     id="meal_userGroup"
-                                    options={getOptions(userGroupOptions)}
+                                    options={setChecked(getOptions(userGroupOptions), settings.data.standardUserGroup?.id)}
                                 />
                             )}
                         </Card>
