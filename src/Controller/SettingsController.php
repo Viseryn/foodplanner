@@ -32,9 +32,9 @@ class SettingsController extends AbstractController
     ) {}
 
     #[Route('', name: 'api_settings_get', methods: ['GET'])]
-    public function get(#[MapQueryParameter] int $userid = 1): Response
+    public function get(#[MapQueryParameter] ?int $userid): Response
     {
-        $user = $this->userRepository->find($userid);
+        $user = $this->userRepository->find($userid ?: 0);
         if ($user?->getId() !== $this->userControllerService->getUser()->getId()) {
             return new PrettyJsonResponse(null, 403);
         }
