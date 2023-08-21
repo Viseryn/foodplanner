@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use App\Entity\Recipe;
 use App\Repository\IngredientRepository;
 use App\Repository\InstructionRepository;
@@ -201,7 +201,7 @@ class RecipeUtil extends EntityUtil
     }
 
     /** @param Recipe $recipe */
-    public function getApiModel(EntityModel $recipe): array
+    public function getApiModel(EntityInterface $recipe): array
     {
         return [
             'id' => $recipe->getId(),

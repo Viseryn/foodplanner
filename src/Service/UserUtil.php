@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use App\Entity\User;
 
 /**
@@ -9,7 +9,7 @@ use App\Entity\User;
 class UserUtil extends EntityUtil
 {
     /** @param User $user */
-    public function getApiModel(EntityModel $user): array
+    public function getApiModel(EntityInterface $user): array
     {
         return [
             'id' => $user->getId(),

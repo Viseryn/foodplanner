@@ -2,16 +2,14 @@
  * ./assets/types/RecipeModel.ts *
  *********************************/
 
-import ModelWithOption from './ModelWithOption'
 import FileModel from './FileModel'
 import IngredientModel from './IngredientModel'
 import InstructionModel from './InstructionModel'
-import SelectOption from './SelectOption'
 
 /**
  * Type specifications for Recipe objects returned by APIs
  */
-type RecipeModel = ModelWithOption<SelectOption> & {
+type RecipeModel = {
     /** The entity id of the Recipe object. */
     id: number
 

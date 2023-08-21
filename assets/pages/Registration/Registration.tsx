@@ -77,11 +77,11 @@ export default function Registration({ user, setSidebar, setTopbar }: {
                     <Spinner />
                 }
 
-                {user.data.username !== undefined && !user.isLoading && !isLoadingSubmit &&
+                {user.data.username !== null && !user.isLoading && !isLoadingSubmit &&
                     <Navigate to="/login" />
                 }
 
-                {user.data.username === undefined && !user.isLoading && !isLoadingSubmit &&
+                {user.data.username === null && !user.isLoading && !isLoadingSubmit &&
                     <form onSubmit={handleSubmit} autoComplete="off">
                         <Card>
                             <InputRow

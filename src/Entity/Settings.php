@@ -6,7 +6,7 @@ use App\Repository\SettingsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SettingsRepository::class)]
-class Settings implements EntityModel
+class Settings implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,6 +19,12 @@ class Settings implements EntityModel
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\ManyToOne]
+    private ?UserGroup $standardUserGroup = null;
+
+    #[ORM\ManyToOne]
+    private ?MealCategory $standardMealCategory = null;
 
     public function getId(): ?int
     {
@@ -45,6 +51,30 @@ class Settings implements EntityModel
     public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getStandardUserGroup(): ?UserGroup
+    {
+        return $this->standardUserGroup;
+    }
+
+    public function setStandardUserGroup(?UserGroup $standardUserGroup): static
+    {
+        $this->standardUserGroup = $standardUserGroup;
+
+        return $this;
+    }
+
+    public function getStandardMealCategory(): ?MealCategory
+    {
+        return $this->standardMealCategory;
+    }
+
+    public function setStandardMealCategory(?MealCategory $standardMealCategory): static
+    {
+        $this->standardMealCategory = $standardMealCategory;
 
         return $this;
     }

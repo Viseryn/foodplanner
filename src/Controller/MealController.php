@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\DataTransferObject\DTOSerializer;
+use App\DataTransferObject\MealDTO;
 use App\Entity\Meal;
 use App\Form\MealType;
 use App\Repository\MealRepository;
@@ -17,63 +19,34 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/meals')]
 class MealController extends AbstractController
 {
-    /**
-     * Meal Add API
-     * 
-     * Adds a new Meal to the database when the form in the Request was submitted. Returns an empty 
-     * Response. If no form was submitted, responds with an Error 500.
-     *
-     * @param MealRepository $mealRepository
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
-     * @param Request $request
-     * @return Response
-     */
-    #[Route('/add', name: 'api_meals_add', methods: ['GET', 'POST'])]
-    public function add(
-        MealRepository $mealRepository,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
-        Request $request, 
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    public function __construct(
+        private MealRepository $mealRepository,
+        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ) {}
 
+    #[Route('', name: 'api_meals_post', methods: ['POST'])]
+    public function post(Request $request): Response
+    {
         $meal = new Meal();
 
         $form = $this->createForm(MealType::class, $meal);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $mealRepository->add($meal, true);
-            $refreshDataTimestampUtil->updateTimestamp();
-
-            return new Response();
+        if (!$form->isSubmitted()) {
+            return (new Response)->setStatusCode(400);
         }
 
-        $response = (new Response())->setStatusCode(500);
-        return $response;
+        $this->mealRepository->add($meal, true);
+        $this->refreshDataTimestampUtil->updateTimestamp();
+
+        return DTOSerializer::getResponse(new MealDTO($meal));
     }
 
-    /**
-     * Meal Delete API
-     * 
-     * Deletes the Meal with the given ID and responds with an empty Response.
-     *
-     * @param Meal $meal
-     * @param MealRepository $mealRepository
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
-     * @return Response
-     */
-    #[Route('/delete/{id}', name: 'api_meals_delete', methods: ['GET'])]
-    public function delete(
-        Meal $meal, 
-        MealRepository $mealRepository,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        $mealRepository->remove($meal, true);
-
-        $refreshDataTimestampUtil->updateTimestamp();
-
-        return new Response();
+    #[Route('/{id}', name: 'api_meals_delete', methods: ['DELETE'])]
+    public function delete(Meal $meal): Response
+    {
+        $this->mealRepository->remove($meal, true);
+        $this->refreshDataTimestampUtil->updateTimestamp();
+        return (new Response)->setStatusCode(204);
     }
 }

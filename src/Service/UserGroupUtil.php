@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use App\Entity\UserGroup;
 use App\Repository\UserGroupRepository;
 
@@ -21,19 +21,18 @@ class UserGroupUtil extends EntityUtil
     }
 
     /** @param UserGroup $userGroup */
-    public function getApiModel(EntityModel $userGroup): array
+    public function getApiModel(EntityInterface $userGroup): array
     {
         return [
             'id' => $userGroup->getId(),
             'name' => $userGroup->getName(),
             'icon' => $userGroup->getIcon(),
-            'standard' => $userGroup->isStandard(),
             'users' => $this->userUtil->getApiModels($userGroup->getUsers()),
             'option' => [
                 'id' => 'userGroup_' . $userGroup->getName(),
                 'label' => $userGroup->getName(),
                 'icon' => $userGroup->getIcon(),
-                'checked' => $userGroup->isStandard(),
+                'checked' => false,
                 'value' => $userGroup->getId(),
             ],
         ];

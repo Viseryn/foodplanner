@@ -13,17 +13,20 @@ import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
-import Spinner from '@/components/ui/Spinner'
 import DayModel from '@/types/DayModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
 import UserGroupModel from '@/types/UserGroupModel'
 import getOptions from '@/util/getOptions'
-
+import setChecked from '@/util/setChecked'
 import DayRadioSkeleton from './components/DayRadioSkeleton'
 import RadioSkeleton from './components/RadioSkeleton'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
 import SearchWidget from './components/SearchWidget'
+import getEntityOptions from '@/util/getEntityOptions'
+import UserGroupOption from '@/types/UserGroupOption'
+import MealCategoryOption from '@/types/MealCategoryOption'
+import SettingsModel from '@/types/SettingsModel'
 
 /**
  * A component that renders a form to add a new meal. 
@@ -31,11 +34,12 @@ import SearchWidget from './components/SearchWidget'
  * 
  * @component
  */
-export default function AddMeal({ days, recipes, mealCategories, userGroups, setSidebar, setTopbar }: {
+export default function AddMeal({ days, recipes, mealCategories, userGroups, settings, setSidebar, setTopbar }: {
     days: EntityState<Array<DayModel>>
     recipes: EntityState<Array<RecipeModel>>
     mealCategories: EntityState<Array<MealCategoryModel>>
     userGroups: EntityState<Array<UserGroupModel>>
+    settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): JSX.Element {
@@ -43,6 +47,10 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     type AddMealRouteParams = {
         id?: string
     }
+
+    // Options
+    const userGroupOptions = getEntityOptions(userGroups, UserGroupOption)
+    const mealCategoryOptions = getEntityOptions(mealCategories, MealCategoryOption)
 
     // The id parameter of the route '/planner/add/:id'
     const { id }: AddMealRouteParams = useParams()
@@ -99,7 +107,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
         const apiCall = async (): Promise<void> => {
             try {
                 // Send form data to Meal Add API
-                await axios.post('/api/meals/add', formData)
+                await axios.post('/api/meals', formData)
                 days.load()
                 navigate('/planner')
             } catch (error) {
@@ -149,7 +157,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                             />
                                             <label 
                                                 htmlFor={`day_${day.id}`}
-                                                className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                                className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
                                             >
                                                 <span className="text-sm font-semibold">{day.weekday.slice(0, 2)}</span>
                                                 <span className="text-xs">{day.date.slice(0, day.date.lastIndexOf('.') + 1)}</span>
@@ -162,24 +170,24 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                             <Spacer height="6" />
 
                             <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
-                            {mealCategories.isLoading ? (
+                            {mealCategories.isLoading || settings.isLoading ? (
                                 <RadioSkeleton />
                             ) : (
                                 <RadioWidget
                                     id="meal_mealCategory"
-                                    options={getOptions(mealCategories)}
+                                    options={setChecked(getOptions(mealCategoryOptions), settings.data.standardMealCategory?.id)}
                                 />
                             )}
 
                             <Spacer height="6" />
 
                             <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
-                            {userGroups.isLoading ? (
+                            {userGroups.isLoading || settings.isLoading ? (
                                 <RadioSkeleton />
                             ) : (
                                 <RadioWidget
                                     id="meal_userGroup"
-                                    options={getOptions(userGroups)}
+                                    options={setChecked(getOptions(userGroupOptions), settings.data.standardUserGroup?.id)}
                                 />
                             )}
                         </Card>
@@ -237,7 +245,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                                 />
                                                 <label 
                                                     htmlFor={`recipe_${recipe.id}`}
-                                                    className="flex flex-row items-center cursor-pointer rounded-md h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                                    className="flex flex-row items-center cursor-pointer rounded-md h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
                                                     onClick={() => {
                                                         setSelectedRecipe(recipe.id)
                                                         setShowWarning(false)

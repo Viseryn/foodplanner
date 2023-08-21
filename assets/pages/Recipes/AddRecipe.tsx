@@ -64,11 +64,11 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         setLoading(true)
 
         axios
-            .post('/api/recipes/add', formData)
+            .post('/api/recipes', formData)
             .then(response => {
                 // Reload recipes and get id
                 recipes.load()
-                setId(response.data)
+                setId(response.data.id)
 
                 // End loading screen
                 setLoading(false)

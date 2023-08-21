@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\Collection;
@@ -182,7 +182,7 @@ class IngredientUtil extends EntityUtil
     }
 
     /** @param Ingredient $ingredient */
-    public function getApiModel(EntityModel $ingredient): array {
+    public function getApiModel(EntityInterface $ingredient): array {
         return [
             'id' => $ingredient->getId(),
             'name' => $ingredient->getName(),

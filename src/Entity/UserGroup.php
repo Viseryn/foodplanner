@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserGroupRepository::class)]
-class UserGroup implements EntityModel
+class UserGroup implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,9 +20,6 @@ class UserGroup implements EntityModel
 
     #[ORM\Column(length: 64)]
     private ?string $name = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $standard = null;
 
     #[ORM\Column(length: 255)]
     private ?string $icon = null;
@@ -69,18 +66,6 @@ class UserGroup implements EntityModel
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function isStandard(): ?bool
-    {
-        return $this->standard;
-    }
-
-    public function setStandard(?bool $standard): self
-    {
-        $this->standard = $standard;
 
         return $this;
     }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
-class Ingredient implements EntityModel
+class Ingredient implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

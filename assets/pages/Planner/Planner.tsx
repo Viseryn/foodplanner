@@ -64,7 +64,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
                 return
             }
             
-            axios.get('/api/meals/delete/' + meal.id).then(() => { 
+            axios.delete('/api/meals/' + meal.id).then(() => {
                 days.load() 
             })
         })
@@ -142,12 +142,12 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         // Calls the Update Days API, which removes all unnecessary Day object (past days and days further away than ten)
         const updateDays = async () => {
             try {
-                await axios.get('/api/days/update')
+                await axios.patch('/api/days')
             } catch (error) {
                 console.log(error)
             }
         }
-        
+
         updateDays()
     }, [])
     

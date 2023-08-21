@@ -1,6 +1,6 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityModel;
+use App\Entity\EntityInterface;
 use App\Entity\Meal;
 
 /**
@@ -23,7 +23,7 @@ class MealUtil extends EntityUtil
     }
 
     /** @param Meal $meal */
-    public function getApiModel(EntityModel $meal): array
+    public function getApiModel(EntityInterface $meal): array
     {
         return [
             'id' => $meal->getId(),
