@@ -1,8 +1,8 @@
 /*****************************************
  * ./assets/pages/Recipes/EditRecipe.tsx *
  *****************************************/
-    
-import axios from 'axios'
+
+import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import swal from 'sweetalert'
@@ -156,11 +156,11 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         setLoading(true)
 
         axios
-            .post('/api/recipes/edit/'+ recipe?.id, formData)
-            .then(response => {
+            .post('/api/recipes/'+ recipe?.id, formData)
+            .then((response: AxiosResponse<RecipeModel, any>) => {
                 // Reload recipes and get id
                 recipes.load()
-                setResponseId(response.data)
+                setResponseId(response.data.id)
 
                 // Update Day entities that may have
                 // Meals with that recipe
@@ -197,7 +197,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         }).then(confirm => {
             if (confirm) {
                 axios
-                    .get('/api/recipes/delete/' + id)
+                    .delete('/api/recipes/' + id)
                     .then(() => {
                         // Reload recipes and days
                         recipes.load()

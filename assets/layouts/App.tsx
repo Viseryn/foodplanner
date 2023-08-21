@@ -111,7 +111,7 @@ export default function App({ version }: {
     const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories', false)
     const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
     const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
-    const recipes = fetch<Array<RecipeModel>>('/api/recipes/list')
+    const recipes = fetch<Array<RecipeModel>>('/api/recipes', false)
     const days = fetch<Array<DayModel>>('/api/days', false)
 
     // Render App component
