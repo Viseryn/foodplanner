@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/storages')]
@@ -73,20 +74,36 @@ final class StorageController extends AbstractController
     }
 
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_delete', methods: ['DELETE'])]
-    public function deleteAllIngredients(Storage $storage): Response
-    {
-        switch ($storage->getName()) {
-            case 'pantry':
-                $this->pantryUtil->deleteAll();
-                break;
-            case 'shoppinglist':
+    public function deleteAllIngredients(
+        Storage $storage,
+        #[MapQueryParameter] ?bool $checked = null
+    ): Response {
+        if ($storage->getName() === 'pantry') {
+            if ($checked) {
+                return (new Response)->setStatusCode(405);
+            }
+
+            $this->pantryUtil->deleteAll();
+            $this->refreshDataTimestampUtil->updateTimestamp();
+            return new Response;
+        } else if ($storage->getName() === 'shoppinglist') {
+            if ($checked === null) {
                 $this->shoppingListUtil->deleteAll();
-                break;
-            default:
-                throw new \BadMethodCallException();
+                $this->refreshDataTimestampUtil->updateTimestamp();
+                return new Response;
+            } else if ($checked === false) {
+                return (new Response)->setStatusCode(405);
+            } else {
+                $ingredients = $this->ingredientRepository->findBy(['checked' => true]);
+                foreach ($ingredients as $ingredient) {
+                    $this->ingredientRepository->remove($ingredient, true);
+                }
+
+                $this->refreshDataTimestampUtil->updateTimestamp();
+                return new Response;
+            }
         }
 
-        $this->refreshDataTimestampUtil->updateTimestamp();
-        return new Response();
+        return (new Response)->setStatusCode(400);
     }
 }

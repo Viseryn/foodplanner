@@ -205,7 +205,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         shoppingList.setData(newItemList)
 
         // API call
-        axios.get('/api/shoppinglist/delete-checked')
+        axios.delete('/api/storages/shoppinglist/ingredients?checked=true')
     }
 
     // Load layout 
