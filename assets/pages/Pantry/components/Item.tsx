@@ -158,10 +158,12 @@ export default function Item({ pantry, item }: {
             pantry.setData(newItemList)
 
             // API call
-            axios.post('/api/pantry/change-position', [
-                newItemList[index].id, 
-                newItemList[index + direction].id,
-            ])
+            // axios.post('/api/pantry/change-position', [
+            //     newItemList[index].id,
+            //     newItemList[index + direction].id,
+            // ])
+            axios.patch('/api/ingredients/' + newItemList[index].id, { position: newItemList[index].position })
+            axios.patch('/api/ingredients/' + newItemList[index + direction].id, { position: newItemList[index + direction].position })
         }
     }
     

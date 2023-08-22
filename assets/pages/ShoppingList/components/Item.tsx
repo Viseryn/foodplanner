@@ -163,10 +163,12 @@ export default function Item({ shoppingList, item }: {
             shoppingList.setData(newItemList)
 
             // API call
-            axios.post('/api/shoppinglist/change-position', [
-                newItemList[index].id, 
-                newItemList[index + direction].id,
-            ])
+            // axios.post('/api/shoppinglist/change-position', [
+            //     newItemList[index].id,
+            //     newItemList[index + direction].id,
+            // ])
+            axios.patch('/api/ingredients/' + newItemList[index].id, { position: newItemList[index].position })
+            axios.patch('/api/ingredients/' + newItemList[index + direction].id, { position: newItemList[index + direction].position })
         }
     }
     
