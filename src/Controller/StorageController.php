@@ -27,14 +27,31 @@ final class StorageController extends AbstractController
         return DTOSerializer::getResponse($storageDTOs);
     }
 
-    #[Route('/{id}', name: 'api_storages_getById', methods: ['GET'])]
+    #[Route('/{id}', name: 'api_storages_getById', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getById(Storage $storage): Response
     {
         return DTOSerializer::getResponse(new StorageDTO($storage));
     }
 
-    #[Route('/{id}/ingredients', name: 'api_storages_getById_ingredients', methods: ['GET'])]
+    #[Route('/{name}', name: 'api_storages_getByName', methods: ['GET'])]
+    public function getByName(Storage $storage): Response
+    {
+        return DTOSerializer::getResponse(new StorageDTO($storage));
+    }
+
+    #[Route('/{id}/ingredients', name: 'api_storages_getById_ingredients', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getIngredientsById(Storage $storage): Response
+    {
+        return $this->getIngredients($storage);
+    }
+
+    #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients', methods: ['GET'])]
+    public function getIngredientsByName(Storage $storage): Response
+    {
+        return $this->getIngredients($storage);
+    }
+
+    private function getIngredients(Storage $storage): Response
     {
         $ingredientDTOs = (new ArrayCollection($this->ingredientRepository->findBy(['storage' => $storage->getId()], ['position' => 'ASC'])))
             ->map(fn ($ingredient) => new IngredientDTO($ingredient));
