@@ -54,6 +54,7 @@ final class StorageController extends AbstractController
 
     /**
      * @todo Should respond with the new list of ingredients.
+     * @todo Request data should be an array of IngredientModels.
      */
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_post', methods: ['POST'])]
     public function post(Request $request, Storage $storage): Response
