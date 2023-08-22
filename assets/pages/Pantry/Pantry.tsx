@@ -108,7 +108,9 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         })
 
         // API call
-        axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        // axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        axios.delete('/api/storages/pantry/ingredients')
+        axios.post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
         pantry.load()
     }
 
@@ -141,7 +143,9 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         })
 
         // API call
-        axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        // axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        axios.delete('/api/storages/pantry/ingredients')
+        axios.post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
     }
 
     /**
