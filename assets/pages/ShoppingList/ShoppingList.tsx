@@ -49,7 +49,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
 
-        await axios.post('/api/shoppinglist/add', [value])
+        await axios.post('/api/storages/shoppinglist/ingredients', [value])
         shoppingList.load()
     }
 
@@ -105,7 +105,9 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         })
 
         // API call
-        axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
+        axios.delete('/api/storages/shoppinglist/ingredients')
+        axios.post('/api/storages/shoppinglist/ingredients', JSON.stringify(ingredients))
+        // axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
         shoppingList.load()
     }
 
@@ -172,7 +174,9 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         })
 
         // API call
-        axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
+        // axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
+        axios.delete('/api/storages/shoppinglist/ingredients')
+        axios.post('/api/storages/shoppinglist/ingredients', JSON.stringify(ingredients))
         shoppingList.load()
     }
 
@@ -190,7 +194,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
             },
         }).then(confirm => {
             if (confirm) {
-                axios.get('/api/shoppinglist/delete-all')
+                axios.delete('/api/storages/shoppinglist/ingredients')
                 shoppingList.load()
             }
         })
@@ -205,7 +209,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         shoppingList.setData(newItemList)
 
         // API call
-        axios.get('/api/shoppinglist/delete-checked')
+        axios.delete('/api/storages/shoppinglist/ingredients?checked=true')
     }
 
     // Load layout 

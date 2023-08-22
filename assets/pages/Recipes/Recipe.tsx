@@ -78,7 +78,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
 
         // API call
         axios
-            .post('/api/shoppinglist/add', JSON.stringify(ingredients))
+            .post('/api/storages/shoppinglist/ingredients', JSON.stringify(ingredients))
             .then(() => shoppingList.load())
         
         // Update parameters for SAB
@@ -91,7 +91,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToShoppingList = async (ingredient: IngredientModel): Promise<void> => {
-        await axios.post('/api/shoppinglist/add', [getFullIngredientName(ingredient)])
+        await axios.post('/api/storages/shoppinglist/ingredients', [getFullIngredientName(ingredient)])
         shoppingList.load()
     }
 
@@ -108,7 +108,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
 
         // API call
         axios
-            .post('/api/pantry/add', JSON.stringify(ingredients))
+            .post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
             .then(() => pantry.load())
         
         // Update parameter for button
@@ -120,7 +120,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToPantry = async (ingredient: IngredientModel): Promise<void> => {
-        await axios.post('/api/pantry/add', [getFullIngredientName(ingredient)])
+        await axios.post('/api/storages/pantry/ingredients', [getFullIngredientName(ingredient)])
         pantry.load()
     }
     

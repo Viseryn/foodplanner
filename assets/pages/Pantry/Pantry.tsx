@@ -53,7 +53,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
 
-        await axios.post('/api/pantry/add', [value])
+        await axios.post('/api/storages/pantry/ingredients', [value])
         pantry.load()
     }
 
@@ -108,7 +108,9 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         })
 
         // API call
-        axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        // axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        axios.delete('/api/storages/pantry/ingredients')
+        axios.post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
         pantry.load()
     }
 
@@ -141,7 +143,9 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
         })
 
         // API call
-        axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        // axios.post('/api/pantry/replace', JSON.stringify(ingredients))
+        axios.delete('/api/storages/pantry/ingredients')
+        axios.post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
     }
 
     /**
@@ -158,7 +162,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
             },
         }).then((confirm) => {
             if (confirm) {
-                axios.get('/api/pantry/delete-all')
+                axios.delete('/api/storages/pantry/ingredients')
                 pantry.load()
             }
         })
