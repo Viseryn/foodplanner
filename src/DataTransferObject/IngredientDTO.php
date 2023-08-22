@@ -41,7 +41,7 @@ class IngredientDTO implements DataTransferObject
         return $this->quantityUnit;
     }
 
-    public function getPosition(): ?string
+    public function getPosition(): ?int
     {
         return $this->position;
     }
