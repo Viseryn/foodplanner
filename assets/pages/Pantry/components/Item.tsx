@@ -105,7 +105,12 @@ export default function Item({ pantry, item }: {
         pantry.setData(newItemList)
 
         // API call
-        axios.post('/api/pantry/edit-ingredient', newItemList[index])
+        // axios.post('/api/pantry/edit-ingredient', newItemList[index])
+        axios.patch('/api/ingredients/' + item.id, {
+            name: newItem,
+            quantityUnit: '', // TODO: Compute this on the client side
+            quantityValue: '',
+        })
     }
 
     /**

@@ -124,7 +124,12 @@ export default function Item({ shoppingList, item }: {
         shoppingList.setData(newItemList)
 
         // API call
-        axios.post('/api/shoppinglist/edit-ingredient', newItemList[index])
+        // axios.post('/api/shoppinglist/edit-ingredient', newItemList[index])
+        axios.patch('/api/ingredients/' + item.id, {
+            name: newItem,
+            quantityUnit: '', // TODO: Compute this on the client side
+            quantityValue: '',
+        })
     }
 
     /**
