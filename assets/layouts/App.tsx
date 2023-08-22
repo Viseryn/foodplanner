@@ -109,8 +109,8 @@ export default function App({ version }: {
     const settings = fetch<SettingsModel>('/api/settings?userid=' + user.data.id, false)
     const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups', false)
     const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories', false)
-    const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
-    const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
+    const shoppingList = fetch<Array<IngredientModel>>('/api/storages/shoppinglist/ingredients', false)
+    const pantry = fetch<Array<IngredientModel>>('/api/storages/pantry/ingredients', false)
     const recipes = fetch<Array<RecipeModel>>('/api/recipes', false)
     const days = fetch<Array<DayModel>>('/api/days', false)
 

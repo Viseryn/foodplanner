@@ -64,7 +64,9 @@ export default function Item({ shoppingList, item }: {
         shoppingList.setData(newItemList)
         
         // API call
-        axios.post('/api/shoppinglist/check-ingredient', item.id)
+        axios.patch('/api/ingredients/' + item.id, {
+            checked: newItemList[index].checked
+        })
     }
 
     /**
@@ -122,7 +124,12 @@ export default function Item({ shoppingList, item }: {
         shoppingList.setData(newItemList)
 
         // API call
-        axios.post('/api/shoppinglist/edit-ingredient', newItemList[index])
+        // axios.post('/api/shoppinglist/edit-ingredient', newItemList[index])
+        axios.patch('/api/ingredients/' + item.id, {
+            name: newItem,
+            quantityUnit: '', // TODO: Compute this on the client side
+            quantityValue: '',
+        })
     }
 
     /**
@@ -156,10 +163,12 @@ export default function Item({ shoppingList, item }: {
             shoppingList.setData(newItemList)
 
             // API call
-            axios.post('/api/shoppinglist/change-position', [
-                newItemList[index].id, 
-                newItemList[index + direction].id,
-            ])
+            // axios.post('/api/shoppinglist/change-position', [
+            //     newItemList[index].id,
+            //     newItemList[index + direction].id,
+            // ])
+            axios.patch('/api/ingredients/' + newItemList[index].id, { position: newItemList[index].position })
+            axios.patch('/api/ingredients/' + newItemList[index + direction].id, { position: newItemList[index + direction].position })
         }
     }
     

@@ -102,7 +102,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         // Make API call
         (async () => {
             try {
-                await axios.post('/api/shoppinglist/add', JSON.stringify(ingredients))
+                await axios.post('/api/storages/shoppinglist/ingredients', JSON.stringify(ingredients))
                 shoppingList.load()
             } catch (error) {
                 console.log(error)

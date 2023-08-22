@@ -45,6 +45,7 @@ security:
         - { path: ^/api/days, role: ROLE_ADMIN }
         - { path: ^/api/meals, role: ROLE_ADMIN }
         - { path: ^/api/recipes, roles: ROLE_ADMIN }
+        - { path: ^/api/storages, roles: ROLE_ADMIN }
         #- { path: ^/, roles: ROLE_ADMIN }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
