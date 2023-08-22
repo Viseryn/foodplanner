@@ -158,7 +158,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
             },
         }).then((confirm) => {
             if (confirm) {
-                axios.get('/api/pantry/delete-all')
+                axios.delete('/api/storages/pantry/ingredients')
                 pantry.load()
             }
         })

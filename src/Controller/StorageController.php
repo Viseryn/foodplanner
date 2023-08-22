@@ -71,4 +71,22 @@ final class StorageController extends AbstractController
         $this->refreshDataTimestampUtil->updateTimestamp();
         return new Response;
     }
+
+    #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_delete', methods: ['DELETE'])]
+    public function deleteAllIngredients(Storage $storage): Response
+    {
+        switch ($storage->getName()) {
+            case 'pantry':
+                $this->pantryUtil->deleteAll();
+                break;
+            case 'shoppinglist':
+                $this->shoppingListUtil->deleteAll();
+                break;
+            default:
+                throw new \BadMethodCallException();
+        }
+
+        $this->refreshDataTimestampUtil->updateTimestamp();
+        return new Response();
+    }
 }

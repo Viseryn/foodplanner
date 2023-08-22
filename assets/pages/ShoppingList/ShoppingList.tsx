@@ -190,7 +190,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
             },
         }).then(confirm => {
             if (confirm) {
-                axios.get('/api/shoppinglist/delete-all')
+                axios.delete('/api/storages/shoppinglist/ingredients')
                 shoppingList.load()
             }
         })
