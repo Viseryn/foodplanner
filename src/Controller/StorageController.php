@@ -123,4 +123,21 @@ final class StorageController extends AbstractController
 
         return (new Response)->setStatusCode(405);
     }
+
+    #[Route('/{name}/ingredients/{id}', name: 'api_storages_getByName_ingredients_patchById', methods: ['PATCH'])]
+    public function patch(
+        Request $request,
+        #[MapEntity(mapping: ['name' => 'name'])] Storage $storage,
+        #[MapEntity(mapping: ['id' => 'id'])] Ingredient $ingredient,
+    ): Response {
+        $data = json_decode($request->getContent(), false);
+
+        if (property_exists($data, "checked") && is_bool($data->checked)) {
+            $ingredient->setChecked($data->checked);
+        }
+
+        $this->ingredientRepository->save($ingredient, true);
+        $this->refreshDataTimestampUtil->updateTimestamp();
+        return DTOSerializer::getResponse(new IngredientDTO($ingredient));
+    }
 }

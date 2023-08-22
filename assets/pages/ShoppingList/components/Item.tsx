@@ -64,7 +64,9 @@ export default function Item({ shoppingList, item }: {
         shoppingList.setData(newItemList)
         
         // API call
-        axios.post('/api/shoppinglist/check-ingredient', item.id)
+        axios.patch('/api/storages/shoppinglist/ingredients/' + item.id, {
+            checked: newItemList[index].checked
+        })
     }
 
     /**
