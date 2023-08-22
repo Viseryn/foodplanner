@@ -1,6 +1,5 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityInterface;
 use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\Collection;
@@ -8,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 /**
  * IngredientUtil
  */
-class IngredientUtil extends EntityUtil
+class IngredientUtil
 {
     private IngredientRepository $ingredientRepository;
 
@@ -179,36 +178,5 @@ class IngredientUtil extends EntityUtil
         }
 
         return $ingredientStrings;
-    }
-
-    /** @param Ingredient $ingredient */
-    public function getApiModel(EntityInterface $ingredient): array {
-        return [
-            'id' => $ingredient->getId(),
-            'name' => $ingredient->getName(),
-            'quantityValue' => $ingredient->getQuantityValue(),
-            'quantityUnit' => $ingredient->getQuantityUnit(),
-            'position' => $ingredient->getPosition(),
-            'checked' => $ingredient->isChecked(),
-        ];
-    }
-
-    /**
-     * Swaps the position of two Ingredient objects.
-     *
-     * @param Ingredient $ingredient1
-     * @param Ingredient $ingredient2
-     * @return void
-     */
-    public function swapIngredients(Ingredient $ingredient1, Ingredient $ingredient2): void 
-    {
-        $position1 = $ingredient1->getPosition();
-        $position2 = $ingredient2->getPosition();
-
-        $ingredient1->setPosition($position2);
-        $ingredient2->setPosition($position1);
-
-        $this->ingredientRepository->save($ingredient1, true);
-        $this->ingredientRepository->save($ingredient2, true);
     }
 }
