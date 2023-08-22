@@ -114,21 +114,6 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         setCountSabClicks(count => count + 1)
     }
 
-    // Calls the Update Days API, which removes all unnecessary Day object (past days and days further away than ten).
-    useEffect(() => {
-        if (days.isLoading) { 
-            return
-        }
-
-        (async () => {
-            try {
-                await axios.patch('/api/days')
-            } catch (error) {
-                console.log(error)
-            }
-        })()
-    }, [days.isLoading])
-
     // Update sidebar action button when shopping list changes or when pressed.
     useEffect(() => {
         if (days.isLoading) {
@@ -153,6 +138,17 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
 
         // Scroll to top
         window.scrollTo(0, 0)
+
+        // Calls the Update Days API, which removes all unnecessary Day object (past days and days further away than ten)
+        const updateDays = async () => {
+            try {
+                await axios.patch('/api/days')
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        updateDays()
     }, [])
     
     // Configure carousel

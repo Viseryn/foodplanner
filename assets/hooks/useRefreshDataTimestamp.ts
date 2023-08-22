@@ -41,7 +41,7 @@ function useRefreshDataTimestamp(isLoading: boolean, setLoading: SetState<boolea
             if (isLoading) {
                 setLoading(false)
             }
-        }, 10000)
+        }, 5000)
 
         // Clear interval
         return () => { clearInterval(interval) }
