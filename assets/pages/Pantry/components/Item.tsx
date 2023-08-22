@@ -122,7 +122,7 @@ export default function Item({ pantry, item }: {
         pantry.setData(newItemList)
         
         // API call
-        axios.post('/api/pantry/delete-ingredient', item.id)
+        axios.delete('/api/storages/pantry/ingredients/' + item.id)
     }
 
     /**

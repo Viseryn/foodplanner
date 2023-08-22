@@ -3,6 +3,7 @@
 use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\IngredientDTO;
 use App\DataTransferObject\StorageDTO;
+use App\Entity\Ingredient;
 use App\Entity\Storage;
 use App\Repository\IngredientRepository;
 use App\Repository\StorageRepository;
@@ -10,6 +11,7 @@ use App\Service\PantryUtil;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\ShoppingListUtil;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,5 +107,19 @@ final class StorageController extends AbstractController
         }
 
         return (new Response)->setStatusCode(400);
+    }
+
+    #[Route('/{name}/ingredients/{id}', name: 'api_storages_getByName_ingredients_deleteById', methods: ['DELETE'])]
+    public function deleteIngredientById(
+        #[MapEntity(mapping: ['name' => 'name'])] Storage $storage,
+        #[MapEntity(mapping: ['id' => 'id'])] Ingredient $ingredient,
+    ): Response {
+        if ($ingredient->getStorage()->getId() === $storage->getId()) {
+            $this->ingredientRepository->remove($ingredient, true);
+            $this->refreshDataTimestampUtil->updateTimestamp();
+            return new Response;
+        }
+
+        return (new Response)->setStatusCode(405);
     }
 }
