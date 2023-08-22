@@ -49,7 +49,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
 
-        await axios.post('/api/shoppinglist/add', [value])
+        await axios.post('/api/storages/shoppinglist/ingredients', [value])
         shoppingList.load()
     }
 

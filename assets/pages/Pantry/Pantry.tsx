@@ -53,7 +53,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
 
-        await axios.post('/api/pantry/add', [value])
+        await axios.post('/api/storages/pantry/ingredients', [value])
         pantry.load()
     }
 
