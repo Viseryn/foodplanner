@@ -2,7 +2,7 @@
  * ./assets/pages/Pantry/Pantry.tsx *
  ************************************/
 
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import Fraction from 'fraction.js'
 import React, { useEffect, useState } from 'react'
 import swal from 'sweetalert'
@@ -15,6 +15,8 @@ import Spinner from '@/components/ui/Spinner'
 import IngredientModel from '@/types/IngredientModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import Item from './components/Item'
+import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
+import getIngredientModel from '@/util/ingredients/getIngredientModel'
 
 /**
  * Pantry
@@ -53,8 +55,12 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
 
-        await axios.post('/api/storages/pantry/ingredients', [value])
-        pantry.load()
+        const lastPosition = getLastIngredientPosition(pantry.data)
+        const ingredientToAdd = getIngredientModel(value, lastPosition + 1)
+
+        const response: AxiosResponse<IngredientModel[]>
+            = await axios.post('/api/storages/pantry/ingredients', [ingredientToAdd])
+        pantry.setData([...pantry.data, ...response.data])
     }
 
     /**

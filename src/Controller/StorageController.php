@@ -6,9 +6,7 @@ use App\DataTransferObject\StorageDTO;
 use App\Entity\Storage;
 use App\Repository\IngredientRepository;
 use App\Repository\StorageRepository;
-use App\Service\PantryUtil;
 use App\Service\RefreshDataTimestampUtil;
-use App\Service\ShoppingListUtil;
 use App\Service\StorageControllerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,11 +20,9 @@ final class StorageController extends AbstractController
 {
     public function __construct(
         private IngredientRepository $ingredientRepository,
-        private PantryUtil $pantryUtil,
         private RefreshDataTimestampUtil $refreshDataTimestampUtil,
         private StorageControllerService $storageControllerService,
         private StorageRepository $storageRepository,
-        private ShoppingListUtil $shoppingListUtil,
     ) {}
 
     #[Route('', name: 'api_storages_getAll', methods: ['GET'])]
@@ -52,28 +48,23 @@ final class StorageController extends AbstractController
         return DTOSerializer::getResponse($ingredientDTOs);
     }
 
-    /**
-     * @todo Should respond with the new list of ingredients.
-     * @todo Request data should be an array of IngredientModels.
-     */
+    /** Expects an array of IngredientModel objects. */
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_post', methods: ['POST'])]
     public function post(Request $request, Storage $storage): Response
     {
-        $requestContent = json_decode($request->getContent());
+        $data = json_decode($request->getContent(), false);
 
-        switch ($storage->getName()) {
-            case 'pantry':
-                $this->pantryUtil->add($requestContent);
-                break;
-            case 'shoppinglist':
-                $this->shoppingListUtil->add($requestContent);
-                break;
-            default:
-                throw new \BadMethodCallException();
+        $ingredients = $this->storageControllerService->mapIngredientModelsToEntities($data);
+
+        foreach ($ingredients as $ingredient) {
+            $ingredient->setStorage($storage);
+            $this->ingredientRepository->save($ingredient, true);
         }
 
         $this->refreshDataTimestampUtil->updateTimestamp();
-        return new Response;
+
+        $ingredientDTOs = $ingredients->map(fn ($ingredient) => new IngredientDTO($ingredient));
+        return DTOSerializer::getResponse($ingredientDTOs);
     }
 
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_delete', methods: ['DELETE'])]

@@ -2,7 +2,7 @@
  * ./assets/pages/Recipes/Recipe.tsx *
  *************************************/
 
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import Fraction from 'fraction.js'
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
@@ -16,6 +16,7 @@ import IngredientModel from '@/types/IngredientModel'
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
+import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 
 /**
  * Recipe
@@ -68,18 +69,19 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     /**
      * Handles adding the whole recipe to the ShoppingList. Is invoked by the SAB.
      */
-    const handleAddShoppingList = (argRecipe: RecipeModel): void => {
-        // Collect all ingredients
-        let ingredients: Array<string> = []
+    const handleAddShoppingList = async (argRecipe: RecipeModel): Promise<void> => {
+        const lastPosition = getLastIngredientPosition(shoppingList.data)
+        const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
+            ... ingredient,
+            position: lastPosition + index + 1,
+            checked: false,
+        }))
 
-        argRecipe.ingredients?.forEach(ingredient => {
-            ingredients.push(getFullIngredientName(ingredient))
-        })
-
-        // API call
-        axios
-            .post('/api/storages/shoppinglist/ingredients', JSON.stringify(ingredients))
-            .then(() => shoppingList.load())
+        if (ingredientsToAdd?.length) {
+            const response: AxiosResponse<IngredientModel[]>
+                = await axios.post('/api/storages/shoppinglist/ingredients', ingredientsToAdd)
+            shoppingList.setData([...shoppingList.data, ...response.data])
+        }
         
         // Update parameters for SAB
         setShowSabDone(true)
@@ -91,26 +93,33 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToShoppingList = async (ingredient: IngredientModel): Promise<void> => {
-        await axios.post('/api/storages/shoppinglist/ingredients', [getFullIngredientName(ingredient)])
-        shoppingList.load()
+        const ingredientToAdd: IngredientModel = {
+            ...ingredient,
+            position: getLastIngredientPosition(shoppingList.data) + 1,
+            checked: false,
+        }
+
+        const response: AxiosResponse<IngredientModel[]>
+            = await axios.post('/api/storages/shoppinglist/ingredients', [ingredientToAdd])
+        shoppingList.setData([...shoppingList.data, ...response.data])
     }
 
     /**
      * Handles adding the whole recipe to the Pantry. Is invoked by a button under the ingredient list.
      */
-    const handleAddPantry = (argRecipe: RecipeModel): void => {
-        // Collect all ingredients
-        let ingredients: Array<string> = []
+    const handleAddPantry = async (argRecipe: RecipeModel): Promise<void> => {
+        const lastPosition = getLastIngredientPosition(pantry.data)
+        const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
+            ... ingredient,
+            position: lastPosition + index + 1,
+        }))
 
-        argRecipe.ingredients?.forEach(ingredient => {
-            ingredients.push(getFullIngredientName(ingredient))
-        })
+        if (ingredientsToAdd?.length) {
+            const response: AxiosResponse<IngredientModel[]>
+                = await axios.post('/api/storages/pantry/ingredients', ingredientsToAdd)
+            pantry.setData([...pantry.data, ...response.data])
+        }
 
-        // API call
-        axios
-            .post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
-            .then(() => pantry.load())
-        
         // Update parameter for button
         setShowPantryDone(true)
     }
@@ -120,8 +129,15 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToPantry = async (ingredient: IngredientModel): Promise<void> => {
-        await axios.post('/api/storages/pantry/ingredients', [getFullIngredientName(ingredient)])
-        pantry.load()
+        const ingredientToAdd: IngredientModel = {
+            ...ingredient,
+            position: getLastIngredientPosition(pantry.data) + 1,
+            checked: false,
+        }
+
+        const response: AxiosResponse<IngredientModel[]>
+            = await axios.post('/api/storages/pantry/ingredients', [ingredientToAdd])
+        pantry.setData([...pantry.data, ...response.data])
     }
     
     // Initializes the recipe state variable. Each time the id parameter changes, the 

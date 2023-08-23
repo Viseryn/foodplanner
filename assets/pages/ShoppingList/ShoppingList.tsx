@@ -2,7 +2,7 @@
  * ./assets/pages/ShoppingList/ShoppingList.tsx *
  ************************************************/
 
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import Fraction from 'fraction.js'
 import React, { useEffect, useState } from 'react'
 import swal from 'sweetalert'
@@ -16,6 +16,8 @@ import IngredientModel from '@/types/IngredientModel'
 import SettingsModel from '@/types/SettingsModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import Item from './components/Item'
+import getIngredientModel from '@/util/ingredients/getIngredientModel'
+import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 
 /**
  * ShoppingList
@@ -49,8 +51,12 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
 
-        await axios.post('/api/storages/shoppinglist/ingredients', [value])
-        shoppingList.load()
+        const lastPosition = getLastIngredientPosition(shoppingList.data)
+        const ingredientToAdd = getIngredientModel(value, lastPosition + 1)
+
+        const response: AxiosResponse<IngredientModel[]>
+            = await axios.post('/api/storages/shoppinglist/ingredients', [ingredientToAdd])
+        shoppingList.setData([...shoppingList.data, ...response.data])
     }
 
     /**
