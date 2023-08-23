@@ -39,11 +39,14 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
 }): JSX.Element {
     // The order of the sorting button. If set to true, items will be sorted ascending, 
     // otherwise descending (alphabetically).
-    const [sortingOrder, setSortingOrder] = useState<boolean>(true)
+    const [sortingOrder, setSortingOrder] = useState<number>(1)
 
     // The input value of the Add Item Widget at the top. Will be passed to the 
     // AddIngredientWidget component together with its setter method.
     const [inputValue, setInputValue] = useState<string>('')
+
+    // Whether the list should be loading, e.g. while sorting.
+    const [isLoading, setLoading] = useState<boolean>(false)
 
     /**
      * A function that is called when the enter key is pressed with the trimmed inputValue as 
@@ -123,35 +126,23 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     /**
      * Sorts all items by alphabet.
      */
-    const handleSort = (): void => {
-        const newItemList: Array<IngredientModel> = [...pantry.data]
-
-        // Sort ingredient list
-        newItemList.sort((a, b) => {
-            const textA = a.name.toLowerCase()
-            const textB = b.name.toLowerCase()
-            return (sortingOrder ? 1 : -1) * ((textA < textB) ? -1 : (textA > textB) ? 1 : 0)
+    const handleSort = async (): Promise<void> => {
+        const sortedIngredients: IngredientModel[] = [...pantry.data]
+        sortedIngredients.sort((a, b) => sortingOrder * a.name.localeCompare(b.name))
+        sortedIngredients.forEach((ingredient, index) => {
+            ingredient.position = index + 1;
         })
 
-        newItemList.map((item, index) => item.position = index + 1)
+        setSortingOrder(sortingOrder => -1 * sortingOrder)
+        setLoading(true)
 
-        // Change sorting order
-        setSortingOrder(sortingOrder => !sortingOrder)
+        const patchRequests: Array<Promise<AxiosResponse<IngredientModel>>> = sortedIngredients.map(ingredient =>
+            axios.patch(`/api/ingredients/${ingredient.id}`, { position: ingredient.position })
+        )
 
-        // Update list
-        pantry.setData(newItemList)
-
-        // Create array of strings of ingredients for API
-        const ingredients: Array<string> = []
-
-        newItemList.forEach(ingredient => {
-            ingredients.push(getFullIngredientName(ingredient))
-        })
-
-        // API call
-        // axios.post('/api/pantry/replace', JSON.stringify(ingredients))
-        axios.delete('/api/storages/pantry/ingredients')
-        axios.post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
+        pantry.setData(sortedIngredients)
+        await Promise.all(patchRequests)
+        setLoading(false)
     }
 
     /**
@@ -203,7 +194,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
 
         <Spacer height="10" />
 
-        {pantry.isLoading ? (
+        {pantry.isLoading || isLoading ? (
             <Spinner />
         ) : (
             <>

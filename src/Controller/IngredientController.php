@@ -31,11 +31,13 @@ final class IngredientController extends AbstractController
         if (property_exists($data, "checked") && is_bool($data->checked)) {
             $ingredient->setChecked($data->checked);
             $this->ingredientRepository->save($ingredient, true);
+            $this->refreshDataTimestampUtil->updateTimestamp();
         }
 
         if (property_exists($data, "position") && is_int($data->position)) {
             $ingredient->setPosition($data->position);
             $this->ingredientRepository->save($ingredient, true);
+            $this->refreshDataTimestampUtil->updateTimestamp();
         }
 
         if (property_exists($data, "name") && is_string($data->name)) {
