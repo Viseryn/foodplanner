@@ -9,6 +9,7 @@ use App\Repository\StorageRepository;
 use App\Service\PantryUtil;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\ShoppingListUtil;
+use App\Service\StorageControllerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,7 @@ final class StorageController extends AbstractController
         private IngredientRepository $ingredientRepository,
         private PantryUtil $pantryUtil,
         private RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        private StorageControllerService $storageControllerService,
         private StorageRepository $storageRepository,
         private ShoppingListUtil $shoppingListUtil,
     ) {}
@@ -84,12 +86,12 @@ final class StorageController extends AbstractController
                 return (new Response)->setStatusCode(405);
             }
 
-            $this->pantryUtil->deleteAll();
+            $this->storageControllerService->deleteAllIngredients($storage);
             $this->refreshDataTimestampUtil->updateTimestamp();
             return new Response;
         } else if ($storage->getName() === 'shoppinglist') {
             if ($checked === null) {
-                $this->shoppingListUtil->deleteAll();
+                $this->storageControllerService->deleteAllIngredients($storage);
                 $this->refreshDataTimestampUtil->updateTimestamp();
                 return new Response;
             } else if ($checked === false) {
