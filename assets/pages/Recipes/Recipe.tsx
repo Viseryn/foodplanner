@@ -304,8 +304,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                         <div className="flex flex-row">
                                             <Button 
                                                 style={'shoppinglist-' + ingredient.id} 
-                                                onClick={() => { 
-                                                    handleAddSingleToShoppingList(ingredient)
+                                                onClick={async () => {
+                                                    await handleAddSingleToShoppingList(ingredient)
                                                     let element = document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild! as HTMLElement
                                                     element.innerHTML = "done"
                                                 }}
@@ -316,8 +316,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                             {settings.data.showPantry &&
                                                 <Button
                                                     style={'pantry-' + ingredient.id} 
-                                                    onClick={() => { 
-                                                        handleAddSingleToPantry(ingredient) 
+                                                    onClick={async () => {
+                                                        await handleAddSingleToPantry(ingredient)
                                                         let element = document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild! as HTMLElement
                                                         element.innerHTML = "done"
                                                     }}

@@ -55,6 +55,7 @@ final class IngredientController extends AbstractController
     public function deleteIngredientById(Ingredient $ingredient): Response
     {
         $this->ingredientRepository->remove($ingredient, true);
+        $this->refreshDataTimestampUtil->updateTimestamp();
         return DTOSerializer::getResponse(new IngredientDTO($ingredient));
     }
 }

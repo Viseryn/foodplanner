@@ -4,7 +4,7 @@
 
 import axios, { AxiosResponse } from 'axios'
 import Fraction from 'fraction.js'
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import swal from 'sweetalert'
 
 import AddIngredientWidget from '@/components/ui/AddIngredientWidget'
@@ -13,10 +13,10 @@ import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import IngredientModel from '@/types/IngredientModel'
-import getFullIngredientName from '@/util/getFullIngredientName'
 import Item from './components/Item'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
+import InfoPantryEmpty from '@/pages/Pantry/components/InfoPantryEmpty'
 
 /**
  * Pantry
@@ -36,7 +36,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     pantry: EntityState<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): JSX.Element {
+}): ReactElement {
     // The order of the sorting button. If set to true, items will be sorted ascending, 
     // otherwise descending (alphabetically).
     const [sortingOrder, setSortingOrder] = useState<number>(1)
@@ -51,7 +51,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     /**
      * A function that is called when the enter key is pressed with the trimmed inputValue as 
      * argument. Adds the argument to the Pantry via the Pantry Add API and reloads the list 
-     * afterwards. The reload is required because the API generates IDs and other fields.
+     * afterward. The reload is required because the API generates IDs and other fields.
      * 
      * @param value A trimmed string that describes an Ingredient object.
      */
@@ -198,12 +198,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
                 <Card style="mx-4 md:mx-0">
                     <div className="space-y-2 justify-center">
                         {pantry.data.length === 0 &&
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <span className="material-symbols-rounded outlined mr-4">info</span>
-                                    Die Vorratskammer ist leer.
-                                </div>
-                            </div>
+                            <InfoPantryEmpty />
                         }
 
                         {pantry.data.length > 0 &&

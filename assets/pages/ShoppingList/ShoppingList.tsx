@@ -4,7 +4,7 @@
 
 import axios, { AxiosResponse } from 'axios'
 import Fraction from 'fraction.js'
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import swal from 'sweetalert'
 
 import AddIngredientWidget from '@/components/ui/AddIngredientWidget'
@@ -14,10 +14,10 @@ import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import IngredientModel from '@/types/IngredientModel'
 import SettingsModel from '@/types/SettingsModel'
-import getFullIngredientName from '@/util/getFullIngredientName'
 import Item from './components/Item'
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
+import InfoShoppingListEmpty from '@/pages/ShoppingList/components/InfoShoppingListEmpty'
 
 /**
  * ShoppingList
@@ -36,7 +36,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): JSX.Element {
+}): ReactElement {
     // The input value of the Add Item Widget at the top. 
     // Will be passed to the AddIngredientWidget component together with its setter method.
     const [inputValue, setInputValue] = useState<string>('')
@@ -46,8 +46,8 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
 
     /**
      * A function that is called when the enter key is pressed with the trimmed inputValue as 
-     * argument. Adds the argument to the ShoppingList via the ShoppingList Add API and reloads the 
-     * list afterwards. The reload is required because the API generates IDs and other fields.
+     * argument. Adds the argument to the ShoppingList via the Storage POST API and adds the
+     * response to the ShoppingList.
      * 
      * @param value A trimmed string that describes an Ingredient object.
      */
@@ -208,13 +208,11 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     /**
      * Deletes all checked items.
      */
-    const handleDeleteChecked = () => {
-        // Make a copy of shoppingList.data and filter out all items that are checked
-        const newItemList: Array<IngredientModel> = [...shoppingList.data].filter(item => !item.checked)
-        shoppingList.setData(newItemList)
+    const handleDeleteChecked = async (): Promise<void> => {
+        const uncheckedIngredients: IngredientModel[] = [...shoppingList.data].filter(item => !item.checked)
+        shoppingList.setData(uncheckedIngredients)
 
-        // API call
-        axios.delete('/api/storages/shoppinglist/ingredients?checked=true')
+        await axios.delete('/api/storages/shoppinglist/ingredients?checked=true')
     }
 
     // Load layout 
@@ -263,12 +261,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                 <Card style="mx-4 md:mx-0">
                     <div className="space-y-2 justify-center">
                         {shoppingList.data?.length === 0 &&
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <span className="material-symbols-rounded outlined mr-4">info</span>
-                                    Die Einkaufsliste ist leer.
-                                </div>
-                            </div>
+                            <InfoShoppingListEmpty />
                         }
 
                         {shoppingList.data?.map(item =>

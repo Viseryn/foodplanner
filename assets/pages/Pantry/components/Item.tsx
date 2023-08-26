@@ -3,11 +3,12 @@
  *********************************************/
 
 import axios from 'axios'
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import IconButton from '@/components/ui/Buttons/IconButton'
 import IngredientModel from '@/types/IngredientModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
+import getIngredientModel from '@/util/ingredients/getIngredientModel'
 
 /**
  * Renders an item of the ShoppingList and handles events related to that item.
@@ -20,12 +21,9 @@ import getFullIngredientName from '@/util/getFullIngredientName'
 export default function Item({ pantry, item }: {
     pantry: EntityState<Array<IngredientModel>>
     item: IngredientModel
-}): JSX.Element {
+}): ReactElement {
     /**
      * Handles clicks on an item of the list.
-     * 
-     * @param event A click event.
-     * @param item A list item.
      */
     const handleClickOnItem = (event: React.MouseEvent, item: IngredientModel): void => {
         if (event.detail === 2) {
@@ -53,117 +51,92 @@ export default function Item({ pantry, item }: {
     /**
      * Changes an item's editability. Is performed on double clicks. 
      * Does not trigger a reload or replacement of the pantry.
-     * 
-     * @param item A list item.
      */
     const handleItemSetEditability = (item: IngredientModel): void => {
-        // Make a copy of pantry.data and find item
-        let newItemList: Array<IngredientModel> = [...pantry.data]
-        const index: number = newItemList.indexOf(item)
+        const copyOfPantry: IngredientModel[] = [...pantry.data]
+        if (!copyOfPantry.includes(item)) {
+            return
+        }
 
-        // Make all items non-editable
-        newItemList.forEach(item => {
-            item.editable = false
-        })
-
-        // Change editability of argument item if it is not checked
-        newItemList[index].editable = newItemList[index].checked ? false : !newItemList[index].editable
-        pantry.setData(newItemList)
+        const index: number = copyOfPantry.indexOf(item)
+        copyOfPantry.forEach(item => item.editable = false)
+        copyOfPantry[index].editable = copyOfPantry[index].checked ? false : !copyOfPantry[index].editable
+        pantry.setData(copyOfPantry)
     }
 
     /**
      * Changes the data of the given item and makes it non-editable after. 
      * Is called onBlur or onKeyDown when the Enter key was pressed.
-     * 
-     * @param event A focus or keyboard event.
-     * @param item A list item.
      */
-    const handleEditItem = (
+    const handleEditItem = async (
         event: React.FocusEvent<HTMLInputElement, Element> | React.KeyboardEvent<HTMLInputElement>, 
         item: IngredientModel
-    ): void => {
-        // Make a copy of pantry.data and find item
-        let newItemList: Array<IngredientModel> = [...pantry.data]
-        const index: number = newItemList.indexOf(item)
+    ): Promise<void> => {
+        const copyOfList: IngredientModel[] = [...pantry.data]
+        const index: number = copyOfList.indexOf(item)
+        const newIngredient: string = (event.target as HTMLInputElement).value
+            .replace(/(\s+)/g, ' ')
+            .trim()
 
-        // Return early if the value of the new item is empty
-        const newItem: string = event.currentTarget.value.replace(/(\s+)/g, ' ').trim()
-
-        if (newItem.length === 0) {
+        if (newIngredient.length === 0) {
             return
         }
 
-        // Change data of the item. Note that the change to the state is only temporary so that the 
-        // edit effect is visible immediately. The item will be updated in the database via the API 
-        // and the list will refresh without loading screen.
-        newItemList[index].quantityUnit = ''
-        newItemList[index].quantityValue = ''
-        newItemList[index].name = newItem
-        newItemList[index].editable = false
+        const newIngredientModel = getIngredientModel(newIngredient, copyOfList[index].position)
+        copyOfList[index].name = newIngredientModel.name
+        copyOfList[index].quantityValue = newIngredientModel.quantityValue
+        copyOfList[index].quantityUnit = newIngredientModel.quantityUnit
+        copyOfList[index].editable = false
 
-        // Set new list
-        pantry.setData(newItemList)
-
-        // API call
-        // axios.post('/api/pantry/edit-ingredient', newItemList[index])
-        axios.patch('/api/ingredients/' + item.id, {
-            name: newItem,
-            quantityUnit: '', // TODO: Compute this on the client side
-            quantityValue: '',
+        pantry.setData(copyOfList)
+        await axios.patch(`/api/ingredients/${item.id}`, {
+            name: copyOfList[index].name,
+            quantityValue: copyOfList[index].quantityValue,
+            quantityUnit: copyOfList[index].quantityUnit,
         })
     }
 
     /**
-     * Checks or unchecks an item. Is performed on single clicks on the item or the checkboxes.
-     * 
-     * @param item A list item.
+     * Deletes an item.
      */
-    const handleDeleteItem = (item: IngredientModel): void => {
-        let newItemList: Array<IngredientModel> = [...pantry.data]
-        const index: number = newItemList.indexOf(item)
+    const handleDeleteItem = async (item: IngredientModel): Promise<void> => {
+        const copyOfList: IngredientModel[] = [...pantry.data]
+        const index: number = copyOfList.indexOf(item)
 
-        // Remove item from list
-        newItemList.splice(index, 1)
-        pantry.setData(newItemList)
+        copyOfList.splice(index, 1)
+        pantry.setData(copyOfList)
         
-        // API call
-        axios.delete('/api/ingredients/' + item.id)
+        await axios.delete(`/api/ingredients/${item.id}`)
     }
 
     /**
      * Moves the given item up or down in the Pantry.
-     * 
+     *
      * @param item A list item.
      * @param direction Possible values are -1 (up) and 1 (down).
      */
-    const handleChangePosition = (item: IngredientModel, direction: -1 | 1): void => {
+    const handleChangePosition = async (item: IngredientModel, direction: -1 | 1): Promise<void> => {
         // Make a copy of pantry.data and find item
-        let newItemList: Array<IngredientModel> = [...pantry.data]
-        const index: number = newItemList.indexOf(item)
-        const itemCopy: IngredientModel = {...newItemList[index]}
+        const copyOfList: IngredientModel[] = [...pantry.data]
+        const index: number = copyOfList.indexOf(item)
+        const itemCopy: IngredientModel = {...copyOfList[index]}
 
-        const oldPosition: number = newItemList[index].position!
-        const newPosition: number = newItemList[index + direction].position!
+        const oldPosition: number = copyOfList[index].position!
+        const newPosition: number = copyOfList[index + direction].position!
 
         // Move item up only when it is not the first item and move item down only when it is not the last item.
         if ((direction === -1 && index !== 0) || (direction === 1 && index !== pantry.data?.length - 1)) {
             itemCopy.position = newPosition
-            newItemList[index].position = newPosition
-            newItemList[index + direction].position = oldPosition
+            copyOfList[index].position = newPosition
+            copyOfList[index + direction].position = oldPosition
 
-            newItemList[index] = newItemList[index + direction]
-            newItemList[index + direction] = itemCopy
+            copyOfList[index] = copyOfList[index + direction]
+            copyOfList[index + direction] = itemCopy
 
-            // Set new list
-            pantry.setData(newItemList)
+            pantry.setData(copyOfList)
 
-            // API call
-            // axios.post('/api/pantry/change-position', [
-            //     newItemList[index].id,
-            //     newItemList[index + direction].id,
-            // ])
-            axios.patch('/api/ingredients/' + newItemList[index].id, { position: newItemList[index].position })
-            axios.patch('/api/ingredients/' + newItemList[index + direction].id, { position: newItemList[index + direction].position })
+            await axios.patch('/api/ingredients/' + copyOfList[index].id, { position: copyOfList[index].position })
+            await axios.patch('/api/ingredients/' + copyOfList[index + direction].id, { position: copyOfList[index + direction].position })
         }
     }
     
