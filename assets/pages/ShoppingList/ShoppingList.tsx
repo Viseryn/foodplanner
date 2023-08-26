@@ -41,6 +41,9 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     // Will be passed to the AddIngredientWidget component together with its setter method.
     const [inputValue, setInputValue] = useState<string>('')
 
+    // Whether the list should be loading, e.g. while summing up.
+    const [isLoading, setLoading] = useState<boolean>(false)
+
     /**
      * A function that is called when the enter key is pressed with the trimmed inputValue as 
      * argument. Adds the argument to the ShoppingList via the ShoppingList Add API and reloads the 
@@ -62,59 +65,55 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     /**
      * Combines items with the same name and same quantityUnit to a single item and adds up the 
      * quantityValues. Since the items can contain fractions, the Fraction class is imported and 
-     * used. The resulting item list will be sent to the ShoppingList Replace API and a reload is done.
+     * used. All modified ingredients are either patched or deleted via the Ingredients API.
      */
-    const handleAddUpIngredients = (): void => {
-        // Make a copy of the shoppingList.data
-        const copyOfList: Array<IngredientModel> = [...shoppingList.data]
+    const handleSumUpIngredients = async (): Promise<void> => {
+        setLoading(true)
 
-        // Create temporary map for ingredients.
-        let ingredientMap: Map<string, IngredientModel> = new Map()
+        const groupedIngredients: Map<string, IngredientModel> = new Map<string, IngredientModel>()
+        const ingredientsToDelete: IngredientModel[] = []
 
-        // Go through each ingredient
-        copyOfList.forEach(ingredient => {
-            // Check if the ingredient has been added to the ingredientMap yet
-            if (ingredientMap.has(ingredient.name)) {
-                // Get the ingredient from the map
-                let currentIngredient: IngredientModel = ingredientMap.get(ingredient.name)!
+        // Find ingredient groups
+        shoppingList.data.forEach((ingredient: IngredientModel) => {
+            const key: string = `${ingredient.name}|${ingredient.quantityUnit}`
 
-                // Check if the quantity units match and the value is a number
-                if (currentIngredient.quantityUnit === ingredient.quantityUnit
-                    && ingredient.quantityValue) {
-                    // Calculate the new quantity value. Note that the values may be fractions.
-                    let currentVal: Fraction = new Fraction(currentIngredient.quantityValue)
-                    let newVal: Fraction = new Fraction(ingredient.quantityValue)
-                    let totalVal: Fraction = currentVal.add(newVal)
+            if (groupedIngredients.has(key)) {
+                ingredientsToDelete.push(ingredient)
+                const existingIngredient: IngredientModel = groupedIngredients.get(key)!
 
-                    // Save new quantity value in currentIngredient
-                    currentIngredient.quantityValue = totalVal.toFraction(true)
-                    ingredientMap.set(ingredient.name, currentIngredient)
-                } else {
-                    // If quantity units do not match or the value is not a number, 
-                    // add the ingredient to the map with another key
-                    ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
-                }
+                const currentValue: Fraction = new Fraction(existingIngredient.quantityValue)
+                const incomingValue: Fraction = new Fraction(ingredient.quantityValue)
+                const totalValue: Fraction = currentValue.add(incomingValue)
+
+                existingIngredient.quantityValue = totalValue.toFraction(true)
             } else {
-                // If ingredient is not in the ingredientMap, add it
-                ingredientMap.set(ingredient.name, ingredient)
+                groupedIngredients.set(key, {...ingredient})
             }
         })
 
-        // Create a new shoppingList from the ingredientMap
-        const newItemList: Array<IngredientModel> = Array.from(ingredientMap.values())
-
-        // Create array of strings of ingredients for API
-        const ingredients: Array<string> = []
-
-        newItemList?.forEach(ingredient => {
-            ingredients.push(getFullIngredientName(ingredient))
+        // Set up DELETE requests
+        const deleteRequests = ingredientsToDelete.map(ingredient => {
+            axios.delete(`/api/ingredients/${ingredient.id}`)
         })
 
-        // API call
-        axios.delete('/api/storages/shoppinglist/ingredients')
-        axios.post('/api/storages/shoppinglist/ingredients', JSON.stringify(ingredients))
-        // axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
-        shoppingList.load()
+        // Only make PATCH request for ingredients that have changed
+        const patchRequests: Array<Promise<AxiosResponse<IngredientModel>>> = []
+        groupedIngredients.forEach(ingredient => {
+            const originalIngredient: IngredientModel | undefined
+                = shoppingList.data.find(item => item.id === ingredient.id)
+
+            if (originalIngredient && originalIngredient.quantityValue !== ingredient.quantityValue) {
+                patchRequests.push(axios.patch(`/api/ingredients/${ingredient.id}`, {
+                    quantityValue: ingredient.quantityValue
+                }))
+            }
+        })
+
+        // Send requests and update ingredient list
+        shoppingList.setData(Array.from(groupedIngredients.values()))
+        await Promise.all([...deleteRequests, ...patchRequests])
+
+        setLoading(false)
     }
 
     /**
@@ -257,7 +256,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
 
         <Spacer height="10" />
 
-        {shoppingList.isLoading ? (
+        {shoppingList.isLoading || isLoading ? (
             <Spinner />
         ) : (
             <>
@@ -294,7 +293,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                             />
                         }
                         <Button
-                            onClick={handleAddUpIngredients}
+                            onClick={handleSumUpIngredients}
                             icon="low_priority"
                             label="Zutaten zusammenfassen"
                             role="tertiary"
