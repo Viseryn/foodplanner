@@ -1,13 +1,12 @@
 <?php namespace App\Service;
 
-use App\Entity\EntityInterface;
 use App\Entity\Instruction;
 use Doctrine\Common\Collections\Collection;
 
 /**
  * InstructionUtil
  */
-class InstructionUtil extends EntityUtil
+class InstructionUtil
 {
     /**
      * Turns a string which describes an instruction into an Instruction object and returns it.
@@ -58,16 +57,5 @@ class InstructionUtil extends EntityUtil
         }
 
         return $instructionStrings;
-    }
-
-    /**
-     * @param Instruction $instruction
-     */
-    public function getApiModel(EntityInterface $instruction): array
-    {
-        return [
-            'id' => $instruction->getId(),
-            'instruction' => $instruction->getInstruction(),
-        ];
     }
 }

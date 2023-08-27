@@ -106,13 +106,6 @@ abstract class StorageUtil
     }
 
     /**
-     * Should delete all Ingredient objects from the database that belong to the Storage.
-     *
-     * @return self
-     */
-    abstract public function deleteAll(): StorageUtil;
-
-    /**
      * Should prepare Ingredient objects for being added to a specific Storage. That can for example 
      * mean setting the 'checked' property or something else.
      *

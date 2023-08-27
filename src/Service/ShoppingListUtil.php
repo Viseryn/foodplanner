@@ -5,18 +5,6 @@
  */
 class ShoppingListUtil extends StorageUtil
 {
-    public function deleteAll(): StorageUtil
-    {
-        // Delete all shopping list ingredients from database
-        $ingredients = $this->ingredientRepository->findBy(['storage' => '2'], ['position' => 'ASC']);
-        
-        foreach($ingredients as $ingredient) {
-            $this->ingredientRepository->remove($ingredient, true);
-        }
-
-        return $this;
-    }
-
     protected function prepareIngredients(array &$ingredients): array 
     {
         // Get ShoppingList storage
