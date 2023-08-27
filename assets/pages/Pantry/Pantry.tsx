@@ -2,9 +2,8 @@
  * ./assets/pages/Pantry/Pantry.tsx *
  ************************************/
 
-import axios from 'axios'
-import Fraction from 'fraction.js'
-import React, { useEffect, useState } from 'react'
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
 import swal from 'sweetalert'
 
 import AddIngredientWidget from '@/components/ui/AddIngredientWidget'
@@ -13,8 +12,13 @@ import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import IngredientModel from '@/types/IngredientModel'
-import getFullIngredientName from '@/util/getFullIngredientName'
 import Item from './components/Item'
+import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
+import getIngredientModel from '@/util/ingredients/getIngredientModel'
+import InfoPantryEmpty from '@/pages/Pantry/components/InfoPantryEmpty'
+import getIngredientGroups from '@/util/storages/getIngredientGroups'
+import getDeleteRequests from '@/util/storages/getDeleteRequests'
+import getPatchRequests from '@/util/storages/getPatchRequests'
 
 /**
  * Pantry
@@ -34,118 +38,74 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     pantry: EntityState<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): JSX.Element {
+}): ReactElement {
     // The order of the sorting button. If set to true, items will be sorted ascending, 
     // otherwise descending (alphabetically).
-    const [sortingOrder, setSortingOrder] = useState<boolean>(true)
+    const [sortingOrder, setSortingOrder] = useState<number>(1)
 
     // The input value of the Add Item Widget at the top. Will be passed to the 
     // AddIngredientWidget component together with its setter method.
     const [inputValue, setInputValue] = useState<string>('')
 
+    // Whether the list should be loading, e.g. while sorting.
+    const [isLoading, setLoading] = useState<boolean>(false)
+
     /**
      * A function that is called when the enter key is pressed with the trimmed inputValue as 
      * argument. Adds the argument to the Pantry via the Pantry Add API and reloads the list 
-     * afterwards. The reload is required because the API generates IDs and other fields.
+     * afterward. The reload is required because the API generates IDs and other fields.
      * 
      * @param value A trimmed string that describes an Ingredient object.
      */
     const handleEnterKeyDown = async (value: string): Promise<void> => {
         setInputValue('')
 
-        await axios.post('/api/storages/pantry/ingredients', [value])
-        pantry.load()
+        const lastPosition = getLastIngredientPosition(pantry.data)
+        const ingredientToAdd = getIngredientModel(value, lastPosition + 1)
+
+        const response: AxiosResponse<IngredientModel[]>
+            = await axios.post('/api/storages/pantry/ingredients', [ingredientToAdd])
+        pantry.setData([...pantry.data, ...response.data])
     }
 
     /**
-     * Combines items with the same name and same quantity_unit to a single item and adds up the 
-     * quantity_values. Since the items can contain fractions, the Fraction class is imported and 
-     * used. The resulting item list will be sent to the Pantry Replace API and a reload is done.
+     * Combines items with the same name and same quantityUnit to a single item and adds up the
+     * quantityValues. Since the items can contain fractions, the Fraction class is imported and
+     * used. All modified ingredients are either patched or deleted via the Ingredients API.
      */
-    const handleAddUpIngredients = (): void => {
-        // Make a copy of the pantry.data
-        const copyOfList: Array<IngredientModel> = [...pantry.data]
+    const handleSumUpIngredients = async (): Promise<void> => {
+        setLoading(true)
 
-        // Create temporary map for ingredients.
-        let ingredientMap: Map<string, IngredientModel> = new Map()
+        const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(pantry.data)
+        const deleteRequests = getDeleteRequests(ingredientsToDelete)
+        const patchRequests = getPatchRequests(groupedIngredients, pantry.data)
 
-        // Go through each ingredient
-        copyOfList.forEach(ingredient => {
-            // Check if the ingredient has been added to the ingredientMap yet
-            if (ingredientMap.has(ingredient.name)) {
-                // Get the ingredient from the map
-                let currentIngredient: IngredientModel = ingredientMap.get(ingredient.name)!
+        pantry.setData(Array.from(groupedIngredients.values()))
+        await Promise.all([...deleteRequests, ...patchRequests])
 
-                // Check if the quantity units match and the value is a number
-                if (currentIngredient.quantityUnit === ingredient.quantityUnit && ingredient.quantityValue) {
-                    // Calculate the new quantity value. Note that the values may be fractions.
-                    let currentVal: Fraction = new Fraction(currentIngredient.quantityValue)
-                    let newVal: Fraction = new Fraction(ingredient.quantityValue)
-                    let totalVal: Fraction = currentVal.add(newVal)
-
-                    // Save new quantity value in currentIngredient
-                    currentIngredient.quantityValue = totalVal.toFraction(true)
-                    ingredientMap.set(ingredient.name, currentIngredient)
-                } else {
-                    // If quantity units do not match or the value is not a number, 
-                    // add the ingredient to the map with another key
-                    ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
-                }
-            } else {
-                // If ingredient is not in the ingredientMap, add it
-                ingredientMap.set(ingredient.name, ingredient)
-            }
-        })
-
-        // Create a new pantry from the ingredientMap
-        const newItemList: Array<IngredientModel> = Array.from(ingredientMap.values())
-
-        // Create array of strings of ingredients for API
-        const ingredients: Array<string> = []
-
-        newItemList.forEach(ingredient => {
-            ingredients.push(getFullIngredientName(ingredient))
-        })
-
-        // API call
-        // axios.post('/api/pantry/replace', JSON.stringify(ingredients))
-        axios.delete('/api/storages/pantry/ingredients')
-        axios.post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
-        pantry.load()
+        setLoading(false)
     }
 
     /**
      * Sorts all items by alphabet.
      */
-    const handleSort = (): void => {
-        const newItemList: Array<IngredientModel> = [...pantry.data]
-
-        // Sort ingredient list
-        newItemList.sort((a, b) => {
-            const textA = a.name.toLowerCase()
-            const textB = b.name.toLowerCase()
-            return (sortingOrder ? 1 : -1) * ((textA < textB) ? -1 : (textA > textB) ? 1 : 0)
+    const handleSort = async (): Promise<void> => {
+        const sortedIngredients: IngredientModel[] = [...pantry.data]
+        sortedIngredients.sort((a, b) => sortingOrder * a.name.localeCompare(b.name))
+        sortedIngredients.forEach((ingredient, index) => {
+            ingredient.position = index + 1;
         })
 
-        newItemList.map((item, index) => item.position = index + 1)
+        setSortingOrder(sortingOrder => -1 * sortingOrder)
+        setLoading(true)
 
-        // Change sorting order
-        setSortingOrder(sortingOrder => !sortingOrder)
+        const patchRequests: Array<Promise<AxiosResponse<IngredientModel>>> = sortedIngredients.map(ingredient =>
+            axios.patch(`/api/ingredients/${ingredient.id}`, { position: ingredient.position })
+        )
 
-        // Update list
-        pantry.setData(newItemList)
-
-        // Create array of strings of ingredients for API
-        const ingredients: Array<string> = []
-
-        newItemList.forEach(ingredient => {
-            ingredients.push(getFullIngredientName(ingredient))
-        })
-
-        // API call
-        // axios.post('/api/pantry/replace', JSON.stringify(ingredients))
-        axios.delete('/api/storages/pantry/ingredients')
-        axios.post('/api/storages/pantry/ingredients', JSON.stringify(ingredients))
+        pantry.setData(sortedIngredients)
+        await Promise.all(patchRequests)
+        setLoading(false)
     }
 
     /**
@@ -197,19 +157,14 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
 
         <Spacer height="10" />
 
-        {pantry.isLoading ? (
+        {pantry.isLoading || isLoading ? (
             <Spinner />
         ) : (
             <>
                 <Card style="mx-4 md:mx-0">
                     <div className="space-y-2 justify-center">
                         {pantry.data.length === 0 &&
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <span className="material-symbols-rounded outlined mr-4">info</span>
-                                    Die Vorratskammer ist leer.
-                                </div>
-                            </div>
+                            <InfoPantryEmpty />
                         }
 
                         {pantry.data.length > 0 &&
@@ -238,8 +193,8 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
                 {pantry.data.length > 0 &&
                     <div className="flex justify-end mt-4 mx-4 md:mx-0">
                         <Button
-                            onClick={handleAddUpIngredients}
-                            label="Zutaten sammenfassen"
+                            onClick={handleSumUpIngredients}
+                            label="Zutaten zusammenfassen"
                             icon="low_priority"
                             role="tertiary"
                             isSmall={true}
