@@ -13,7 +13,7 @@ final class StorageControllerService
     {
         $ingredients = $this->ingredientRepository->findBy(['storage' => $storage->getId()], ['position' => 'ASC']);
 
-        foreach($ingredients as $ingredient) {
+        foreach ($ingredients as $ingredient) {
             $this->ingredientRepository->remove($ingredient, true);
         }
     }
