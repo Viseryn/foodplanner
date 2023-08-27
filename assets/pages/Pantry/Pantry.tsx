@@ -3,7 +3,6 @@
  ************************************/
 
 import axios, { AxiosResponse } from 'axios'
-import Fraction from 'fraction.js'
 import React, { ReactElement, useEffect, useState } from 'react'
 import swal from 'sweetalert'
 
@@ -17,6 +16,9 @@ import Item from './components/Item'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
 import InfoPantryEmpty from '@/pages/Pantry/components/InfoPantryEmpty'
+import getIngredientGroups from '@/util/storages/getIngredientGroups'
+import getDeleteRequests from '@/util/storages/getDeleteRequests'
+import getPatchRequests from '@/util/storages/getPatchRequests'
 
 /**
  * Pantry
@@ -74,46 +76,10 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     const handleSumUpIngredients = async (): Promise<void> => {
         setLoading(true)
 
-        const groupedIngredients: Map<string, IngredientModel> = new Map<string, IngredientModel>()
-        const ingredientsToDelete: IngredientModel[] = []
+        const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(pantry.data)
+        const deleteRequests = getDeleteRequests(ingredientsToDelete)
+        const patchRequests = getPatchRequests(groupedIngredients, pantry.data)
 
-        // Find ingredient groups
-        pantry.data.forEach((ingredient: IngredientModel) => {
-            const key: string = `${ingredient.name}|${ingredient.quantityUnit}`
-
-            if (groupedIngredients.has(key)) {
-                ingredientsToDelete.push(ingredient)
-                const existingIngredient: IngredientModel = groupedIngredients.get(key)!
-
-                const currentValue: Fraction = new Fraction(existingIngredient.quantityValue)
-                const incomingValue: Fraction = new Fraction(ingredient.quantityValue)
-                const totalValue: Fraction = currentValue.add(incomingValue)
-
-                existingIngredient.quantityValue = totalValue.toFraction(true)
-            } else {
-                groupedIngredients.set(key, {...ingredient})
-            }
-        })
-
-        // Set up DELETE requests
-        const deleteRequests = ingredientsToDelete.map(ingredient => {
-            axios.delete(`/api/ingredients/${ingredient.id}`)
-        })
-
-        // Only make PATCH request for ingredients that have changed
-        const patchRequests: Array<Promise<AxiosResponse<IngredientModel>>> = []
-        groupedIngredients.forEach(ingredient => {
-            const originalIngredient: IngredientModel | undefined
-                = pantry.data.find(item => item.id === ingredient.id)
-
-            if (originalIngredient && originalIngredient.quantityValue !== ingredient.quantityValue) {
-                patchRequests.push(axios.patch(`/api/ingredients/${ingredient.id}`, {
-                    quantityValue: ingredient.quantityValue
-                }))
-            }
-        })
-
-        // Send requests and update ingredient list
         pantry.setData(Array.from(groupedIngredients.values()))
         await Promise.all([...deleteRequests, ...patchRequests])
 

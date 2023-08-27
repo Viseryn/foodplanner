@@ -18,6 +18,9 @@ import Item from './components/Item'
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 import InfoShoppingListEmpty from '@/pages/ShoppingList/components/InfoShoppingListEmpty'
+import getIngredientGroups from '@/util/storages/getIngredientGroups'
+import getDeleteRequests from '@/util/storages/getDeleteRequests'
+import getPatchRequests from '@/util/storages/getPatchRequests'
 
 /**
  * ShoppingList
@@ -70,46 +73,10 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     const handleSumUpIngredients = async (): Promise<void> => {
         setLoading(true)
 
-        const groupedIngredients: Map<string, IngredientModel> = new Map<string, IngredientModel>()
-        const ingredientsToDelete: IngredientModel[] = []
+        const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(shoppingList.data)
+        const deleteRequests = getDeleteRequests(ingredientsToDelete)
+        const patchRequests = getPatchRequests(groupedIngredients, shoppingList.data)
 
-        // Find ingredient groups
-        shoppingList.data.forEach((ingredient: IngredientModel) => {
-            const key: string = `${ingredient.name}|${ingredient.quantityUnit}`
-
-            if (groupedIngredients.has(key)) {
-                ingredientsToDelete.push(ingredient)
-                const existingIngredient: IngredientModel = groupedIngredients.get(key)!
-
-                const currentValue: Fraction = new Fraction(existingIngredient.quantityValue)
-                const incomingValue: Fraction = new Fraction(ingredient.quantityValue)
-                const totalValue: Fraction = currentValue.add(incomingValue)
-
-                existingIngredient.quantityValue = totalValue.toFraction(true)
-            } else {
-                groupedIngredients.set(key, {...ingredient})
-            }
-        })
-
-        // Set up DELETE requests
-        const deleteRequests = ingredientsToDelete.map(ingredient => {
-            axios.delete(`/api/ingredients/${ingredient.id}`)
-        })
-
-        // Only make PATCH request for ingredients that have changed
-        const patchRequests: Array<Promise<AxiosResponse<IngredientModel>>> = []
-        groupedIngredients.forEach(ingredient => {
-            const originalIngredient: IngredientModel | undefined
-                = shoppingList.data.find(item => item.id === ingredient.id)
-
-            if (originalIngredient && originalIngredient.quantityValue !== ingredient.quantityValue) {
-                patchRequests.push(axios.patch(`/api/ingredients/${ingredient.id}`, {
-                    quantityValue: ingredient.quantityValue
-                }))
-            }
-        })
-
-        // Send requests and update ingredient list
         shoppingList.setData(Array.from(groupedIngredients.values()))
         await Promise.all([...deleteRequests, ...patchRequests])
 
@@ -117,79 +84,55 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     }
 
     /**
-     * Does the same as handleAddUpIngredients, but additionally substracts all ingredients that are in the pantry.
+     * Does the same as handleSumUpIngredients, but additionally subtracts all ingredients that are in the pantry.
      */
-    const handleSubstractPantry = (): void => {
-        // Make a copy of the shoppingList.data and pantry.data
-        const copyOfList: Array<IngredientModel> = [...shoppingList.data]
-        const copyOfPantry: Array<IngredientModel> = JSON.parse(JSON.stringify(pantry.data))
+    const handleSubtractPantry = async (): Promise<void> => {
+        setLoading(true)
 
-        // Each pantry ingredient should have negative value
-        copyOfPantry.forEach(item => {
-            item.quantityValue = '-' + item.quantityValue
-        })
+        const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(shoppingList.data)
 
-        // Create temporary map for ingredients.
-        let ingredientMap: Map<string, IngredientModel> = new Map();
+        // Collect relevant pantry ingredients and negate quantityValues
+        const ingredientsToSubtract: IngredientModel[] = pantry.data
+            .filter(ingredient => shoppingList.data.map(ingredient => ingredient.name).includes(ingredient.name))
+            .map(ingredient => ({
+                ...ingredient,
+                quantityValue: (ingredient.quantityValue === '') ? '' : `-${ingredient.quantityValue}`,
+            }))
 
-        // Go through each ingredient
-        ([...copyOfList, ...copyOfPantry]).forEach(ingredient => {
-            // Check if the ingredient has been added to the ingredientMap yet
-            if (ingredientMap.has(ingredient.name)) {
-                // Get the ingredient from the map
-                let currentIngredient: IngredientModel = ingredientMap.get(ingredient.name)!
+        // Subtract pantry ingredients
+        ingredientsToSubtract.forEach(ingredient => {
+            const key: string = `${ingredient.name}|${ingredient.quantityUnit}`
 
-                // Check if the quantity units match and the value is a number
-                if (currentIngredient.quantityUnit === ingredient.quantityUnit
-                    && ingredient.quantityValue) {
-                    // Calculate the new quantity value. Note that the values may be fractions.
-                    let currentVal: Fraction = new Fraction(currentIngredient.quantityValue == '' ? 0 : currentIngredient.quantityValue)
-                    let newVal: Fraction = new Fraction(ingredient.quantityValue == '' ? 0 : ingredient.quantityValue)
-                    let totalVal: Fraction = currentVal.add(newVal)
+            if (groupedIngredients.has(key)) {
+                const existingIngredient: IngredientModel = groupedIngredients.get(key)!
 
-                    // Save new quantity value in currentIngredient
-                    currentIngredient.quantityValue = totalVal.toFraction(true)
-                    ingredientMap.set(ingredient.name, currentIngredient)
-                } else {
-                    // If quantity units do not match or the value is not a number, 
-                    // add the ingredient to the map with another key
-                    ingredientMap.set(ingredient.name + ingredient.quantityUnit, ingredient)
+                const currentValue: Fraction = new Fraction(existingIngredient.quantityValue === '' ? 0 : existingIngredient.quantityValue)
+                const incomingValue: Fraction = new Fraction(ingredient.quantityValue === '' ? 0 : ingredient.quantityValue)
+                const totalValue: Fraction = currentValue.add(incomingValue)
+
+                existingIngredient.quantityValue = totalValue.toFraction(true)
+
+                if (totalValue.valueOf() <= 0) {
+                    groupedIngredients.delete(key)
+                    ingredientsToDelete.push(existingIngredient)
                 }
-            } else {
-                // If ingredient is not in the ingredientMap, add it
-                ingredientMap.set(ingredient.name, ingredient)
             }
         })
 
-        // Create a new shoppingList from the ingredientMap
-        let newItemList: Array<IngredientModel> = Array.from(ingredientMap.values())
+        const deleteRequests = getDeleteRequests(ingredientsToDelete)
+        const patchRequests = getPatchRequests(groupedIngredients, shoppingList.data)
 
-        // Filter non-positive quantity values out
-        newItemList = newItemList.filter(item => {
-            let quantityValue: Fraction = new Fraction(item.quantityValue == '' ? 0 : item.quantityValue)
-            // quantityValue = quantityValue.valueOf()
-            return quantityValue.valueOf() > 0 || !quantityValue && quantityValue !== 0
-        })
+        shoppingList.setData(Array.from(groupedIngredients.values()))
+        await Promise.all([...deleteRequests, ...patchRequests])
 
-        // Create array of strings of ingredients for API
-        const ingredients: Array<string> = []
-
-        newItemList?.forEach(ingredient => {
-            ingredients.push(getFullIngredientName(ingredient))
-        })
-
-        // API call
-        // axios.post('/api/shoppinglist/replace', JSON.stringify(ingredients))
-        axios.delete('/api/storages/shoppinglist/ingredients')
-        axios.post('/api/storages/shoppinglist/ingredients', JSON.stringify(ingredients))
-        shoppingList.load()
+        setLoading(false)
     }
 
     /**
      * Deletes all items on the list after confirming a SweetAlert.
      */
-    const handleDeleteAll = (): void => {
-        swal({
+    const handleDeleteAll = async (): Promise<void> => {
+        const swalResponse = await swal({
             dangerMode: true,
             icon: 'error',
             title: 'Wirklich alle Zutaten löschen?',
@@ -197,12 +140,12 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                 cancel: { text: 'Abbrechen' },
                 confirm: { text: 'Löschen' },
             },
-        }).then(confirm => {
-            if (confirm) {
-                axios.delete('/api/storages/shoppinglist/ingredients')
-                shoppingList.load()
-            }
         })
+
+        if (swalResponse) {
+            await axios.delete('/api/storages/shoppinglist/ingredients')
+            shoppingList.load()
+        }
     }
 
     /**
@@ -278,7 +221,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                     <div className="flex flex-col items-end justify-end gap-4 mt-4 mx-4 md:mx-0 pb-[5.5rem] md:pb-0">
                         {settings.data?.showPantry && pantry.data != undefined && pantry.data.length > 0 &&
                             <Button
-                                onClick={handleSubstractPantry}
+                                onClick={handleSubtractPantry}
                                 label="Vorräte verrechnen"
                                 icon="cell_merge"
                                 role="tertiary"
