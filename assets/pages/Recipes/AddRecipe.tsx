@@ -2,7 +2,7 @@
  * ./assets/pages/Recipes/AddRecipe.tsx *
  ****************************************/
 
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
@@ -15,6 +15,8 @@ import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import RecipeModel from '@/types/RecipeModel'
+import RecipeForm from '@/types/RecipeForm'
+import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 
 /**
  * AddRecipe
@@ -41,38 +43,49 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
     // A function that can change the location. Needed for the redirect after submit.
     const navigate: NavigateFunction = useNavigate()
 
+    // Form data
+    const [recipeForm, setRecipeForm] = useState<RecipeForm>({
+        title: '',
+        portionSize: 1,
+        ingredients: '',
+        instructions: '',
+    })
+
     /**
      * Changes the label of the upload button to the selected picture (or to the default text).
-     * 
-     * @param event
      */
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const value: string = event.target.value
         setFilename((value != '') ? value : 'Datei auswählen')
+        handleInputChange(event)
     }
 
     /**
-     * Submits the form data to the Recipe Add API. Sets the ID of the new recipe to the 
-     * state variable id so that the component can redirect there after submitting.
-     * 
-     * @param event A submit form event.
+     * An event handler for changes on any form input field. Updates the recipeForm state variable.
      */
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        setRecipeForm(prev => ({
+            ...prev,
+            [event.target.name]: event.target.value,
+        }))
+    }
 
+    /**
+     * Gets a RecipeModel from the formData and sends it to the Recipe POST API. Sets the ID of the new recipe to the
+     * state variable id so that the component can redirect there after submitting.
+     */
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+        event.preventDefault()
         setLoading(true)
 
-        axios
-            .post('/api/recipes', formData)
-            .then(response => {
-                // Reload recipes and get id
-                recipes.load()
-                setId(response.data.id)
+        const recipe: RecipeModel = getRecipeModel(recipeForm)
 
-                // End loading screen
-                setLoading(false)
-            })
+        // TODO: File upload
+
+        const response: AxiosResponse<RecipeModel> = await axios.post('/api/recipes', recipe)
+        recipes.load()
+        setId(response.data.id)
+        setLoading(false)
     }
 
     // Redirect to the new recipe after it has properly loaded.
@@ -107,18 +120,20 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Card>
                             <InputRow
-                                id="recipe_title"
+                                id="title"
                                 label="Titel"
                                 {...{
                                     required: true, 
                                     maxLength: 255,
+                                    onChange: handleInputChange,
+                                    name: 'title',
                                 }}
                             />
 
                             <Spacer height="6" />
 
                             <SliderRow
-                                id="recipe_portionSize"
+                                id="portionSize"
                                 label="Wie viele Portionen?"
                                 {...{
                                     min: 1,
@@ -127,7 +142,9 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                                     marks: [...Array(10)].map((value, index) => ({
                                         value: index + 1,
                                         label: index + 1,
-                                    }))
+                                    })),
+                                    onChange: handleInputChange,
+                                    name: 'portionSize',
                                 }}
                             />
 
@@ -136,7 +153,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                             <div>
                                 <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
                                 <FileSelectButton
-                                    id="recipe_image"
+                                    id="image"
                                     label={filename}
                                     onChange={handleFilePick}
                                     enabled={true}
@@ -146,22 +163,26 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
 
                         <Card>
                             <TextareaRow
-                                id="recipe_ingredients"
+                                id="ingredients"
                                 label="Zutaten"
                                 {...{
                                     rows: 10, 
                                     placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
+                                    onChange: handleInputChange,
+                                    name: 'ingredients',
                                 }}
                             />
 
                             <Spacer height="6" />
 
                             <TextareaRow
-                                id="recipe_instructions"
+                                id="instructions"
                                 label="Zubereitung"
                                 {...{
                                     rows: 10,
                                     placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
+                                    onChange: handleInputChange,
+                                    name: 'instructions',
                                 }}
                             />
                         </Card>
