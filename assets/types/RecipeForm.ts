@@ -4,6 +4,7 @@ type RecipeForm = {
     ingredients: string
     instructions: string
     image?: string
+    removeImage?: boolean
 }
 
 export default RecipeForm

@@ -3,10 +3,8 @@
 use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\RecipeDTO;
 use App\Entity\Recipe;
-use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
 use App\Service\RecipeControllerService;
-use App\Service\RecipeUtil;
 use App\Service\RefreshDataTimestampUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +20,6 @@ class RecipeController extends AbstractController
     public function __construct(
         private RecipeControllerService $recipeControllerService,
         private RecipeRepository $recipeRepository,
-        private RecipeUtil $recipeUtil,
         private RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ) {}
 
@@ -44,25 +41,33 @@ class RecipeController extends AbstractController
         return DTOSerializer::getResponse(new RecipeDTO($recipe));
     }
 
-    /**
-     * @todo PUT method is not working.
+    /** @todo PUT method is not working.
+     * @todo Image Remove
      */
     #[Route('/{id}', name: 'api_recipes_put', methods: ['POST'])]
     public function put(Recipe $recipe, Request $request): Response
     {
-        $form = $this->createForm(RecipeType::class, $recipe);
-        $form = $this->recipeUtil->prepareEditForm($recipe, $form);
-        $form->handleRequest($request);
+        $data = json_decode($request->getContent(), false);
+        $newRecipe = $this->recipeControllerService->mapRecipeModelToEntity($data);
 
-        if (!$form->isSubmitted()) {
-            return (new Response)->setStatusCode(400);
+        $recipe->setTitle($newRecipe->getTitle())
+               ->setPortionSize($newRecipe->getPortionSize())
+               ->setImage($newRecipe->getImage());
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $recipe->removeIngredient($ingredient);
         }
-
-        $this->recipeUtil->update($recipe, $form);
+        foreach ($recipe->getInstructions() as $instruction) {
+            $recipe->removeInstruction($instruction);
+        }
+        foreach ($newRecipe->getIngredients() as $ingredient) {
+            $recipe->addIngredient($ingredient);
+        }
+        foreach ($newRecipe->getInstructions() as $instruction) {
+            $recipe->addInstruction($instruction);
+        }
         $this->recipeRepository->save($recipe, true);
 
         $this->refreshDataTimestampUtil->updateTimestamp();
-
         return DTOSerializer::getResponse(new RecipeDTO($recipe));
     }
 
