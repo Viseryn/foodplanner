@@ -36,20 +36,11 @@ class RecipeController extends AbstractController
     #[Route('', name: 'api_recipe_post', methods: ['POST'])]
     public function post(Request $request): Response
     {
-        $recipe = new Recipe();
-
-        $form = $this->createForm(RecipeType::class, $recipe);
-        $form->handleRequest($request);
-
-        if (!$form->isSubmitted()) {
-            return (new Response)->setStatusCode(400);
-        }
-
+        $data = json_decode($request->getContent(), false);
+        $recipe = $this->recipeControllerService->mapRecipeModelToEntity($data);
         $this->recipeRepository->save($recipe, true);
-        $this->recipeUtil->update($recipe, $form);
 
         $this->refreshDataTimestampUtil->updateTimestamp();
-
         return DTOSerializer::getResponse(new RecipeDTO($recipe));
     }
 
