@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 class RecipeControllerService
 {
     public function __construct(
+        private IngredientService $ingredientService,
+        private InstructionService $instructionService,
         private MealRepository $mealRepository,
         private RecipeRepository $recipeRepository,
     ) {}
@@ -31,5 +33,24 @@ class RecipeControllerService
         }
 
         $this->recipeRepository->remove($recipe, true);
+    }
+
+    public function mapRecipeModelToEntity(object $recipeModel): Recipe
+    {
+        $recipe = (new Recipe)->setTitle($recipeModel->title)
+                              ->setPortionSize($recipeModel->portionSize);
+
+        $ingredients = $this->ingredientService->mapIngredientModelsToEntities($recipeModel->ingredients);
+        $instructions = $this->instructionService->mapInstructionModelsToEntities($recipeModel->instructions);
+
+        foreach ($ingredients as $ingredient) {
+            $recipe->addIngredient($ingredient);
+        }
+
+        foreach ($instructions as $instruction) {
+            $recipe->addInstruction($instruction);
+        }
+
+        return $recipe;
     }
 }

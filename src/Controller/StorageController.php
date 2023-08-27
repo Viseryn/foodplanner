@@ -6,6 +6,7 @@ use App\DataTransferObject\StorageDTO;
 use App\Entity\Storage;
 use App\Repository\IngredientRepository;
 use App\Repository\StorageRepository;
+use App\Service\IngredientService;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\StorageControllerService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,6 +21,7 @@ final class StorageController extends AbstractController
 {
     public function __construct(
         private IngredientRepository $ingredientRepository,
+        private IngredientService $ingredientService,
         private RefreshDataTimestampUtil $refreshDataTimestampUtil,
         private StorageControllerService $storageControllerService,
         private StorageRepository $storageRepository,
@@ -54,7 +56,7 @@ final class StorageController extends AbstractController
     {
         $data = json_decode($request->getContent(), false);
 
-        $ingredients = $this->storageControllerService->mapIngredientModelsToEntities($data);
+        $ingredients = $this->ingredientService->mapIngredientModelsToEntities($data);
 
         foreach ($ingredients as $ingredient) {
             $ingredient->setStorage($storage);

@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -22,10 +21,10 @@ class Recipe implements EntityInterface
     #[ORM\Column]
     private ?int $portionSize = null;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Ingredient::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Ingredient::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $ingredients;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $instructions;
 
     #[ORM\ManyToOne]
