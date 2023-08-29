@@ -2,11 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\UserGroup;
+use App\Form\RegistrationFormType;
+use App\Repository\InstallationStatusRepository;
 use App\Repository\UserGroupRepository;
 use App\Repository\UserRepository;
+use App\Service\RegistrationControllerService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -16,43 +23,66 @@ class InstallController extends AbstractController
 {
     /**
      * Installation API
-     * 
-     * This API should be directly called after creating the first user.
-     * The file will self-destroy after the procedure:
-     * 
-     * 1) Gives the first user admin rights (necessary for using the app).
-     * 2) Creates the first UserGroup object (necessary for creating meals).
-     * 
-     * Further steps may be added in the future.
-     * 
-     * @return Response
+     *
+     * This procedure will automatically open after setting up the app.
+     * 1) Will create the first User and UserGroup
+     * 2) Will create the Settings for the first user
+     * 3) Will set the installationStatus to true
+     * Redirects to the app after finishing.
      */
-    #[Route('/api/install', name: 'api_install')]
+    #[Route('/install', name: 'api_install')]
     public function install(
+        EntityManagerInterface $entityManager,
+        InstallationStatusRepository $installationStatusRepository,
+        RegistrationControllerService $registrationControllerService,
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
         UserRepository $userRepository,
         UserGroupRepository $userGroupRepository,
     ): Response {
-        // Fetch first User
-        $firstUser = $userRepository->find(1);
-        if ($firstUser === null) return new Response('Aborted! Please register an account first.');
+        $installationStatus = $installationStatusRepository->find(1);
+        if ($installationStatus->isStatus()) {
+            return $this->redirectToRoute('app_default');
+        }
 
-        // Add admin rights to first user
-        $firstUser->setRoles(['ROLE_ADMIN']);
-        $userRepository->add($firstUser, true);
+        $user = new User();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
 
-        // Add first UserGroup to the database
-        $userGroup = new UserGroup();
-        $userGroup
-            ->setName($firstUser->getUsername())
-            ->setStandard(true)
-            ->setIcon('face')
-            ->addUser($firstUser)
-        ;
-        $userGroupRepository->add($userGroup, true);
+        if ($form->isSubmitted()) {
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData(),
+                ),
+            );
 
-        // Self destruct
-        unlink(__FILE__);
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-        return new Response('Success! You can use FoodPlanner now.');
+            $registrationControllerService->createUserSettings($user);
+
+            // Add admin rights to first user
+            $user->setRoles(['ROLE_ADMIN']);
+            $userRepository->add($user, true);
+
+            // Add first UserGroup to the database
+            $userGroup = new UserGroup();
+            $userGroup
+                ->setName($user->getUsername())
+                ->setIcon('face')
+                ->addUser($user);
+            $userGroupRepository->add($userGroup, true);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $installationStatus->setStatus(true);
+            $installationStatusRepository->save($installationStatus, true);
+
+            return $this->redirectToRoute('app_default');
+        }
+
+        return $this->render('install/index.html.twig');
     }
 }

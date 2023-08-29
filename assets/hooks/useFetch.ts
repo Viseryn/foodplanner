@@ -40,6 +40,7 @@ import { useEffect, useState } from 'react'
  * @param url The URL to the API that provides the data.
  * @param authentication An optional Authentication object. If such an object is given, the hook will only attempt API calls if Authentication.isAuthenticated is true, i.e. the user is authenticated.
  * @param isDependencyLoading An array of isLoading properties of dependent data. If an Authentication object was provided, Authentication.isLoading is automatically added to this list.
+ * @param parse Whether or not the response data needs to be parsed. Default is true. Set to false if the response is prettified JSON.
  * @param customFetch A function that can be executed after the API call if passed as argument. The response of the API call will be passed as argument as well as the setter methods of the 'data' state and its 'isLoading' state.
  * @return An object that consists of the data state variable, the isLoading state variable, and their respective setter methods.
  */
@@ -47,6 +48,7 @@ function useFetch<DataType = any>(
     url: string,
     authentication?: Authentication,
     isDependencyLoading?: Array<boolean>,
+    parse: boolean = true,
     customFetch?: (
         response: AxiosResponse<any, any>,
         setData: SetState<DataType>,
@@ -116,7 +118,11 @@ function useFetch<DataType = any>(
                     if (customFetch != null) {
                         customFetch?.(response, setData, setLoading)
                     } else {
-                        setData(JSON.parse(response.data))
+                        if (parse) {
+                            setData(JSON.parse(response.data))
+                        } else {
+                            setData(response.data)
+                        }
                         setLoading(false)
                     }
 

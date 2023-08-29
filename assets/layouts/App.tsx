@@ -94,24 +94,25 @@ export default function App({ version }: {
     }
 
     /**
-     * A shortcut function for fetching the global data. Returns the useFetch return value with the 
+     * A shortcut function for fetching the global data. Returns the useFetch return value with the
      * given URL and the authentication and isLoading state variable as dependencies.
-     * 
+     *
      * @param url The API url.
+     * @param parse Whether or not the response data needs to be parsed. Default is true. Set to false if the response is prettified JSON.
      * @returns The useFetch return value.
      */
-    const fetch = <T,>(url: string): EntityState<T> => { 
-        return useFetch<T>(url, authentication, [isLoading]) 
+    const fetch = <T,>(url: string, parse: boolean = true): EntityState<T> => {
+        return useFetch<T>(url, authentication, [isLoading], parse)
     }
 
     // Fetch data
-    const settings = fetch<SettingsModel>('/api/settings/detail')
-    const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories/list')
-    const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups/list')
-    const shoppingList = fetch<Array<IngredientModel>>('/api/shoppinglist/ingredients')
-    const pantry = fetch<Array<IngredientModel>>('/api/pantry/ingredients')
-    const recipes = fetch<Array<RecipeModel>>('/api/recipes/list')
-    const days = fetch<Array<DayModel>>('/api/days/list')
+    const settings = fetch<SettingsModel>('/api/settings?userid=' + user.data.id, false)
+    const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups', false)
+    const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories', false)
+    const shoppingList = fetch<Array<IngredientModel>>('/api/storages/shoppinglist/ingredients', false)
+    const pantry = fetch<Array<IngredientModel>>('/api/storages/pantry/ingredients', false)
+    const recipes = fetch<Array<RecipeModel>>('/api/recipes', false)
+    const days = fetch<Array<DayModel>>('/api/days', false)
 
     // Render App component
     return (
@@ -155,13 +156,13 @@ export default function App({ version }: {
                         <Route 
                             path="/planner/add"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddMeal {...{ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }} />
+                                <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 
                             path="/planner/add/:id"
                             element={<AuthChecker authentication={authentication} component={
-                                <AddMeal {...{ days, mealCategories, recipes, userGroups, setSidebar, setTopbar }} />
+                                <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
                             } />} 
                         />
                         <Route 

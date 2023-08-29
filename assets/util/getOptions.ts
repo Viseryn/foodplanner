@@ -2,24 +2,16 @@
  * ./assets/util/getOptions.ts *
  *******************************/
 
-import ModelWithOption from '@/types/ModelWithOption'
+import ModelOption from '@/types/ModelOption'
 
 /**
- * Given some entities, returns an appropriate array of option objects for form input widgets.
- * 
- * @template OptionType A type that describes an option, e.g. SelectOption or RadioOption.
- * @template EntityModel An entity model type that extends EntityWithOption<OptionType>.
- * @param entities An array of entities of type EntityModel.
- * @returns An array of the option properties of each entity.
- * 
- * @example getOptionsForEntities<SelectOption>(recipes.data) = [recipes.data[0].option, ...]
- * @see useFetch
+ * @template Model An entity model type.
+ * @template OptionType Either SelectOption or RadioOption.
+ * @param entityOptions An array of ModelOption objects.
+ * @returns An array of OptionType objects.
  */
-function getOptions<OptionType, Model extends ModelWithOption<OptionType>>(
-    entities: EntityState<Array<Model>>
-): Array<OptionType> {
-    // If the entities are not being loaded yet, assume they are an empty array.
-    return (entities.isLoading ? [] : entities.data).map(entity => entity.option)
+function getOptions<Model, OptionType>(entityOptions: Array<ModelOption<Model, OptionType>>): Array<OptionType> {
+    return entityOptions.map(entityOption => entityOption.getOption())
 }
 
 export default getOptions

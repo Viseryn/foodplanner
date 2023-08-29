@@ -1,18 +1,15 @@
-<?php
+<?php namespace App\Controller;
 
-namespace App\Controller;
-
+use App\DataTransferObject\DTOSerializer;
+use App\DataTransferObject\RecipeDTO;
 use App\Entity\Recipe;
-use App\Form\RecipeType;
-use App\Repository\MealRepository;
 use App\Repository\RecipeRepository;
-use App\Service\RecipeUtil;
+use App\Service\FileUploader;
+use App\Service\RecipeControllerService;
 use App\Service\RefreshDataTimestampUtil;
-use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,136 +18,89 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/recipes')]
 class RecipeController extends AbstractController
 {
-    /**
-     * Recipe List API
-     * 
-     * Responds with an array of JSON objects matching the type specifications of RecipeModel.ts.
-     *
-     * @param RecipeRepository $recipeRepository
-     * @param RecipeUtil $recipeUtil
-     * @return Response
-     */
-    #[Route('/list', name: 'api_recipes_list', methods: ['GET'])]
-    public function list(RecipeRepository $recipeRepository, RecipeUtil $recipeUtil): Response
+    public function __construct(
+        private FileUploader $fileUploader,
+        private RecipeControllerService $recipeControllerService,
+        private RecipeRepository $recipeRepository,
+        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ) {}
+
+    #[Route('', name: 'api_recipes_getAll', methods: ['GET'])]
+    public function getAll(): Response
     {
-        $recipesResult = $recipeRepository->findBy([], ['title' => 'ASC']);
-
-        $serializer = SerializerBuilder::create()->build();
-        $jsonContent = $serializer->serialize($recipeUtil->getApiModels($recipesResult), 'json');
-
-        return (new JsonResponse($jsonContent));
+        $recipeDTOs = $this->recipeControllerService->getAllRecipes();
+        return DTOSerializer::getResponse($recipeDTOs);
     }
 
-    /**
-     * Recipe Add API
-     * 
-     * A Recipe API that adds a new Recipe object to the database when the form in AddRecipe.js was 
-     * submitted. Responds with the ID of the newly created Recipe object. If no form was submitted, 
-     * responds with an Error 500.
-     *
-     * @param RecipeRepository $recipeRepository
-     * @param RecipeUtil $recipeUtil
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
-     * @param Request $request
-     * @return Response
-     */
-    #[Route('/add', name: 'api_recipe_add', methods: ['GET', 'POST'])]
-    public function add(
-        RecipeRepository $recipeRepository,
-        RecipeUtil $recipeUtil,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
-        Request $request, 
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        $recipe = new Recipe();
-
-        $form = $this->createForm(RecipeType::class, $recipe);
-        $form->handleRequest($request);
-
-        if (!$form->isSubmitted()) {
-            return (new Response)->setStatusCode(500);
-        }
-
-        $recipeRepository->save($recipe, true);
-        $recipeUtil->update($recipe, $form);
-
-        $refreshDataTimestampUtil->updateTimestamp();
-
-        return new Response($recipe->getId());
-    }
-
-    /**
-     * Recipes Edit API
-     * 
-     * A Recipe API that edit an existing Recipe object in the database when the form in 
-     * EditRecipe.js was submitted. Responds with the ID of the Recipe object. If no form was 
-     * submitted, responds with an Error 500.
-     * 
-     * @param Recipe $recipe
-     * @param RecipeRepository $recipeRepository
-     * @param RecipeUtil $recipeUtil
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
-     * @param Request $request
-     * @return Response
-     */
-    #[Route('/edit/{id}', name: 'api_recipes_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Recipe $recipe, 
-        RecipeRepository $recipeRepository,
-        RecipeUtil  $recipeUtil,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
-        Request $request, 
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        $form = $this->createForm(RecipeType::class, $recipe);
-        $form = $recipeUtil->prepareEditForm($recipe, $form);
-        $form->handleRequest($request);
-
-        if (!$form->isSubmitted()) {
-            return (new Response)->setStatusCode(500);
-        }
-
-        $recipeUtil->update($recipe, $form);
-        $recipeRepository->save($recipe, true);
-
-        $refreshDataTimestampUtil->updateTimestamp();
-
-        return new Response($recipe->getId());
-    }
-
-    /**
-     * Recipes Delete API
-     * 
-     * Deletes the Recipe object with the given ID.
-     *
-     * @param MealRepository $mealRepository
-     * @param Recipe $recipe
-     * @param RecipeRepository $recipeRepository
-     * @param RefreshDataTimestampUtil $refreshDataTimestampUtil
-     * @return Response
-     */
-    #[Route('/delete/{id}', name: 'api_recipes_delete', methods: ['GET'])]
-    public function delete(
-        MealRepository $mealRepository, 
-        Recipe $recipe, 
-        RecipeRepository $recipeRepository,
-        RefreshDataTimestampUtil $refreshDataTimestampUtil,
-    ): Response
+    #[Route('', name: 'api_recipe_post', methods: ['POST'])]
+    public function post(Request $request): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
-        $meals = $mealRepository->findBy(['recipe' => $recipe->getId()]);
-        
-        foreach ($meals as $meal) {
-            $mealRepository->remove($meal, true);
+        $data = json_decode($request->getContent(), false);
+        $recipe = $this->recipeControllerService->mapRecipeModelToEntity($data);
+        $this->recipeRepository->save($recipe, true);
+
+        $this->refreshDataTimestampUtil->updateTimestamp();
+        return DTOSerializer::getResponse(new RecipeDTO($recipe));
+    }
+
+    /** @todo PUT method is not working. */
+    #[Route('/{id}', name: 'api_recipes_put', methods: ['POST'])]
+    public function put(Recipe $recipe, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), false);
+        $newRecipe = $this->recipeControllerService->mapRecipeModelToEntity($data);
+
+        $recipe->setTitle($newRecipe->getTitle())
+               ->setPortionSize($newRecipe->getPortionSize());
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $recipe->removeIngredient($ingredient);
+        }
+        foreach ($recipe->getInstructions() as $instruction) {
+            $recipe->removeInstruction($instruction);
+        }
+        foreach ($newRecipe->getIngredients() as $ingredient) {
+            $recipe->addIngredient($ingredient);
+        }
+        foreach ($newRecipe->getInstructions() as $instruction) {
+            $recipe->addInstruction($instruction);
+        }
+        $this->recipeRepository->save($recipe, true);
+
+        $this->refreshDataTimestampUtil->updateTimestamp();
+        return DTOSerializer::getResponse(new RecipeDTO($recipe));
+    }
+
+    /**
+     * This PATCH API is only usable for updating or removing the recipe's image.
+     * It expects a JSON object of type ImageUploadModel.
+     */
+    #[Route('/{id}/image', name: 'api_recipes_patch', methods: ['PATCH'])]
+    public function patch(Recipe $recipe, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), false);
+
+        if (property_exists($data, "image") && is_string($data->image)) {
+            $image = $this->fileUploader->uploadBase64($data->image, $data->filename, '/img/recipes/');
+            $recipe->setImage($image);
         }
 
-        $recipeRepository->remove($recipe, true);
+        if (property_exists($data, "removeImage") && is_bool($data->removeImage)) {
+            if ($data->removeImage) {
+                $recipe->setImage(null);
+            }
+        }
 
-        $refreshDataTimestampUtil->updateTimestamp();
+        $this->recipeRepository->save($recipe, true);
+        $this->refreshDataTimestampUtil->updateTimestamp();
+        return DTOSerializer::getResponse(new RecipeDTO($recipe));
+    }
 
-        return new Response();
+    #[Route('/{id}', name: 'api_recipes_delete', methods: ['DELETE'])]
+    public function delete(Recipe $recipe): Response
+    {
+        $this->recipeControllerService->removeRecipe($recipe);
+        $this->refreshDataTimestampUtil->updateTimestamp();
+
+        return DTOSerializer::getResponse(new RecipeDTO($recipe));
     }
 }

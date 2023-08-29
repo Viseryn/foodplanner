@@ -2,7 +2,7 @@
  * ./assets/pages/Planner/Planner.tsx *
  **************************************/
 
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import swal from 'sweetalert'
 
@@ -14,11 +14,11 @@ import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
 import MealModel from '@/types/MealModel'
 import RecipeModel from '@/types/RecipeModel'
-import getFullIngredientName from '@/util/getFullIngredientName'
 import DayCardDesktop from './components/DayCardDesktop'
 import DayCardMobile from './components/DayCardMobile'
 import DaySkeletonDesktop from './components/DaySkeletonDesktop'
 import DaySkeletonMobile from './components/DaySkeletonMobile'
+import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 
 /**
  * A component that renders the Weekly Planner. Shows a list of ten Day entities which each have a 
@@ -64,7 +64,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
                 return
             }
             
-            axios.get('/api/meals/delete/' + meal.id).then(() => { 
+            axios.delete('/api/meals/' + meal.id).then(() => {
                 days.load() 
             })
         })
@@ -73,61 +73,30 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
     /**
      * Adds the ingredients of all meals to the shopping list via the ShoppingList Add API.
      */
-    const handleAddShoppingList = (): void => {
+    const handleAddShoppingList = async (): Promise<void> => {
         if (days.isLoading || shoppingList.isLoading) {
             return
         }
 
-        // Collect all recipes
-        let recipesTmp: Array<RecipeModel> = []
+        const lastPosition = getLastIngredientPosition(shoppingList.data)
+        const ingredientsToAdd: IngredientModel[] = days.data?.flatMap(day =>
+            day.meals.flatMap(meal => meal.recipe.ingredients)
+        )?.map((ingredient, index): IngredientModel => ({
+            ...ingredient,
+            position: lastPosition + index + 1,
+            checked: false,
+        }))
 
-        days.data.forEach(day => {
-            day.meals.forEach(meal => {
-                // Since the meal only has basic information of the recipe, find the full recipe object in props.recipes.
-                const recipeIds: Array<number> = recipes.data.map((recipe: RecipeModel) => recipe.id)
-                const index: number = recipeIds.indexOf(meal.recipe.id)
-                recipesTmp.push(recipes.data[index])
-            })
-        })
-
-        // Collect all ingredients as strings
-        let ingredients: Array<string> = []
-
-        recipesTmp.forEach(recipe => {
-            recipe.ingredients.forEach(ingredient => {
-                ingredients.push(getFullIngredientName(ingredient))
-            })
-        });
-
-        // Make API call
-        (async () => {
-            try {
-                await axios.post('/api/shoppinglist/add', JSON.stringify(ingredients))
-                shoppingList.load()
-            } catch (error) {
-                console.log(error)
-            }
-        })()
+        if (ingredientsToAdd?.length) {
+            const response: AxiosResponse<IngredientModel[]>
+                = await axios.post('/api/storages/shoppinglist/ingredients', ingredientsToAdd)
+            shoppingList.setData([...shoppingList.data, ...response.data])
+        }
         
         // Trigger update for the SAB
         setShowSabDone(true)
         setCountSabClicks(count => count + 1)
     }
-
-    // Calls the Update Days API, which removes all unnecessary Day object (past days and days further away than ten).
-    useEffect(() => {
-        if (days.isLoading) { 
-            return
-        }
-
-        (async () => {
-            try {
-                await axios.get('/api/days/update')
-            } catch (error) {
-                console.log(error)
-            }
-        })()
-    }, [days.isLoading])
 
     // Update sidebar action button when shopping list changes or when pressed.
     useEffect(() => {
@@ -153,6 +122,17 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
 
         // Scroll to top
         window.scrollTo(0, 0)
+
+        // Calls the Update Days API, which removes all unnecessary Day object (past days and days further away than ten)
+        const updateDays = async () => {
+            try {
+                await axios.patch('/api/days')
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        updateDays()
     }, [])
     
     // Configure carousel

@@ -1,8 +1,8 @@
 /*****************************************
  * ./assets/pages/Recipes/EditRecipe.tsx *
  *****************************************/
-    
-import axios from 'axios'
+
+import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import swal from 'sweetalert'
@@ -17,10 +17,15 @@ import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import DayModel from '@/types/DayModel'
-import IngredientModel from '@/types/IngredientModel'
-import InstructionModel from '@/types/InstructionModel'
 import RecipeModel from '@/types/RecipeModel'
-import getFullIngredientName from '@/util/getFullIngredientName'
+import RecipeForm from '@/types/RecipeForm'
+import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
+import getIngredientsAsString from '@/pages/Recipes/util/getIngredientsAsString'
+import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsString'
+import getImageUploadModel from '@/pages/Recipes/util/getImageUploadModel'
+import ImageUploadModel from '@/types/ImageUploadModel'
+
+const DATEI_AUSWAEHLEN: string = 'Datei auswählen'
 
 /**
  * A component that renders a form for editing an existing recipe. After submitting via the submit 
@@ -49,7 +54,10 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
     const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
 
     // The name of the selected file. When no file is selected, show a placeholder text.
-    const [filename, setFilename] = useState<string>('Datei auswählen')
+    const [filename, setFilename] = useState<string>(DATEI_AUSWAEHLEN)
+
+    // The file that was selected
+    const [file, setFile] = useState<File | null>(null)
 
     // Whether the page is loading. Will be true while the form data is processed by the API.
     const [isLoading, setLoading] = useState<boolean>(false)
@@ -59,6 +67,14 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
 
     // The ID of the new recipe. Will be provided be the API and can be used for redirecting.
     const [responseId, setResponseId] = useState<number>(0)
+
+    // Form data
+    const [recipeForm, setRecipeForm] = useState<RecipeForm>({
+        title: '',
+        portionSize: 1,
+        ingredients: '',
+        instructions: '',
+    })
 
     // Initializes the recipe state variable. Each time the id parameter changes, the recipe state 
     // is updated. When the recipes are reloaded, recipe is also updated.
@@ -70,6 +86,13 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         // Find correct recipe
         const queryResult: Array<RecipeModel> = recipes.data.filter(recipe => recipe.id.toString() == id)
         setRecipe(queryResult[0])
+        setRecipeForm(prev => ({
+            ...prev,
+            title: queryResult[0].title,
+            portionSize: queryResult[0].portionSize,
+            ingredients: getIngredientsAsString(queryResult[0].ingredients),
+            instructions: getInstructionsAsString(queryResult[0].instructions),
+        }))
 
         // If recipe does not exist, redirect to 404 page
         if (queryResult.length === 0) {
@@ -77,61 +100,24 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         }
     }, [id, recipes.isLoading])
 
-    /**
-     * Given an array of Ingredients, e.g. as ingredients property of a Recipe from the Recipe API, 
-     * returns a string of the format "quantityValue quantityUnit ingredientName". If one or more of 
-     * those three are empty, the whitespaces are not added accordingly. Ingredients are separated 
-     * by a linebreak. The return value can be for example used as defaultValue for a textarea field.
-     * 
-     * @param arr An array of ingredients, e.g. received from the Recipe API.
-     * @returns A list of all ingredients, separated by linebreaks.
-     */
-    const getIngredients = (arr: Array<IngredientModel>): string => {
-        let ingredients: string = ''
-        let l: number = arr?.length
-
-        arr?.map((ingredient, i) => {
-            ingredients += getFullIngredientName(ingredient)
-
-            if (l != i + 1) { 
-                ingredients += "\r\n"
-            }
-        })
-
-        return ingredients
-    }
-
-    /**
-     * Given an array of Instructions, e.g. as instructions property of a Recipe from the Recipe API, 
-     * returns a string of the instructions separated by a linebreak. The return value can be for 
-     * example used as defaultValue for a textarea field.
-     * 
-     * @param arr An array of instructions, e.g. received from the Recipe API.
-     * @returns A list of all instructions, separated by linebreaks.
-     */
-    const getInstructions = (arr: Array<InstructionModel>): string => {
-        let instructions: string = ''
-        let l: number = arr?.length
-
-        arr?.map((instruction, i) => {
-            if (l == i + 1) { 
-                instructions += instruction.instruction
-            } else {
-                instructions += instruction.instruction + "\r\n\r\n"
-            }
-        })
-
-        return instructions
-    }
 
     /**
      * Changes the label of the upload button to the selected picture (or to the default text).
-     * 
-     * @param event
      */
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const value = event.target.value
-        setFilename((value != '') ? value : 'Datei auswählen')
+        setFilename((value != '') ? value : DATEI_AUSWAEHLEN)
+        setFile(event.target.files?.[0] || null)
+    }
+
+    /**
+     * An event handler for changes on any form input field. Updates the recipeForm state variable.
+     */
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        setRecipeForm(prev => ({
+            ...prev,
+            [event.target.name]: event.target.value,
+        }))
     }
 
     /**
@@ -141,34 +127,29 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         setFileUploadButtonEnabled(isFileUploadButtonEnabled => {
             return !isFileUploadButtonEnabled
         })
+        setRecipeForm(prev => ({
+            ...prev,
+            removeImage: isFileUploadButtonEnabled,
+        }))
     }
 
     /**
-     * Submits the form data to the Recipe Edit API. Sets the ID of the response to the state 
-     * variable so that the component can redirect there after submitting.
-     * 
-     * @param event A form submit event.
+     * Gets a RecipeModel from the formData and sends it to the Recipe POST API. Sets the ID of the new recipe to the
+     * state variable id so that the component can redirect there after submitting.
      */
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-
         setLoading(true)
 
-        axios
-            .post('/api/recipes/edit/'+ recipe?.id, formData)
-            .then(response => {
-                // Reload recipes and get id
-                recipes.load()
-                setResponseId(response.data)
+        const recipe: RecipeModel = getRecipeModel(recipeForm)
+        const imageUpload: ImageUploadModel = getImageUploadModel(file, recipeForm.removeImage)
 
-                // Update Day entities that may have
-                // Meals with that recipe
-                days.load()
-
-                // End loading screen
-                setLoading(false)
-            })
+        const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
+        await axios.patch(`/api/recipes/${id}/image`, imageUpload)
+        recipes.load()
+        days.load()
+        setResponseId(response.data.id)
+        setLoading(false)
     }
 
     // Redirect to the new recipe after it has properly loaded.
@@ -197,7 +178,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         }).then(confirm => {
             if (confirm) {
                 axios
-                    .get('/api/recipes/delete/' + id)
+                    .delete('/api/recipes/' + id)
                     .then(() => {
                         // Reload recipes and days
                         recipes.load()
@@ -243,12 +224,14 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Card>
                             <InputRow
-                                id="recipe_title"
+                                id="title"
                                 label="Titel"
                                 {...{
-                                    required: 'required', 
+                                    required: true,
                                     maxLength: 255,
-                                    defaultValue: recipe?.title
+                                    onChange: handleInputChange,
+                                    name: 'title',
+                                    value: recipeForm.title,
                                 }}
                             />
 
@@ -256,7 +239,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
 
                             <SliderRow
                                 key={recipe?.id}
-                                id="recipe_portionSize"
+                                id="portionSize"
                                 label="Wie viele Portionen?"
                                 {...{
                                     min: 1,
@@ -266,7 +249,9 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                         value: index + 1,
                                         label: index + 1,
                                     })),
-                                    defaultValue: recipe.portionSize
+                                    onChange: handleInputChange,
+                                    name: 'portionSize',
+                                    value: recipeForm.portionSize,
                                 }}
                             />
 
@@ -304,46 +289,50 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                             <div className="flex justify-between items-center gap-4 h-12">
                                 <div className="overflow-hidden w-full">
                                     <FileSelectButton
-                                        id="recipe_image"
+                                        id="image"
                                         label={filename}
                                         onChange={handleFilePick}
                                         enabled={isFileUploadButtonEnabled}
                                     />
                                 </div>
 
-                                {recipe?.image != null &&<>
+                                {recipe?.image != null &&
                                     <SwitchRow
-                                        id="recipe_image_remove"
+                                        id="removeImage"
                                         label="Entfernen"
                                         {...{
-                                            name: "recipe[image_remove]",
+                                            name: "removeImage",
                                             onChange: handleFileRemove,
                                         }}
-                                    /></>
+                                    />
                                 }
                             </div>
                         </Card>
 
                         <Card>
                             <TextareaRow
-                                id="recipe_ingredients"
+                                id="ingredients"
                                 label="Zutaten"
                                 {...{
                                     rows: 10, 
                                     placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
-                                    defaultValue: getIngredients(recipe.ingredients)
+                                    onChange: handleInputChange,
+                                    name: 'ingredients',
+                                    value: recipeForm.ingredients,
                                 }}
                             />
 
                             <Spacer height="6" />
 
-                            <TextareaRow 
-                                id="recipe_instructions"
+                            <TextareaRow
+                                id="instructions"
                                 label="Zubereitung"
                                 {...{
                                     rows: 10,
                                     placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
-                                    defaultValue: getInstructions(recipe.instructions)
+                                    onChange: handleInputChange,
+                                    name: 'instructions',
+                                    value: recipeForm.instructions,
                                 }}
                             />
                         </Card>

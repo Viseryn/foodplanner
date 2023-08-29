@@ -2,14 +2,12 @@
  * ./assets/types/DayModel.ts *
  ******************************/
 
-import ModelWithOption from './ModelWithOption'
 import MealModel from './MealModel'
-import SelectOption from './SelectOption'
 
 /**
  * Type specifications for Day objects returned by APIs
  */
-type DayModel = ModelWithOption<SelectOption> & {
+type DayModel = {
     /** The entity id of the Day object. */
     id: number
 

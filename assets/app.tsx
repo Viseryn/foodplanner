@@ -3,8 +3,8 @@
  *******************************
  *
  * @author Kevin Sporbeck
- * @version v1.4.2
- * 
+ * @version v1.5
+ *
  */
 
 // Import CSS
@@ -17,4 +17,4 @@ import App from './layouts/App'
 
 // Render app
 const root = ReactDOM.createRoot(document.getElementById('root')!)
-root.render(<App version="v1.4.2" />)
+root.render(<App version="v1.5" />)
