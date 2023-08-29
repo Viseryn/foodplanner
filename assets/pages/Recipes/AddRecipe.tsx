@@ -17,6 +17,10 @@ import Spinner from '@/components/ui/Spinner'
 import RecipeModel from '@/types/RecipeModel'
 import RecipeForm from '@/types/RecipeForm'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
+import ImageUploadModel from '@/types/ImageUploadModel'
+import getImageUploadModel from '@/pages/Recipes/util/getImageUploadModel'
+
+const DATEI_AUSWAEHLEN: string = 'Datei auswählen'
 
 /**
  * AddRecipe
@@ -32,7 +36,10 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
     setTopbar: SetTopbarAction
 }): JSX.Element {
     // The name of the selected file. When no file is selected, show a placeholder text.
-    const [filename, setFilename] = useState<string>('Datei auswählen')
+    const [filename, setFilename] = useState<string>(DATEI_AUSWAEHLEN)
+
+    // The file that was selected
+    const [file, setFile] = useState<File | null>(null)
 
     // Whether the page is loading. Will be true while the form data is processed by the API.
     const [isLoading, setLoading] = useState<boolean>(false)
@@ -56,7 +63,8 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
      */
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const value: string = event.target.value
-        setFilename((value != '') ? value : 'Datei auswählen')
+        setFilename((value != '') ? value : DATEI_AUSWAEHLEN)
+        setFile(event.target.files?.[0] || null)
         handleInputChange(event)
     }
 
@@ -79,10 +87,11 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         setLoading(true)
 
         const recipe: RecipeModel = getRecipeModel(recipeForm)
+        const imageUpload: ImageUploadModel = getImageUploadModel(file)
 
-        // TODO: File upload
 
         const response: AxiosResponse<RecipeModel> = await axios.post('/api/recipes', recipe)
+        await axios.patch(`/api/recipes/${response.data.id}/image`, imageUpload)
         recipes.load()
         setId(response.data.id)
         setLoading(false)

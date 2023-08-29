@@ -22,6 +22,10 @@ import RecipeForm from '@/types/RecipeForm'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 import getIngredientsAsString from '@/pages/Recipes/util/getIngredientsAsString'
 import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsString'
+import getImageUploadModel from '@/pages/Recipes/util/getImageUploadModel'
+import ImageUploadModel from '@/types/ImageUploadModel'
+
+const DATEI_AUSWAEHLEN: string = 'Datei auswählen'
 
 /**
  * A component that renders a form for editing an existing recipe. After submitting via the submit 
@@ -50,7 +54,10 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
     const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
 
     // The name of the selected file. When no file is selected, show a placeholder text.
-    const [filename, setFilename] = useState<string>('Datei auswählen')
+    const [filename, setFilename] = useState<string>(DATEI_AUSWAEHLEN)
+
+    // The file that was selected
+    const [file, setFile] = useState<File | null>(null)
 
     // Whether the page is loading. Will be true while the form data is processed by the API.
     const [isLoading, setLoading] = useState<boolean>(false)
@@ -99,7 +106,8 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
      */
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const value = event.target.value
-        setFilename((value != '') ? value : 'Datei auswählen')
+        setFilename((value != '') ? value : DATEI_AUSWAEHLEN)
+        setFile(event.target.files?.[0] || null)
     }
 
     /**
@@ -134,11 +142,10 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         setLoading(true)
 
         const recipe: RecipeModel = getRecipeModel(recipeForm)
-
-        // TODO: File upload
-        // TODO: File remove?
+        const imageUpload: ImageUploadModel = getImageUploadModel(file, recipeForm.removeImage)
 
         const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
+        await axios.patch(`/api/recipes/${id}/image`, imageUpload)
         recipes.load()
         days.load()
         setResponseId(response.data.id)
@@ -282,7 +289,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                             <div className="flex justify-between items-center gap-4 h-12">
                                 <div className="overflow-hidden w-full">
                                     <FileSelectButton
-                                        id="recipe_image"
+                                        id="image"
                                         label={filename}
                                         onChange={handleFilePick}
                                         enabled={isFileUploadButtonEnabled}
