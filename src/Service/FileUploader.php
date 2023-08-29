@@ -80,6 +80,59 @@ class FileUploader
     }
 
     /**
+     * Uploads a file to a specified directory. If $public is true, the file is uploaded to
+     * /public/$directory/, otherwise to /data/upload/$directory/.
+     *
+     * @param string $file A base64 representation of a file.
+     * @param string $filename The filename.
+     * @param string|null $directory Addition to the configured $targetDirectory, e.g. /img/.
+     * @param boolean $public Whether the file should be uploaded to a public directory.
+     * @throws FileException If file could not be uploaded to the desired directory.
+     * @return File The File objects corresponding to the uploaded file.
+     */
+    public function uploadBase64(string $file, string $filename, ?string $directory, bool $public = true): File
+    {
+        $fileContent = base64_decode($file);
+        $safeFilename = $this->slugger->slug($filename);
+        $extension = explode('-', $safeFilename);
+        $finalFilename = $safeFilename . '-' . uniqid() . '.' . end($extension);
+
+        // Specify the upload directory
+        $uploadDir = $this->getTargetDirectory()
+            . ($public ? '/public/' : '/data/upload/')
+            . $directory . '/';
+        $uploadDir = preg_replace('#/+#', '/', $uploadDir);
+        $fullPath = $uploadDir . $finalFilename;
+
+        // Specify the directory property for the File object and delete unnecessary slashes
+        $objectDir = '/' . $directory . '/';
+        $objectDir = preg_replace('#/+#', '/', $objectDir);
+
+
+        try {
+            // Try uploading the file
+            file_put_contents($fullPath, $fileContent);
+
+            // Create File object
+            $fileObject = new File();
+            $fileObject
+                ->setFilename($finalFilename)
+                ->setDirectory($objectDir)
+                ->setPublic($public)
+            ;
+
+            // Add File object to database
+            $this->fileRepository->add($fileObject, true);
+        } catch (FileException $e) {
+            // Throw FileException if file could not be uploaded.
+            throw $e;
+        }
+
+        // Return File object.
+        return $fileObject;
+    }
+
+    /**
      * Returns the extension of a File object or a string that is a filename (with or without directory).
      *
      * @param File|string $file A File object or a filename.
