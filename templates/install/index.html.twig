@@ -1,0 +1,56 @@
+{% extends "/default/index.html.twig" %}
+
+{% block content %}
+    <div class="items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900 min-w-[375px]">
+        <div class="w-full">
+            <div class="h-[4.5rem]">
+                <div class="ml-4 pt-6">
+                    <div class="font-semibold text-primary-200 dark:text-secondary-dark-900 text-3xl">
+                        FoodPlanner einrichten
+                    </div>
+                </div>
+            </div>
+            <div class="pb-24 md:pb-4 md:w-[400px]">
+                <div class="h-6"></div>
+                <div class="mx-4">
+                    <form method="POST" autocomplete="off">
+                        <div class="bg-secondary-100 dark:bg-secondary-dark-100 rounded-xl p-4 ">
+                            <p class="font-bold">Willkommen im FoodPlanner!</p>
+                            <p>Bevor du FoodPlanner nutzen kannst, musst
+                                du zunächst einen Hauptnutzer anlegen. Bitte wähle ein sicheres Passwort.
+                                Du kannst nach der initialen Einrichtung auch noch weitere Benutzer anlegen, mit denen
+                                du FoodPlanner gleichzeitig nutzen kannst.</p>
+                            <p>Nach Abschluss der Einrichtung kannst du dich einloggen und loslegen!</p>
+                            <hr class="my-6 border-t-secondary-200 dark:border-t-secondary-dark-200">
+                            <div><label for="registration_form_username" class="text-sm font-semibold block mb-2">Dein
+                                    Benutzername</label><input id="registration_form_username"
+                                                               name="registration_form[username]" type="text"
+                                                               class="dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-14 px-6 w-full transition duration-300 focus:border-primary-100"
+                                                               required=""></div>
+                            <div class="h-6"></div>
+                            <div><label for="registration_form_plainPassword" class="text-sm font-semibold block mb-2">Dein
+                                    Password</label><input id="registration_form_plainPassword"
+                                                           name="registration_form[plainPassword]" type="password"
+                                                           class="dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-14 px-6 w-full transition duration-300 focus:border-primary-100"
+                                                           required=""></div>
+                            <div class="h-6"></div>
+                            <div class="flex items-center"><input id="registration_form_agreeTerms"
+                                                                  name="registration_form[agreeTerms]" type="checkbox"
+                                                                  required=""
+                                                                  class="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"><label
+                                        for="registration_form_agreeTerms">Ich stimme den Nutzungsbedingungen und den
+                                    Datenschutzbestimmungen zu.</label></div>
+                            <div class="h-4"></div>
+                            <div class="flex justify-end">
+                                <button type="submit" title=""
+                                        class="rounded-full font-semibold transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300 h-12 px-4 text-base">
+                                    <span class="material-symbols-rounded">login</span><span
+                                            class="mr-2 ml-3">Einrichtung abschließen</span></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
