@@ -3,7 +3,6 @@ type RecipeForm = {
     portionSize: number
     ingredients: string
     instructions: string
-    image?: string
     removeImage?: boolean
 }
 
