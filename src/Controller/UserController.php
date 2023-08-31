@@ -4,7 +4,6 @@ use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\UserDTO;
 use App\Repository\UserRepository;
 use App\Service\UserControllerService;
-use App\Service\UserUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +34,7 @@ class UserController extends AbstractController
      * Responds with a list of all User objects.
      */
     #[Route('/users', name: 'api_user_getAll', methods: ['GET'])]
-    public function getAll(UserRepository $userRepository, UserUtil $userUtil): Response
+    public function getAll(): Response
     {
         $userDTOs = (new ArrayCollection($this->userRepository->findAll()))
             ->map(fn ($user) => new UserDTO($user));
