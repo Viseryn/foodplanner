@@ -224,7 +224,12 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             showBackButton: true,
             backButtonPath: '/recipes',
             actionButtons: [
-                { icon: 'refresh', onClick: () => recipes.load() },
+                {
+                    icon: 'refresh', onClick: () => {
+                        setPortionSize(0)
+                        recipes.load()
+                    }
+                },
                 { icon: 'edit', onClick: () => navigate('/recipe/' + id + '/edit') },
             ],
             truncate: true,
