@@ -1,6 +1,6 @@
 # FoodPlanner
 
-Current version: v1.5-hotfix.1
+Current version: v1.5.1
 
 ---
 
