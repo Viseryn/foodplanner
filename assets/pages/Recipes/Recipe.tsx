@@ -159,13 +159,15 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
 
     // Put a copy of selected recipe in a local state variable tmpRecipe and save 
     // the original portion size of the recipe in portionSize.
-    // These will be updated whenever the global recipes state variable changes, e.g. on recipe edit.
+    // These will only be updated on initialization, not when the recipe changes!
     useEffect(() => {
-        // Set temporary copy of recipe
-        setTmpRecipe(recipe)
-        
-        // Set initial portion size
-        setPortionSize(recipe.portionSize)
+        if (portionSize == 0 || portionSize == undefined) {
+            // Set temporary copy of recipe
+            setTmpRecipe(recipe)
+
+            // Set initial portion size
+            setPortionSize(recipe.portionSize)
+        }
     }, [recipe, recipes.data])
 
     // Calculate the ingredient quantities depending on selected portionSize
@@ -222,6 +224,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             showBackButton: true,
             onBackButtonClick: () => navigate(-1),
             actionButtons: [
+                { icon: 'refresh', onClick: () => recipes.load() },
                 { icon: 'edit', onClick: () => navigate('/recipe/' + id + '/edit') },
             ],
             truncate: true,
