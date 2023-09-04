@@ -3,7 +3,7 @@
  *******************************
  *
  * @author Kevin Sporbeck
- * @version v1.5-hotfix.1
+ * @version v1.5.1
  *
  */
 
@@ -17,4 +17,4 @@ import App from './layouts/App'
 
 // Render app
 const root = ReactDOM.createRoot(document.getElementById('root')!)
-root.render(<App version="v1.5-hotfix.1" />)
+root.render(<App version="v1.5.1" />)
