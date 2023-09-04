@@ -20,12 +20,12 @@ import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosit
 
 /**
  * Recipe
- * 
+ *
  * A component that shows a single recipe in detail.
- * 
+ *
  * @todo Change the color of the select arrow.
  * @todo Write an easier to read skeleton.
- * 
+ *
  * @component
  */
 export default function Recipe({ recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: {
@@ -72,7 +72,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     const handleAddShoppingList = async (argRecipe: RecipeModel): Promise<void> => {
         const lastPosition = getLastIngredientPosition(shoppingList.data)
         const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
-            ... ingredient,
+            ...ingredient,
             position: lastPosition + index + 1,
             checked: false,
         }))
@@ -82,14 +82,14 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                 = await axios.post('/api/storages/shoppinglist/ingredients', ingredientsToAdd)
             shoppingList.setData([...shoppingList.data, ...response.data])
         }
-        
+
         // Update parameters for SAB
         setShowSabDone(true)
         setCountSabClicks(count => count + 1)
     }
-    
+
     /**
-     * Handles adding a single ingredient to the ShoppingList. 
+     * Handles adding a single ingredient to the ShoppingList.
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToShoppingList = async (ingredient: IngredientModel): Promise<void> => {
@@ -110,7 +110,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     const handleAddPantry = async (argRecipe: RecipeModel): Promise<void> => {
         const lastPosition = getLastIngredientPosition(pantry.data)
         const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
-            ... ingredient,
+            ...ingredient,
             position: lastPosition + index + 1,
         }))
 
@@ -125,7 +125,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     }
 
     /**
-     * Handles adding a single ingredient to the Pantry. 
+     * Handles adding a single ingredient to the Pantry.
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToPantry = async (ingredient: IngredientModel): Promise<void> => {
@@ -139,7 +139,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
             = await axios.post('/api/storages/pantry/ingredients', [ingredientToAdd])
         pantry.setData([...pantry.data, ...response.data])
     }
-    
+
     // Initializes the recipe state variable. Each time the id parameter changes, the 
     // recipe state is updated. When the recipes are reloaded, recipe is also updated.
     useEffect(() => {
@@ -159,13 +159,15 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
 
     // Put a copy of selected recipe in a local state variable tmpRecipe and save 
     // the original portion size of the recipe in portionSize.
-    // These will be updated whenever the global recipes state variable changes, e.g. on recipe edit.
+    // These will only be updated on initialization, not when the recipe changes!
     useEffect(() => {
-        // Set temporary copy of recipe
-        setTmpRecipe(recipe)
-        
-        // Set initial portion size
-        setPortionSize(recipe.portionSize)
+        if (portionSize == 0 || portionSize == undefined) {
+            // Set temporary copy of recipe
+            setTmpRecipe(recipe)
+
+            // Set initial portion size
+            setPortionSize(recipe.portionSize)
+        }
     }, [recipe, recipes.data])
 
     // Calculate the ingredient quantities depending on selected portionSize
@@ -173,13 +175,13 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         if (recipes.isLoading) {
             return
         }
-            
-        let newRecipe: RecipeModel = {...recipe}
+
+        let newRecipe: RecipeModel = { ...recipe }
         newRecipe.ingredients = []
         newRecipe.portionSize = portionSize
 
         recipe.ingredients?.forEach(ingredient => {
-            let newIngredient: IngredientModel = {...ingredient}
+            let newIngredient: IngredientModel = { ...ingredient }
 
             let newQuantityValue: Fraction = new Fraction(ingredient.quantityValue ? ingredient.quantityValue : '0')
 
@@ -187,7 +189,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                 .div(new Fraction(recipe.portionSize))
                 .mul(new Fraction(portionSize))
                 .toFraction(true)
-            
+
             if (newIngredient['quantityValue'] === '0') {
                 newIngredient['quantityValue'] = ''
             }
@@ -206,11 +208,11 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         }
 
         setSidebar('recipes', {
-            visible: true, 
-            icon: showSabDone ? 'done' : 'add_shopping_cart', 
-            label: showSabDone 
+            visible: true,
+            icon: showSabDone ? 'done' : 'add_shopping_cart',
+            label: showSabDone
                 ? 'Erledigt!' + (countSabClicks > 1 ? ' (' + countSabClicks + ')' : '')
-                : 'Zur Einkaufsliste' ,
+                : 'Zur Einkaufsliste',
             onClick: () => handleAddShoppingList(tmpRecipe),
         })
     }, [recipe, tmpRecipe, showSabDone, countSabClicks])
@@ -220,8 +222,14 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         setTopbar({
             title: recipe.title,
             showBackButton: true,
-            onBackButtonClick: () => navigate(-1),
+            backButtonPath: '/recipes',
             actionButtons: [
+                {
+                    icon: 'refresh', onClick: () => {
+                        setPortionSize(0)
+                        recipes.load()
+                    }
+                },
                 { icon: 'edit', onClick: () => navigate('/recipe/' + id + '/edit') },
             ],
             truncate: true,
@@ -239,10 +247,11 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         <div className="mx-4 md:ml-0">
             <Spacer height="6" />
             {recipes.isLoading
-                ? /* Recipe Skeleton */ <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
+                ? /* Recipe Skeleton */
+                <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
                 : (recipe.image &&
-                    <img 
-                        className="rounded-3xl h-80 object-cover transition duration-300 w-full" 
+                    <img
+                        className="rounded-3xl h-80 object-cover transition duration-300 w-full"
                         src={recipe.image.directory + recipe.image.filename}
                         alt={recipe.title}
                     />
@@ -257,7 +266,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                 <Spacer height="6" />
 
                 <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
-                    <div className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
+                    <div
+                        className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
                 </div>
 
                 <Card style="mx-4 md:ml-0 lg:ml-4">
@@ -273,13 +283,13 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                         <Spacer height="10" />
 
                         <Heading size="xl" style="ml-2">
-                            Zutaten für 
+                            Zutaten für
                             <select
                                 value={portionSize}
                                 onChange={e => setPortionSize(+e.target.value)}
                                 className="dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-10 w-20 px-6 mx-4 transition duration-300 focus:border-primary-100 dark:after:bg-red-500"
                             >
-                                {[...Array(10)].map((value, index) => 
+                                {[...Array(10)].map((value, index) =>
                                     <option
                                         key={index + 1}
                                         value={index + 1}
@@ -302,8 +312,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                         </span>
 
                                         <div className="flex flex-row">
-                                            <Button 
-                                                style={'shoppinglist-' + ingredient.id} 
+                                            <Button
+                                                style={'shoppinglist-' + ingredient.id}
                                                 onClick={async () => {
                                                     await handleAddSingleToShoppingList(ingredient)
                                                     let element = document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild! as HTMLElement
@@ -315,7 +325,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                             />
                                             {settings.data.showPantry &&
                                                 <Button
-                                                    style={'pantry-' + ingredient.id} 
+                                                    style={'pantry-' + ingredient.id}
                                                     onClick={async () => {
                                                         await handleAddSingleToPantry(ingredient)
                                                         let element = document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild! as HTMLElement
