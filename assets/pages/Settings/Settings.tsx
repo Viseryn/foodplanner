@@ -17,7 +17,7 @@ import DayModel from '@/types/DayModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import SettingsModel from '@/types/SettingsModel'
 import UserGroupModel from '@/types/UserGroupModel'
- 
+
 /**
  * A component that renders some user-specific as well as global settings.
  * 
@@ -74,10 +74,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             dangerMode: true,
             icon: 'error',
             title: 'Benutzergruppe wirklich löschen?',
-            buttons: {
-                cancel: { text: 'Abbrechen' },
-                confirm: { text: 'Löschen' },
-            },
+            buttons: ["Abbrechen", "Löschen"],
         }).then(confirm => {
             // Cancel if not confirmed
             if (!confirm) {

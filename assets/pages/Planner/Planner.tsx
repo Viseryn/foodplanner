@@ -55,10 +55,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
             dangerMode: true,
             icon: 'error',
             title: 'Mahlzeit wirklich löschen?',
-            buttons: {
-                cancel: { text: 'Abbrechen' },
-                confirm: { text: 'Löschen' },
-            },
+            buttons: ["Abbrechen", "Löschen"],
         }).then(confirm => {
             if (!confirm) {
                 return

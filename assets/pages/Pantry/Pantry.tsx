@@ -116,10 +116,7 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
             dangerMode: true,
             icon: 'error',
             title: 'Wirklich alle Zutaten löschen?',
-            buttons: {
-                cancel: { text: 'Abbrechen' },
-                confirm: { text: 'Löschen' },
-            },
+            buttons: ["Abbrechen", "Löschen"],
         }).then((confirm) => {
             if (confirm) {
                 axios.delete('/api/storages/pantry/ingredients')
