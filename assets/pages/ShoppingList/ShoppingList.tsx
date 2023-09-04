@@ -136,10 +136,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
             dangerMode: true,
             icon: 'error',
             title: 'Wirklich alle Zutaten löschen?',
-            buttons: {
-                cancel: { text: 'Abbrechen' },
-                confirm: { text: 'Löschen' },
-            },
+            buttons: ["Abbrechen", "Löschen"],
         })
 
         if (swalResponse) {

@@ -171,10 +171,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
             icon: 'error',
             title: 'Rezept endgültig löschen?',
             text: 'Gelöschte Rezepte können nicht wiederhergestellt werden.',
-            buttons: {
-                cancel: { text: 'Abbrechen' },
-                confirm: { text: 'Löschen' },
-            },
+            buttons: ["Abbrechen", "Löschen"],
         }).then(confirm => {
             if (confirm) {
                 axios
