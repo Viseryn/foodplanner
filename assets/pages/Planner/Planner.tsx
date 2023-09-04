@@ -134,6 +134,24 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
 
         updateDays()
     }, [])
+
+    useEffect(() => {
+        if (days.isLoading || days.data.length === 0) {
+            return
+        }
+
+        const isPastDay = (day: DayModel): boolean => {
+            const today: Date = new Date()
+            today.setHours(0, 0, 0, 0)
+            return day.timestamp * 1000 < today.getTime() // day.timestamp is in seconds, getTime() in milliseconds
+        }
+
+        const daysCopy: DayModel[] = [...days.data]
+        while (isPastDay(daysCopy.at(0)!)) {
+            daysCopy.shift()
+        }
+        days.setData(daysCopy)
+    }, [days.isLoading])
     
     // Configure carousel
     const gap: number = 5
