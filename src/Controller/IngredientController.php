@@ -1,9 +1,9 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\IngredientDTO;
 use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
+use App\Service\DTOSerializer;
 use App\Service\RefreshDataTimestampUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,8 +1,8 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\UserDTO;
 use App\Repository\UserRepository;
+use App\Service\DTOSerializer;
 use App\Service\UserControllerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

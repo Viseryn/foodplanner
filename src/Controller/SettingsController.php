@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Component\Response\PrettyJsonResponse;
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\SettingsDTO;
 use App\Entity\Settings;
 use App\Repository\MealCategoryRepository;
 use App\Repository\SettingsRepository;
 use App\Repository\UserGroupRepository;
 use App\Repository\UserRepository;
+use App\Service\DTOSerializer;
 use App\Service\UserControllerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

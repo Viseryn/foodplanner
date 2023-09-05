@@ -1,10 +1,10 @@
-<?php namespace App\Tests\DataTransferObject;
+<?php namespace App\Tests\Service;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\InstructionDTO;
 use App\DataTransferObject\RecipeDTO;
 use App\Entity\Instruction;
 use App\Entity\Recipe;
+use App\Service\DTOSerializer;
 use PHPUnit\Framework\TestCase;
 
 final class DTOSerializerTest extends TestCase
@@ -44,10 +44,6 @@ final class DTOSerializerTest extends TestCase
             ],
             "ingredients" => [],
             "image" => null,
-            "option" => [
-                "id" => null,
-                "label" => "Title",
-            ],
         ];
 
         $this->assertEquals($expectedResult, DTOSerializer::serialize($recipeDTO));

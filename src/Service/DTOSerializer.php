@@ -1,6 +1,7 @@
-<?php namespace App\DataTransferObject;
+<?php namespace App\Service;
 
 use App\Component\Response\PrettyJsonResponse;
+use App\DataTransferObject\DataTransferObject;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Response;
 

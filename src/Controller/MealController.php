@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\MealDTO;
 use App\Entity\Meal;
 use App\Form\MealType;
 use App\Repository\MealRepository;
+use App\Service\DTOSerializer;
 use App\Service\RefreshDataTimestampUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

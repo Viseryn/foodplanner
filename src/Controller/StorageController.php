@@ -1,11 +1,11 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\IngredientDTO;
 use App\DataTransferObject\StorageDTO;
 use App\Entity\Storage;
 use App\Repository\IngredientRepository;
 use App\Repository\StorageRepository;
+use App\Service\DTOSerializer;
 use App\Service\IngredientService;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\StorageControllerService;

@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\Service\DayControllerService;
+use App\Service\DTOSerializer;
 use App\Service\RefreshDataTimestampUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

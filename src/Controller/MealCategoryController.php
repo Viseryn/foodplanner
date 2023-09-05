@@ -1,8 +1,8 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\MealCategoryDTO;
 use App\Repository\MealCategoryRepository;
+use App\Service\DTOSerializer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

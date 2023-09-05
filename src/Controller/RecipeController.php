@@ -1,9 +1,9 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\RecipeDTO;
 use App\Entity\Recipe;
 use App\Repository\RecipeRepository;
+use App\Service\DTOSerializer;
 use App\Service\FileUploader;
 use App\Service\RecipeControllerService;
 use App\Service\RefreshDataTimestampUtil;

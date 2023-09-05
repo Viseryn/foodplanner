@@ -1,9 +1,9 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\UserDTO;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Service\DTOSerializer;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\RegistrationControllerService;
 use Doctrine\ORM\EntityManagerInterface;

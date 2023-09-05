@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\UserGroupDTO;
 use App\Entity\UserGroup;
 use App\Form\UserGroupType;
 use App\Repository\UserGroupRepository;
+use App\Service\DTOSerializer;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\UserGroupControllerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
