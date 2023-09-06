@@ -10,14 +10,14 @@ use App\Entity\EntityInterface;
 interface Mapper
 {
     /**
-     * @param D $dto
-     * @return E
+     * @param D|null $dto
+     * @return E|null
      */
     public function dtoToEntity($dto);
 
     /**
-     * @param E $entity
-     * @return D
+     * @param E|null $entity
+     * @return D|null
      */
     public function entityToDto($entity);
 }
