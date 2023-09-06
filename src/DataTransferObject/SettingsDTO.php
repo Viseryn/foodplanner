@@ -1,31 +1,24 @@
 <?php namespace App\DataTransferObject;
 
-use App\Entity\Settings;
-
+/**
+ * @implements DataTransferObject<Settings>
+ */
 class SettingsDTO implements DataTransferObject
 {
-    private ?int $id;
-    private ?UserDTO $user;
-    private ?bool $showPantry;
-    private ?UserGroupDTO $standardUserGroup;
-    private ?MealCategoryDTO $standardMealCategory;
-
-    public function __construct(Settings $settings)
-    {
-        $this->id = $settings->getId();
-        $this->user = new UserDTO($settings->getUser());
-        $this->showPantry = $settings->isShowPantry();
-        $this->standardUserGroup = $settings->getStandardUserGroup() !== null
-            ? new UserGroupDTO($settings->getStandardUserGroup())
-            : null;
-        $this->standardMealCategory = $settings->getStandardMealCategory() !== null
-            ? new MealCategoryDTO($settings->getStandardMealCategory())
-            : null;
-    }
+    private ?int $id = null;
+    private ?UserDTO $user = null;
+    private ?bool $showPantry = null;
+    private ?UserGroupDTO $standardUserGroup = null;
+    private ?MealCategoryDTO $standardMealCategory = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getUser(): ?UserDTO
@@ -33,9 +26,22 @@ class SettingsDTO implements DataTransferObject
         return $this->user;
     }
 
+    public function setUser(?UserDTO $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+
     public function getShowPantry(): ?bool
     {
         return $this->showPantry;
+    }
+
+    public function setShowPantry(?bool $showPantry): self
+    {
+        $this->showPantry = $showPantry;
+        return $this;
     }
 
     public function getStandardUserGroup(): ?UserGroupDTO
@@ -43,8 +49,20 @@ class SettingsDTO implements DataTransferObject
         return $this->standardUserGroup;
     }
 
+    public function setStandardUserGroup(?UserGroupDTO $standardUserGroup): self
+    {
+        $this->standardUserGroup = $standardUserGroup;
+        return $this;
+    }
+
     public function getStandardMealCategory(): ?MealCategoryDTO
     {
         return $this->standardMealCategory;
+    }
+
+    public function setStandardMealCategory(?MealCategoryDTO $standardMealCategory): self
+    {
+        $this->standardMealCategory = $standardMealCategory;
+        return $this;
     }
 }

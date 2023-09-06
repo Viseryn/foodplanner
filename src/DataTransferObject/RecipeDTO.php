@@ -1,32 +1,30 @@
 <?php namespace App\DataTransferObject;
 
-use App\Entity\Recipe;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 
+/**
+ * @implements DataTransferObject<Recipe>
+ */
 class RecipeDTO implements DataTransferObject
 {
-    private ?int $id;
-    private ?string $title;
-    private ?int $portionSize;
-    /** @var Collection<IngredientDTO> */
-    private Collection $ingredients;
-    /** @var Collection<InstructionDTO> */
-    private Collection $instructions;
-    private ?FileDTO $image;
-
-    public function __construct(Recipe $recipe)
-    {
-        $this->id = $recipe->getId();
-        $this->title = $recipe->getTitle();
-        $this->portionSize = $recipe->getPortionSize();
-        $this->ingredients = $recipe->getIngredients()->map(fn ($ingredient) => new IngredientDTO($ingredient));
-        $this->instructions = $recipe->getInstructions()->map(fn ($instructions) => new InstructionDTO($instructions));
-        $this->image = $recipe->getImage() !== null ? new FileDTO($recipe->getImage()) : null;
-    }
+    private ?int $id = null;
+    private ?string $title = null;
+    private ?int $portionSize = null;
+    /** @var ReadableCollection<IngredientDTO>|null */
+    private ?ReadableCollection $ingredients;
+    /** @var ReadableCollection<InstructionDTO>|null */
+    private ?ReadableCollection $instructions;
+    private ?ImageDTO $image = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getTitle(): ?string 
@@ -34,25 +32,63 @@ class RecipeDTO implements DataTransferObject
         return $this->title;
     }
 
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
+        return $this;
+    }
+
     public function getPortionSize(): ?int
     {
         return $this->portionSize;
     }
 
-    /** @return Collection<IngredientDTO> */
-    public function getIngredients(): Collection
+    public function setPortionSize(?int $portionSize): self
+    {
+        $this->portionSize = $portionSize;
+        return $this;
+    }
+
+    /** @return ReadableCollection<IngredientDTO>|null */
+    public function getIngredients(): ?ReadableCollection
     {
         return $this->ingredients;
     }
 
-    /** @return Collection<InstructionDTO> */
-    public function getInstructions(): Collection
+    /**
+     * @param ReadableCollection<IngredientDTO>|null $ingredients
+     * @return $this
+     */
+    public function setIngredients(?ReadableCollection $ingredients): self
+    {
+        $this->ingredients = $ingredients;
+        return $this;
+    }
+
+    /** @return ReadableCollection<InstructionDTO>|null */
+    public function getInstructions(): ?ReadableCollection
     {
         return $this->instructions;
     }
 
-    public function getImage(): ?FileDTO
+    /**
+     * @param ReadableCollection<InstructionDTO>|null $instructions
+     * @return $this
+     */
+    public function setInstructions(?ReadableCollection $instructions): self
+    {
+        $this->instructions = $instructions;
+        return $this;
+    }
+
+    public function getImage(): ?ImageDTO
     {
         return $this->image;
+    }
+
+    public function setImage(?ImageDTO $image): self
+    {
+        $this->image = $image;
+        return $this;
     }
 }

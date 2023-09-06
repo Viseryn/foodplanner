@@ -1,29 +1,26 @@
 <?php namespace App\DataTransferObject;
 
-use App\Entity\Ingredient;
-
+/**
+ * @implements DataTransferObject<Ingredient>
+ */
 class IngredientDTO implements DataTransferObject
 {
-    private ?int $id;
-    private ?string $name;
-    private ?string $quantityValue;
-    private ?string $quantityUnit;
-    private ?int $position;
-    private ?bool $checked;
-
-    public function __construct(Ingredient $ingredient) 
-    {
-        $this->id = $ingredient->getId();
-        $this->name = $ingredient->getName();
-        $this->quantityValue = $ingredient->getQuantityValue();
-        $this->quantityUnit = $ingredient->getQuantityUnit();
-        $this->position = $ingredient->getPosition();
-        $this->checked = $ingredient->isChecked();
-    }
+    private ?int $id = null;
+    private ?string $name = null;
+    private ?string $quantityValue = null;
+    private ?string $quantityUnit = null;
+    private ?int $position = null;
+    private ?bool $checked = null;
 
     public function getId(): ?int 
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): ?string
@@ -31,9 +28,21 @@ class IngredientDTO implements DataTransferObject
         return $this->name;
     }
 
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
     public function getQuantityValue(): ?string
     {
         return $this->quantityValue;
+    }
+
+    public function setQuantityValue(?string $quantityValue): self
+    {
+        $this->quantityValue = $quantityValue;
+        return $this;
     }
 
     public function getQuantityUnit(): ?string
@@ -41,13 +50,31 @@ class IngredientDTO implements DataTransferObject
         return $this->quantityUnit;
     }
 
+    public function setQuantityUnit(?string $quantityUnit): self
+    {
+        $this->quantityUnit = $quantityUnit;
+        return $this;
+    }
+
     public function getPosition(): ?int
     {
         return $this->position;
     }
 
+    public function setPosition(?int $position): self
+    {
+        $this->position = $position;
+        return $this;
+    }
+
     public function getChecked(): ?bool
     {
         return $this->checked;
+    }
+
+    public function setChecked(?bool $checked): self
+    {
+        $this->checked = $checked;
+        return $this;
     }
 }
