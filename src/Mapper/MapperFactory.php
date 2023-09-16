@@ -1,5 +1,7 @@
 <?php namespace App\Mapper;
 
+use App\Service\ClassnameMapperService;
+
 final class MapperFactory
 {
     public function __construct()
@@ -20,20 +22,13 @@ final class MapperFactory
     {
         $instance = new self();
         $getterMethods = get_class_methods($instance);
-        $mapperClass = self::mapperClassNameFrom($entityClass);
+        $mapperClassname = ClassnameMapperService::mapperForEntity($entityClass);
 
-        if (in_array('get' . $mapperClass, $getterMethods)) {
-            return call_user_func('self::get' . $mapperClass);
+        if (in_array('get' . $mapperClassname, $getterMethods)) {
+            return call_user_func('self::get' . $mapperClassname);
         } else {
-            return new ('\App\Mapper\\' . $mapperClass);
+            return new (ClassnameMapperService::mapperForEntity($entityClass, true));
         }
-    }
-
-    private static function mapperClassNameFrom(string $entityClass): string
-    {
-        $explodeEntityClass = explode('\\', $entityClass);
-        $pureEntityClass = end($explodeEntityClass);
-        return $pureEntityClass . 'Mapper';
     }
 
     private static function getRecipeMapper(): RecipeMapper
