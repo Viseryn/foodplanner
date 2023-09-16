@@ -8,7 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 final class DtoResponseService
 {
     /**
-     * Returns a PrettyJsonResponse of the serialized DTO data.
+     * Given a DataTransferObject or a Collection<DataTransferObject>, serializes the argument and returns a
+     * PrettyJsonResponse with the content.
      *
      * @param DataTransferObject|Collection $dto
      * @return Response
