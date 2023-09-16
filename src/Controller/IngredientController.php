@@ -1,22 +1,21 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\IngredientDTO;
 use App\Entity\Ingredient;
 use App\Repository\IngredientRepository;
-use App\Service\DTOSerializer;
+use App\Service\DtoResponseService;
 use App\Service\RefreshDataTimestampUtil;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/ingredients')]
-final class IngredientController extends AbstractController
+final class IngredientController extends AbstractControllerWithMapper
 {
     public function __construct(
-        private IngredientRepository $ingredientRepository,
-        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        private readonly IngredientRepository $ingredientRepository,
+        private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
     ) {
+        parent::__construct(Ingredient::class);
     }
 
     #[Route('/{id}', name: 'api_ingredients_patch', methods: ['PATCH'])]
@@ -48,7 +47,7 @@ final class IngredientController extends AbstractController
 
         $this->ingredientRepository->save($ingredient, true);
         $this->refreshDataTimestampUtil->updateTimestamp();
-        return DTOSerializer::getResponse(new IngredientDTO($ingredient));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($ingredient));
     }
 
     #[Route('/{id}', name: 'api_ingredients_delete', methods: ['DELETE'])]
@@ -56,6 +55,6 @@ final class IngredientController extends AbstractController
     {
         $this->ingredientRepository->remove($ingredient, true);
         $this->refreshDataTimestampUtil->updateTimestamp();
-        return DTOSerializer::getResponse(new IngredientDTO($ingredient));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($ingredient));
     }
 }

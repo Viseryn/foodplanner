@@ -2,25 +2,32 @@
 
 use App\DataTransferObject\DayDTO;
 use App\Entity\Day;
+use App\Mapper\Mapper;
+use App\Mapper\MapperFactory;
 use App\Repository\DayRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 
 final class DayControllerService
 {
+    /** @var Mapper<Day> */
+    private Mapper $mapper;
+    /** @var int[] */
+    private array $newDaysTimestamps = [];
     private int $today;
 
     public function __construct(
-        private DayRepository $dayRepository,
-        /** @var int[] */ private array $newDaysTimestamps = [],
+        private readonly DayRepository $dayRepository,
+        private readonly MapperFactory $mapperFactory,
     ) {
         $this->today = (int) strtotime('today');
+        $this->mapper = $this->mapperFactory::getMapperFor(Day::class);
     }
 
     /** @return ArrayCollection<DayDTO> */
     public function getAllDays(): ArrayCollection
     {
         return (new ArrayCollection($this->dayRepository->findBy([], ['timestamp' => 'ASC'])))
-            ->map(fn ($day) => new DayDTO($day));
+            ->map(fn ($day) => $this->mapper->entityToDto($day));
     }
 
     /**
@@ -67,7 +74,7 @@ final class DayControllerService
         if (count($this->newDaysTimestamps) < 10) {
             while (count($this->newDaysTimestamps) < 10) {
                 $day = (new Day)->setTimestamp(
-                    strtotime('+1 day', end($this->newDaysTimestamps))
+                    strtotime('+1 day', end($this->newDaysTimestamps)),
                 );
                 $this->dayRepository->add($day, true);
                 $this->newDaysTimestamps[] = $day->getTimestamp();

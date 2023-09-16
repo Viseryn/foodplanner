@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Service\DayControllerService;
-use App\Service\DTOSerializer;
+use App\Service\DtoResponseService;
 use App\Service\RefreshDataTimestampUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,15 +16,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class DayController extends AbstractController
 {
     public function __construct(
-        private DayControllerService $dayControllerService,
-        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
-    ) {}
+        private readonly DayControllerService $dayControllerService,
+        private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ) {
+    }
 
     #[Route('', name: 'api_days_get', methods: ['GET'])]
     public function get(): Response
     {
         $dayDTOs = $this->dayControllerService->getAllDays();
-        return DTOSerializer::getResponse($dayDTOs);
+        return DtoResponseService::getResponse($dayDTOs);
     }
 
     /**

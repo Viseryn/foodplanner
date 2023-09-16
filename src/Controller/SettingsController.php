@@ -3,15 +3,13 @@
 namespace App\Controller;
 
 use App\Component\Response\PrettyJsonResponse;
-use App\DataTransferObject\SettingsDTO;
 use App\Entity\Settings;
 use App\Repository\MealCategoryRepository;
 use App\Repository\SettingsRepository;
 use App\Repository\UserGroupRepository;
 use App\Repository\UserRepository;
-use App\Service\DTOSerializer;
+use App\Service\DtoResponseService;
 use App\Service\UserControllerService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -21,15 +19,17 @@ use Symfony\Component\Routing\Annotation\Route;
  * Settings API
  */
 #[Route('/api/settings')]
-class SettingsController extends AbstractController
+class SettingsController extends AbstractControllerWithMapper
 {
     public function __construct(
-        private MealCategoryRepository $mealCategoryRepository,
-        private SettingsRepository $settingsRepository,
-        private UserControllerService $userControllerService,
-        private UserGroupRepository $userGroupRepository,
-        private UserRepository $userRepository,
-    ) {}
+        private readonly MealCategoryRepository $mealCategoryRepository,
+        private readonly SettingsRepository $settingsRepository,
+        private readonly UserControllerService $userControllerService,
+        private readonly UserGroupRepository $userGroupRepository,
+        private readonly UserRepository $userRepository,
+    ) {
+        parent::__construct(Settings::class);
+    }
 
     #[Route('', name: 'api_settings_get', methods: ['GET'])]
     public function get(#[MapQueryParameter] ?int $userid): Response
@@ -40,7 +40,7 @@ class SettingsController extends AbstractController
         }
 
         $settings = $this->settingsRepository->findOneBy(['user' => $user->getId()]);
-        return DTOSerializer::getResponse(new SettingsDTO($settings));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($settings));
     }
 
     #[Route('/{id}', name: 'api_settings_patch', methods: ['PATCH'])]
@@ -63,6 +63,6 @@ class SettingsController extends AbstractController
         }
 
         $this->settingsRepository->save($settings, true);
-        return DTOSerializer::getResponse(new SettingsDTO($settings));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($settings));
     }
 }
