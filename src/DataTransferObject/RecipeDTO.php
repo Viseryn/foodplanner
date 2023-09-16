@@ -11,9 +11,9 @@ class RecipeDTO implements DataTransferObject
     private ?string $title = null;
     private ?int $portionSize = null;
     /** @var ReadableCollection<IngredientDTO>|null */
-    private ?ReadableCollection $ingredients;
+    private ?ReadableCollection $ingredients = null;
     /** @var ReadableCollection<InstructionDTO>|null */
-    private ?ReadableCollection $instructions;
+    private ?ReadableCollection $instructions = null;
     private ?ImageDTO $image = null;
 
     public function getId(): ?int
