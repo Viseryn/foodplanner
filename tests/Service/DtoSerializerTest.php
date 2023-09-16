@@ -1,25 +1,36 @@
 <?php namespace App\Tests\Service;
 
-use App\DataTransferObject\InstructionDTO;
-use App\DataTransferObject\RecipeDTO;
 use App\Entity\Instruction;
 use App\Entity\Recipe;
-use App\Service\DTOSerializer;
+use App\Mapper\Mapper;
+use App\Mapper\MapperFactory;
+use App\Service\DtoSerializer;
 use PHPUnit\Framework\TestCase;
 
-final class DTOSerializerTest extends TestCase
+final class DtoSerializerTest extends TestCase
 {
+    /** @var Mapper<Instruction> */
+    private Mapper $instructionMapper;
+    /** @var Mapper<Recipe> */
+    private Mapper $recipeMapper;
+
+    protected function setUp(): void
+    {
+        $this->instructionMapper = MapperFactory::getMapperFor(Instruction::class);
+        $this->recipeMapper = MapperFactory::getMapperFor(Recipe::class);
+    }
+
     public function test_serialize_InstructionDTO()
     {
         $instruction = (new Instruction)->setInstruction("Test");
-        $instructionDTO = new InstructionDTO($instruction);
+        $instructionDTO = $this->instructionMapper->entityToDto($instruction);
 
         $expectedResult = [
             "id" => null,
             "instruction" => "Test",
         ];
 
-        $this->assertEquals($expectedResult, DTOSerializer::serialize($instructionDTO));
+        $this->assertEquals($expectedResult, DtoSerializer::serialize($instructionDTO));
     }
 
     public function test_serialize_RecipeDTO()
@@ -30,7 +41,7 @@ final class DTOSerializerTest extends TestCase
             ->setTitle("Title")
             ->setPortionSize(4)
             ->addInstruction($instruction);
-        $recipeDTO = new RecipeDTO($recipe);
+        $recipeDTO = $this->recipeMapper->entityToDto($recipe);
 
         $expectedResult = [
             "id" => null,
@@ -46,6 +57,6 @@ final class DTOSerializerTest extends TestCase
             "image" => null,
         ];
 
-        $this->assertEquals($expectedResult, DTOSerializer::serialize($recipeDTO));
+        $this->assertEquals($expectedResult, DtoSerializer::serialize($recipeDTO));
     }
 }
