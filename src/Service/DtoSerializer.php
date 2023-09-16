@@ -1,24 +1,10 @@
 <?php namespace App\Service;
 
-use App\Component\Response\PrettyJsonResponse;
 use App\DataTransferObject\DataTransferObject;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\HttpFoundation\Response;
 
 final class DtoSerializer
 {
-    /**
-     * Returns a PrettyJsonResponse of the serialized DTO data.
-     * @param DataTransferObject|Collection<DataTransferObject> $dto
-     * @return Response
-     *
-     * @deprecated Use DtoResponseService::getResponse instead.
-     */
-    public static function getResponse(DataTransferObject|Collection $dto): Response
-    {
-        return new PrettyJsonResponse(self::serialize($dto));
-    }
-
     /**
      * Serializes a DataTransferObject or a Collection<DataTransferObject> into an associative array.
      * For example, if the DTO has fields "foo" and "bar" with corresponding getters, then the returned array
