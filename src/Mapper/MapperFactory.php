@@ -1,7 +1,11 @@
 <?php namespace App\Mapper;
 
+use App\Entity\EntityInterface;
 use App\Service\ClassnameMapperService;
 
+/**
+ * @template E of EntityInterface
+ */
 final class MapperFactory
 {
     public function __construct()
@@ -15,8 +19,8 @@ final class MapperFactory
      *
      * ``public static function <E> getMapperFor(Class<E> entityClass): Mapper<E>``
      *
-     * @param string $entityClass
-     * @return Mapper
+     * @param class-string<E> $entityClass
+     * @return Mapper<E>
      */
     public static function getMapperFor(string $entityClass): Mapper
     {
