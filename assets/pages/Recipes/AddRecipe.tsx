@@ -65,7 +65,6 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         const value: string = event.target.value
         setFilename((value != '') ? value : DATEI_AUSWAEHLEN)
         setFile(event.target.files?.[0] || null)
-        handleInputChange(event)
     }
 
     /**
