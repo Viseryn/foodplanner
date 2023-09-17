@@ -7,7 +7,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class UserControllerService
 {
     public function __construct(
-        private Security $security,
+        private readonly Security $security,
         private ?User $user = null,
     ) {
         $this->user = $this->castToUserInstance($this->security->getUser());

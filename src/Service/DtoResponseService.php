@@ -11,7 +11,7 @@ final class DtoResponseService
      * Given a DataTransferObject or a Collection<DataTransferObject>, serializes the argument and returns a
      * PrettyJsonResponse with the content.
      *
-     * @param DataTransferObject|Collection $dto
+     * @param DataTransferObject|Collection<DataTransferObject> $dto
      * @return Response
      */
     public static function getResponse(DataTransferObject|Collection $dto): Response {

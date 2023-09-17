@@ -4,7 +4,7 @@ use App\Entity\Ingredient;
 use App\Entity\Storage;
 use App\Repository\IngredientRepository;
 use App\Service\DtoResponseService;
-use App\Service\IngredientService;
+use App\Service\JsonDeserializer;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\StorageControllerService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,7 +18,6 @@ final class StorageController extends AbstractControllerWithMapper
 {
     public function __construct(
         private readonly IngredientRepository $ingredientRepository,
-        private readonly IngredientService $ingredientService,
         private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
         private readonly StorageControllerService $storageControllerService,
     ) {
@@ -38,9 +37,14 @@ final class StorageController extends AbstractControllerWithMapper
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_post', methods: ['POST'])]
     public function post(Request $request, Storage $storage): Response
     {
+        // @todo Create a method in JsonDeserializer to deal with arrays of DTOs.
+        $ingredients = new ArrayCollection;
         $data = json_decode($request->getContent(), false);
-
-        $ingredients = $this->ingredientService->mapIngredientModelsToEntities($data);
+        foreach ($data as $ingredientModel) {
+            $ingredients->add(
+                JsonDeserializer::jsonToEntity(json_encode($ingredientModel), Ingredient::class),
+            );
+        }
 
         foreach ($ingredients as $ingredient) {
             $ingredient->setStorage($storage);
@@ -53,10 +57,13 @@ final class StorageController extends AbstractControllerWithMapper
         return DtoResponseService::getResponse($ingredientDTOs);
     }
 
+    /**
+     * @todo Refactor
+     */
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_delete', methods: ['DELETE'])]
     public function deleteAllIngredients(
         Storage $storage,
-        #[MapQueryParameter] ?bool $checked = null
+        #[MapQueryParameter] ?bool $checked = null,
     ): Response {
         if ($storage->getName() === 'pantry') {
             if ($checked) {

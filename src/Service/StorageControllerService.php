@@ -6,7 +6,7 @@ use App\Repository\IngredientRepository;
 final class StorageControllerService
 {
     public function __construct(
-        private IngredientRepository $ingredientRepository,
+        private readonly IngredientRepository $ingredientRepository,
     ) {}
 
     public function deleteAllIngredients(Storage $storage): void
