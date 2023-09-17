@@ -17,6 +17,7 @@ import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
+import useTimeout from '@/hooks/useTimeout'
 
 /**
  * Recipe
@@ -66,10 +67,23 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
     // Whether the "Add to Pantry" button should display "Done!" on click.
     const [showPantryDone, setShowPantryDone] = useState<boolean>(false)
 
+    // Timeouts for Done-info
+    const { clearTimeout: clearShoppingListTimeout, startTimeout: startShoppingListTimeout }
+        = useTimeout(() => {
+            setShowSabDone(false)
+            setCountSabClicks(0)
+        }, 5000)
+    const { clearTimeout: clearPantryTimeout, startTimeout: startPantryTimeout }
+        = useTimeout(() => {
+            setShowPantryDone(false)
+        }, 5000)
+
     /**
      * Handles adding the whole recipe to the ShoppingList. Is invoked by the SAB.
      */
     const handleAddShoppingList = async (argRecipe: RecipeModel): Promise<void> => {
+        clearShoppingListTimeout()
+
         const lastPosition = getLastIngredientPosition(shoppingList.data)
         const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
             ...ingredient,
@@ -86,6 +100,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
         // Update parameters for SAB
         setShowSabDone(true)
         setCountSabClicks(count => count + 1)
+        startShoppingListTimeout()
     }
 
     /**
@@ -108,6 +123,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
      * Handles adding the whole recipe to the Pantry. Is invoked by a button under the ingredient list.
      */
     const handleAddPantry = async (argRecipe: RecipeModel): Promise<void> => {
+        clearPantryTimeout()
+
         const lastPosition = getLastIngredientPosition(pantry.data)
         const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
             ...ingredient,
@@ -122,6 +139,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
 
         // Update parameter for button
         setShowPantryDone(true)
+        startPantryTimeout()
     }
 
     /**
@@ -315,8 +333,11 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                             <Button
                                                 style={'shoppinglist-' + ingredient.id}
                                                 onClick={async () => {
-                                                    await handleAddSingleToShoppingList(ingredient)
                                                     let element = document.getElementsByClassName('shoppinglist-' + ingredient.id)[0].firstChild! as HTMLElement
+                                                    setTimeout(() => {
+                                                        element.innerHTML = "add_shopping_cart"
+                                                    }, 5000)
+                                                    await handleAddSingleToShoppingList(ingredient)
                                                     element.innerHTML = "done"
                                                 }}
                                                 icon="add_shopping_cart"
@@ -327,8 +348,11 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                                                 <Button
                                                     style={'pantry-' + ingredient.id}
                                                     onClick={async () => {
-                                                        await handleAddSingleToPantry(ingredient)
                                                         let element = document.getElementsByClassName('pantry-' + ingredient.id)[0].firstChild! as HTMLElement
+                                                        setTimeout(() => {
+                                                            element.innerHTML = "add_home"
+                                                        }, 5000)
+                                                        await handleAddSingleToPantry(ingredient)
                                                         element.innerHTML = "done"
                                                     }}
                                                     icon="add_home"
