@@ -1,9 +1,9 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
 use App\DataTransferObject\UserDTO;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Service\DtoResponseService;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\RegistrationControllerService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,10 +19,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
-        private RegistrationControllerService $registrationControllerService,
-        private UserPasswordHasherInterface $userPasswordHasher,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        private readonly RegistrationControllerService $registrationControllerService,
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
     ) {}
 
     /**
@@ -50,6 +50,6 @@ class RegistrationController extends AbstractController
             $this->refreshDataTimestampUtil->updateTimestamp();
         }
         
-        return DTOSerializer::getResponse(new UserDTO($user));
+        return DtoResponseService::getResponse(new UserDTO($user));
     }
 }

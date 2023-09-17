@@ -1,23 +1,23 @@
 <?php namespace App\DataTransferObject;
 
-use App\Entity\User;
-
+/**
+ * @implements DataTransferObject<User>
+ */
 class UserDTO implements DataTransferObject
 {
-    private ?int $id;
-    private ?string $username;
-    private ?array $roles;
-
-    public function __construct(User $user)
-    {
-        $this->id = $user->getId();
-        $this->username = $user->getUsername();
-        $this->roles = $user->getRoles();
-    }
+    private ?int $id = null;
+    private ?string $username = null;
+    private ?array $roles = null;
 
     public function getId(): ?int 
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getUsername(): ?string 
@@ -25,8 +25,20 @@ class UserDTO implements DataTransferObject
         return $this->username;
     }
 
+    public function setUsername(?string $username): self
+    {
+        $this->username = $username;
+        return $this;
+    }
+
     public function getRoles(): ?array 
     {
         return $this->roles;
+    }
+
+    public function setRoles(?array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
     }
 }
