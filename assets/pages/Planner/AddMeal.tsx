@@ -255,14 +255,14 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                                     />
                                                     <label
                                                         htmlFor={`recipe_${recipe.id}`}
-                                                        className="flex flex-row items-center cursor-pointer rounded-md h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                                        className="flex flex-row items-center cursor-pointer rounded-xl h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
                                                         onClick={() => {
                                                             setSelectedRecipe(recipe.id)
                                                             setShowWarning(false)
                                                         }}
                                                     >
                                                         <img
-                                                            className="rounded-md h-12 w-12 object-cover transition duration-300"
+                                                            className="rounded-xl h-12 w-12 object-cover transition duration-300"
                                                             src={recipe.image ? (recipe.image.directory + recipe.image.filename) : '/img/default.jpg'}
                                                             alt={recipe.title}
                                                         />
