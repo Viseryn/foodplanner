@@ -13,7 +13,11 @@ function getIngredientModel(ingredient: string, position?: number): IngredientMo
 }
 
 function getQuantityValueAndRest(ingredient: string): [string, string] {
-    const matches = ingredient.match(/^([\d\.\/\s]*)(\D+)(.*)/)
+    if (!isNaN(Number(ingredient))) {
+        return ['', ingredient]
+    }
+
+    const matches = ingredient.match(/^([\d\.\/]*\s*)(\D+)(.*)/)
     return [
         (matches?.[1] ?? '').trim(), // quantityValue
         (matches?.[2] ?? '') + (matches?.[3] ?? '').trim() // quantityUnit and name
