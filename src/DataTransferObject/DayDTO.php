@@ -1,30 +1,28 @@
 <?php namespace App\DataTransferObject;
 
-use App\Entity\Day;
-use DateTime;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 
+/**
+ * @implements DataTransferObject<Day>
+ */
 class DayDTO implements DataTransferObject
 {
-    private ?int $id;
-    private ?int $timestamp;
-    private ?string $weekday;
-    private ?string $date;
-    /** @var Collection<MealDTO> */
-    private Collection $meals;
-
-    public function __construct(Day $day)
-    {
-        $this->id = $day->getId();
-        $this->timestamp = $day->getTimestamp();
-        $this->weekday = $this->calculateWeekday();
-        $this->date = date('d.m.Y', $this->getTimestamp());
-        $this->meals = $day->getMeals()->map(fn ($meal) => new MealDTO($meal));
-    }
+    private ?int $id = null;
+    private ?int $timestamp = null;
+    private ?string $weekday = null;
+    private ?string $date = null;
+    /** @var ReadableCollection<MealDTO>|null */
+    private ?ReadableCollection $meals = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getTimestamp(): ?int
@@ -32,23 +30,10 @@ class DayDTO implements DataTransferObject
         return $this->timestamp;
     }
 
-    private function calculateWeekday(): ?string
+    public function setTimestamp(?int $timestamp): self
     {
-        $weekdays = [
-            'Monday' => 'Montag',
-            'Tuesday' => 'Dienstag',
-            'Wednesday' => 'Mittwoch',
-            'Thursday' => 'Donnerstag',
-            'Friday' => 'Freitag',
-            'Saturday' => 'Samstag',
-            'Sunday' => 'Sonntag'
-        ];
-
-        $dt = new DateTime();
-        $dt->setTimestamp($this->getTimestamp());
-        $wd = $dt->format('l');
-
-        return $weekdays[$wd];
+        $this->timestamp = $timestamp;
+        return $this;
     }
 
     public function getWeekday(): ?string
@@ -56,14 +41,36 @@ class DayDTO implements DataTransferObject
         return $this->weekday;
     }
 
+    public function setWeekday(?string $weekday): self
+    {
+        $this->weekday = $weekday;
+        return $this;
+    }
+
     public function getDate(): ?string
     {
         return $this->date;
     }
 
-    /** @return Collection<MealDTO> */
-    public function getMeals(): Collection
+    public function setDate(?string $date): self
+    {
+        $this->date = $date;
+        return $this;
+    }
+
+    /** @return ReadableCollection<MealDTO>|null */
+    public function getMeals(): ?ReadableCollection
     {
         return $this->meals;
+    }
+
+    /**
+     * @param ReadableCollection<MealDTO>|null $meals
+     * @return $this
+     */
+    public function setMeals(?ReadableCollection $meals): self
+    {
+        $this->meals = $meals;
+        return $this;
     }
 }

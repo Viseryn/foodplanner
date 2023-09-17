@@ -2,18 +2,23 @@
 
 use App\DataTransferObject\RecipeDTO;
 use App\Entity\Recipe;
+use App\Mapper\Mapper;
+use App\Mapper\MapperFactory;
 use App\Repository\MealRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class RecipeControllerService
 {
+    private Mapper $mapper;
+
     public function __construct(
-        private IngredientService $ingredientService,
-        private InstructionService $instructionService,
-        private MealRepository $mealRepository,
-        private RecipeRepository $recipeRepository,
-    ) {}
+        private readonly MealRepository $mealRepository,
+        private readonly RecipeRepository $recipeRepository,
+        private readonly MapperFactory $mapperFactory,
+    ) {
+        $this->mapper = $this->mapperFactory::getMapperFor(Recipe::class);
+    }
 
     /**
      * @return ArrayCollection<RecipeDTO>
@@ -21,8 +26,8 @@ class RecipeControllerService
     public function getAllRecipes(): ArrayCollection
     {
         return (new ArrayCollection(
-            $this->recipeRepository->findBy([], ['title' => 'ASC'])
-        ))->map(fn ($recipe) => new RecipeDTO($recipe));
+            $this->recipeRepository->findBy([], ['title' => 'ASC']),
+        ))->map(fn ($recipe) => $this->mapper->entityToDto($recipe));
     }
 
     public function removeRecipe(Recipe $recipe): void
@@ -33,24 +38,5 @@ class RecipeControllerService
         }
 
         $this->recipeRepository->remove($recipe, true);
-    }
-
-    public function mapRecipeModelToEntity(object $recipeModel): Recipe
-    {
-        $recipe = (new Recipe)->setTitle($recipeModel->title)
-                              ->setPortionSize($recipeModel->portionSize);
-
-        $ingredients = $this->ingredientService->mapIngredientModelsToEntities($recipeModel->ingredients);
-        $instructions = $this->instructionService->mapInstructionModelsToEntities($recipeModel->instructions);
-
-        foreach ($ingredients as $ingredient) {
-            $recipe->addIngredient($ingredient);
-        }
-
-        foreach ($instructions as $instruction) {
-            $recipe->addInstruction($instruction);
-        }
-
-        return $recipe;
     }
 }
