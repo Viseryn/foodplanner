@@ -11,6 +11,7 @@ class IngredientDTO implements DataTransferObject
     private ?string $quantityUnit = null;
     private ?int $position = null;
     private ?bool $checked = null;
+    private ?bool $editable = null;
 
     public function getId(): ?int 
     {
@@ -75,6 +76,17 @@ class IngredientDTO implements DataTransferObject
     public function setChecked(?bool $checked): self
     {
         $this->checked = $checked;
+        return $this;
+    }
+
+    public function getEditable(): ?bool
+    {
+        return $this->editable;
+    }
+
+    public function setEditable(?bool $editable): self
+    {
+        $this->editable = $editable;
         return $this;
     }
 }
