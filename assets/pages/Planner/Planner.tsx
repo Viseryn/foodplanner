@@ -19,6 +19,7 @@ import DayCardMobile from './components/DayCardMobile'
 import DaySkeletonDesktop from './components/DaySkeletonDesktop'
 import DaySkeletonMobile from './components/DaySkeletonMobile'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
+import useTimeout from '@/hooks/useTimeout'
 
 /**
  * A component that renders the Weekly Planner. Shows a list of ten Day entities which each have a 
@@ -40,6 +41,12 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
 
     // Whether the SidebarActionButton should display "Done!" on click.
     const [showSabDone, setShowSabDone] = useState<boolean>(false)
+
+    // Timeout for Done-info
+    const { clearTimeout: clearDoneTimeout, startTimeout: startDoneTimeout } = useTimeout(() => {
+        setShowSabDone(false)
+        setCountSabClicks(0)
+    }, 5000)
 
     // Current mediaQuery selector
     const medium = useMediaQuery()
@@ -75,6 +82,8 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
             return
         }
 
+        clearDoneTimeout()
+
         const lastPosition = getLastIngredientPosition(shoppingList.data)
         const ingredientsToAdd: IngredientModel[] = days.data?.flatMap(day =>
             day.meals.flatMap(meal => meal.recipe.ingredients)
@@ -93,6 +102,7 @@ export default function Planner({ days, recipes, shoppingList, setSidebar, setTo
         // Trigger update for the SAB
         setShowSabDone(true)
         setCountSabClicks(count => count + 1)
+        startDoneTimeout()
     }
 
     // Update sidebar action button when shopping list changes or when pressed.
