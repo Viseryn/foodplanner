@@ -37,14 +37,7 @@ final class StorageController extends AbstractControllerWithMapper
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_post', methods: ['POST'])]
     public function post(Request $request, Storage $storage): Response
     {
-        // @todo Create a method in JsonDeserializer to deal with arrays of DTOs.
-        $ingredients = new ArrayCollection;
-        $data = json_decode($request->getContent(), false);
-        foreach ($data as $ingredientModel) {
-            $ingredients->add(
-                JsonDeserializer::jsonToEntity(json_encode($ingredientModel), Ingredient::class),
-            );
-        }
+        $ingredients = JsonDeserializer::jsonArrayToEntities($request->getContent(), Ingredient::class);
 
         foreach ($ingredients as $ingredient) {
             $ingredient->setStorage($storage);

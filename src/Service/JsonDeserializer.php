@@ -9,7 +9,32 @@ use InvalidArgumentException;
 final class JsonDeserializer
 {
     /**
-     * Decodes a given a JSON string representing a DTO, converts it to a `DataTransferObject<E>` and then
+     * Decodes a given JSON string representing a list of DTOs, converts it to `DataTransferObject<E>` and then
+     * returns an ArrayCollection of entities by using the appropriate `Mapper<E>` class.
+     *
+     * @template E of EntityInterface
+     * @param string $json
+     * @param class-string<E> $entityClass
+     * @return ArrayCollection<E>
+     */
+    public static function jsonArrayToEntities(string $json, string $entityClass)
+    {
+        $entities = new ArrayCollection;
+        $data = json_decode($json);
+
+        if (array_is_list($data)) {
+            foreach ($data as $entityModel) {
+                $entities->add(
+                    self::jsonToEntity(json_encode($entityModel), $entityClass),
+                );
+            }
+        }
+
+        return $entities;
+    }
+
+    /**
+     * Decodes a given JSON string representing a DTO, converts it to a `DataTransferObject<E>` and then
      * returns an entity by using the appropriate `Mapper<E>` class.
      *
      * @template E of EntityInterface
