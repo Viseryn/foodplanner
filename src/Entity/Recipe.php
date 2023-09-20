@@ -27,8 +27,8 @@ class Recipe implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Instruction::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $instructions;
 
-    #[ORM\ManyToOne]
-    private ?File $image = null;
+    #[ORM\ManyToOne(targetEntity: Image::class, cascade: ['persist'])]
+    private ?Image $image = null;
 
     public function __construct()
     {
@@ -125,12 +125,12 @@ class Recipe implements EntityInterface
         return $this;
     }
 
-    public function getImage(): ?File
+    public function getImage(): ?Image
     {
         return $this->image;
     }
 
-    public function setImage(?File $image): self
+    public function setImage(?Image $image): self
     {
         $this->image = $image;
 

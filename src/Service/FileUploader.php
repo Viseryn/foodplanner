@@ -1,21 +1,21 @@
 <?php namespace App\Service;
 
-use App\Entity\File;
-use App\Repository\FileRepository;
+use App\Entity\Image;
+use App\Repository\ImageRepository;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class FileUploader 
 {
-    private FileRepository $fileRepository;
+    private ImageRepository $fileRepository;
     private SluggerInterface $slugger;
     private string $targetDirectory;
 
     public function __construct(
-        FileRepository $fileRepository,
-        SluggerInterface $slugger, 
-        string $targetDirectory, 
+        ImageRepository $fileRepository,
+        SluggerInterface $slugger,
+        string $targetDirectory,
     ) {
         $this->fileRepository = $fileRepository;
         $this->slugger = $slugger;
@@ -37,10 +37,10 @@ class FileUploader
      * @param UploadedFile $file File data, e.g. input delivered through a form.
      * @param string|null $directory Addition to the configured $targetDirectory, e.g. /img/.
      * @param boolean $public Whether the file should be uploaded to a public directory.
+     * @return Image The File objects corresponding to the uploaded file.
      * @throws FileException If file could not be uploaded to the desired directory.
-     * @return File The File objects corresponding to the uploaded file.
      */
-    public function upload(UploadedFile $file, ?string $directory, bool $public = true): File
+    public function upload(UploadedFile $file, ?string $directory, bool $public = true): Image
     {
         // Create a safe filename from the original filename
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -61,7 +61,7 @@ class FileUploader
             $file->move($uploadDir, $filename);
 
             // Create File object
-            $fileObject = new File();
+            $fileObject = new Image();
             $fileObject
                 ->setFilename($filename)
                 ->setDirectory($objectDir)
@@ -87,10 +87,10 @@ class FileUploader
      * @param string $filename The filename.
      * @param string|null $directory Addition to the configured $targetDirectory, e.g. /img/.
      * @param boolean $public Whether the file should be uploaded to a public directory.
+     * @return Image The File objects corresponding to the uploaded file.
      * @throws FileException If file could not be uploaded to the desired directory.
-     * @return File The File objects corresponding to the uploaded file.
      */
-    public function uploadBase64(string $file, string $filename, ?string $directory, bool $public = true): File
+    public function uploadBase64(string $file, string $filename, ?string $directory, bool $public = true): Image
     {
         $fileContent = base64_decode($file);
         $safeFilename = $this->slugger->slug($filename);
@@ -114,7 +114,7 @@ class FileUploader
             file_put_contents($fullPath, $fileContent);
 
             // Create File object
-            $fileObject = new File();
+            $fileObject = new Image();
             $fileObject
                 ->setFilename($finalFilename)
                 ->setDirectory($objectDir)
@@ -135,12 +135,12 @@ class FileUploader
     /**
      * Returns the extension of a File object or a string that is a filename (with or without directory).
      *
-     * @param File|string $file A File object or a filename.
+     * @param Image|string $file A File object or a filename.
      * @return string|null The extension of the file.
      */
-    public function getExtension(File|string $file): ?string 
+    public function getExtension(Image|string $file): ?string
     {
-        if (is_a($file, File::class)) {
+        if (is_a($file, Image::class)) {
             $filename = $file->getFilename();
         } else {
             $filename = $file;
@@ -152,10 +152,10 @@ class FileUploader
     /**
      * Checks whether a File object or a string that contains a filename is an image file.
      *
-     * @param File|string $file A File object or a filename.
+     * @param Image|string $file A File object or a filename.
      * @return boolean Returns true if $file is an image and false otherwise.
      */
-    public function isImage(File|string $file): bool
+    public function isImage(Image|string $file): bool
     {
         $allowedImageExtensions = ['gif', 'png', 'jpeg', 'jpg', 'webp'];
 
@@ -168,14 +168,14 @@ class FileUploader
     /**
      * Checks whether a File object, or a string, corresponds to an actual file on the server.
      *
-     * @param File|string $file A File object, e.g. from the database, or a filename (including the path).
+     * @param Image|string $file A File object, e.g. from the database, or a filename (including the path).
      * @return boolean Returns true if a file corresponding to the argument exists.
      * 
      * @throws Exception
      */
-    public function exists(File|string $file): bool 
+    public function exists(Image|string $file): bool
     {
-        if (is_a($file, File::class)) {
+        if (is_a($file, Image::class)) {
             $path = $this->getPath($file, ['showRootDir' => true]);
             return is_file($path);
         }
@@ -189,10 +189,10 @@ class FileUploader
      * Removes a file corresponding to a File object or a string containing a path from the server. 
      * Also removes a corresponding database entry.
      *
-     * @param File|string $file A File object, e.g. from the database, or a filename (including the path).
+     * @param Image|string $file A File object, e.g. from the database, or a filename (including the path).
      * @return boolean Returns true if file was removed.
      */
-    public function remove(File|string $file): bool
+    public function remove(Image|string $file): bool
     {
         // Terminate if file does not exist
         if (!$this->exists($file)) {
@@ -205,7 +205,7 @@ class FileUploader
             : $this->getPath($file, ['showRootDir' => true]);
         ;
         
-        if (!is_a($file, File::class)) {
+        if (!is_a($file, Image::class)) {
             // Separate filename
             $filename = end(explode('/', $path));
 
@@ -234,7 +234,7 @@ class FileUploader
      * @param array<string, bool>|null $config An array with the possible keys "showRootDir", "showFilename", which can be set to a boolean value. By default, showRootDir is false and showFilename is true.
      * @return string The path of the File object, dependent of the configuration. Always begins with a '/'.
      */
-    private function getPath(File $file, ?array $config = []): string 
+    private function getPath(Image $file, ?array $config = []): string
     {
         // Configuration of return value
         $showRootDir = (bool) ($config['showRootDir'] ?? false);
