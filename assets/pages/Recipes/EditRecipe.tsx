@@ -22,8 +22,8 @@ import RecipeForm from '@/types/RecipeForm'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 import getIngredientsAsString from '@/pages/Recipes/util/getIngredientsAsString'
 import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsString'
-import getImageUploadModel from '@/pages/Recipes/util/getImageUploadModel'
-import ImageUploadModel from '@/types/ImageUploadModel'
+import getImageModel from '@/pages/Recipes/util/getImageModel'
+import ImageModel from '@/types/ImageModel'
 
 const DATEI_AUSWAEHLEN: string = 'Datei auswählen'
 
@@ -142,7 +142,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         setLoading(true)
 
         const recipe: RecipeModel = getRecipeModel(recipeForm)
-        const imageUpload: ImageUploadModel = getImageUploadModel(file, recipeForm.removeImage)
+        const imageUpload: ImageModel = getImageModel(file, !isFileUploadButtonEnabled)
 
         const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
         await axios.patch(`/api/recipes/${id}/image`, imageUpload)

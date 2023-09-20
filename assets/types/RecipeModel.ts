@@ -2,9 +2,9 @@
  * ./assets/types/RecipeModel.ts *
  *********************************/
 
-import FileModel from './FileModel'
 import IngredientModel from './IngredientModel'
 import InstructionModel from './InstructionModel'
+import ImageModel from './ImageModel'
 
 /**
  * Type specifications for Recipe objects returned by APIs
@@ -26,7 +26,7 @@ type RecipeModel = {
     instructions: Array<InstructionModel>
 
     /** The Image object belonging to the Recipe object. */
-    image?: FileModel
+    image?: ImageModel
 }
 
 export default RecipeModel

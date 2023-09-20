@@ -17,8 +17,8 @@ import Spinner from '@/components/ui/Spinner'
 import RecipeModel from '@/types/RecipeModel'
 import RecipeForm from '@/types/RecipeForm'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
-import ImageUploadModel from '@/types/ImageUploadModel'
-import getImageUploadModel from '@/pages/Recipes/util/getImageUploadModel'
+import ImageModel from '@/types/ImageModel'
+import getImageModel from '@/pages/Recipes/util/getImageModel'
 
 const DATEI_AUSWAEHLEN: string = 'Datei auswählen'
 
@@ -86,8 +86,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         setLoading(true)
 
         const recipe: RecipeModel = getRecipeModel(recipeForm)
-        const imageUpload: ImageUploadModel = getImageUploadModel(file)
-
+        const imageUpload: ImageModel = getImageModel(file)
 
         const response: AxiosResponse<RecipeModel> = await axios.post('/api/recipes', recipe)
         await axios.patch(`/api/recipes/${response.data.id}/image`, imageUpload)

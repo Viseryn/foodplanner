@@ -1,22 +1,21 @@
-/*******************************
- * ./assets/types/FileModel.ts *
- *******************************/
-
-/**
- * Type specifications for File objects returned by APIs
- */
-type FileModel = {
+type ImageModel = {
     /** The entity id of the File object. */
     id: number
 
     /** The filename of the File object. */
-    filename: string
+    filename?: string | null
 
     /** The directory of the File object. */
     directory: string
 
     /** Whether the File object is public. */
     public: boolean
+
+    /** The base64 representation of the image */
+    imageContents?: string | null
+
+    /** Whether the image shall be removed */
+    removeImage?: boolean
 }
 
-export default FileModel
+export default ImageModel
