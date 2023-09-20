@@ -107,7 +107,7 @@ export default function Recipes({ recipes, setSidebar, setTopbar }: {
                                         <img 
                                             className="rounded-xl h-36 w-full object-cover brightness-[.7]" 
                                             src={recipe.image
-                                                ? recipe.image?.directory + recipe.image?.filename
+                                                ? recipe.image?.directory + 'THUMBNAIL__' + recipe.image?.filename
                                                 : '/img/default.jpg'
                                             } 
                                             alt={recipe.title}

@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\File;
+use App\Entity\Image;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<File>
+ * @extends ServiceEntityRepository<Image>
  *
- * @method File|null find($id, $lockMode = null, $lockVersion = null)
- * @method File|null findOneBy(array $criteria, array $orderBy = null)
- * @method File[]    findAll()
- * @method File[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Image|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Image|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Image[]    findAll()
+ * @method Image[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FileRepository extends ServiceEntityRepository
+class ImageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, File::class);
+        parent::__construct($registry, Image::class);
     }
 
-    public function add(File $entity, bool $flush = false): void
+    public function add(Image $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class FileRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(File $entity, bool $flush = false): void
+    public function remove(Image $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -43,10 +43,10 @@ class FileRepository extends ServiceEntityRepository
      * findOneByFilename
      *
      * @param string $filename
-     * @param string|null $path
-     * @return File|null
+     * @param string|null $directory
+     * @return Image|null
      */
-    public function findOneByFilename(string $filename, ?string $path = ''): ?File
+    public function findOneByFilename(string $filename, ?string $directory = ''): ?Image
     {
         $query = $this
             ->createQueryBuilder('f')
@@ -54,10 +54,10 @@ class FileRepository extends ServiceEntityRepository
             ->setParameter('filename', $filename)
         ;
         
-        if ($path !== '') {
+        if ($directory !== '') {
             $query
-                ->andWhere('f.path = :path')
-                ->setParameter('path', $path)
+                ->andWhere('f.directory = :directory')
+                ->setParameter('directory', $directory)
             ;
         }
 

@@ -1,24 +1,31 @@
-<?php namespace App\DataTransferObject;
+<?php
 
-/**
- * @implements DataTransferObject<File>
- */
-class FileDTO implements DataTransferObject
+namespace App\Entity;
+
+use App\Repository\ImageRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: ImageRepository::class)]
+class Image implements EntityInterface
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $filename = null;
+
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $directory = null;
+
+    #[ORM\Column]
     private ?bool $public = null;
 
-    public function getId(): ?int 
+    public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(?int $id): self
-    {
-        $this->id = $id;
-        return $this;
     }
 
     public function getFilename(): ?string
@@ -26,9 +33,10 @@ class FileDTO implements DataTransferObject
         return $this->filename;
     }
 
-    public function setFilename(?string $filename): self
+    public function setFilename(string $filename): self
     {
         $this->filename = $filename;
+
         return $this;
     }
 
@@ -37,20 +45,22 @@ class FileDTO implements DataTransferObject
         return $this->directory;
     }
 
-    public function setDirectory(?string $directory): self
+    public function setDirectory(string $directory): self
     {
         $this->directory = $directory;
+
         return $this;
     }
 
-    public function getPublic(): ?bool
+    public function isPublic(): ?bool
     {
         return $this->public;
     }
 
-    public function setPublic(?bool $public): self
+    public function setPublic(bool $public): self
     {
         $this->public = $public;
+
         return $this;
     }
 }
