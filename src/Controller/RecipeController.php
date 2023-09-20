@@ -1,9 +1,9 @@
 <?php namespace App\Controller;
 
+use App\DataTransferObject\ImageDTO;
 use App\Entity\Recipe;
 use App\Repository\RecipeRepository;
 use App\Service\DtoResponseService;
-use App\Service\FileUploader;
 use App\Service\JsonDeserializer;
 use App\Service\RecipeControllerService;
 use App\Service\RefreshDataTimestampUtil;
@@ -18,7 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class RecipeController extends AbstractControllerWithMapper
 {
     public function __construct(
-        private readonly FileUploader $fileUploader,
         private readonly RecipeControllerService $recipeControllerService,
         private readonly RecipeRepository $recipeRepository,
         private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
@@ -76,19 +75,8 @@ class RecipeController extends AbstractControllerWithMapper
     #[Route('/{id}/image', name: 'api_recipes_patch', methods: ['PATCH'])]
     public function patch(Recipe $recipe, Request $request): Response
     {
-        $data = json_decode($request->getContent(), false);
-
-        if (property_exists($data, "image") && is_string($data->image)) {
-            $image = $this->fileUploader->uploadBase64($data->image, $data->filename, '/img/recipes/');
-            $recipe->setImage($image);
-        }
-
-        if (property_exists($data, "removeImage") && is_bool($data->removeImage)) {
-            if ($data->removeImage) {
-                $recipe->setImage(null);
-            }
-        }
-
+        $imageDto = JsonDeserializer::jsonToDto($request->getContent(), ImageDTO::class);
+        $this->recipeControllerService->updateRecipeImage($recipe, $imageDto);
         $this->recipeRepository->save($recipe, true);
         $this->refreshDataTimestampUtil->updateTimestamp();
         return DtoResponseService::getResponse($this->mapper->entityToDto($recipe));

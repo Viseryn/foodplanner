@@ -127,10 +127,6 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         setFileUploadButtonEnabled(isFileUploadButtonEnabled => {
             return !isFileUploadButtonEnabled
         })
-        setRecipeForm(prev => ({
-            ...prev,
-            removeImage: isFileUploadButtonEnabled,
-        }))
     }
 
     /**

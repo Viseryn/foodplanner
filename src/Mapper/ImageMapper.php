@@ -10,6 +10,9 @@ use App\Service\Files\SafeFilenameCreator;
  */
 final class ImageMapper implements Mapper
 {
+    use DirectoryParser;
+    use SafeFilenameCreator;
+
     /**
      * @param ImageDTO|null $dto
      * @return Image|null
@@ -19,6 +22,9 @@ final class ImageMapper implements Mapper
         if ($dto === null) {
             return null;
         }
+
+        $filename = $this->getSafeFilenameOf($dto->getFilename());
+        $directory = $this->parseDirectory($dto->getDirectory());
 
         return (new Image)->setFilename($filename)
                           ->setDirectory($directory)
