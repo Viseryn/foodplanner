@@ -23,6 +23,12 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     
+    App\Service\Files\RecipeImageManager:
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/'
+    App\Service\Files\ThumbnailManager:
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/'
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%kernel.project_dir%/'
