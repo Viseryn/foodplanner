@@ -22,7 +22,10 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    
+
+    App\Controller\ImageMigrationController: # only needed for update <=v1.5.2 --> v1.6
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/'
     App\Service\Files\RecipeImageManager:
         arguments:
             $targetDirectory: '%kernel.project_dir%/'
