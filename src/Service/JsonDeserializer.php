@@ -73,7 +73,7 @@ final class JsonDeserializer
             }
 
             if (!self::dtoHasProperty($dtoClass, $property)) {
-                throw new InvalidArgumentException('Given DTO class does not have property "' . $property . '".');
+                throw new InvalidArgumentException('Given DTO class "'. $dtoClass . '" does not have property "' . $property . '".');
             }
 
             self::convertValueToCorrectType($property, $value);
