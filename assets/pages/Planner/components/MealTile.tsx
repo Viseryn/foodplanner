@@ -33,7 +33,7 @@ export default function MealTile({ meal, deleteMeal, isSmall }: {
                 <img
                     className={`rounded-2xl h-40 ${widthStyle} object-cover brightness-[.7]`}
                     src={meal.recipe.image?.filename != null
-                        ? meal.recipe.image?.directory + meal.recipe.image?.filename
+                        ? meal.recipe.image?.directory + 'THUMBNAIL__' + meal.recipe.image?.filename
                         : '/img/default.jpg'
                     }
                     alt={meal.recipe.title}
