@@ -17,4 +17,4 @@ import App from './layouts/App'
 
 // Render app
 const root = ReactDOM.createRoot(document.getElementById('root')!)
-root.render(<App version="v1.5.2" />)
+root.render(<App />)
