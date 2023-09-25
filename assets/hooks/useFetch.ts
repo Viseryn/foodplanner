@@ -110,9 +110,7 @@ function useFetch<DataType = any>(
                     const response: AxiosResponse<any, any> = await axios.get(url)
 
                     // Report if further attempt was successful
-                    if (tries < 5) {
-                        console.log('Loading successful', url)
-                    }
+                    console.log('[INFO]  Successfully loaded', url)
 
                     // Do a customFetch if callback was given
                     if (customFetch != null) {
@@ -135,7 +133,7 @@ function useFetch<DataType = any>(
                         + (tries === 1 ? ', stopping now' : '') 
                         +')'
 
-                    console.log('Failed loading', url, attempts, error)
+                    console.log('[ERROR] Failed loading', url, attempts, error)
                     
                     tries--
                 }
