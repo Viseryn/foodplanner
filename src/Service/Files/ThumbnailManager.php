@@ -34,7 +34,7 @@ final class ThumbnailManager implements ImageManager
         return $thumbnail;
     }
 
-    private function createThumbnailOf(Image $image, int $width = 350): void
+    private function createThumbnailOf(Image $image, int $width = 550): void
     {
         $imageContents = imagecreatefromstring(
             file_get_contents(
