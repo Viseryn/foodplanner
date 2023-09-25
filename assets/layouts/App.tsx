@@ -53,14 +53,8 @@ import Spacer from '@/components/ui/Spacer'
  * which page to  load depending on the URL.
  * 
  * @component
- * @param props
- * @param props.version The current version number.
- * 
- * @todo SWAL cancel buttons are broken.
  */
-export default function App({ version }: { 
-    version: string
-}): JSX.Element {
+export default function App(): ReactElement {
     // The User and Authentication objects
     const [user, authentication]: [EntityState<UserModel>, Authentication] = useAuthentication()
 
@@ -133,7 +127,7 @@ export default function App({ version }: {
         <BrowserRouter>
             <div className="flex flex-col md:flex-row items-start bg-bg dark:bg-bg-dark min-h-screen text-secondary-900 dark:text-secondary-dark-900 min-w-[375px]">
                 <SidebarDrawer {...{
-                    isDrawerVisible, setDrawerVisible, version, authentication
+                    isDrawerVisible, setDrawerVisible, authentication
                 }} />
 
                 <Sidebar {...{
@@ -227,7 +221,7 @@ export default function App({ version }: {
                             <Route
                                 path="/settings"
                                 element={<AuthChecker authentication={authentication} component={
-                                    <Settings {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar }} />
+                                    <Settings {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
                                 } />}
                             />
                             <Route
