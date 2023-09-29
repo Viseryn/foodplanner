@@ -263,7 +263,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                                     >
                                                         <img
                                                             className="rounded-xl h-12 w-12 object-cover transition duration-300"
-                                                            src={recipe.image ? (recipe.image.directory + recipe.image.filename) : '/img/default.jpg'}
+                                                            src={recipe.image ? (recipe.image?.directory + 'THUMBNAIL__' + recipe.image?.filename) : '/img/default.jpg'}
                                                             alt={recipe.title}
                                                         />
                                                         <div
