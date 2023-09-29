@@ -149,7 +149,7 @@ export default function App(): ReactElement {
 
                     {/* Routing */}
                     {isMigratingImages ? (
-                        <div className="pb-[5.5rem] mr-4">
+                        <div className="pb-[5.5rem] mx-4 md:ml-0">
                             <Spacer height="6" />
                             <Notification title="FoodPlanner wird auf Version v1.6 aktualisiert ..." />
                             <Spinner />
