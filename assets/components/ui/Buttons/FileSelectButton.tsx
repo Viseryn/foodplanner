@@ -2,7 +2,7 @@
  * ./assets/components/form/FileSelectButton.tsx *
  *************************************************/
 
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import nameFromId from '../../form/util/nameFromId'
 
@@ -24,13 +24,13 @@ export default function FileSelectButton({ id, label, onChange, enabled = true }
     label: string
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
     enabled?: boolean
-}): JSX.Element {
+}): ReactElement {
     return <>
         <label 
             htmlFor={id}
             className={enabled
-                ? 'cursor-pointer overflow-hidden rounded-full h-12 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300'
-                : 'rounded-full h-12 px-4 font-semibold transition duration-300 flex items-center text-notification-600 dark:text-notification-800 bg-notification-500 dark:bg-notification-600'
+                ? 'cursor-pointer overflow-hidden rounded-full h-10 px-4 font-semibold text-md transition duration-300 flex items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 hover:bg-secondary-300 dark:hover:bg-secondary-dark-300'
+                : 'rounded-full h-10 px-4 font-semibold transition duration-300 flex items-center text-notification-600 dark:text-notification-800 bg-notification-500 dark:bg-notification-600'
             }
         >
             <span className="material-symbols-rounded">photo_size_select_small</span>
