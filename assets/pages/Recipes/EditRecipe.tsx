@@ -159,95 +159,91 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
     }, [recipe])
 
     return (
-        <StandardContentWrapper>
-            <div className="md:max-w-[900px]">
-                {isLoading || recipes.isLoading ? (
-                    <Spinner />
-                ) : (
-                    <div className="mx-4 md:ml-0">
-                        <form onSubmit={handleSubmit}>
-                            <TwoColumnView>
-                                <Card>
-                                    <InputRow
-                                        id="title"
-                                        label="Titel"
-                                        {...{
-                                            required: true,
-                                            maxLength: 255,
-                                            onChange: handleInputChange,
-                                            name: 'title',
-                                            value: recipeForm.title,
-                                        }}
-                                    />
+        <StandardContentWrapper className="md:max-w-[900px]">
+            {isLoading || recipes.isLoading ? (
+                <Spinner />
+            ) : (
+                <form onSubmit={handleSubmit}>
+                    <TwoColumnView>
+                        <Card>
+                            <InputRow
+                                id="title"
+                                label="Titel"
+                                {...{
+                                    required: true,
+                                    maxLength: 255,
+                                    onChange: handleInputChange,
+                                    name: 'title',
+                                    value: recipeForm.title,
+                                }}
+                            />
 
-                                    <Spacer height="6" />
+                            <Spacer height="6" />
 
-                                    <SliderRow
-                                        key={recipe?.id}
-                                        id="portionSize"
-                                        label="Wie viele Portionen?"
-                                        {...{
-                                            min: 1,
-                                            max: 10,
-                                            step: 1,
-                                            marks: [...Array(10)].map((value, index) => ({
-                                                value: index + 1,
-                                                label: index + 1,
-                                            })),
-                                            onChange: handleInputChange,
-                                            name: 'portionSize',
-                                            value: recipeForm.portionSize,
-                                        }}
-                                    />
+                            <SliderRow
+                                key={recipe?.id}
+                                id="portionSize"
+                                label="Wie viele Portionen?"
+                                {...{
+                                    min: 1,
+                                    max: 10,
+                                    step: 1,
+                                    marks: [...Array(10)].map((value, index) => ({
+                                        value: index + 1,
+                                        label: index + 1,
+                                    })),
+                                    onChange: handleInputChange,
+                                    name: 'portionSize',
+                                    value: recipeForm.portionSize,
+                                }}
+                            />
 
-                                    <Spacer height="6" />
+                            <Spacer height="6" />
 
                             <ImageUploadWidget setFile={setFile} recipe={recipe} />
                         </Card>
 
-                                <Card>
-                                    <TextareaRow
-                                        id="ingredients"
-                                        label="Zutaten"
-                                        {...{
-                                            rows: 10,
-                                            placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
-                                            onChange: handleInputChange,
-                                            name: 'ingredients',
-                                            value: recipeForm.ingredients,
-                                        }}
-                                    />
+                        <Card>
+                            <TextareaRow
+                                id="ingredients"
+                                label="Zutaten"
+                                {...{
+                                    rows: 10,
+                                    placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
+                                    onChange: handleInputChange,
+                                    name: 'ingredients',
+                                    value: recipeForm.ingredients,
+                                }}
+                            />
 
-                                    <Spacer height="6" />
+                            <Spacer height="6" />
 
-                                    <TextareaRow
-                                        id="instructions"
-                                        label="Zubereitung"
-                                        {...{
-                                            rows: 10,
-                                            placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
-                                            onChange: handleInputChange,
-                                            name: 'instructions',
-                                            value: recipeForm.instructions,
-                                        }}
-                                    />
-                                </Card>
-                            </TwoColumnView>
+                            <TextareaRow
+                                id="instructions"
+                                label="Zubereitung"
+                                {...{
+                                    rows: 10,
+                                    placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
+                                    onChange: handleInputChange,
+                                    name: 'instructions',
+                                    value: recipeForm.instructions,
+                                }}
+                            />
+                        </Card>
+                    </TwoColumnView>
 
-                            <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
-                                <Button
-                                    type="submit"
-                                    icon="save"
-                                    label="Speichern"
-                                    isElevated={true}
-                                    outlined={true}
-                                    isFloating={true}
-                                />
-                            </div>
-                        </form>
+                    <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
+                        <Button
+                            type="submit"
+                            icon="save"
+                            label="Speichern"
+                            isElevated={true}
+                            outlined={true}
+                            isFloating={true}
+                        />
                     </div>
-                )}
-            </div>
+                </form>
+            )}
         </StandardContentWrapper>
     )
 }
