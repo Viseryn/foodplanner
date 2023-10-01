@@ -18,6 +18,6 @@ trait SafeFilenameCreator
         $extension = explode('-', $safeFilename);
         $extension = end($extension);
 
-        return md5($safeFilename) . '.' . $extension;
+        return md5($safeFilename . time()) . '.' . $extension;
     }
 }
