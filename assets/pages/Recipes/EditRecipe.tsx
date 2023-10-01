@@ -1,12 +1,7 @@
-/*****************************************
- * ./assets/pages/Recipes/EditRecipe.tsx *
- *****************************************/
-
 import axios, { AxiosResponse } from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import swal from 'sweetalert'
-
 import InputRow from '@/components/form/Input/InputRow'
 import SliderRow from '@/components/form/Slider/SliderRow'
 import TextareaRow from '@/components/form/Textarea/TextareaRow'
@@ -38,57 +33,43 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): ReactElement {
-    type EditRecipeRouteParams = {
-        id?: string
-    }
-
-    const { id }: EditRecipeRouteParams = useParams()
+    const { id }: { id?: string } = useParams()
     const navigate: NavigateFunction = useNavigate()
-    const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
 
-    // The file that was selected
     const [file, setFile] = useState<File | null>(null)
-
-    // Whether the page is loading. Will be true while the form data is processed by the API.
     const [isLoading, setLoading] = useState<boolean>(false)
-
-    // The ID of the new recipe. Will be provided be the API and can be used for redirecting.
     const [responseId, setResponseId] = useState<number>(0)
-
-    // Form data
-    const [recipeForm, setRecipeForm] = useState<RecipeForm>({
+    const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
+    const [recipeFormData, setRecipeFormData] = useState<RecipeForm>({
         title: '',
         portionSize: 1,
         ingredients: '',
         instructions: '',
     })
 
-    // Initializes the recipe state variable. Each time the id parameter changes, the recipe state 
-    // is updated. When the recipes are reloaded, recipe is also updated.
     useEffect(() => {
         if (recipes.isLoading) {
             return
         }
 
-        // Find correct recipe
         const queryResult: Array<RecipeModel> = recipes.data.filter(recipe => recipe.id.toString() == id)
-        setRecipe(queryResult[0])
-        setRecipeForm(prev => ({
-            ...prev,
-            title: queryResult[0].title,
-            portionSize: queryResult[0].portionSize,
-            ingredients: getIngredientsAsString(queryResult[0].ingredients),
-            instructions: getInstructionsAsString(queryResult[0].instructions),
-        }))
-
-        // If recipe does not exist, redirect to 404 page
         if (queryResult.length === 0) {
             navigate('/error/404')
         }
+
+        const recipeResult: RecipeModel = queryResult[0]
+        setRecipe(recipeResult)
+        setRecipeFormData(prev => ({
+            ...prev,
+            title: recipeResult.title,
+            portionSize: recipeResult.portionSize,
+            ingredients: getIngredientsAsString(recipeResult.ingredients),
+            instructions: getInstructionsAsString(recipeResult.instructions),
+        }))
     }, [id, recipes.isLoading])
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setRecipeForm(prev => ({
+        setRecipeFormData(prev => ({
             ...prev,
             [event.target.name]: event.target.value,
         }))
@@ -98,7 +79,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         event.preventDefault()
         setLoading(true)
 
-        const recipe: RecipeModel = getRecipeModel(recipeForm)
+        const recipe: RecipeModel = getRecipeModel(recipeFormData)
         const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
 
         const imageUpload: ImageModel = await getImageModel(file, file === null)
@@ -116,30 +97,23 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         }
     }, [responseId])
 
-    const deleteRecipe = (id: number): void => {
-        swal({
+    const deleteRecipe = async (id: number): Promise<void> => {
+        const swalResponse = await swal({
             dangerMode: true,
-            icon: 'error',
-            title: 'Rezept endgültig löschen?',
-            text: 'Gelöschte Rezepte können nicht wiederhergestellt werden.',
-            buttons: ["Abbrechen", "Löschen"],
-        }).then(confirm => {
-            if (confirm) {
-                axios
-                    .delete('/api/recipes/' + id)
-                    .then(() => {
-                        // Reload recipes and days
-                        recipes.load()
-                        days.load()
-
-                        // Navigate to recipe list
-                        navigate('/recipes')
-                    })
-            }
+                icon: 'error',
+                title: 'Rezept endgültig löschen?',
+                text: 'Gelöschte Rezepte können nicht wiederhergestellt werden.',
+                buttons: ["Abbrechen", "Löschen"],
         })
+
+        if (swalResponse) {
+            await axios.delete(`/api/recipes/${id}`)
+            recipes.load()
+            days.load()
+            navigate('/recipes')
+        }
     }
 
-    // Load layout
     useEffect(() => {
         setSidebar('recipes')
         setTopbar({
@@ -154,7 +128,6 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
             isLoading: recipes.isLoading,
         })
 
-        // Scroll to top
         window.scrollTo(0, 0)
     }, [recipe])
 
@@ -174,7 +147,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                     maxLength: 255,
                                     onChange: handleInputChange,
                                     name: 'title',
-                                    value: recipeForm.title,
+                                    value: recipeFormData.title,
                                 }}
                             />
 
@@ -194,7 +167,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                     })),
                                     onChange: handleInputChange,
                                     name: 'portionSize',
-                                    value: recipeForm.portionSize,
+                                    value: recipeFormData.portionSize,
                                 }}
                             />
 
@@ -212,7 +185,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                     placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
                                     onChange: handleInputChange,
                                     name: 'ingredients',
-                                    value: recipeForm.ingredients,
+                                    value: recipeFormData.ingredients,
                                 }}
                             />
 
@@ -226,7 +199,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                                     placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
                                     onChange: handleInputChange,
                                     name: 'instructions',
-                                    value: recipeForm.instructions,
+                                    value: recipeFormData.instructions,
                                 }}
                             />
                         </Card>
