@@ -1,11 +1,6 @@
-/****************************************
- * ./assets/pages/Recipes/AddRecipe.tsx *
- ****************************************/
-
 import axios, { AxiosResponse } from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
-
 import InputRow from '@/components/form/Input/InputRow'
 import SliderRow from '@/components/form/Slider/SliderRow'
 import TextareaRow from '@/components/form/Textarea/TextareaRow'
@@ -35,20 +30,12 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): ReactElement {
-    // The file that was selected
-    const [file, setFile] = useState<File | null>(null)
-
-    // Whether the page is loading. Will be true while the form data is processed by the API.
-    const [isLoading, setLoading] = useState<boolean>(false)
-
-    // The ID of the new recipe. Will be provided be the API and can be used for redirecting.
-    const [responseId, setResponseId] = useState<number>(0)
-
-    // Needed for the redirect after submit
     const navigate: NavigateFunction = useNavigate()
 
-    // Form data
-    const [recipeForm, setRecipeForm] = useState<RecipeForm>({
+    const [file, setFile] = useState<File | null>(null)
+    const [isLoading, setLoading] = useState<boolean>(false)
+    const [responseId, setResponseId] = useState<number>(0)
+    const [recipeFormData, setRecipeFormData] = useState<RecipeForm>({
         title: '',
         portionSize: 1,
         ingredients: '',
@@ -56,7 +43,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
     })
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setRecipeForm(prev => ({
+        setRecipeFormData(prev => ({
             ...prev,
             [event.target.name]: event.target.value,
         }))
@@ -66,7 +53,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         event.preventDefault()
         setLoading(true)
 
-        const recipe: RecipeModel = getRecipeModel(recipeForm)
+        const recipe: RecipeModel = getRecipeModel(recipeFormData)
         const response: AxiosResponse<RecipeModel> = await axios.post('/api/recipes', recipe)
 
         if (file !== null) {
@@ -85,7 +72,6 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         }
     }, [responseId])
 
-    // Load layout
     useEffect(() => {
         setSidebar('recipes')
         setTopbar({
@@ -94,7 +80,6 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
             backButtonPath: '/recipes',
         })
 
-        // Scroll to top
         window.scrollTo(0, 0)
     }, [])
 
