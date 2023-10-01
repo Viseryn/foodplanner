@@ -10,7 +10,6 @@ import InputRow from '@/components/form/Input/InputRow'
 import SliderRow from '@/components/form/Slider/SliderRow'
 import TextareaRow from '@/components/form/Textarea/TextareaRow'
 import Button from '@/components/ui/Buttons/Button'
-import FileSelectButton from '@/components/ui/Buttons/FileSelectButton'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
@@ -21,9 +20,7 @@ import ImageModel from '@/types/ImageModel'
 import { getImageModel } from '@/pages/Recipes/util/getImageModel'
 import { TwoColumnView } from '@/components/ui/TwoColumnView'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
-import IconButton from '@/components/ui/Buttons/IconButton'
-
-const DATEI_AUSWAEHLEN: string = 'Datei auswählen'
+import { ImageUploadWidget } from '@/pages/Recipes/components/ImageUploadWidget'
 
 /**
  * AddRecipe
@@ -38,21 +35,6 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): ReactElement {
-    const [
-        uploadButtonText,
-        setUploadButtonText,
-    ] = useState<string>(DATEI_AUSWAEHLEN)
-
-    const [
-        isImagePreviewVisible,
-        setImagePreviewVisible,
-    ] = useState<boolean>(false)
-
-    const [
-        imagePreviewUrl,
-        setImagePreviewUrl,
-    ] = useState<string>('')
-
     // The file that was selected
     const [file, setFile] = useState<File | null>(null)
 
@@ -72,26 +54,6 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         ingredients: '',
         instructions: '',
     })
-
-    const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const uploadedFile: File | null = event.target.files?.[0] || null
-        const filename: string = uploadedFile?.name || ''
-
-        setUploadButtonText(filename || DATEI_AUSWAEHLEN)
-        setFile(uploadedFile)
-
-        if (uploadedFile) {
-            setImagePreviewVisible(true)
-            setImagePreviewUrl(URL.createObjectURL(uploadedFile))
-        }
-    }
-
-    const handleDeleteUploadedImage = (): void => {
-        setUploadButtonText(DATEI_AUSWAEHLEN)
-        setFile(null)
-        setImagePreviewVisible(false)
-        setImagePreviewUrl('')
-    }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setRecipeForm(prev => ({
@@ -177,39 +139,8 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
 
                                     <Spacer height="6" />
 
-                                    <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
-
-                                    <div className="flex justify-between items-center gap-4 h-10">
-                                        <div className="overflow-hidden w-full">
-                                            <FileSelectButton
-                                                id="image"
-                                                label={uploadButtonText}
-                                                onChange={handleFilePick}
-                                            />
-                                        </div>
-
-                                        {imagePreviewUrl.length > 0 &&
-                                            <IconButton
-                                                outlined={true}
-                                                onClick={handleDeleteUploadedImage}
-                                            >
-                                                delete
-                                            </IconButton>
-                                        }
-                                    </div>
-
-                                    {isImagePreviewVisible && (
-                                        <>
-                                            <Spacer height="6" />
-                                            <div className="text-sm font-semibold block mb-2">Bildvorschau</div>
-                                            <img
-                                                className="rounded-3xl h-[244px] max-h-[244px] w-full object-cover transition duration-300"
-                                                src={imagePreviewUrl}
-                                                alt="Bildvorschau"
-                                            />
-                                        </>
-                                    )}
-                                </Card>
+                            <ImageUploadWidget setFile={setFile} />
+                        </Card>
 
                                 <Card>
                                     <TextareaRow

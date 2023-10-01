@@ -11,7 +11,6 @@ import InputRow from '@/components/form/Input/InputRow'
 import SliderRow from '@/components/form/Slider/SliderRow'
 import TextareaRow from '@/components/form/Textarea/TextareaRow'
 import Button from '@/components/ui/Buttons/Button'
-import FileSelectButton from '@/components/ui/Buttons/FileSelectButton'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
@@ -25,9 +24,7 @@ import { getImageModel } from '@/pages/Recipes/util/getImageModel'
 import ImageModel from '@/types/ImageModel'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { TwoColumnView } from '@/components/ui/TwoColumnView'
-import IconButton from '@/components/ui/Buttons/IconButton'
-
-const DATEI_AUSWAEHLEN: string = 'Datei auswählen'
+import { ImageUploadWidget } from '@/pages/Recipes/components/ImageUploadWidget'
 
 /**
  * A component that renders a form for editing an existing recipe. After submitting via the submit
@@ -48,21 +45,6 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
     const { id }: EditRecipeRouteParams = useParams()
     const navigate: NavigateFunction = useNavigate()
     const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
-
-    const [
-        uploadButtonText,
-        setUploadButtonText,
-    ] = useState<string>(DATEI_AUSWAEHLEN)
-
-    const [
-        isImagePreviewVisible,
-        setImagePreviewVisible,
-    ] = useState<boolean>(false)
-
-    const [
-        imagePreviewUrl,
-        setImagePreviewUrl,
-    ] = useState<string>('')
 
     // The file that was selected
     const [file, setFile] = useState<File | null>(null)
@@ -99,36 +81,11 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
             instructions: getInstructionsAsString(queryResult[0].instructions),
         }))
 
-        if (queryResult[0].image) {
-            setImagePreviewUrl(queryResult[0].image.directory + queryResult[0].image.filename)
-            setImagePreviewVisible(true)
-        }
-
         // If recipe does not exist, redirect to 404 page
         if (queryResult.length === 0) {
             navigate('/error/404')
         }
     }, [id, recipes.isLoading])
-
-    const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const uploadedFile: File | null = event.target.files?.[0] || null
-        const filename: string = uploadedFile?.name || ''
-
-        setUploadButtonText(filename || DATEI_AUSWAEHLEN)
-        setFile(uploadedFile)
-
-        if (uploadedFile) {
-            setImagePreviewVisible(true)
-            setImagePreviewUrl(URL.createObjectURL(uploadedFile))
-        }
-    }
-
-    const handleDeleteUploadedImage = (): void => {
-        setUploadButtonText(DATEI_AUSWAEHLEN)
-        setFile(null)
-        setImagePreviewVisible(false)
-        setImagePreviewUrl('')
-    }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setRecipeForm(prev => ({
@@ -144,10 +101,8 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         const recipe: RecipeModel = getRecipeModel(recipeForm)
         const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
 
-        if (file !== null || imagePreviewUrl.length === 0) {
-            const imageUpload: ImageModel = await getImageModel(file, imagePreviewUrl.length === 0)
-            await axios.patch(`/api/recipes/${id}/image`, imageUpload)
-        }
+        const imageUpload: ImageModel = await getImageModel(file, file === null)
+        await axios.patch(`/api/recipes/${id}/image`, imageUpload)
 
         recipes.load()
         days.load()
@@ -247,39 +202,8 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
 
                                     <Spacer height="6" />
 
-                                    <div className="text-sm font-semibold block mb-2">Bild bearbeiten</div>
-
-                                    <div className="flex justify-between items-center gap-4 h-10">
-                                        <div className="overflow-hidden w-full">
-                                            <FileSelectButton
-                                                id="image"
-                                                label={uploadButtonText}
-                                                onChange={handleFilePick}
-                                            />
-                                        </div>
-
-                                        {imagePreviewUrl.length > 0 &&
-                                            <IconButton
-                                                outlined={true}
-                                                onClick={handleDeleteUploadedImage}
-                                            >
-                                                delete
-                                            </IconButton>
-                                        }
-                                    </div>
-
-                                    {isImagePreviewVisible && (
-                                        <>
-                                            <Spacer height="6" />
-                                            <div className="text-sm font-semibold block mb-2">Bildvorschau</div>
-                                            <img
-                                                className="rounded-3xl h-[244px] max-h-[244px] w-full object-cover transition duration-300"
-                                                src={imagePreviewUrl}
-                                                alt={recipe.title}
-                                            />
-                                        </>
-                                    )}
-                                </Card>
+                            <ImageUploadWidget setFile={setFile} recipe={recipe} />
+                        </Card>
 
                                 <Card>
                                     <TextareaRow
