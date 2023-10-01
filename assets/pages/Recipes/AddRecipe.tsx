@@ -105,10 +105,13 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         setLoading(true)
 
         const recipe: RecipeModel = getRecipeModel(recipeForm)
-        const imageUpload: ImageModel = getImageModel(file)
-
         const response: AxiosResponse<RecipeModel> = await axios.post('/api/recipes', recipe)
-        await axios.patch(`/api/recipes/${response.data.id}/image`, imageUpload)
+
+        if (file !== null) {
+            const imageUpload: ImageModel = getImageModel(file)
+            await axios.patch(`/api/recipes/${response.data.id}/image`, imageUpload)
+        }
+
         recipes.load()
         setResponseId(response.data.id)
         setLoading(false)

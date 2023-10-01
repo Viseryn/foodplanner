@@ -142,10 +142,13 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         setLoading(true)
 
         const recipe: RecipeModel = getRecipeModel(recipeForm)
-        const imageUpload: ImageModel = getImageModel(file, imagePreviewUrl.length === 0)
-
         const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
-        await axios.patch(`/api/recipes/${id}/image`, imageUpload)
+
+        if (file !== null || imagePreviewUrl.length === 0) {
+            const imageUpload: ImageModel = getImageModel(file, imagePreviewUrl.length === 0)
+            await axios.patch(`/api/recipes/${id}/image`, imageUpload)
+        }
+
         recipes.load()
         days.load()
         setResponseId(response.data.id)
