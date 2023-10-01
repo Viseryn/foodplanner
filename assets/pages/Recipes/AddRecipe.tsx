@@ -18,7 +18,7 @@ import RecipeModel from '@/types/RecipeModel'
 import RecipeForm from '@/types/RecipeForm'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 import ImageModel from '@/types/ImageModel'
-import getImageModel from '@/pages/Recipes/util/getImageModel'
+import { getImageModel } from '@/pages/Recipes/util/getImageModel'
 import { TwoColumnView } from '@/components/ui/TwoColumnView'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import IconButton from '@/components/ui/Buttons/IconButton'
@@ -108,7 +108,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         const response: AxiosResponse<RecipeModel> = await axios.post('/api/recipes', recipe)
 
         if (file !== null) {
-            const imageUpload: ImageModel = getImageModel(file)
+            const imageUpload: ImageModel = await getImageModel(file)
             await axios.patch(`/api/recipes/${response.data.id}/image`, imageUpload)
         }
 

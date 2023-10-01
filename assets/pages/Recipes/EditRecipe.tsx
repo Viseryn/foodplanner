@@ -21,7 +21,7 @@ import RecipeForm from '@/types/RecipeForm'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 import getIngredientsAsString from '@/pages/Recipes/util/getIngredientsAsString'
 import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsString'
-import getImageModel from '@/pages/Recipes/util/getImageModel'
+import { getImageModel } from '@/pages/Recipes/util/getImageModel'
 import ImageModel from '@/types/ImageModel'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { TwoColumnView } from '@/components/ui/TwoColumnView'
@@ -145,7 +145,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
 
         if (file !== null || imagePreviewUrl.length === 0) {
-            const imageUpload: ImageModel = getImageModel(file, imagePreviewUrl.length === 0)
+            const imageUpload: ImageModel = await getImageModel(file, imagePreviewUrl.length === 0)
             await axios.patch(`/api/recipes/${id}/image`, imageUpload)
         }
 
