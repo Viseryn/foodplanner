@@ -1,23 +1,13 @@
 import ImageModel from '@/types/ImageModel'
+import { getBase64 } from '@/pages/Recipes/util/getBase64'
 
-export default function getImageModel(file: File | null, removeImage: boolean = false): ImageModel {
-    const reader: FileReader = new FileReader()
-    const imageUpload: ImageModel = {
+export const getImageModel = async (file: File | null, removeImage: boolean = false): Promise<ImageModel> => {
+    return {
         id: -1,
-        imageContents: null,
-        filename: file ? file.name : null,
+        imageContents: file ? await getBase64(file) : null,
+        filename: file?.name,
         removeImage: removeImage,
         directory: '/img/recipes/',
         public: true,
     }
-
-    reader.onload = (event) => {
-        imageUpload.imageContents = event.target?.result?.toString()?.split(',')[1] || ''
-    }
-
-    if (file) {
-        reader.readAsDataURL(file)
-    }
-
-    return imageUpload
 }
