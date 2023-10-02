@@ -4,7 +4,7 @@
 
 import axios, { AxiosResponse } from 'axios'
 import Fraction from 'fraction.js'
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 
 import TextParagraph from '@/components/skeleton/TextParagraph'
@@ -18,6 +18,7 @@ import SettingsModel from '@/types/SettingsModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 import useTimeout from '@/hooks/useTimeout'
+import DayModel from '@/types/DayModel'
 
 /**
  * Recipe
@@ -29,14 +30,15 @@ import useTimeout from '@/hooks/useTimeout'
  *
  * @component
  */
-export default function Recipe({ recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: {
+export default function Recipe({ days, recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: {
+    days: EntityState<Array<DayModel>>
     recipes: EntityState<Array<RecipeModel>>
     shoppingList: EntityState<Array<IngredientModel>>
     pantry: EntityState<Array<IngredientModel>>
     settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}) {
+}): ReactElement {
     // Type for route parameters
     type RecipeRouteParams = {
         id?: string
@@ -248,7 +250,8 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
                         recipes.load()
                     }
                 },
-                { icon: 'edit', onClick: () => navigate('/recipe/' + id + '/edit') },
+                { icon: 'calendar_add_on', onClick: () => navigate(`/planner/add/${days.data[0].id}?recipe=${id}`) },
+                { icon: 'contract_edit', onClick: () => navigate('/recipe/' + id + '/edit') },
             ],
             truncate: true,
             style: 'max-w-[700px] md:pr-4',
@@ -257,7 +260,7 @@ export default function Recipe({ recipes, shoppingList, pantry, settings, setSid
 
         // Scroll to top
         window.scrollTo(0, 0)
-    }, [recipe])
+    }, [recipe, days.isLoading])
 
     // Render Recipe
     return <div className="pb-24 md:pb-4 md:max-w-[700px]">
