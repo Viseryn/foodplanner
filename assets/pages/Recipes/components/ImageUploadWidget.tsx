@@ -6,19 +6,16 @@ import RecipeModel from '@/types/RecipeModel'
 
 type ImageUploadWidgetProps = {
     setFile: SetState<File | null>
+    imagePreviewUrl: string
+    setImagePreviewUrl: SetState<string>
     recipe?: RecipeModel
 }
 
-export const ImageUploadWidget = ({ setFile, recipe }: ImageUploadWidgetProps): ReactElement => {
+export const ImageUploadWidget = ({ setFile, recipe, imagePreviewUrl, setImagePreviewUrl }: ImageUploadWidgetProps): ReactElement => {
     const [
         isImagePreviewVisible,
         setImagePreviewVisible,
     ] = useState<boolean>(false)
-
-    const [
-        imagePreviewUrl,
-        setImagePreviewUrl,
-    ] = useState<string>('')
 
     useEffect(() => {
         if (recipe?.image) {

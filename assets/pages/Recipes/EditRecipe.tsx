@@ -46,6 +46,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         ingredients: '',
         instructions: '',
     })
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
     useEffect(() => {
         if (recipes.isLoading) {
@@ -82,7 +83,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         const recipe: RecipeModel = getRecipeModel(recipeFormData)
         const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
 
-        const imageUpload: ImageModel = await getImageModel(file, file === null)
+        const imageUpload: ImageModel = await getImageModel(file, imagePreviewUrl.length === 0)
         await axios.patch(`/api/recipes/${id}/image`, imageUpload)
 
         recipes.load()
@@ -100,10 +101,10 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
     const deleteRecipe = async (id: number): Promise<void> => {
         const swalResponse = await swal({
             dangerMode: true,
-                icon: 'error',
-                title: 'Rezept endgültig löschen?',
-                text: 'Gelöschte Rezepte können nicht wiederhergestellt werden.',
-                buttons: ["Abbrechen", "Löschen"],
+            icon: 'error',
+            title: 'Rezept endgültig löschen?',
+            text: 'Gelöschte Rezepte können nicht wiederhergestellt werden.',
+            buttons: ["Abbrechen", "Löschen"],
         })
 
         if (swalResponse) {
@@ -173,7 +174,12 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
 
                             <Spacer height="6" />
 
-                            <ImageUploadWidget setFile={setFile} recipe={recipe} />
+                            <ImageUploadWidget
+                                setFile={setFile}
+                                imagePreviewUrl={imagePreviewUrl}
+                                setImagePreviewUrl={setImagePreviewUrl}
+                                recipe={recipe}
+                            />
                         </Card>
 
                         <Card>

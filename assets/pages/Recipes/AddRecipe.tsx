@@ -41,6 +41,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
         ingredients: '',
         instructions: '',
     })
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setRecipeFormData(prev => ({
@@ -122,7 +123,11 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
 
                             <Spacer height="6" />
 
-                            <ImageUploadWidget setFile={setFile} />
+                            <ImageUploadWidget
+                                setFile={setFile}
+                                imagePreviewUrl={imagePreviewUrl}
+                                setImagePreviewUrl={setImagePreviewUrl}
+                            />
                         </Card>
 
                         <Card>
