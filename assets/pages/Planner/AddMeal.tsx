@@ -4,7 +4,7 @@
 
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import { NavigateFunction, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import Label from '@/components/form/Label'
 import RadioWidget from '@/components/form/Radio/RadioWidget'
@@ -56,6 +56,9 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     // The id parameter of the route '/planner/add/:id'
     const { id }: AddMealRouteParams = useParams()
 
+    // Query parameters
+    const [searchParams, setSearchParams] = useSearchParams()
+
     // A function that can change the location. Needed for the redirect after submit.
     const navigate: NavigateFunction = useNavigate()
 
@@ -71,7 +74,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
     // Whether the form is loading
     const [isLoading, setLoading] = useState<boolean>(false)
 
-    // Everytime the query changes, check if the currently selected recipe is still in the seach 
+    // Everytime the query changes, check if the currently selected recipe is still in the search
     // result and if not, deselect it
     useEffect(() => {
         let isRecipeInResults: boolean = false
@@ -122,6 +125,22 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
 
         apiCall()
     }
+
+    useEffect(() => {
+        if (recipes.isLoading) {
+            return
+        }
+
+        // Preselect recipe if recipe query param is given
+        if (searchParams.get('recipe') !== null) {
+            setSelectedRecipe(parseInt(searchParams.get('recipe')!))
+            setRecipeQuery(
+                '' + recipes.data.find(
+                    recipe => recipe.id === parseInt(searchParams.get('recipe')!)
+                )?.title
+            )
+        }
+    }, [recipes]);
 
     // Load layout
     useEffect(() => {
@@ -251,6 +270,7 @@ export default function AddMeal({ days, recipes, mealCategories, userGroups, set
                                                         name={nameFromId("meal_recipe")}
                                                         type="radio"
                                                         defaultValue={recipe.id}
+                                                        defaultChecked={parseInt(searchParams.get('recipe')!) === recipe.id}
                                                         className="peer hidden"
                                                     />
                                                     <label
