@@ -182,12 +182,6 @@ export default function App(): ReactElement {
                                 } />}
                             />
                             <Route
-                                path="/planner/add"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
                                 path="/planner/add/:id"
                                 element={<AuthChecker authentication={authentication} component={
                                     <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
