@@ -27,11 +27,12 @@ import SidebarItem from './components/SidebarItem'
  * @param props.setDrawerVisible The setter method of isDrawerVisible.
  * @param props.authentication The Authentication object.
  * @param props.settings A Settings object.
+ * @param props.shoppingListNotificationDotValue The number of notifications that will be shown next to the shopping list item.
  * 
  * @todo Maybe this component should be renamed in something like "NavigationBar" so it sounds more important.
  */
 export default function Sidebar({ 
-    sidebarActiveItem, sidebarActionButton, isDrawerVisible, setDrawerVisible, authentication, settings, 
+    sidebarActiveItem, sidebarActionButton, isDrawerVisible, setDrawerVisible, authentication, settings, shoppingListNotificationDotValue
 }: {
     sidebarActiveItem: string
     sidebarActionButton: SidebarActionButtonConfiguration
@@ -39,6 +40,7 @@ export default function Sidebar({
     setDrawerVisible: SetState<boolean>
     authentication: Authentication
     settings: EntityState<SettingsModel>
+    shoppingListNotificationDotValue?: number
 }): JSX.Element {
     // Close drawer when location changes
     const location = useLocation()
@@ -83,6 +85,7 @@ export default function Sidebar({
                             id="shoppinglist"
                             icon="shopping_cart"
                             label="Einkaufsliste"
+                            notificationDotValue={shoppingListNotificationDotValue}
                         />
                         {(settings.data?.showPantry || !authentication.isAuthenticated || settings.isLoading) &&
                             <SidebarItem 

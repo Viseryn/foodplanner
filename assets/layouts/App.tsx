@@ -2,7 +2,7 @@
  * ./assets/layouts/App.tsx *
  ****************************/
 
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import AuthChecker from './AuthChecker/AuthChecker'
@@ -119,6 +119,19 @@ export default function App(): ReactElement {
     const recipes = fetch<Array<RecipeModel>>('/api/recipes', false)
     const days = fetch<Array<DayModel>>('/api/days', false)
 
+    // Calculate number of non-checked shopping list items for the notification dot at the shopping list sidebar item
+    const [shoppingListNotificationDotValue,
+        setShoppingListNotificationDotValue,
+    ] = useState<number>()
+
+    useEffect(() => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
+        setShoppingListNotificationDotValue(shoppingList.data.filter(ingredientModel => !ingredientModel.checked).length)
+    }, [shoppingList]);
+
     // Migrate recipe images to v1.6 if not done already
     useImageMigration(installationStatus, setMigratingImages, [recipes, days])
 
@@ -132,7 +145,7 @@ export default function App(): ReactElement {
 
                 <Sidebar {...{
                     sidebarActiveItem, sidebarActionButton, isDrawerVisible, 
-                    setDrawerVisible, authentication, settings
+                    setDrawerVisible, authentication, settings, shoppingListNotificationDotValue
                 }} />
                 
                 {/* Main Container */}

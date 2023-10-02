@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { NotificationDot } from '@/layouts/Sidebar/components/NotificationDot'
 
 /**
  * A component that renders a single sidebar item, i.e. a <li> element that contains an icon and a label.
@@ -14,12 +15,14 @@ import { Link } from 'react-router-dom'
  * @param props.icon The icon of the sidebar item. 
  * @param props.label The label of the sidebar item.
  * @param props.sidebarActiveItem The id of the sidebar item that is currently active.
+ * @param props.notificationDotValue If set, a little notification dot with the given number will be displayed next to the item.
  */
-export default function SidebarItem({ id, icon, label, sidebarActiveItem }: {
+export default function SidebarItem({ id, icon, label, sidebarActiveItem, notificationDotValue }: {
     id: string
     icon: string
     label: string
     sidebarActiveItem: string
+    notificationDotValue?: number
 }): JSX.Element {
     const SidebarItemContent = (
         <div className={
@@ -48,9 +51,13 @@ export default function SidebarItem({ id, icon, label, sidebarActiveItem }: {
     return (
         <li>
             <Link to={'/' + id} className={
-                'group transition duration-300 md:flex md:items-center md:p-4 md:rounded-full md:hover:bg-secondary-200 dark:md:hover:bg-secondary-dark-200 md:active:scale-90 '
+                'relative group transition duration-300 md:flex md:items-center md:p-4 md:rounded-full md:hover:bg-secondary-200 dark:md:hover:bg-secondary-dark-200 md:active:scale-90 '
                 + (sidebarActiveItem == id ? 'md:bg-secondary-200 dark:md:bg-secondary-dark-200' : '')
             }>
+                {notificationDotValue !== undefined && notificationDotValue > 0 &&
+                    <NotificationDot value={notificationDotValue} />
+                }
+
                 {SidebarItemContent}
             </Link>
         </li>
