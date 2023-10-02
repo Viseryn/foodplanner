@@ -3,7 +3,7 @@
  *******************************
  *
  * @author Kevin Sporbeck
- * @version v1.6-beta.2
+ * @version v1.6-beta.3
  *
  */
 
