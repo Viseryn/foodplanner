@@ -17,19 +17,21 @@ import DayModel from '@/types/DayModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import SettingsModel from '@/types/SettingsModel'
 import UserGroupModel from '@/types/UserGroupModel'
+import InstallationStatusModel from '@/types/InstallationStatusModel'
 
 /**
  * A component that renders some user-specific as well as global settings.
  * 
  * @component
  */
-export default function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar }: {
+export default function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }: {
     settings: EntityState<SettingsModel>
     userGroups: EntityState<Array<UserGroupModel>>
     mealCategories: EntityState<Array<MealCategoryModel>>
     days: EntityState<Array<DayModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
+    installationStatus: EntityState<InstallationStatusModel>
 }): JSX.Element {
     /**
      * Changes the standard UserGroup to the one selected and updates the 
@@ -151,6 +153,38 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
             <Spacer height="6" />
 
             <div className="mx-4 md:mx-0">
+                <Heading size="xl" style="pl-2 mb-2">Über FoodPlanner</Heading>
+                <Card>
+                    {installationStatus.isLoading ? (
+                        <Spinner />
+                    ) : (
+                        <>
+                            <div className="flex items-center">
+                                <div className="">
+                                    <img src="/img/favicon.png" className="mx-auto" />
+                                </div>
+                                <div className="text-sm ml-4">
+                                    <div className="font-semibold">FoodPlanner</div>
+                                    <div className="text-xs">
+                                        <a
+                                            href={`https://github.com/Viseryn/foodplanner/releases/tag/${installationStatus.data.version}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {installationStatus.data.version}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="text-xs mt-4">
+                                &copy; 2023 Kevin Sporbeck
+                            </div>
+                        </>
+                    )}
+                </Card>
+
+                <Spacer height="10" />
+
                 <Heading size="xl" style="pl-2 mb-2">Vorratskammer anzeigen</Heading>
                 <Card>
                     <p className="text-sm">

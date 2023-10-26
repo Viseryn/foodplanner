@@ -1,44 +1,27 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
-use App\DataTransferObject\IngredientDTO;
-use App\DataTransferObject\StorageDTO;
+use App\Entity\Ingredient;
 use App\Entity\Storage;
 use App\Repository\IngredientRepository;
-use App\Repository\StorageRepository;
-use App\Service\IngredientService;
+use App\Service\DtoResponseService;
+use App\Service\JsonDeserializer;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\StorageControllerService;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/storages')]
-final class StorageController extends AbstractController
+final class StorageController extends AbstractControllerWithMapper
 {
     public function __construct(
-        private IngredientRepository $ingredientRepository,
-        private IngredientService $ingredientService,
-        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
-        private StorageControllerService $storageControllerService,
-        private StorageRepository $storageRepository,
-    ) {}
-
-    #[Route('', name: 'api_storages_getAll', methods: ['GET'])]
-    public function getAll(): Response
-    {
-        $storageDTOs = (new ArrayCollection($this->storageRepository->findAll()))
-            ->map(fn ($storage) => new StorageDTO($storage));
-        return DTOSerializer::getResponse($storageDTOs);
-    }
-
-    #[Route('/{name}', name: 'api_storages_getByName', methods: ['GET'])]
-    public function getByName(Storage $storage): Response
-    {
-        return DTOSerializer::getResponse(new StorageDTO($storage));
+        private readonly IngredientRepository $ingredientRepository,
+        private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        private readonly StorageControllerService $storageControllerService,
+    ) {
+        parent::__construct(Ingredient::class);
     }
 
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_get', methods: ['GET'])]
@@ -46,17 +29,15 @@ final class StorageController extends AbstractController
     {
         $ingredientDTOs = (new ArrayCollection(
             $this->ingredientRepository->findBy(['storage' => $storage->getId()], ['position' => 'ASC']),
-        ))->map(fn ($ingredient) => new IngredientDTO($ingredient));
-        return DTOSerializer::getResponse($ingredientDTOs);
+        ))->map(fn ($ingredient) => $this->mapper->entityToDto($ingredient));
+        return DtoResponseService::getResponse($ingredientDTOs);
     }
 
     /** Expects an array of IngredientModel objects. */
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_post', methods: ['POST'])]
     public function post(Request $request, Storage $storage): Response
     {
-        $data = json_decode($request->getContent(), false);
-
-        $ingredients = $this->ingredientService->mapIngredientModelsToEntities($data);
+        $ingredients = JsonDeserializer::jsonArrayToEntities($request->getContent(), Ingredient::class);
 
         foreach ($ingredients as $ingredient) {
             $ingredient->setStorage($storage);
@@ -65,14 +46,17 @@ final class StorageController extends AbstractController
 
         $this->refreshDataTimestampUtil->updateTimestamp();
 
-        $ingredientDTOs = $ingredients->map(fn ($ingredient) => new IngredientDTO($ingredient));
-        return DTOSerializer::getResponse($ingredientDTOs);
+        $ingredientDTOs = $ingredients->map(fn ($ingredient) => $this->mapper->entityToDto($ingredient));
+        return DtoResponseService::getResponse($ingredientDTOs);
     }
 
+    /**
+     * @todo Refactor
+     */
     #[Route('/{name}/ingredients', name: 'api_storages_getByName_ingredients_delete', methods: ['DELETE'])]
     public function deleteAllIngredients(
         Storage $storage,
-        #[MapQueryParameter] ?bool $checked = null
+        #[MapQueryParameter] ?bool $checked = null,
     ): Response {
         if ($storage->getName() === 'pantry') {
             if ($checked) {

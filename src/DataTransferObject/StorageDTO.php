@@ -1,25 +1,26 @@
 <?php namespace App\DataTransferObject;
 
-use App\Entity\Storage;
 use Doctrine\Common\Collections\ReadableCollection;
 
+/**
+ * @implements DataTransferObject<Storage>
+ */
 class StorageDTO implements DataTransferObject
 {
-    private ?int $id;
-    private ?string $name;
-    /** @var ReadableCollection<IngredientDTO> */
-    private ReadableCollection $ingredients;
-
-    public function __construct(Storage $storage)
-    {
-        $this->id = $storage->getId();
-        $this->name = $storage->getName();
-        $this->ingredients = $storage->getIngredients()->map(fn ($ingredient) => new IngredientDTO($ingredient));
-    }
+    private ?int $id = null;
+    private ?string $name = null;
+    /** @var ReadableCollection<IngredientDTO>|null */
+    private ?ReadableCollection $ingredients = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): ?string
@@ -27,8 +28,27 @@ class StorageDTO implements DataTransferObject
         return $this->name;
     }
 
-    public function getIngredients(): ReadableCollection
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return ReadableCollection<IngredientDTO>|null
+     */
+    public function getIngredients(): ?ReadableCollection
     {
         return $this->ingredients;
+    }
+
+    /**
+     * @param ReadableCollection<IngredientDTO>|null $ingredients
+     * @return $this
+     */
+    public function setIngredients(?ReadableCollection $ingredients): self
+    {
+        $this->ingredients = $ingredients;
+        return $this;
     }
 }

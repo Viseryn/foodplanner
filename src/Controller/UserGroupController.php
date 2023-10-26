@@ -2,14 +2,12 @@
 
 namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
-use App\DataTransferObject\UserGroupDTO;
 use App\Entity\UserGroup;
 use App\Form\UserGroupType;
 use App\Repository\UserGroupRepository;
+use App\Service\DtoResponseService;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\UserGroupControllerService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,19 +16,21 @@ use Symfony\Component\Routing\Annotation\Route;
  * UserGroup API
  */
 #[Route('/api/usergroups')]
-class UserGroupController extends AbstractController
+class UserGroupController extends AbstractControllerWithMapper
 {
     public function __construct(
-        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
-        private UserGroupControllerService $userGroupControllerService,
-        private UserGroupRepository $userGroupRepository,
-    ) {}
+        private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
+        private readonly UserGroupControllerService $userGroupControllerService,
+        private readonly UserGroupRepository $userGroupRepository,
+    ) {
+        parent::__construct(UserGroup::class);
+    }
 
     #[Route('', name: 'api_usergroups_get', methods: ['GET'])]
     public function get(): Response
     {
         $userGroupDTOs = $this->userGroupControllerService->getAllUserGroups();
-        return DTOSerializer::getResponse($userGroupDTOs);
+        return DtoResponseService::getResponse($userGroupDTOs);
     }
 
     #[Route('/{id}', name: 'api_usergroups_delete', methods: ['DELETE'])]
@@ -56,6 +56,6 @@ class UserGroupController extends AbstractController
         $this->userGroupRepository->add($userGroup, true);
         $this->refreshDataTimestampUtil->updateTimestamp();
 
-        return DTOSerializer::getResponse(new UserGroupDTO($userGroup));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($userGroup));
     }
 }

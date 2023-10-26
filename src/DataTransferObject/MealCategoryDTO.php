@@ -1,23 +1,23 @@
 <?php namespace App\DataTransferObject;
 
-use App\Entity\MealCategory;
-
+/**
+ * @implements DataTransferObject<MealCategory>
+ */
 class MealCategoryDTO implements DataTransferObject
 {
-    private ?int $id;
-    private ?string $name;
-    private ?string $icon;
-
-    public function __construct(MealCategory $mealCategory)
-    {
-        $this->id = $mealCategory->getId();
-        $this->name = $mealCategory->getName();
-        $this->icon = $mealCategory->getIcon();
-    }
+    private ?int $id = null;
+    private ?string $name = null;
+    private ?string $icon = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): ?string
@@ -25,8 +25,20 @@ class MealCategoryDTO implements DataTransferObject
         return $this->name;
     }
 
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
     public function getIcon(): ?string
     {
         return $this->icon;
+    }
+
+    public function setIcon(?string $icon): self
+    {
+        $this->icon = $icon;
+        return $this;
     }
 }

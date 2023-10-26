@@ -21,13 +21,11 @@ import SidebarDrawerItem from './components/SidebarDrawerItem'
  * @param props
  * @param props.isDrawerVisible A state variable that describes whether or not the sidebar drawer is visible.
  * @param props.setDrawerVisible The setter method of isDrawerVisible.
- * @param props.version The current version number of the app.
  * @param props.authentication The Authentication object.
  */
-export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, version, authentication }: {
+export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, authentication }: {
     isDrawerVisible: boolean
     setDrawerVisible: SetState<boolean>
-    version: string
     authentication: Authentication
 }): JSX.Element {
     return (
@@ -93,11 +91,6 @@ export default function SidebarDrawer({ isDrawerVisible, setDrawerVisible, versi
                             label="GitHub"
                         />
                     </ul>
-
-                    {/* Current version */}
-                    <div className="text-xs flex justify-end absolute bottom-5 right-5">
-                        {version}
-                    </div>
                 </div>
             </aside>
                 

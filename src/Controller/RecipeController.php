@@ -1,13 +1,12 @@
 <?php namespace App\Controller;
 
-use App\DataTransferObject\DTOSerializer;
-use App\DataTransferObject\RecipeDTO;
+use App\DataTransferObject\ImageDTO;
 use App\Entity\Recipe;
 use App\Repository\RecipeRepository;
-use App\Service\FileUploader;
+use App\Service\DtoResponseService;
+use App\Service\JsonDeserializer;
 use App\Service\RecipeControllerService;
 use App\Service\RefreshDataTimestampUtil;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,39 +15,38 @@ use Symfony\Component\Routing\Annotation\Route;
  * Recipe API
  */
 #[Route('/api/recipes')]
-class RecipeController extends AbstractController
+class RecipeController extends AbstractControllerWithMapper
 {
     public function __construct(
-        private FileUploader $fileUploader,
-        private RecipeControllerService $recipeControllerService,
-        private RecipeRepository $recipeRepository,
-        private RefreshDataTimestampUtil $refreshDataTimestampUtil,
-    ) {}
+        private readonly RecipeControllerService $recipeControllerService,
+        private readonly RecipeRepository $recipeRepository,
+        private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
+    ) {
+        parent::__construct(Recipe::class);
+    }
 
     #[Route('', name: 'api_recipes_getAll', methods: ['GET'])]
     public function getAll(): Response
     {
         $recipeDTOs = $this->recipeControllerService->getAllRecipes();
-        return DTOSerializer::getResponse($recipeDTOs);
+        return DtoResponseService::getResponse($recipeDTOs);
     }
 
     #[Route('', name: 'api_recipe_post', methods: ['POST'])]
     public function post(Request $request): Response
     {
-        $data = json_decode($request->getContent(), false);
-        $recipe = $this->recipeControllerService->mapRecipeModelToEntity($data);
+        $recipe = JsonDeserializer::jsonToEntity($request->getContent(), Recipe::class);
         $this->recipeRepository->save($recipe, true);
 
         $this->refreshDataTimestampUtil->updateTimestamp();
-        return DTOSerializer::getResponse(new RecipeDTO($recipe));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($recipe));
     }
 
     /** @todo PUT method is not working. */
     #[Route('/{id}', name: 'api_recipes_put', methods: ['POST'])]
     public function put(Recipe $recipe, Request $request): Response
     {
-        $data = json_decode($request->getContent(), false);
-        $newRecipe = $this->recipeControllerService->mapRecipeModelToEntity($data);
+        $newRecipe = JsonDeserializer::jsonToEntity($request->getContent(), Recipe::class);
 
         $recipe->setTitle($newRecipe->getTitle())
                ->setPortionSize($newRecipe->getPortionSize());
@@ -67,7 +65,7 @@ class RecipeController extends AbstractController
         $this->recipeRepository->save($recipe, true);
 
         $this->refreshDataTimestampUtil->updateTimestamp();
-        return DTOSerializer::getResponse(new RecipeDTO($recipe));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($recipe));
     }
 
     /**
@@ -77,22 +75,11 @@ class RecipeController extends AbstractController
     #[Route('/{id}/image', name: 'api_recipes_patch', methods: ['PATCH'])]
     public function patch(Recipe $recipe, Request $request): Response
     {
-        $data = json_decode($request->getContent(), false);
-
-        if (property_exists($data, "image") && is_string($data->image)) {
-            $image = $this->fileUploader->uploadBase64($data->image, $data->filename, '/img/recipes/');
-            $recipe->setImage($image);
-        }
-
-        if (property_exists($data, "removeImage") && is_bool($data->removeImage)) {
-            if ($data->removeImage) {
-                $recipe->setImage(null);
-            }
-        }
-
+        $imageDto = JsonDeserializer::jsonToDto($request->getContent(), ImageDTO::class);
+        $this->recipeControllerService->updateRecipeImage($recipe, $imageDto);
         $this->recipeRepository->save($recipe, true);
         $this->refreshDataTimestampUtil->updateTimestamp();
-        return DTOSerializer::getResponse(new RecipeDTO($recipe));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($recipe));
     }
 
     #[Route('/{id}', name: 'api_recipes_delete', methods: ['DELETE'])]
@@ -101,6 +88,6 @@ class RecipeController extends AbstractController
         $this->recipeControllerService->removeRecipe($recipe);
         $this->refreshDataTimestampUtil->updateTimestamp();
 
-        return DTOSerializer::getResponse(new RecipeDTO($recipe));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($recipe));
     }
 }
