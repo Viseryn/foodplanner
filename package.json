@@ -1,4 +1,7 @@
 {
+    "name": "foodplanner",
+    "version": "1.6-beta.3",
+    "author": "Kevin Sporbeck",
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",
         "@babel/plugin-proposal-class-properties": "^7.18.6",
