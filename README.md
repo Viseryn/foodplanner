@@ -20,7 +20,7 @@ You need to follow these steps to install FoodPlanner.
 2. Create a file `.env.local` in the project root folder. Override the db credentials found in `.env`. If you want to
    install the app on your production server, set `APP_ENV=prod`. (See Symfony Documentation.)
 3. Your webserver should point to `/public/`. This is the folder where all publically available assets, i.e.
-   JavaScript files, im,ages, etc. are located.
+   JavaScript files, images, etc. are located.
 4. Import the SQL backup `foodplanner.sql` to the database you configured in the `.env` file.
 5. Run `composer install` and `npm install` to install dependencies.
 6. Run `npm run watch` to build the CSS/JavaScript files. They should appear in `/public/build/`. If not, check the
