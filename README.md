@@ -60,7 +60,7 @@ A new feature/bugfix/update should be implemented in a corresponding branch from
 some issue, e.g. `bugfix/issue-28/sweetalert-cancel-buttons-disappeared`.
 
 When all issues for a future release version are closed, a new release branch will be created, e.g. `release/v1.5`,
-that will be merged into `main`. Hotfixes may be merged into a corresponding release branch.
+that will be merged into `master`. Hotfixes may be merged into a corresponding release branch.
 
 ## Planned features
 
