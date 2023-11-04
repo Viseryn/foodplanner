@@ -1,6 +1,6 @@
 # FoodPlanner
 
-Current version: v1.6
+Current version: v1.6.1
 
 ---
 
@@ -21,15 +21,14 @@ You need to follow these steps to install FoodPlanner.
    install the app on your production server, set `APP_ENV=prod`. (See Symfony Documentation.)
 3. Your webserver should point to `/public/`. This is the folder where all publically available assets, i.e.
    JavaScript files, images, etc. are located.
-4. Import the SQL backup `foodplanner.sql` to the database you configured in the `.env` file.
-5. Run `composer install` and `npm install` to install dependencies.
-6. Run `npm run watch` to build the CSS/JavaScript files. They should appear in `/public/build/`. If not, check the
+4. Run `composer install` and `npm install` to install dependencies.
+5. Run `npm run watch` to build the CSS/JavaScript files. They should appear in `/public/build/`. If not, check the
    TypeScript and Webpack Encore configurations.
-7. If you want to install the app on your production server, run `composer dump-env prod`, which will produce a file 
+6. If you want to install the app on your production server, run `composer dump-env prod`, which will produce a file 
    called `.env.local.php`.
-8. Run `php bin/console cache:clear`.
-9. Run `php bin/console doctrine:migrations:migrate`.
-10. In a development environment, run `symfony server:start` to run the app.
+7. Run `php bin/console cache:clear`.
+8. Run `php bin/console doctrine:migrations:migrate`.
+9. In a development environment, run `symfony server:start` to run the app.
 
 There is not much that is left to set up.
 1. Open the app. You should automatically be redirected to the installation page, located at `https://localhost/install`.
