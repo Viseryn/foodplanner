@@ -67,35 +67,37 @@ export default function Sidebar({
                     </ul>
 
                     {/* Main navigation destinations, for all screen sizes */}
-                    <ul className="flex flex-row md:flex-col w-full justify-between md:space-x-0 md:space-y-2">
-                        <SidebarItem 
-                            sidebarActiveItem={sidebarActiveItem}
-                            id="planner"
-                            icon="date_range"
-                            label="Wochenplan"
-                        />
-                        <SidebarItem 
-                            sidebarActiveItem={sidebarActiveItem}
-                            id="recipes"
-                            icon="receipt_long"
-                            label="Rezepte"
-                        />
-                        <SidebarItem 
-                            sidebarActiveItem={sidebarActiveItem}
-                            id="shoppinglist"
-                            icon="shopping_cart"
-                            label="Einkaufsliste"
-                            notificationDotValue={shoppingListNotificationDotValue}
-                        />
-                        {(settings.data?.showPantry || !authentication.isAuthenticated || settings.isLoading) &&
-                            <SidebarItem 
+                    {authentication.isAuthenticated && (
+                        <ul className="flex flex-row md:flex-col w-full justify-between md:space-x-0 md:space-y-2">
+                            <SidebarItem
                                 sidebarActiveItem={sidebarActiveItem}
-                                id="pantry"
-                                icon="shelves"
-                                label="Vorratskammer"
+                                id="planner"
+                                icon="date_range"
+                                label="Wochenplan"
                             />
-                        }
-                    </ul>
+                            <SidebarItem
+                                sidebarActiveItem={sidebarActiveItem}
+                                id="recipes"
+                                icon="receipt_long"
+                                label="Rezepte"
+                            />
+                            <SidebarItem
+                                sidebarActiveItem={sidebarActiveItem}
+                                id="shoppinglist"
+                                icon="shopping_cart"
+                                label="Einkaufsliste"
+                                notificationDotValue={shoppingListNotificationDotValue}
+                            />
+                            {(settings.data?.showPantry || settings.isLoading) &&
+                                <SidebarItem
+                                    sidebarActiveItem={sidebarActiveItem}
+                                    id="pantry"
+                                    icon="shelves"
+                                    label="Vorratskammer"
+                                />
+                            }
+                        </ul>
+                    )}
 
                     {/* Floating Sidebar Action Button on mobile screens */}
                     <ul className="fixed md:hidden bottom-[6.5rem] right-6">
