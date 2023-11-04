@@ -57,7 +57,7 @@ discuss your idea! If you have a bug fix or cool new feature and want to merge i
 `develop` branch.
 
 A new feature/bugfix/update should be implemented in a corresponding branch from `develop`, and ideally be linked to 
-some issue, e.g. `bugfix/issue-28/sweetalert-cancel-buttons-disappeared`.
+some issue, e.g. `issue/28/sweetalert-cancel-buttons-disappeared`.
 
 When all issues for a future release version are closed, a new release branch will be created, e.g. `release/v1.5`,
 that will be merged into `master`. Hotfixes may be merged into a corresponding release branch.
