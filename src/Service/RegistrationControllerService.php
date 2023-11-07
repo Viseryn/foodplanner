@@ -14,7 +14,8 @@ final class RegistrationControllerService
     {
         $settings = (new Settings)
             ->setUser($user)
-            ->setShowPantry(true);
+            ->setShowPantry(true)
+            ->setRecipeListViewMode("GRID");
         $this->settingsRepository->save($settings, true);
     }
 }

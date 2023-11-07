@@ -24,6 +24,8 @@ type SettingsModel = {
 
     /** The user's set standard MealCategory. */
     standardMealCategory?: MealCategoryModel
+
+    recipeListViewMode: string
 }
 
 export default SettingsModel
