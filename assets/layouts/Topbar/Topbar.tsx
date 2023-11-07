@@ -63,7 +63,7 @@ export default function Topbar({ topbar, SidebarDrawerButton }: {
 
     // The topbar for large screens (md+). Hidden on small screens.
     const TopbarLargeScreens: JSX.Element = (
-        <div className={`hidden md:flex justify-between items-center h-14 mt-6 ${topbar?.style}`}>
+        <div className={`hidden md:fixed z-20 bg-bg dark:bg-bg-dark md:flex justify-between items-center w-full h-[5.5rem] pt-6 pb-2 ${topbar?.style}`}>
             <div>
                 {topbar?.showBackButton ? (
                     <TopbarHeading
