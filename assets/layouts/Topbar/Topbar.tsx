@@ -48,7 +48,7 @@ export default function Topbar({ topbar, SidebarDrawerButton }: {
      * @return The container of the action buttons.
      */
     const TopbarActionButtons = (style: string = ''): JSX.Element => (
-        <div className={style}>
+        <div className={'flex gap-2 ' + style}>
             {topbar?.actionButtons?.map((button, index) => 
                 <IconButton
                     key={index}
@@ -112,7 +112,7 @@ export default function Topbar({ topbar, SidebarDrawerButton }: {
             
                         <div className={
                             'font-semibold text-primary-200 dark:text-secondary-dark-900 transition-all duration-300 ' 
-                            + (scrollPosition > 0 ? 'text-xl w-[200px] whitespace-nowrap' : 'w-[300px] text-3xl')
+                            + (scrollPosition > 0 ? 'text-xl w-[150px] whitespace-nowrap' : 'w-[300px] text-3xl')
                             + (scrollPosition > 0 && topbar?.truncate ? ' truncate' : '')
                         }>
                             {!topbar?.isLoading ? topbar?.title : <TopbarTitleSkeleton />}
