@@ -7,13 +7,18 @@ import SearchWidget from './components/SearchWidget'
 import { RecipeImageCard } from '@/pages/Recipes/components/RecipeImageCard'
 import { RecipesGrid } from '@/pages/Recipes/components/RecipesGrid'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { ViewMode } from '@/pages/Recipes/constants/ViewMode'
+import SettingsModel from '@/types/SettingsModel'
+import axios from 'axios'
 
-export function Recipes({ recipes, setSidebar, setTopbar }: {
+export function Recipes({ recipes, settings, setSidebar, setTopbar }: {
     recipes: EntityState<Array<RecipeModel>>
+    settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }): ReactElement {
     const [searchWidgetInput, setSearchWidgetInput] = useState<string>('')
+    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
 
     /** @todo [Issue #101] Implement a more intelligent search with more filters. */
     const recipesFiltered: Array<RecipeModel> = recipes.isLoading
@@ -33,6 +38,38 @@ export function Recipes({ recipes, setSidebar, setTopbar }: {
 
             return returnValue
         })
+
+    const handleViewMode = async (): Promise<void> => {
+        const newViewMode: ViewMode = viewMode === ViewMode.GRID ? ViewMode.LIST : ViewMode.GRID
+        setViewMode(newViewMode)
+
+        await axios.patch(`/api/settings/${settings.data.id}`, {
+            recipeListViewMode: ViewMode[newViewMode]
+        })
+    }
+
+    useEffect(() => {
+        if (settings.isLoading) {
+            return
+        }
+
+        setViewMode(ViewMode[settings.data.recipeListViewMode as keyof typeof ViewMode])
+    }, [settings.isLoading])
+
+    useEffect(() => {
+        if (settings.isLoading) {
+            return
+        }
+
+        setTopbar({
+            title: 'Rezepte',
+            actionButtons: [{
+                icon: viewMode === ViewMode.GRID ? 'view_agenda' : 'grid_view',
+                onClick: handleViewMode,
+            }],
+            style: 'md:max-w-[900px]',
+        })
+    }, [viewMode, settings.isLoading])
 
     useEffect(() => {
         setSidebar('recipes', {
@@ -61,7 +98,7 @@ export function Recipes({ recipes, setSidebar, setTopbar }: {
 
             {recipesFiltered.length === 0 && !recipes.isLoading
                 ? <Notification color="red" title="Keine Rezepte gefunden." />
-                : <RecipesGrid>
+                : <RecipesGrid viewMode={viewMode}>
                     {recipes.isLoading
                         ? <RecipeListSkeleton />
                         : recipesFiltered.map(recipe => <RecipeImageCard key={recipe.id} recipe={recipe} />)
