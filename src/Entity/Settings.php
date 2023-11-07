@@ -26,6 +26,9 @@ class Settings implements EntityInterface
     #[ORM\ManyToOne]
     private ?MealCategory $standardMealCategory = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $recipeListViewMode = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Settings implements EntityInterface
     public function setStandardMealCategory(?MealCategory $standardMealCategory): static
     {
         $this->standardMealCategory = $standardMealCategory;
+
+        return $this;
+    }
+
+    public function getRecipeListViewMode(): ?string
+    {
+        return $this->recipeListViewMode;
+    }
+
+    public function setRecipeListViewMode(string $recipeListViewMode): static
+    {
+        $this->recipeListViewMode = $recipeListViewMode;
 
         return $this;
     }

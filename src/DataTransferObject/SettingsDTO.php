@@ -10,6 +10,7 @@ class SettingsDTO implements DataTransferObject
     private ?bool $showPantry = null;
     private ?UserGroupDTO $standardUserGroup = null;
     private ?MealCategoryDTO $standardMealCategory = null;
+    private ?string $recipeListViewMode = null;
 
     public function getId(): ?int
     {
@@ -31,7 +32,6 @@ class SettingsDTO implements DataTransferObject
         $this->user = $user;
         return $this;
     }
-
 
     public function getShowPantry(): ?bool
     {
@@ -63,6 +63,17 @@ class SettingsDTO implements DataTransferObject
     public function setStandardMealCategory(?MealCategoryDTO $standardMealCategory): self
     {
         $this->standardMealCategory = $standardMealCategory;
+        return $this;
+    }
+
+    public function getRecipeListViewMode(): ?string
+    {
+        return $this->recipeListViewMode;
+    }
+
+    public function setRecipeListViewMode(?string $recipeListViewMode): self
+    {
+        $this->recipeListViewMode = $recipeListViewMode;
         return $this;
     }
 }

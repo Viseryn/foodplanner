@@ -199,7 +199,7 @@ export default function App(): ReactElement {
                                 <Route
                                     path="/recipes"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <Recipes {...{ recipes, setSidebar, setTopbar }} />
+                                        <Recipes {...{ recipes, settings, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
