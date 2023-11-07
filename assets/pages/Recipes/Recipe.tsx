@@ -60,11 +60,8 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
     // Whenever this value is changed, tmpRecipe will be updated.
     const [portionSize, setPortionSize] = useState<number>(0)
 
-    // Counts how often the SAB was pressed. Will update the SAB on change.
-    const [countSabClicks, setCountSabClicks] = useState<number>(0)
-
     // Whether the SidebarActionButton should display "Done!" on click.
-    const [showSabDone, setShowSabDone] = useState<boolean>(false)
+    const [showShoppingListDone, setShowShoppingListDone] = useState<boolean>(false)
 
     // Whether the "Add to Pantry" button should display "Done!" on click.
     const [showPantryDone, setShowPantryDone] = useState<boolean>(false)
@@ -72,8 +69,7 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
     // Timeouts for Done-info
     const { clearTimeout: clearShoppingListTimeout, startTimeout: startShoppingListTimeout }
         = useTimeout(() => {
-            setShowSabDone(false)
-            setCountSabClicks(0)
+            setShowShoppingListDone(false)
         }, 5000)
     const { clearTimeout: clearPantryTimeout, startTimeout: startPantryTimeout }
         = useTimeout(() => {
@@ -100,8 +96,7 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
         }
 
         // Update parameters for SAB
-        setShowSabDone(true)
-        setCountSabClicks(count => count + 1)
+        setShowShoppingListDone(true)
         startShoppingListTimeout()
     }
 
@@ -221,24 +216,16 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
         setTmpRecipe(newRecipe)
     }, [portionSize])
 
-    // Update SidebarActionButton when recipe or tmpRecipe changes or button is clicked (i.e., showButton is set to false).
     useEffect(() => {
-        if (recipes.isLoading) {
-            return
+        if (!days.isLoading) {
+            setSidebar('recipes', {
+                visible: true,
+                icon: 'calendar_add_on',
+                label: 'Mahlzeit planen',
+                path: `/planner/add/${days.data[0].id}?recipe=${recipe.id}`,
+            })
         }
 
-        setSidebar('recipes', {
-            visible: true,
-            icon: showSabDone ? 'done' : 'add_shopping_cart',
-            label: showSabDone
-                ? 'Erledigt!' + (countSabClicks > 1 ? ' (' + countSabClicks + ')' : '')
-                : 'Zur Einkaufsliste',
-            onClick: () => handleAddShoppingList(tmpRecipe),
-        })
-    }, [recipe, tmpRecipe, showSabDone, countSabClicks])
-
-    // Load layout
-    useEffect(() => {
         setTopbar({
             title: recipe.title,
             showBackButton: true,
@@ -250,7 +237,6 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
                         recipes.load()
                     }
                 },
-                { icon: 'calendar_add_on', onClick: () => navigate(`/planner/add/${days.data[0].id}?recipe=${id}`) },
                 { icon: 'contract_edit', onClick: () => navigate('/recipe/' + id + '/edit') },
             ],
             truncate: true,
@@ -258,7 +244,6 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
             isLoading: recipes.isLoading,
         })
 
-        // Scroll to top
         window.scrollTo(0, 0)
     }, [recipe, days.isLoading])
 
@@ -269,7 +254,7 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
             <Spacer height="6" />
             {recipes.isLoading
                 ? /* Recipe Skeleton */
-                <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' />
+                <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' alt='' />
                 : (recipe.image &&
                     <img
                         className="rounded-3xl h-80 object-cover transition duration-300 w-full"
@@ -368,18 +353,27 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
                                 )}
                             </div>
 
-                            {settings.data.showPantry &&
-                                <div className="flex justify-end mt-4">
+                            <div className="flex flex-col items-end justify-end gap-4 mt-4">
+                                <Button
+                                    icon={showShoppingListDone ? 'done' : 'add_shopping_cart'}
+                                    outlined={true}
+                                    label={showShoppingListDone ? 'Erledigt!' : 'Alle Zutaten zur Einkaufsliste'}
+                                    onClick={() => handleAddShoppingList(tmpRecipe)}
+                                    role="tertiary"
+                                    isSmall={true}
+                                />
+
+                                {settings.data.showPantry &&
                                     <Button
                                         icon={showPantryDone ? 'done' : 'add_home'}
                                         outlined={true}
                                         label={showPantryDone ? 'Erledigt!' : 'Alle Zutaten zum Vorrat'}
                                         onClick={() => handleAddPantry(tmpRecipe)}
-                                        role="secondary"
+                                        role="tertiary"
                                         isSmall={true}
                                     />
-                                </div>
-                            }
+                                }
+                            </div>
                         </Card>
                     </div>
                 }
