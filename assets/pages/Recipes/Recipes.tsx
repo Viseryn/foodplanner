@@ -18,7 +18,6 @@ export function Recipes({ recipes, settings, setSidebar, setTopbar }: {
     setTopbar: SetTopbarAction
 }): ReactElement {
     const [searchWidgetInput, setSearchWidgetInput] = useState<string>('')
-    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
 
     /** @todo [Issue #101] Implement a more intelligent search with more filters. */
     const recipesFiltered: Array<RecipeModel> = recipes.isLoading
@@ -40,36 +39,28 @@ export function Recipes({ recipes, settings, setSidebar, setTopbar }: {
         })
 
     const handleViewMode = async (): Promise<void> => {
-        const newViewMode: ViewMode = viewMode === ViewMode.GRID ? ViewMode.LIST : ViewMode.GRID
-        setViewMode(newViewMode)
-
-        await axios.patch(`/api/settings/${settings.data.id}`, {
-            recipeListViewMode: ViewMode[newViewMode]
+        const response = await axios.patch(`/api/settings/${settings.data.id}`, {
+            recipeListViewMode: ViewMode.toString(ViewMode.getSuccessor(ViewMode.parse(settings.data.recipeListViewMode)))
         })
+
+        settings.setData(response.data)
     }
 
     useEffect(() => {
         if (settings.isLoading) {
-            return
-        }
-
-        setViewMode(ViewMode[settings.data.recipeListViewMode as keyof typeof ViewMode])
-    }, [settings.isLoading])
-
-    useEffect(() => {
-        if (settings.isLoading) {
+            setTopbar({ title: 'Rezepte' })
             return
         }
 
         setTopbar({
             title: 'Rezepte',
             actionButtons: [{
-                icon: viewMode === ViewMode.GRID ? 'view_agenda' : 'grid_view',
+                icon: ViewMode.getIcon(ViewMode.parse(settings.data.recipeListViewMode)),
                 onClick: handleViewMode,
             }],
             style: 'md:max-w-[900px]',
         })
-    }, [viewMode, settings.isLoading])
+    }, [settings.data.recipeListViewMode])
 
     useEffect(() => {
         setSidebar('recipes', {
@@ -77,10 +68,6 @@ export function Recipes({ recipes, settings, setSidebar, setTopbar }: {
             icon: 'add',
             path: '/recipe/add',
             label: 'Neues Rezept',
-        })
-
-        setTopbar({
-            title: 'Rezepte',
         })
 
         window.scrollTo(0, 0)
@@ -98,7 +85,7 @@ export function Recipes({ recipes, settings, setSidebar, setTopbar }: {
 
             {recipesFiltered.length === 0 && !recipes.isLoading
                 ? <Notification color="red" title="Keine Rezepte gefunden." />
-                : <RecipesGrid viewMode={viewMode}>
+                : <RecipesGrid viewMode={ViewMode.parse(settings.data.recipeListViewMode)}>
                     {recipes.isLoading
                         ? <RecipeListSkeleton />
                         : recipesFiltered.map(recipe => <RecipeImageCard key={recipe.id} recipe={recipe} />)
