@@ -11,12 +11,12 @@ import * as ViewMode from '@/pages/Recipes/constants/ViewMode'
 import SettingsModel from '@/types/SettingsModel'
 import axios from 'axios'
 
-export function Recipes({ recipes, settings, setSidebar, setTopbar }: {
-    recipes: EntityState<Array<RecipeModel>>
+export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
+    recipes: EntityState<RecipeModel[]>
     settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): ReactElement {
+}): ReactElement => {
     const [searchWidgetInput, setSearchWidgetInput] = useState<string>('')
 
     /** @todo [Issue #101] Implement a more intelligent search with more filters. */
