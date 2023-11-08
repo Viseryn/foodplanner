@@ -7,7 +7,7 @@ import SearchWidget from './components/SearchWidget'
 import { RecipeImageCard } from '@/pages/Recipes/components/RecipeImageCard'
 import { RecipesGrid } from '@/pages/Recipes/components/RecipesGrid'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
-import { ViewMode } from '@/pages/Recipes/constants/ViewMode'
+import * as ViewMode from '@/pages/Recipes/constants/ViewMode'
 import SettingsModel from '@/types/SettingsModel'
 import axios from 'axios'
 
