@@ -263,6 +263,10 @@ body::-webkit-scrollbar {
 .swal-modal {
     border-radius: 1.5rem;
     background-color: $red-50;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: darken($red-900, 10%);
+    }
 }
 
 .swal-text,
@@ -270,14 +274,32 @@ body::-webkit-scrollbar {
     font-weight: 400;
     color: $gray-900;
     text-align: center;
+
+    @media (prefers-color-scheme: dark) {
+        color: $gray-50;
+    }
+}
+
+.swal-icon {
+    &--error {
+        border-color: $red-500;
+    }
+
+    &--error__line {
+        background-color: $red-500;
+    }
 }
 
 .swal-button {
     border-radius: 9999px;
     font-weight: 600;
     font-size: medium;
-    color: $gray-900;
+    color: $red-600;
     transition-duration: 300ms;
+
+    @media (prefers-color-scheme: dark) {
+        color: $gray-50;
+    }
     
     &:focus {
         box-shadow: none;
@@ -290,26 +312,50 @@ body::-webkit-scrollbar {
     &--danger {
         background-color: $red-200;
 
+        @media (prefers-color-scheme: dark) {
+            background-color: $red-800;
+        }
+
         &:not([disabled]):hover {
             background-color: $red-300;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: $red-800;
+            }
         }
 
         &:active {
             background-color: $red-400 !important;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: $red-700;
+            }
         }
     }
 
     &--cancel {
         margin-right: 1rem;
         background-color: transparent;
-        color: $rose-700;
+        color: $red-600;
+
+        @media (prefers-color-scheme: dark) {
+            color: $gray-50;
+        }
 
         &:not([disabled]):hover{
             background-color: $red-100;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: $red-800;
+            }
         }
 
         &:active {
             background-color: $red-200 !important;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: $red-800;
+            }
         }
     }
 }

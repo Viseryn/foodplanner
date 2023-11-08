@@ -62,6 +62,10 @@ class SettingsController extends AbstractControllerWithMapper
             $settings->setStandardMealCategory($mealCategory);
         }
 
+        if (property_exists($data, "recipeListViewMode") && is_string($data->recipeListViewMode)) {
+            $settings->setRecipeListViewMode($data->recipeListViewMode);
+        }
+
         $this->settingsRepository->save($settings, true);
         return DtoResponseService::getResponse($this->mapper->entityToDto($settings));
     }

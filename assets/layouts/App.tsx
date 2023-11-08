@@ -160,102 +160,103 @@ export default function App(): ReactElement {
                         }
                     />
 
-                    {/* Routing */}
-                    {isMigratingImages ? (
-                        <div className="pb-[5.5rem] mx-4 md:ml-0">
-                            <Spacer height="6" />
-                            <Notification title="FoodPlanner wird auf Version v1.6 aktualisiert ..." />
-                            <Spinner />
-                        </div>
-                    ) : (
-                        <Routes>
-                            <Route
-                                path="/"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/planner"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/planner/add/:id"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/shoppinglist"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <ShoppingList
-                                        {...{ shoppingList, pantry, settings, setSidebar, setTopbar }}
-                                    />
-                                } />}
-                            />
-                            <Route
-                                path="/recipes"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <Recipes {...{ recipes, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/recipe/add"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <AddRecipe {...{ recipes, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/recipe/:id"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <Recipe {...{ days, recipes, shoppingList, pantry, settings, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/recipe/:id/edit"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <EditRecipe {...{ recipes, days, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/pantry"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <Pantry {...{ pantry, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/settings"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <Settings {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
-                                } />}
-                            />
-                            <Route
-                                path="/settings/groups/add"
-                                element={<AuthChecker authentication={authentication} component={
-                                    <AddGroup {...{ authentication, userGroups, setSidebar, setTopbar }} />
-                                } />}
-                            />
-                            <Route
-                                path="/login"
-                                element={<Login {...{ user, authentication, setLoading, setSidebar, setTopbar }} />}
-                            />
-                            <Route
-                                path="/logout"
-                                element={<Logout {...{ authentication, setSidebar, setTopbar }} />}
-                            />
-                            <Route
-                                path="/register"
-                                element={<Registration {...{ user, setSidebar, setTopbar }} />}
-                            />
-                            <Route
-                                path="*"
-                                element={<PageNotFound {...{ setSidebar, setTopbar }} />}
-                            />
-                        </Routes>
-                    )}
-
+                    <div className="md:pt-20">
+                        {/* Routing */}
+                        {isMigratingImages ? (
+                            <div className="pb-[5.5rem] mx-4 md:ml-0">
+                                <Spacer height="6" />
+                                <Notification title="FoodPlanner wird auf Version v1.6 aktualisiert ..." />
+                                <Spinner />
+                            </div>
+                        ) : (
+                            <Routes>
+                                <Route
+                                    path="/"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/planner"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/planner/add/:id"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/shoppinglist"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <ShoppingList
+                                            {...{ shoppingList, pantry, settings, setSidebar, setTopbar }}
+                                        />
+                                    } />}
+                                />
+                                <Route
+                                    path="/recipes"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <Recipes {...{ recipes, settings, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/recipe/add"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <AddRecipe {...{ recipes, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/recipe/:id"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <Recipe {...{ days, recipes, shoppingList, pantry, settings, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/recipe/:id/edit"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <EditRecipe {...{ recipes, days, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/pantry"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <Pantry {...{ pantry, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/settings"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <Settings {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/settings/groups/add"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <AddGroup {...{ authentication, userGroups, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/login"
+                                    element={<Login {...{ user, authentication, setLoading, setSidebar, setTopbar }} />}
+                                />
+                                <Route
+                                    path="/logout"
+                                    element={<Logout {...{ authentication, setSidebar, setTopbar }} />}
+                                />
+                                <Route
+                                    path="/register"
+                                    element={<Registration {...{ user, setSidebar, setTopbar }} />}
+                                />
+                                <Route
+                                    path="*"
+                                    element={<PageNotFound {...{ setSidebar, setTopbar }} />}
+                                />
+                            </Routes>
+                        )}
+                    </div>
                 </div>
             </div>
         </BrowserRouter>

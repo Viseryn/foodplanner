@@ -24,7 +24,8 @@ final class SettingsMapper implements Mapper
         return (new Settings)->setUser($this->userMapper->dtoToEntity($dto->getUser()))
                              ->setShowPantry($dto->getShowPantry())
                              ->setStandardMealCategory($this->mealCategoryMapper->dtoToEntity($dto->getStandardMealCategory()))
-                             ->setStandardUserGroup($this->userGroupMapper->dtoToEntity($dto->getStandardUserGroup()));
+                             ->setStandardUserGroup($this->userGroupMapper->dtoToEntity($dto->getStandardUserGroup()))
+                             ->setRecipeListViewMode($dto->getRecipeListViewMode());
     }
 
     /**
@@ -36,7 +37,16 @@ final class SettingsMapper implements Mapper
         return (new SettingsDto)->setId($entity->getId())
                                 ->setUser($this->userMapper->entityToDto($entity->getUser()))
                                 ->setShowPantry($entity->isShowPantry())
-                                ->setStandardMealCategory($this->mealCategoryMapper->entityToDto($entity->getStandardMealCategory()))
-                                ->setStandardUserGroup($this->userGroupMapper->entityToDto($entity->getStandardUserGroup()));
+                                ->setStandardMealCategory(
+                                    $entity->getStandardMealCategory() != null
+                                        ? $this->mealCategoryMapper->entityToDto($entity->getStandardMealCategory())
+                                        : null
+                                )
+                                ->setStandardUserGroup(
+                                    $entity->getStandardUserGroup() != null
+                                        ? $this->userGroupMapper->entityToDto($entity->getStandardUserGroup())
+                                        : null
+                                )
+                                ->setRecipeListViewMode($entity->getRecipeListViewMode());
     }
 }

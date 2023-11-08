@@ -1,6 +1,6 @@
 # FoodPlanner
 
-Current version: v1.6
+Current version: v1.6.1
 
 ---
 
@@ -9,7 +9,7 @@ Current version: v1.6
 **FoodPlanner** is a Web App for managing your meal plans for the week, your recipes, your shopping list and your pantry
 ingredients. You can find more screenshots at the bottom of the page.
 
-<img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" />
+<img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" alt="" />
 
 ---
 ## How to install and setup FoodPlanner
@@ -21,21 +21,32 @@ You need to follow these steps to install FoodPlanner.
    install the app on your production server, set `APP_ENV=prod`. (See Symfony Documentation.)
 3. Your webserver should point to `/public/`. This is the folder where all publically available assets, i.e.
    JavaScript files, images, etc. are located.
-4. Import the SQL backup `foodplanner.sql` to the database you configured in the `.env` file.
-5. Run `composer install` and `npm install` to install dependencies.
-6. Run `npm run watch` to build the CSS/JavaScript files. They should appear in `/public/build/`. If not, check the
+4. Run `composer install` and `npm install` to install dependencies.
+5. Run `npm run watch` to build the CSS/JavaScript files. They should appear in `/public/build/`. If not, check the
    TypeScript and Webpack Encore configurations.
-7. If you want to install the app on your production server, run `composer dump-env prod`, which will produce a file 
+6. If you want to install the app on your production server, run `composer dump-env prod`, which will produce a file 
    called `.env.local.php`.
-8. Run `php bin/console cache:clear`.
-9. Run `php bin/console doctrine:migrations:migrate`.
-10. In a development environment, run `symfony server:start` to run the app.
+7. Run `php bin/console cache:clear`.
+8. Run `php bin/console doctrine:migrations:migrate`.
+9. In a development environment, run `symfony server:start` to run the app.
 
 There is not much that is left to set up.
 1. Open the app. You should automatically be redirected to the installation page, located at `https://localhost/install`.
 2. Follow the installation steps and sign in afterward.
 
 Enjoy using FoodPlanner!
+
+## How to update FoodPlanner
+If there is a newer version available in the Release section, download the files and override everything in your project
+folder. Usually it should be sufficient to build the new CSS/JS files with `npm run watch` and to migrate new migrations
+with `php bin/console doctrine:migrations:migrate`. If there are any issues, try clearing the cache.
+
+When updating from a version lower than v1.6 to v1.6, all image files for recipes will be renamed and reuploaded, so it
+might be a good idea to create a backup of the image folder beforehand.
+
+Also, note that v1.6.1 introduces a new migration `Version20230101000000.php` that replaces the SQL file with the 
+basic database setup of earlier versions. If there are problems with migrating, consider clearing the database first,
+migrating and manually re-inserting the previous data.
 
 ## How to use FoodPlanner
 
@@ -57,10 +68,10 @@ discuss your idea! If you have a bug fix or cool new feature and want to merge i
 `develop` branch.
 
 A new feature/bugfix/update should be implemented in a corresponding branch from `develop`, and ideally be linked to 
-some issue, e.g. `bugfix/issue-28/sweetalert-cancel-buttons-disappeared`.
+some issue, e.g. `issue/28/sweetalert-cancel-buttons-disappeared`.
 
 When all issues for a future release version are closed, a new release branch will be created, e.g. `release/v1.5`,
-that will be merged into `main`. Hotfixes may be merged into a corresponding release branch.
+that will be merged into `master`. Hotfixes may be merged into a corresponding release branch.
 
 ## Planned features
 
@@ -69,6 +80,22 @@ See https://github.com/Viseryn/foodplanner/issues for all planned features and b
 - Localization, especially English (US).
 - Notifications, e.g. reminders for the shopping list.
 - Optimizations, e.g. generating thumbnails and improving synchronization.
+
+## Release checklist
+
+Currently, a new release is not automatically created (see Issue #175).
+When all issues for a planned released have been resolved, follow these steps:
+
+- Create a branch `release/v{version-number}` from develop.
+- Change the version number in README.md, package.json and create a new migration. 
+  Commit with message `Realease v{version-number}`.
+- If there are any hotfixes needed, merge them into the new release branch.
+- After testing, create a new GitHub release on the release branch with a corresponding tag.
+- Create a pull request for merging the release branch into the master branch.
+- Create a pull request for merging the master branch into the develop branch.
+- Change the version number in README.md, package.json and create a new migration for the next snapshot version.
+  For example, if v1.6.1 was just released, change the version number to v.1.6.2-snapshot.
+  Commit on the develop branch with message `Snapshot v{snapshot-version-number}`.
 
 ---
 
@@ -125,12 +152,12 @@ complex objects.
 
 ### Mobile
 
-<img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-2.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-3.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-4.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-5.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-6.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-7.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" />
+<img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-2.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-3.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-4.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-5.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-6.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-7.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" alt="" />
 
 ### Dark Mode
 
-<img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-1.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-2.png" width="200" />
+<img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-1.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-2.png" width="200" alt="" />
 
 ### Desktop
 
-<img src="https://foodplanner.yusel.net/img/screenshots/desktop-1.png" width="400" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-1.png" width="400" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-2.png" width="400" />
+<img src="https://foodplanner.yusel.net/img/screenshots/desktop-1.png" width="400" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-1.png" width="400" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-2.png" width="400" alt="" />
