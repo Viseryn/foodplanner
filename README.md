@@ -1,6 +1,6 @@
 # FoodPlanner
 
-Current version: v1.6.1
+Current version: v1.6.1-snapshot
 
 ---
 
@@ -9,7 +9,7 @@ Current version: v1.6.1
 **FoodPlanner** is a Web App for managing your meal plans for the week, your recipes, your shopping list and your pantry
 ingredients. You can find more screenshots at the bottom of the page.
 
-<img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" />
+<img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" alt="" />
 
 ---
 ## How to install and setup FoodPlanner
@@ -35,6 +35,18 @@ There is not much that is left to set up.
 2. Follow the installation steps and sign in afterward.
 
 Enjoy using FoodPlanner!
+
+## How to update FoodPlanner
+If there is a newer version available in the Release section, download the files and override everything in your project
+folder. Usually it should be sufficient to build the new CSS/JS files with `npm run watch` and to migrate new migrations
+with `php bin/console doctrine:migrations:migrate`. If there are any issues, try clearing the cache.
+
+When updating from a version lower than v1.6 to v1.6, all image files for recipes will be renamed and reuploaded, so it
+might be a good idea to create a backup of the image folder beforehand.
+
+Also, note that v1.6.1 introduces a new migration `Version20230101000000.php` that replaces the SQL file with the 
+basic database setup of earlier versions. If there are problems with migrating, consider clearing the database first,
+migrating and manually re-inserting the previous data.
 
 ## How to use FoodPlanner
 
@@ -68,6 +80,22 @@ See https://github.com/Viseryn/foodplanner/issues for all planned features and b
 - Localization, especially English (US).
 - Notifications, e.g. reminders for the shopping list.
 - Optimizations, e.g. generating thumbnails and improving synchronization.
+
+## Release checklist
+
+Currently, a new release is not automatically created (see Issue #175).
+When all issues for a planned released have been resolved, follow these steps:
+
+- Create a branch `release/v{version-number}` from develop.
+- Change the version number in README.md, package.json and create a new migration. 
+  Commit with message `Realease v{version-number}`.
+- If there are any hotfixes needed, merge them into the new release branch.
+- After testing, create a new GitHub release on the release branch with a corresponding tag.
+- Create a pull request for merging the release branch into the master branch.
+- Create a pull request for merging the master branch into the develop branch.
+- Change the version number in README.md, package.json and create a new migration for the next snapshot version.
+  For example, if v1.6.1 was just released, change the version number to v.1.6.2-snapshot.
+  Commit on the develop branch with message `Snapshot v{snapshot-version-number}`.
 
 ---
 
@@ -124,12 +152,12 @@ complex objects.
 
 ### Mobile
 
-<img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-2.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-3.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-4.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-5.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-6.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-7.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" />
+<img src="https://foodplanner.yusel.net/img/screenshots/mobile-1.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-2.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-3.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-4.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-5.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-6.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-7.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-8.png" width="200" alt="" />
 
 ### Dark Mode
 
-<img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-1.png" width="200" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-2.png" width="200" />
+<img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-1.png" width="200" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/mobile-dark-2.png" width="200" alt="" />
 
 ### Desktop
 
-<img src="https://foodplanner.yusel.net/img/screenshots/desktop-1.png" width="400" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-1.png" width="400" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-2.png" width="400" />
+<img src="https://foodplanner.yusel.net/img/screenshots/desktop-1.png" width="400" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-1.png" width="400" alt="" /> <img src="https://foodplanner.yusel.net/img/screenshots/desktop-dark-2.png" width="400" alt="" />
