@@ -1,6 +1,6 @@
 {
     "name": "foodplanner",
-    "version": "1.6.1",
+    "version": "1.6.2-snapshot",
     "author": "Kevin Sporbeck",
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",
