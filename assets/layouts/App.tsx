@@ -173,13 +173,13 @@ export default function App(): ReactElement {
                                 <Route
                                     path="/"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
+                                        <Planner {...{ days, shoppingList, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
                                     path="/planner"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
+                                        <Planner {...{ days, shoppingList, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
