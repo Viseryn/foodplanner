@@ -3,7 +3,7 @@
  *************************************/
 
 import ModelOption from '@/types/ModelOption'
-import UserGroupModel from '@/types/UserGroupModel'
+import { UserGroupModel } from '@/types/UserGroupModel'
 import RadioOption from '@/types/RadioOption'
 
 class UserGroupOption extends ModelOption<UserGroupModel, RadioOption> {

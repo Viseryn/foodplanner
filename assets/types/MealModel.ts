@@ -4,7 +4,7 @@
 
 import MealCategoryModel from './MealCategoryModel'
 import RecipeModel from './RecipeModel'
-import UserGroupModel from './UserGroupModel'
+import { UserGroupModel } from './UserGroupModel'
 
 /**
  * Type specifications for Meal objects returned by APIs
