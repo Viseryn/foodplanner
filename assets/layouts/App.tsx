@@ -27,7 +27,7 @@ import Recipe from '@/pages/Recipes/Recipe'
 import { Recipes } from '@/pages/Recipes/Recipes'
 import Registration from '@/pages/Registration/Registration'
 import AddGroup from '@/pages/Settings/AddGroup'
-import Settings from '@/pages/Settings/Settings'
+import { Settings } from '@/pages/Settings/Settings'
 import ShoppingList from '@/pages/ShoppingList/ShoppingList'
 
 import DayModel from '@/types/DayModel'

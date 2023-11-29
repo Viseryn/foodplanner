@@ -1,9 +1,5 @@
-/****************************************
- * ./assets/pages/Settings/Settings.tsx *
- ****************************************/
-
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { ReactElement, useEffect } from 'react'
 import swal from 'sweetalert'
 
 import SwitchRow from '@/components/form/Switch/SwitchRow'
@@ -16,15 +12,10 @@ import Spinner from '@/components/ui/Spinner'
 import DayModel from '@/types/DayModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import SettingsModel from '@/types/SettingsModel'
-import UserGroupModel from '@/types/UserGroupModel'
+import { UserGroupModel } from '@/types/UserGroupModel'
 import InstallationStatusModel from '@/types/InstallationStatusModel'
 
-/**
- * A component that renders some user-specific as well as global settings.
- * 
- * @component
- */
-export default function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }: {
+export function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }: {
     settings: EntityState<SettingsModel>
     userGroups: EntityState<Array<UserGroupModel>>
     mealCategories: EntityState<Array<MealCategoryModel>>
@@ -32,13 +23,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
     installationStatus: EntityState<InstallationStatusModel>
-}): JSX.Element {
-    /**
-     * Changes the standard UserGroup to the one selected and updates the 
-     * UserGroups in the database via the UserGroups Update Standard API.
-     * 
-     * @param userGroup
-     */
+}): ReactElement {
     const handleSetStandardGroup = (userGroup: UserGroupModel): void => {
         axios.patch('/api/settings/' + settings.data.id, {
             standardUserGroup: userGroup
@@ -124,10 +109,6 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
         })
     }
 
-    /**
-     * Updates the showPantry property of the Settings object. After each update, the 
-     * Update Pantry Settings API will  be called (as long as the Settings are not loading).
-     */
     const handlePantrySettings = (): void => {
         axios.patch('/api/settings/' + settings.data.id, {
             showPantry: !settings.data.showPantry
@@ -136,14 +117,12 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
         )
     }
 
-    // Load layout
     useEffect(() => {
         setSidebar()
         setTopbar({
             title: 'Einstellungen',
         })
 
-        // Scroll to top
         window.scrollTo(0, 0)
     }, [])
 
@@ -161,7 +140,7 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                         <>
                             <div className="flex items-center">
                                 <div className="">
-                                    <img src="/img/favicon.png" className="mx-auto" />
+                                    <img src="/img/favicon.png" className="mx-auto"  alt="FoodPlanner Favicon" />
                                 </div>
                                 <div className="text-sm ml-4">
                                     <div className="font-semibold">FoodPlanner</div>
@@ -226,7 +205,11 @@ export default function Settings({ settings, userGroups, mealCategories, days, s
                                     <div key={index} className="flex justify-between items-center">
                                         <div className="flex items-center">
                                             <span className="material-symbols-rounded mr-4">{group.icon}</span>
-                                            {group.name} ({group.users.map(user => user.username).join(', ')})
+                                            {group.name}
+                                            &nbsp;
+                                            {group.users.length > 1 &&
+                                                <>({group.users.map(user => user.username).join(', ')})</>
+                                            }
                                         </div>
                                         <div className="flex gap-2">
                                             <IconButton 
