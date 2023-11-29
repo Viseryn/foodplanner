@@ -80,6 +80,10 @@ class UserGroupController extends AbstractControllerWithMapper
             $userGroup->setHidden($data->hidden);
         }
 
+        if (property_exists($data, "position") && is_int($data->position)) {
+            $userGroup->setPosition($data->position);
+        }
+
         $this->userGroupRepository->add($userGroup, true);
         return DtoResponseService::getResponse($this->mapper->entityToDto($userGroup));
     }

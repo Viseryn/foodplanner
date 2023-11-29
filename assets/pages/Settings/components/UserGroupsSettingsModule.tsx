@@ -80,6 +80,32 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
         })
     }
 
+    const handleChangePosition = async (group: UserGroupModel, direction: -1 | 1): Promise<void> => {
+        const copyOfGroups: UserGroupModel[] = [...userGroups.data]
+        const indexOfGroup: number = copyOfGroups.indexOf(group)
+        const groupCopy: UserGroupModel = {...copyOfGroups[indexOfGroup]}
+        const oldPosition: number = copyOfGroups[indexOfGroup].position
+        const newPosition: number = copyOfGroups[indexOfGroup + direction].position
+
+        groupCopy.position = newPosition
+        copyOfGroups[indexOfGroup].position = newPosition
+        copyOfGroups[indexOfGroup + direction].position = oldPosition
+        copyOfGroups[indexOfGroup] = copyOfGroups[indexOfGroup + direction]
+        copyOfGroups[indexOfGroup + direction] = groupCopy
+
+        userGroups.setData(copyOfGroups)
+
+        const apiUrl1: string = `/api/usergroups/${copyOfGroups[indexOfGroup].id}`
+        const apiUrl2: string = `/api/usergroups/${copyOfGroups[indexOfGroup + direction].id}`
+
+        await tryApiRequest("PATCH", apiUrl1, async (): Promise<AxiosResponse<any, any>> => {
+            return await axios.patch(apiUrl1, { position: copyOfGroups[indexOfGroup].position })
+        })
+        await tryApiRequest("PATCH", apiUrl2, async (): Promise<AxiosResponse<any, any>> => {
+            return await axios.patch(apiUrl2, { position: copyOfGroups[indexOfGroup + direction].position })
+        })
+    }
+
     return (
         <>
             <p className="text-sm">
@@ -103,7 +129,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                                     <span className="material-symbols-rounded mr-4">{group.icon}</span>
                                     {group.name}
                                     &nbsp;
-                                    {group.users.length > 1 &&
+                                    {(group.users.length > 1 || !group.readonly) &&
                                         <>({group.users.map(user => user.username).join(', ')})</>
                                     }
                                 </div>
@@ -132,6 +158,20 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                                         disabled={group.hidden}
                                     >
                                         favorite
+                                    </IconButton>
+
+                                    <IconButton
+                                        onClick={() => handleChangePosition(group, -1)}
+                                        disabled={index === 0}
+                                    >
+                                        expand_less
+                                    </IconButton>
+
+                                    <IconButton
+                                        onClick={() => handleChangePosition(group, 1)}
+                                        disabled={index === userGroups.data?.length - 1}
+                                    >
+                                        expand_more
                                     </IconButton>
                                 </div>
                             </div>
