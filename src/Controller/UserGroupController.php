@@ -66,12 +66,15 @@ class UserGroupController extends AbstractControllerWithMapper
     #[Route('/{id}', name: 'api_usergroups_patch', methods: ['PATCH'])]
     public function patch(Request $request, UserGroup $userGroup): Response
     {
-
         $data = json_decode($request->getContent(), false);
 
         if (property_exists($data, "hidden") && is_bool($data->hidden)) {
             if (in_array($userGroup, $this->standardUserGroups)) {
                 return new Response("UserGroup cannot be hidden because a user set it as their standard group.", 405);
+            }
+
+            if ($data->hidden && count($this->userGroupRepository->findBy(['hidden' => false])) == 1) {
+                return new Response("UserGroup cannot be hidden because at least one group must be visible.", 405);
             }
 
             $userGroup->setHidden($data->hidden);
