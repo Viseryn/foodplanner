@@ -31,7 +31,7 @@ class UserGroupController extends AbstractControllerWithMapper
         parent::__construct(UserGroup::class);
 
         $this->standardUserGroups = array_map(
-            fn ($setting): UserGroup => $setting->getStandardUserGroup(),
+            fn ($setting): ?UserGroup => $setting->getStandardUserGroup(),
             $this->settingsRepository->findAll()
         );
     }
