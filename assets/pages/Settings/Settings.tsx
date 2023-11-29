@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import React, { ReactElement, useEffect } from 'react'
 import swal from 'sweetalert'
 
@@ -14,6 +14,7 @@ import MealCategoryModel from '@/types/MealCategoryModel'
 import SettingsModel from '@/types/SettingsModel'
 import { UserGroupModel } from '@/types/UserGroupModel'
 import InstallationStatusModel from '@/types/InstallationStatusModel'
+import { tryApiRequest } from '@/util/tryApiRequest'
 
 export function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }: {
     settings: EntityState<SettingsModel>
@@ -24,97 +25,84 @@ export function Settings({ settings, userGroups, mealCategories, days, setSideba
     setTopbar: SetTopbarAction
     installationStatus: EntityState<InstallationStatusModel>
 }): ReactElement {
-    const handleSetStandardGroup = (userGroup: UserGroupModel): void => {
-        axios.patch('/api/settings/' + settings.data.id, {
-            standardUserGroup: userGroup
-        }).then(response =>
-            settings.setData(response.data)
-        )
+    const handleChangeGroupVisibility = async (userGroup: UserGroupModel): Promise<void> => {
+        const apiUrl: string = `/api/usergroups/${userGroup.id}`
+
+        await tryApiRequest("PATCH", apiUrl, async (): Promise<AxiosResponse<any, any>> => {
+            const response: AxiosResponse<any, any> = await axios.patch(apiUrl, { hidden: !userGroup.hidden })
+
+            userGroups.load()
+            days.load()
+
+            return response
+        })
     }
 
-    /**
-     * Changes the standard MealCategory to the one selected and updates the 
-     * MealCategories in the database via the MealCategory Update Standard API.
-     * 
-     * @param mealCategory
-     */
-    const handleSetStandardMealCategory = (mealCategory: MealCategoryModel): void => {
-        axios.patch('/api/settings/' + settings.data.id, {
-            standardMealCategory: mealCategory
-        }).then(response =>
+    const handleSetStandardGroup = async (userGroup: UserGroupModel): Promise<void> => {
+        const apiUrl: string = `/api/settings/${settings.data.id}`
+
+        await tryApiRequest("PATCH", apiUrl, async (): Promise<AxiosResponse<SettingsModel>> => {
+            const response: AxiosResponse<SettingsModel> = await axios.patch(apiUrl, {
+                standardUserGroup: userGroup
+            })
+
             settings.setData(response.data)
-        )
+            return response
+        })
     }
 
-    /**
-     * When called, opens a SweetAlert. If it is confirmed, then the UserGroup Delete API 
-     * is called and the groups are updated. If cancelled, nothing happens.
-     * 
-     * @param index The index of the UserGroup that shall be deleted.
-     */
-    const handleDeleteGroup = (index: number): void => {
-        // Get id
+    const handleSetStandardMealCategory = async (mealCategory: MealCategoryModel): Promise<void> => {
+        const apiUrl: string = `/api/settings/${settings.data.id}`
+
+        await tryApiRequest("PATCH", apiUrl, async (): Promise<AxiosResponse<SettingsModel>> => {
+            const response: AxiosResponse<SettingsModel> = await axios.patch(apiUrl, {
+                standardMealCategory: mealCategory
+            })
+
+            settings.setData(response.data)
+            return response
+        })
+    }
+
+    const handleDeleteGroup = async (index: number): Promise<void> => {
         const id: number = userGroups.data[index].id ?? -1
 
-        // Show warning with confirm and cancel buttons
-        swal({
+        const swalResponse = await swal({
             dangerMode: true,
             icon: 'error',
             title: 'Benutzergruppe wirklich löschen?',
             buttons: ["Abbrechen", "Löschen"],
-        }).then(confirm => {
-            // Cancel if not confirmed
+        })
+
+        if (swalResponse) {
             if (!confirm) {
                 return
             }
 
-            // Cancel if there is only one UserGroup left
-            if (userGroups.data.length <= 1) {
-                swal({
-                    dangerMode: true,
-                    icon: 'error',
-                    title: 'Benutzergruppe konnte nicht gelöscht werden.',
-                    text: 'Bitte erstelle zunächst eine andere Benutzergruppe, bevor du diese hier löschst.',
-                    buttons: {
-                        confirm: { text: 'Okay' },
-                    },
-                })
+            const apiUrl: string = `/api/usergroups/${id}`
 
-                return
-            }
+            await tryApiRequest("DELETE", apiUrl, async (): Promise<AxiosResponse<any>> => {
+                const response = await axios.delete(apiUrl)
 
-            // Cancel if the given group is standard
-            if (id === settings.data.standardUserGroup?.id) {
-                swal({
-                    dangerMode: true,
-                    icon: 'error',
-                    title: 'Benutzergruppe konnte nicht gelöscht werden.',
-                    text: 'Du kannst die Standardgruppe nicht löschen.',
-                    buttons: {
-                        confirm: { text: 'Okay' },
-                    },
-                })
+                userGroups.load()
+                days.load()
 
-                return
-            }
-
-            // Call UserGroup Delete API if alert was confirmed and 
-            // the group is not the last one or the standard group.
-            axios
-                .delete('/api/usergroups/' + id)
-                .then(() => {
-                    userGroups.load()
-                    days.load()
-                })
-        })
+                return response
+            })
+        }
     }
 
-    const handlePantrySettings = (): void => {
-        axios.patch('/api/settings/' + settings.data.id, {
-            showPantry: !settings.data.showPantry
-        }).then(response =>
+    const handlePantrySettings = async (): Promise<void> => {
+        const apiUrl: string = `/api/settings/${settings.data.id}`
+
+        await tryApiRequest("PATCH", apiUrl, async (): Promise<AxiosResponse<SettingsModel>> => {
+            const response: AxiosResponse<SettingsModel> = await axios.patch(apiUrl, {
+                showPantry: !settings.data.showPantry
+            })
+
             settings.setData(response.data)
-        )
+            return response
+        })
     }
 
     useEffect(() => {
