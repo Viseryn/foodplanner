@@ -11,6 +11,7 @@ use App\Service\RefreshDataTimestampUtil;
 use App\Service\UserGroupControllerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -37,9 +38,12 @@ class UserGroupController extends AbstractControllerWithMapper
     }
 
     #[Route('', name: 'api_usergroups_get', methods: ['GET'])]
-    public function get(): Response
+    public function get(#[MapQueryParameter] ?bool $hidden): Response
     {
-        $userGroupDTOs = $this->userGroupControllerService->getAllUserGroups();
+        $userGroupDTOs = match ($hidden) {
+            null => $this->userGroupControllerService->getAllUserGroups(),
+            true, false => $this->userGroupControllerService->getAllUserGroupsByHidden($hidden),
+        };
         return DtoResponseService::getResponse($userGroupDTOs);
     }
 

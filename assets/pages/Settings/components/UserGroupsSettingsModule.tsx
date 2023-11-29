@@ -12,6 +12,7 @@ import DayModel from '@/types/DayModel'
 
 type UserGroupsSettingsModuleProps = {
     userGroups: EntityState<UserGroupModel[]>
+    visibleUserGroups: EntityState<UserGroupModel[]>
     days: EntityState<DayModel[]>
     settings: EntityState<SettingsModel>
 }
@@ -21,7 +22,7 @@ type UserGroupsSettingsModuleProps = {
  * @todo [Issue #222] Make UserGroups editable
  */
 export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): ReactElement => {
-    const { userGroups, days, settings } = props
+    const { userGroups, visibleUserGroups, days, settings } = props
 
     const handleChangeGroupVisibility = async (userGroup: UserGroupModel): Promise<void> => {
         const apiUrl: string = `/api/usergroups/${userGroup.id}`
@@ -30,6 +31,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
             const response: AxiosResponse<any, any> = await axios.patch(apiUrl, { hidden: !userGroup.hidden })
 
             userGroups.load()
+            visibleUserGroups.load()
             days.load()
 
             return response
@@ -57,6 +59,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                 const response = await axios.delete(apiUrl)
 
                 userGroups.load()
+                visibleUserGroups.load()
                 days.load()
 
                 return response

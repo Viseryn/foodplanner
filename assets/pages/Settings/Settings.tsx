@@ -13,11 +13,12 @@ import { PantrySettingsModule } from '@/pages/Settings/components/PantrySettings
 import { AppInformationSettingsModule } from '@/pages/Settings/components/AppInformationSettingsModule'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 
-export function Settings({ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }: {
+export function Settings({ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }: {
     settings: EntityState<SettingsModel>
-    userGroups: EntityState<Array<UserGroupModel>>
-    mealCategories: EntityState<Array<MealCategoryModel>>
-    days: EntityState<Array<DayModel>>
+    userGroups: EntityState<UserGroupModel[]>
+    visibleUserGroups: EntityState<UserGroupModel[]>
+    mealCategories: EntityState<MealCategoryModel[]>
+    days: EntityState<DayModel[]>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
     installationStatus: EntityState<InstallationStatusModel>
@@ -55,6 +56,7 @@ export function Settings({ settings, userGroups, mealCategories, days, setSideba
             <Card>
                 <UserGroupsSettingsModule
                     userGroups={userGroups}
+                    visibleUserGroups={visibleUserGroups}
                     days={days}
                     settings={settings}
                 />
