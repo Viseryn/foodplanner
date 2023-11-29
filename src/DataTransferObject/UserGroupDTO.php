@@ -10,6 +10,9 @@ class UserGroupDTO implements DataTransferObject
     private ?int $id = null;
     private ?string $name = null;
     private ?string $icon = null;
+    private ?bool $readonly = null;
+    private ?bool $hidden = null;
+    private ?int $position = null;
     /** @var ReadableCollection<UserDTO>|null */
     private ?ReadableCollection $users = null;
 
@@ -43,6 +46,39 @@ class UserGroupDTO implements DataTransferObject
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
+        return $this;
+    }
+
+    public function getReadonly(): ?bool
+    {
+        return $this->readonly;
+    }
+
+    public function setReadonly(?bool $readonly): self
+    {
+        $this->readonly = $readonly;
+        return $this;
+    }
+
+    public function getHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(?bool $hidden): self
+    {
+        $this->hidden = $hidden;
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(?int $position): self
+    {
+        $this->position = $position;
         return $this;
     }
 

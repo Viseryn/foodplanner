@@ -39,6 +39,17 @@ class UserGroupRepository extends ServiceEntityRepository
         }
     }
 
+    public function getMaxPosition(): int
+    {
+        $userGroups = $this->findAll();
+        if (empty($userGroups)) {
+            return 1;
+        }
+
+        $maxPosition = max(array_map(fn ($userGroup) => $userGroup->getPosition(), $userGroups));
+        return $maxPosition + 1;
+    }
+
 //    /**
 //     * @return UserGroup[] Returns an array of UserGroup objects
 //     */

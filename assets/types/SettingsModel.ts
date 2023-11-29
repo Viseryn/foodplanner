@@ -3,7 +3,7 @@
  ***********************************/
 
 import UserModel from "@/types/UserModel";
-import UserGroupModel from "@/types/UserGroupModel";
+import { UserGroupModel } from "@/types/UserGroupModel";
 import MealCategoryModel from "@/types/MealCategoryModel";
 
 /**
