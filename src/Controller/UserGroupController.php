@@ -11,6 +11,7 @@ use App\Service\RefreshDataTimestampUtil;
 use App\Service\UserGroupControllerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -37,9 +38,12 @@ class UserGroupController extends AbstractControllerWithMapper
     }
 
     #[Route('', name: 'api_usergroups_get', methods: ['GET'])]
-    public function get(): Response
+    public function get(#[MapQueryParameter] ?bool $hidden): Response
     {
-        $userGroupDTOs = $this->userGroupControllerService->getAllUserGroups();
+        $userGroupDTOs = match ($hidden) {
+            null => $this->userGroupControllerService->getAllUserGroups(),
+            true, false => $this->userGroupControllerService->getAllUserGroupsByHidden($hidden),
+        };
         return DtoResponseService::getResponse($userGroupDTOs);
     }
 
@@ -62,12 +66,15 @@ class UserGroupController extends AbstractControllerWithMapper
     #[Route('/{id}', name: 'api_usergroups_patch', methods: ['PATCH'])]
     public function patch(Request $request, UserGroup $userGroup): Response
     {
-
         $data = json_decode($request->getContent(), false);
 
         if (property_exists($data, "hidden") && is_bool($data->hidden)) {
             if (in_array($userGroup, $this->standardUserGroups)) {
                 return new Response("UserGroup cannot be hidden because a user set it as their standard group.", 405);
+            }
+
+            if ($data->hidden && count($this->userGroupRepository->findBy(['hidden' => false])) == 1) {
+                return new Response("UserGroup cannot be hidden because at least one group must be visible.", 405);
             }
 
             $userGroup->setHidden($data->hidden);

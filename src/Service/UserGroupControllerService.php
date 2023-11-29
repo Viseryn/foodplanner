@@ -29,6 +29,15 @@ class UserGroupControllerService
             ->map(fn ($userGroup) => $this->mapper->entityToDto($userGroup));
     }
 
+    /**
+     * @return ArrayCollection<UserGroupDTO>
+     */
+    public function getAllUserGroupsByHidden(bool $hidden): ArrayCollection
+    {
+        return (new ArrayCollection($this->userGroupRepository->findBy(['hidden' => $hidden])))
+            ->map(fn ($userGroup) => $this->mapper->entityToDto($userGroup));
+    }
+
     public function removeUserGroup(UserGroup $userGroup): void
     {
         $meals = $this->mealRepository->findBy(['userGroup' => $userGroup->getId()]);

@@ -113,6 +113,7 @@ export default function App(): ReactElement {
     // Fetch data
     const settings = fetch<SettingsModel>('/api/settings?userid=' + user.data.id, false)
     const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups', false)
+    const visibleUserGroups = fetch<UserGroupModel[]>('/api/usergroups?hidden=false', false)
     const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories', false)
     const shoppingList = fetch<Array<IngredientModel>>('/api/storages/shoppinglist/ingredients', false)
     const pantry = fetch<Array<IngredientModel>>('/api/storages/pantry/ingredients', false)
@@ -185,7 +186,7 @@ export default function App(): ReactElement {
                                 <Route
                                     path="/planner/add/:id"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
+                                        <AddMeal userGroups={visibleUserGroups} {...{ days, mealCategories, recipes, settings, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
@@ -229,7 +230,7 @@ export default function App(): ReactElement {
                                 <Route
                                     path="/settings"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <Settings {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
+                                        <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
                                     } />}
                                 />
                                 <Route
