@@ -16,12 +16,17 @@ import React from 'react'
  * 
  * @example <IconButton outlined={true} onClick={() => someHandler(params)}>sync</IconButton>
  */
-export default function IconButton({ outlined = false, style = '', onClick, children }: {
+export default function IconButton({ outlined = false, style = '', onClick, disabled = false, children }: {
     outlined?: boolean
     style?: string
     onClick?: () => void
+    disabled?: boolean
     children: string
 }): JSX.Element {
+    if (disabled) {
+        return <span className={`material-symbols-rounded cursor-not-allowed transition duration-300 ${outlined ? "outlined" : ""} p-2 text-secondary-900/50 ${style}`}>{children}</span>
+    }
+
     return <span 
         onClick={onClick}
         className={
