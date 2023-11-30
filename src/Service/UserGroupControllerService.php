@@ -25,7 +25,16 @@ class UserGroupControllerService
      */
     public function getAllUserGroups(): ArrayCollection
     {
-        return (new ArrayCollection($this->userGroupRepository->findAll()))
+        return (new ArrayCollection($this->userGroupRepository->findBy([], ['position' => 'ASC'])))
+            ->map(fn ($userGroup) => $this->mapper->entityToDto($userGroup));
+    }
+
+    /**
+     * @return ArrayCollection<UserGroupDTO>
+     */
+    public function getAllUserGroupsByHidden(bool $hidden): ArrayCollection
+    {
+        return (new ArrayCollection($this->userGroupRepository->findBy(['hidden' => $hidden], ['position' => 'ASC'])))
             ->map(fn ($userGroup) => $this->mapper->entityToDto($userGroup));
     }
 

@@ -47,6 +47,9 @@ class RegistrationController extends AbstractController
             $this->entityManager->flush();
 
             $this->registrationControllerService->createUserSettings($user);
+            $this->registrationControllerService->createUserGroup($user);
+            $this->registrationControllerService->addToEveryoneGroup($user);
+
             $this->refreshDataTimestampUtil->updateTimestamp();
         }
         

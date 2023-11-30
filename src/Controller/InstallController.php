@@ -60,19 +60,14 @@ class InstallController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            // User specific objects
             $registrationControllerService->createUserSettings($user);
+            $registrationControllerService->createUserGroup($user);
+            $registrationControllerService->addToEveryoneGroup($user);
 
             // Add admin rights to first user
             $user->setRoles(['ROLE_ADMIN']);
             $userRepository->add($user, true);
-
-            // Add first UserGroup to the database
-            $userGroup = new UserGroup();
-            $userGroup
-                ->setName($user->getUsername())
-                ->setIcon('face')
-                ->addUser($user);
-            $userGroupRepository->add($userGroup, true);
 
             $entityManager->persist($user);
             $entityManager->flush();

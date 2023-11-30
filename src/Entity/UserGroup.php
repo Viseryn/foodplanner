@@ -24,6 +24,15 @@ class UserGroup implements EntityInterface
     #[ORM\Column(length: 255)]
     private ?string $icon = null;
 
+    #[ORM\Column]
+    private ?bool $readonly = null;
+
+    #[ORM\Column]
+    private ?int $position = null;
+
+    #[ORM\Column]
+    private ?bool $hidden = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -78,6 +87,42 @@ class UserGroup implements EntityInterface
     public function setIcon(string $icon): self
     {
         $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function isReadonly(): ?bool
+    {
+        return $this->readonly;
+    }
+
+    public function setReadonly(bool $readonly): static
+    {
+        $this->readonly = $readonly;
+
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function isHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): static
+    {
+        $this->hidden = $hidden;
 
         return $this;
     }

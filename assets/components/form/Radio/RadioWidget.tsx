@@ -9,15 +9,17 @@ import nameFromId from '../util/nameFromId'
 
 /**
  * A component that renders a radio input field.
- * 
+ *
  * @component
  * @param props
  * @param props.id The id of the whole radio input field.
  * @param props.options An array of objects that represent the radio options.
+ * @param props.required
  */
-export default function RadioWidget({ id, options, ...props }: {
+export default function RadioWidget({ id, options, required = false, ...props }: {
     id: string
     options: Array<RadioOption>
+    required?: boolean
 }): JSX.Element {
     return <div className="flex flex-wrap justify-between gap-2" {...props}>
         {options.map(option => 
@@ -26,9 +28,10 @@ export default function RadioWidget({ id, options, ...props }: {
                     id={option.id}
                     name={nameFromId(id)} // The name of the "whole" radio field.
                     type="radio" 
-                    className="peer hidden" 
+                    className="peer fixed opacity-0 pointer-events-none"
                     defaultValue={option.value}
                     defaultChecked={option.checked}
+                    required={required}
                 />
                 <label 
                     htmlFor={option.id}

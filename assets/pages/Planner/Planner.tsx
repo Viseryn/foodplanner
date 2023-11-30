@@ -13,7 +13,6 @@ import useMediaQuery from '@/hooks/useMediaQuery'
 import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
 import MealModel from '@/types/MealModel'
-import RecipeModel from '@/types/RecipeModel'
 import DayCardDesktop from './components/DayCardDesktop'
 import DayCardMobile from './components/DayCardMobile'
 import DaySkeletonDesktop from './components/DaySkeletonDesktop'
@@ -29,9 +28,8 @@ import useTimeout from '@/hooks/useTimeout'
  * 
  * @component
  */
-export default function Planner({ days, recipes, shoppingList, setSidebar, setTopbar }: {
+export default function Planner({ days, shoppingList, setSidebar, setTopbar }: {
     days: EntityState<Array<DayModel>>
-    recipes: EntityState<Array<RecipeModel>>
     shoppingList: EntityState<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction

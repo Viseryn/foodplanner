@@ -1,24 +1,11 @@
-/************************************
- * ./assets/types/UserGroupModel.ts *
- ************************************/
-
 import UserModel from './UserModel'
 
-/**
- * Type specifications for UserGroup objects returned by APIs
- */
-type UserGroupModel = {
-    /** The entity id of the UserGroup object. */
+export type UserGroupModel = {
     id: number
-
-    /** The name of the UserGroup object. */
     name: string
-
-    /** The icon of the UserGroup object. */
     icon: string
-
-    /** The User objects that belong to the UserGroup object. */
     users: Array<UserModel>
+    readonly: boolean
+    hidden: boolean
+    position: number
 }
-
-export default UserGroupModel

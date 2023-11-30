@@ -19,7 +19,10 @@ final class UserGroupMapper implements Mapper
     public function dtoToEntity($dto): UserGroup
     {
         $userGroup = (new UserGroup)->setName($dto->getName())
-                                    ->setIcon($dto->getIcon());
+                                    ->setIcon($dto->getIcon())
+                                    ->setReadonly($dto->getReadonly())
+                                    ->setHidden($dto->getHidden())
+                                    ->setPosition($dto->getPosition());
 
         $users = $dto->getUsers()->map(fn ($userDto) => $this->userMapper->dtoToEntity($userDto));
         foreach ($users as $user) {
@@ -38,6 +41,9 @@ final class UserGroupMapper implements Mapper
         return (new UserGroupDTO)->setId($entity->getId())
                                  ->setName($entity->getName())
                                  ->setIcon($entity->getIcon())
+                                 ->setReadonly($entity->isReadonly())
+                                 ->setHidden($entity->isHidden())
+                                 ->setPosition($entity->getPosition())
                                  ->setUsers(
                                      $entity->getUsers()->map(fn ($user) => $this->userMapper->entityToDto($user)),
                                  );

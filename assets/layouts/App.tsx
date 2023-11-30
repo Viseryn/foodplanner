@@ -19,7 +19,7 @@ import Login from '@/pages/Login/Login'
 import Logout from '@/pages/Logout/Logout'
 import PageNotFound from '@/pages/PageNotFound/PageNotFound'
 import Pantry from '@/pages/Pantry/Pantry'
-import AddMeal from '@/pages/Planner/AddMeal'
+import { AddMeal } from '@/pages/Planner/AddMeal'
 import Planner from '@/pages/Planner/Planner'
 import AddRecipe from '@/pages/Recipes/AddRecipe'
 import EditRecipe from '@/pages/Recipes/EditRecipe'
@@ -27,7 +27,7 @@ import Recipe from '@/pages/Recipes/Recipe'
 import { Recipes } from '@/pages/Recipes/Recipes'
 import Registration from '@/pages/Registration/Registration'
 import AddGroup from '@/pages/Settings/AddGroup'
-import Settings from '@/pages/Settings/Settings'
+import { Settings } from '@/pages/Settings/Settings'
 import ShoppingList from '@/pages/ShoppingList/ShoppingList'
 
 import DayModel from '@/types/DayModel'
@@ -35,7 +35,7 @@ import IngredientModel from '@/types/IngredientModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
-import UserGroupModel from '@/types/UserGroupModel'
+import { UserGroupModel } from '@/types/UserGroupModel'
 import UserModel from '@/types/UserModel'
 import InstallationStatusModel from '@/types/InstallationStatusModel'
 import Spinner from '@/components/ui/Spinner'
@@ -113,6 +113,7 @@ export default function App(): ReactElement {
     // Fetch data
     const settings = fetch<SettingsModel>('/api/settings?userid=' + user.data.id, false)
     const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups', false)
+    const visibleUserGroups = fetch<UserGroupModel[]>('/api/usergroups?hidden=false', false)
     const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories', false)
     const shoppingList = fetch<Array<IngredientModel>>('/api/storages/shoppinglist/ingredients', false)
     const pantry = fetch<Array<IngredientModel>>('/api/storages/pantry/ingredients', false)
@@ -173,19 +174,19 @@ export default function App(): ReactElement {
                                 <Route
                                     path="/"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
+                                        <Planner {...{ days, shoppingList, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
                                     path="/planner"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <Planner {...{ days, recipes, shoppingList, setSidebar, setTopbar }} />
+                                        <Planner {...{ days, shoppingList, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
                                     path="/planner/add/:id"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <AddMeal {...{ days, mealCategories, recipes, userGroups, settings, setSidebar, setTopbar }} />
+                                        <AddMeal userGroups={visibleUserGroups} {...{ days, mealCategories, recipes, settings, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
@@ -229,7 +230,7 @@ export default function App(): ReactElement {
                                 <Route
                                     path="/settings"
                                     element={<AuthChecker authentication={authentication} component={
-                                        <Settings {...{ settings, userGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
+                                        <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
                                     } />}
                                 />
                                 <Route
