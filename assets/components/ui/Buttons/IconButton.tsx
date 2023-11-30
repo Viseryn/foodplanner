@@ -24,7 +24,9 @@ export default function IconButton({ outlined = false, style = '', onClick, disa
     children: string
 }): JSX.Element {
     if (disabled) {
-        return <span className={`material-symbols-rounded cursor-not-allowed transition duration-300 ${outlined ? "outlined" : ""} p-2 text-secondary-900/50 ${style}`}>{children}</span>
+        return <span className={`material-symbols-rounded cursor-not-allowed transition duration-300 ${outlined ? "outlined" : ""} p-2 text-secondary-900/50 dark:text-secondary-dark-900/30 ${style}`}>
+            {children}
+        </span>
     }
 
     return <span 
