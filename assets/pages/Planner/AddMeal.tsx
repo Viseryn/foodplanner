@@ -88,15 +88,16 @@ export function AddMeal(props: AddMealProps): ReactElement {
         }
     }, [recipeQuery])
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-        setLoading(true)
         const formData = new FormData(event.currentTarget)
 
         if (selectedRecipe == 0) {
             setShowWarning(true)
             return
         }
+
+        setLoading(true)
 
         const apiCall = async (): Promise<void> => {
             try {
@@ -108,7 +109,7 @@ export function AddMeal(props: AddMealProps): ReactElement {
             }
         }
 
-        apiCall()
+        void apiCall()
     }
 
     useEffect(() => {
@@ -182,6 +183,7 @@ export function AddMeal(props: AddMealProps): ReactElement {
                                 <RadioWidget
                                     id="meal_mealCategory"
                                     options={setChecked(getOptions(mealCategoryOptions), settings.data.standardMealCategory?.id)}
+                                    required={true}
                                 />
                             )}
 
@@ -194,6 +196,7 @@ export function AddMeal(props: AddMealProps): ReactElement {
                                 <RadioWidget
                                     id="meal_userGroup"
                                     options={setChecked(getOptions(userGroupOptions), settings.data.standardUserGroup?.id)}
+                                    required={true}
                                 />
                             )}
                         </Card>
