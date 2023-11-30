@@ -18,7 +18,6 @@ type UserGroupsSettingsModuleProps = {
 }
 
 /**
- * @todo [Issue #215] Make UserGroups re-arrangeable
  * @todo [Issue #222] Make UserGroups editable
  */
 export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): ReactElement => {
@@ -124,7 +123,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                 <>
                     <div className="space-y-2">
                         {userGroups.data.map((group, index) =>
-                            <div key={group.id} className="flex justify-between items-center">
+                            <div key={group.id} className="p-2 rounded-2xl transition duration-300 hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40">
                                 <div className="flex items-center">
                                     <span className="material-symbols-rounded mr-4">{group.icon}</span>
                                     {group.name}
@@ -133,7 +132,8 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                                         <>({group.users.map(user => user.username).join(', ')})</>
                                     }
                                 </div>
-                                <div className="flex gap-2">
+                                <Spacer height="2" />
+                                <div className="flex justify-end gap-2">
                                     {!group.readonly &&
                                         <IconButton
                                             outlined={true}
