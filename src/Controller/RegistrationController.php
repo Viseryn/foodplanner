@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Registration API
  */
-class RegistrationController extends AbstractController
+class RegistrationController extends AbstractControllerWithMapper
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -24,6 +24,7 @@ class RegistrationController extends AbstractController
         private readonly RegistrationControllerService $registrationControllerService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
     ) {
+        parent::__construct(User::class);
     }
 
     /**
@@ -54,6 +55,6 @@ class RegistrationController extends AbstractController
             $this->refreshDataTimestampUtil->updateTimestamp();
         }
 
-        return DtoResponseService::getResponse(new UserDTO($user));
+        return DtoResponseService::getResponse($this->mapper->entityToDto($user));
     }
 }
