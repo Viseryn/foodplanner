@@ -42,6 +42,7 @@ import Spinner from '@/components/ui/Spinner'
 import Notification from '@/components/ui/Notification'
 import useImageMigration from '@/hooks/useImageMigration'
 import Spacer from '@/components/ui/Spacer'
+import { UserSettings } from '@/pages/Settings/UserSettings'
 
 /**
  * Main component of the application. Handles the routing and provides state variables and 
@@ -237,6 +238,12 @@ export default function App(): ReactElement {
                                     path="/settings/groups/add"
                                     element={<AuthChecker authentication={authentication} component={
                                         <AddGroup {...{ authentication, userGroups, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/settings/user"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <UserSettings {...{ user, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route
