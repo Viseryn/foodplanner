@@ -23,7 +23,8 @@ class RegistrationController extends AbstractController
         private readonly RefreshDataTimestampUtil $refreshDataTimestampUtil,
         private readonly RegistrationControllerService $registrationControllerService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-    ) {}
+    ) {
+    }
 
     /**
      * Registers a new user, creates their settings and responds with the User object.
@@ -39,8 +40,8 @@ class RegistrationController extends AbstractController
             $user->setPassword(
                 $this->userPasswordHasher->hashPassword(
                     $user,
-                    $form->get('plainPassword')->getData()
-                )
+                    $form->get('plainPassword')->getData(),
+                ),
             );
 
             $this->entityManager->persist($user);
@@ -52,7 +53,7 @@ class RegistrationController extends AbstractController
 
             $this->refreshDataTimestampUtil->updateTimestamp();
         }
-        
+
         return DtoResponseService::getResponse(new UserDTO($user));
     }
 }
