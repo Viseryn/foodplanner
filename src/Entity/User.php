@@ -34,6 +34,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     #[ORM\ManyToMany(targetEntity: UserGroup::class, mappedBy: 'users')]
     private Collection $userGroups;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
     public function __construct()
     {
         $this->userGroups = new ArrayCollection();
@@ -132,6 +135,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         if ($this->userGroups->removeElement($userGroup)) {
             $userGroup->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }

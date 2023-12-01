@@ -36,12 +36,13 @@ import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import { UserGroupModel } from '@/types/UserGroupModel'
-import UserModel from '@/types/UserModel'
+import { UserModel } from '@/types/UserModel'
 import InstallationStatusModel from '@/types/InstallationStatusModel'
 import Spinner from '@/components/ui/Spinner'
 import Notification from '@/components/ui/Notification'
 import useImageMigration from '@/hooks/useImageMigration'
 import Spacer from '@/components/ui/Spacer'
+import { UserSettings } from '@/pages/Settings/UserSettings'
 
 /**
  * Main component of the application. Handles the routing and provides state variables and 
@@ -237,6 +238,12 @@ export default function App(): ReactElement {
                                     path="/settings/groups/add"
                                     element={<AuthChecker authentication={authentication} component={
                                         <AddGroup {...{ authentication, userGroups, setSidebar, setTopbar }} />
+                                    } />}
+                                />
+                                <Route
+                                    path="/settings/user"
+                                    element={<AuthChecker authentication={authentication} component={
+                                        <UserSettings {...{ user, setSidebar, setTopbar }} />
                                     } />}
                                 />
                                 <Route

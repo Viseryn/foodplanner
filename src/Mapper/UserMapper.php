@@ -15,7 +15,8 @@ final class UserMapper implements Mapper
     public function dtoToEntity($dto): User
     {
         return (new User)->setUsername($dto->getUsername())
-                         ->setRoles($dto->getRoles());
+                         ->setRoles($dto->getRoles())
+                         ->setEmail($dto->getEmail());
     }
 
     /**
@@ -26,6 +27,7 @@ final class UserMapper implements Mapper
     {
         return (new UserDTO)->setId($entity->getId())
                             ->setUsername($entity->getUsername())
-                            ->setRoles($entity->getRoles());
+                            ->setRoles($entity->getRoles())
+                            ->setEmail($entity->getEmail());
     }
 }

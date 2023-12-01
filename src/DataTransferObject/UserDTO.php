@@ -8,6 +8,7 @@ class UserDTO implements DataTransferObject
     private ?int $id = null;
     private ?string $username = null;
     private ?array $roles = null;
+    private ?string $email = null;
 
     public function getId(): ?int 
     {
@@ -39,6 +40,17 @@ class UserDTO implements DataTransferObject
     public function setRoles(?array $roles): self
     {
         $this->roles = $roles;
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
         return $this;
     }
 }

@@ -14,14 +14,16 @@ import swal from 'sweetalert'
  *             a success message to the console. The callback can take a variable amounts of parameters, but should
  *             return the HTTP response object.
  * @param args Optional arguments for the `task` callback function. Need to match the function signature of `task`.
+ * @returns False, if an error is caught; true otherwise.
  */
 export const tryApiRequest = async (
     httpMethod: HttpMethod,
     apiUrl: string,
     task: (...args: unknown[]) => Promise<AxiosResponse<unknown, unknown>>,
     ...args: unknown[]
-): Promise<void> => {
+): Promise<boolean> => {
     const infoStack: StringBuilder = new StringBuilder()
+    let returnValue: boolean = false
 
     try {
         const response: AxiosResponse = await task(args)
@@ -29,6 +31,7 @@ export const tryApiRequest = async (
             .append(`[INFO] (${httpMethod} ${apiUrl}): ${response?.request?.status}`)
             .blank()
             .append(`${response?.request?.statusText}`)
+        returnValue = true
     } catch (error) {
         if (axios.isAxiosError(error)) {
             infoStack
@@ -48,4 +51,6 @@ export const tryApiRequest = async (
     } finally {
         infoStack.logToConsole()
     }
+
+    return returnValue
 }

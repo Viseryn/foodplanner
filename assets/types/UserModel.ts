@@ -1,19 +1,6 @@
-/************************************
- * ./assets/types/UserModel.ts *
- ************************************/
-
-/**
- * Type specifications for User objects returned by APIs
- */
-type UserModel = {
-    /** The entity id of the User object. */
+export type UserModel = {
     id?: number
-
-    /** The username of the User object. */
     username?: string
-
-    /** The roles of the User object. */
+    email?: string
     roles: Array<string>
 }
-
-export default UserModel

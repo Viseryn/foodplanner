@@ -12,6 +12,7 @@ import { MealCategorySettingsModule } from '@/pages/Settings/components/MealCate
 import { PantrySettingsModule } from '@/pages/Settings/components/PantrySettingsModule'
 import { AppInformationSettingsModule } from '@/pages/Settings/components/AppInformationSettingsModule'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { UserSettingsSettingsModule } from '@/pages/Settings/components/UserSettingsSettingsModule'
 
 export function Settings({ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }: {
     settings: EntityState<SettingsModel>
@@ -39,6 +40,13 @@ export function Settings({ settings, userGroups, visibleUserGroups, mealCategori
                 <AppInformationSettingsModule
                     installationStatus={installationStatus}
                 />
+            </Card>
+
+            <Spacer height="10" />
+
+            <Heading size="xl" style="pl-2 mb-2">Benutzereinstellungen</Heading>
+            <Card>
+                <UserSettingsSettingsModule />
             </Card>
 
             <Spacer height="10" />
