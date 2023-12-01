@@ -12,7 +12,7 @@ export const AppInformationSettingsModule = (props: AppInformationSettingsModule
     return (
         <>
             {installationStatus.isLoading ? (
-                <Spinner />
+                <Spinner verticalMargin={10} />
             ) : (
                 <>
                     <div className="flex items-center">
