@@ -3,7 +3,7 @@
  ********************************/
 
 import ModelOption from '@/types/ModelOption'
-import UserModel from '@/types/UserModel'
+import { UserModel } from '@/types/UserModel'
 import SelectOption from '@/types/SelectOption'
 
 class UserOption extends ModelOption<UserModel, SelectOption> {

@@ -12,7 +12,7 @@ import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
-import UserModel from '@/types/UserModel'
+import { UserModel } from '@/types/UserModel'
 
 /**
  * A component that renders a registration form.

@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react'
 
-import UserModel from '@/types/UserModel'
+import { UserModel } from '@/types/UserModel'
 import useFetch from './useFetch'
 
 /**

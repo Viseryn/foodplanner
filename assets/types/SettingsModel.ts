@@ -2,7 +2,7 @@
  * ./assets/types/SettingsModel.ts *
  ***********************************/
 
-import UserModel from "@/types/UserModel";
+import { UserModel } from "@/types/UserModel";
 import { UserGroupModel } from "@/types/UserGroupModel";
 import MealCategoryModel from "@/types/MealCategoryModel";
 
