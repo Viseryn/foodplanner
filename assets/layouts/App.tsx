@@ -25,7 +25,7 @@ import AddRecipe from '@/pages/Recipes/AddRecipe'
 import EditRecipe from '@/pages/Recipes/EditRecipe'
 import Recipe from '@/pages/Recipes/Recipe'
 import { Recipes } from '@/pages/Recipes/Recipes'
-import Registration from '@/pages/Registration/Registration'
+import { Registration } from '@/pages/Registration/Registration'
 import AddGroup from '@/pages/Settings/AddGroup'
 import { Settings } from '@/pages/Settings/Settings'
 import ShoppingList from '@/pages/ShoppingList/ShoppingList'
@@ -256,7 +256,7 @@ export default function App(): ReactElement {
                                 />
                                 <Route
                                     path="/register"
-                                    element={<Registration {...{ user, setSidebar, setTopbar }} />}
+                                    element={<Registration {...{ authentication, setSidebar, setTopbar }} />}
                                 />
                                 <Route
                                     path="*"
