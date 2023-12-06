@@ -256,7 +256,7 @@ export default function App(): ReactElement {
                                 />
                                 <Route
                                     path="/register"
-                                    element={<Registration {...{ user, setSidebar, setTopbar }} />}
+                                    element={<Registration {...{ authentication, setSidebar, setTopbar }} />}
                                 />
                                 <Route
                                     path="*"

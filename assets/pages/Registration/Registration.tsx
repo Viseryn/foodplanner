@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
@@ -9,32 +9,67 @@ import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import { UserModel } from '@/types/UserModel'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { tryApiRequest } from '@/util/tryApiRequest'
+import { RegistrationDto } from '@/types/datatransferobjects/RegistrationDto'
 
 type RegistrationProps = {
-    user: EntityState<UserModel>
+    authentication: Authentication
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
 }
 
-export const Registration = ({ user, setSidebar, setTopbar }: RegistrationProps): ReactElement => {
-    const [isLoadingSubmit, setLoadingSubmit] = useState<boolean>(false)
-    const [success, setSuccess] = useState<boolean>(false)
+type RegistrationForm = {
+    username: string
+    password: string
+}
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+export const Registration = ({ authentication, setSidebar, setTopbar }: RegistrationProps): ReactElement => {
+    const navigate: NavigateFunction = useNavigate()
 
-        setLoadingSubmit(true);
+    const [isLoading, setLoading] = useState<boolean>(true)
+    const [isSuccess, setSuccess] = useState<boolean>(false)
+    const [formData, setFormData] = useState<RegistrationForm>({
+        username: '',
+        password: '',
+    })
 
-        (async () => {
-            try {
-                await axios.post('/api/register', formData)
-                setSuccess(true)
-            } catch (error) {
-                console.log(error)
-            }
-        })()
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        setFormData((prev: RegistrationForm) => ({
+            ...prev,
+            [event.target.name]: event.target.value,
+        }))
+
+        setSuccess(false)
     }
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+        event.preventDefault()
+        setLoading(true)
+
+        const apiUrl: string = "/api/register"
+        const response: boolean = await tryApiRequest("POST", apiUrl, async (): Promise<AxiosResponse<UserModel>> => {
+            const dto: RegistrationDto = { ...formData, roles: ["ROLE_USER"] }
+            return await axios.post(apiUrl, dto)
+        })
+
+        if (response) {
+            setSuccess(true)
+        }
+
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        if (authentication.isLoading) {
+            return
+        }
+
+        if (authentication.isAuthenticated) {
+            navigate("/login")
+        }
+
+        setLoading(false)
+    }, [authentication.isLoading]);
 
     useEffect(() => {
         setSidebar()
@@ -45,56 +80,68 @@ export const Registration = ({ user, setSidebar, setTopbar }: RegistrationProps)
 
     return (
         <StandardContentWrapper className="md:w-[400px]">
-            {isLoadingSubmit && success &&
-                <Notification color="green" title="Registrierung erfolgreich!">
-                    Du kannst dich nun <Link to="/login">einloggen</Link>.
-                </Notification>
+            {isSuccess &&
+                <>
+                    <Notification color="green" title="Deine Registrierung war erfolgreich!" />
+                    <Spacer height="10" />
+                    <div className="flex justify-center">
+                        <Button
+                            role="secondary"
+                            icon="login"
+                            label="Zum Login"
+                            location="/login"
+                        />
+                    </div>
+                </>
             }
 
-            {(user.isLoading || isLoadingSubmit) && !success &&
+            {isLoading &&
                 <Spinner />
             }
 
-            {user.data.username !== null && !user.isLoading && !isLoadingSubmit &&
-                <Navigate to="/login" />
-            }
-
-            {user.data.username === null && !user.isLoading && !isLoadingSubmit &&
+            {!isSuccess && !isLoading &&
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <Card>
                         <InputRow
-                            id="registration_form_username"
-                            label="Dein Benutzername"
+                            id="username"
+                            label="Benutzername"
                             {...{
                                 'required': true,
+                                onChange: handleInputChange,
+                                name: 'username',
+                                value: formData.username,
                             }}
                         />
 
                         <Spacer height="6" />
 
                         <InputRow
-                            id="registration_form_plainPassword"
-                            label="Dein Password"
+                            id="password"
+                            label="Password"
                             {...{
                                 'type': 'password',
                                 'required': true,
+                                onChange: handleInputChange,
+                                name: 'password',
+                                value: formData.password,
                             }}
                         />
 
                         <Spacer height="6" />
 
-                        <div className="flex items-center">
-                            <input
-                                id="registration_form_agreeTerms"
-                                name="registration_form[agreeTerms]"
-                                type="checkbox"
-                                required={true}
-                                className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
-                            />
-                            <label htmlFor="registration_form_agreeTerms">
-                                Ich stimme den Nutzungsbedingungen und den Datenschutzbestimmungen zu.
-                            </label>
-                        </div>
+                        {/* @todo Uncomment when ToS or privacy stuff gets important. */}
+                        {/*<div className="flex items-center">*/}
+                        {/*    <input*/}
+                        {/*        id="agreeTerms"*/}
+                        {/*        name="registration_form[agreeTerms]"*/}
+                        {/*        type="checkbox"*/}
+                        {/*        required={true}*/}
+                        {/*        className="w-4 h-4 mr-4 text-primary-100 bg-[#e0e4d6] rounded-sm border border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"*/}
+                        {/*    />*/}
+                        {/*    <label htmlFor="agreeTerms">*/}
+                        {/*        Ich stimme den Nutzungsbedingungen und den Datenschutzbestimmungen zu.*/}
+                        {/*    </label>*/}
+                        {/*</div>*/}
 
                         <hr className="my-6 border-t-secondary-200 dark:border-t-secondary-dark-200" />
 
