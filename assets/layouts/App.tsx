@@ -15,7 +15,6 @@ import useAuthentication from '@/hooks/useAuthentication'
 import useFetch from '@/hooks/useFetch'
 import useRefreshDataTimestamp from '@/hooks/useRefreshDataTimestamp'
 
-import Login from '@/pages/Login/Login'
 import Logout from '@/pages/Logout/Logout'
 import PageNotFound from '@/pages/PageNotFound/PageNotFound'
 import Pantry from '@/pages/Pantry/Pantry'
@@ -43,6 +42,7 @@ import Notification from '@/components/ui/Notification'
 import useImageMigration from '@/hooks/useImageMigration'
 import Spacer from '@/components/ui/Spacer'
 import { UserSettings } from '@/pages/Settings/UserSettings'
+import { JsonLogin } from '@/pages/Login/JsonLogin'
 
 /**
  * Main component of the application. Handles the routing and provides state variables and 
@@ -248,7 +248,7 @@ export default function App(): ReactElement {
                                 />
                                 <Route
                                     path="/login"
-                                    element={<Login {...{ user, authentication, setLoading, setSidebar, setTopbar }} />}
+                                    element={<JsonLogin {...{ user, authentication, setSidebar, setTopbar }} />}
                                 />
                                 <Route
                                     path="/logout"

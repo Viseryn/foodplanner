@@ -1,7 +1,7 @@
 import { LINEBREAK } from '@/lang/constants/LINEBREAK'
 
 export class StringBuilder {
-    private readonly strings: string[]
+    private strings: string[]
 
     public constructor() {
         this.strings = []
@@ -54,5 +54,9 @@ export class StringBuilder {
 
     public logLastToConsole(): void {
         console.log(this.getLast())
+    }
+
+    public clear(): void {
+        this.strings = []
     }
 }
