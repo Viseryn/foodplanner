@@ -7,7 +7,7 @@ import SearchWidget from './components/SearchWidget'
 import { RecipeImageCard } from '@/pages/Recipes/components/RecipeImageCard'
 import { RecipesGrid } from '@/pages/Recipes/components/RecipesGrid'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
-import * as ViewMode from '@/pages/Recipes/constants/ViewMode'
+import * as ViewMode from '@/pages/Recipes/types/ViewMode'
 import SettingsModel from '@/types/SettingsModel'
 import axios from 'axios'
 
@@ -40,7 +40,7 @@ export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
 
     const handleViewMode = async (): Promise<void> => {
         const response = await axios.patch(`/api/settings/${settings.data.id}`, {
-            recipeListViewMode: ViewMode.toString(ViewMode.getSuccessor(ViewMode.parse(settings.data.recipeListViewMode)))
+            recipeListViewMode: ViewMode.getSuccessor(settings.data.recipeListViewMode)
         })
 
         settings.setData(response.data)
@@ -55,12 +55,12 @@ export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
         setTopbar({
             title: 'Rezepte',
             actionButtons: [{
-                icon: ViewMode.getIcon(ViewMode.parse(settings.data.recipeListViewMode)),
+                icon: ViewMode.getIcon(settings.data.recipeListViewMode),
                 onClick: handleViewMode,
             }],
             style: 'md:max-w-[900px]',
         })
-    }, [settings.data.recipeListViewMode])
+    }, [settings.data?.recipeListViewMode])
 
     useEffect(() => {
         setSidebar('recipes', {
@@ -85,7 +85,7 @@ export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
 
             {recipesFiltered.length === 0 && !recipes.isLoading
                 ? <Notification color="red" title="Keine Rezepte gefunden." />
-                : <RecipesGrid viewMode={ViewMode.parse(settings.data.recipeListViewMode)}>
+                : <RecipesGrid viewMode={settings.data?.recipeListViewMode}>
                     {recipes.isLoading
                         ? <RecipeListSkeleton />
                         : recipesFiltered.map(recipe => <RecipeImageCard key={recipe.id} recipe={recipe} />)
