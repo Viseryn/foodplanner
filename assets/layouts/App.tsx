@@ -122,7 +122,8 @@ export default function App(): ReactElement {
     const days = fetch<Array<DayModel>>('/api/days', false)
 
     // Calculate number of non-checked shopping list items for the notification dot at the shopping list sidebar item
-    const [shoppingListNotificationDotValue,
+    const [
+        shoppingListNotificationDotValue,
         setShoppingListNotificationDotValue,
     ] = useState<number>()
 
