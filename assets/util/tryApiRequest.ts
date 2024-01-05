@@ -12,21 +12,22 @@ import swal from 'sweetalert'
  * @param apiUrl The URL of the API endpoint, e.g. "/api/usergroups".
  * @param task The request logic. It is executed and the response is used to either display incoming errors or to write
  *             a success message to the console. The callback can take a variable amounts of parameters, but should
- *             return the HTTP response object.
+ *             return the HTTP response object. The first argument passed to the callback is always the `apiUrl`
+ *             passed to this method.
  * @param args Optional arguments for the `task` callback function. Need to match the function signature of `task`.
  * @returns False, if an error is caught; true otherwise.
  */
 export const tryApiRequest = async (
     httpMethod: HttpMethod,
     apiUrl: string,
-    task: (...args: unknown[]) => Promise<AxiosResponse<unknown, unknown>>,
+    task: (apiUrl: string, ...args: unknown[]) => Promise<AxiosResponse<unknown, unknown>>,
     ...args: unknown[]
 ): Promise<boolean> => {
     const infoStack: StringBuilder = new StringBuilder()
     let returnValue: boolean = false
 
     try {
-        const response: AxiosResponse = await task(args)
+        const response: AxiosResponse = await task(apiUrl, args)
         infoStack
             .append(`[INFO] (${httpMethod} ${apiUrl}): ${response?.request?.status}`)
             .blank()
