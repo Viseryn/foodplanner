@@ -31,6 +31,8 @@ export const tryApiRequest = async (
             .append(`[INFO] (${httpMethod} ${apiUrl}): ${response?.request?.status}`)
             .blank()
             .append(`${response?.request?.statusText}`)
+            .logToConsole()
+            .clear()
         returnValue = true
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -40,6 +42,8 @@ export const tryApiRequest = async (
                 .append(`${error?.response?.request?.statusText}.`)
                 .newLine()
                 .append(`${error?.response?.data?.detail ?? error?.response?.data}`)
+                .logToConsole()
+                .clear()
 
             void swal({
                 dangerMode: true,
@@ -48,8 +52,6 @@ export const tryApiRequest = async (
                 text: infoStack.build(),
             })
         }
-    } finally {
-        infoStack.logToConsole()
     }
 
     return returnValue
