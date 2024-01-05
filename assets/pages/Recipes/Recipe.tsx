@@ -1,36 +1,23 @@
-/*************************************
- * ./assets/pages/Recipes/Recipe.tsx *
- *************************************/
-
-import axios, { AxiosResponse } from 'axios'
-import Fraction from 'fraction.js'
-import React, { ReactElement, useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-
 import TextParagraph from '@/components/skeleton/TextParagraph'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Heading from '@/components/ui/Heading'
 import Spacer from '@/components/ui/Spacer'
+import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
+import useTimeout from '@/hooks/useTimeout'
+import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
-import useTimeout from '@/hooks/useTimeout'
-import DayModel from '@/types/DayModel'
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios, { AxiosResponse } from 'axios'
+import Fraction from 'fraction.js'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 
-/**
- * Recipe
- *
- * A component that shows a single recipe in detail.
- *
- * @todo Change the color of the select arrow.
- * @todo Write an easier to read skeleton.
- *
- * @component
- */
-export default function Recipe({ days, recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: {
+type RecipeProps = {
     days: EntityState<Array<DayModel>>
     recipes: EntityState<Array<RecipeModel>>
     shoppingList: EntityState<Array<IngredientModel>>
@@ -38,7 +25,13 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
     settings: EntityState<SettingsModel>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): ReactElement {
+}
+
+/**
+ * @todo Change the color of the select arrow.
+ * @todo Write an easier to read skeleton.
+ */
+export const Recipe = ({ days, recipes, shoppingList, pantry, settings, setSidebar, setTopbar }: RecipeProps): ReactElement => {
     // Type for route parameters
     type RecipeRouteParams = {
         id?: string
@@ -94,9 +87,11 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
         }))
 
         if (ingredientsToAdd?.length) {
-            const response: AxiosResponse<IngredientModel[]>
-                = await axios.post('/api/storages/shoppinglist/ingredients', ingredientsToAdd)
-            shoppingList.setData([...shoppingList.data, ...response.data])
+            void tryApiRequest("POST", "/api/storages/shoppinglist/ingredients", async (apiUrl) => {
+                const response: AxiosResponse<IngredientModel[]> = await axios.post(apiUrl, ingredientsToAdd)
+                shoppingList.setData([...shoppingList.data, ...response.data])
+                return response
+            })
         }
 
         // Update parameters for SAB
@@ -119,9 +114,11 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
             checked: false,
         }
 
-        const response: AxiosResponse<IngredientModel[]>
-            = await axios.post('/api/storages/shoppinglist/ingredients', [ingredientToAdd])
-        shoppingList.setData([...shoppingList.data, ...response.data])
+        void tryApiRequest("POST", "/api/storages/shoppinglist/ingredients", async (apiUrl) => {
+            const response: AxiosResponse<IngredientModel[]> = await axios.post(apiUrl, [ingredientToAdd])
+            shoppingList.setData([...shoppingList.data, ...response.data])
+            return response
+        })
     }
 
     /**
@@ -141,9 +138,11 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
         }))
 
         if (ingredientsToAdd?.length) {
-            const response: AxiosResponse<IngredientModel[]>
-                = await axios.post('/api/storages/pantry/ingredients', ingredientsToAdd)
-            pantry.setData([...pantry.data, ...response.data])
+            void tryApiRequest("POST", "/api/storages/pantry/ingredients", async (apiUrl) => {
+                const response: AxiosResponse<IngredientModel[]> = await axios.post(apiUrl, ingredientsToAdd)
+                pantry.setData([...pantry.data, ...response.data])
+                return response
+            })
         }
 
         // Update parameter for button
@@ -166,9 +165,11 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
             checked: false,
         }
 
-        const response: AxiosResponse<IngredientModel[]>
-            = await axios.post('/api/storages/pantry/ingredients', [ingredientToAdd])
-        pantry.setData([...pantry.data, ...response.data])
+        void tryApiRequest("POST", "/api/storages/pantry/ingredients", async (apiUrl) => {
+            const response: AxiosResponse<IngredientModel[]> = await axios.post(apiUrl, [ingredientToAdd])
+            pantry.setData([...pantry.data, ...response.data])
+            return response
+        })
     }
 
     // Initializes the recipe state variable. Each time the id parameter changes, the 
@@ -263,36 +264,28 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
         window.scrollTo(0, 0)
     }, [recipe, days.isLoading])
 
-    // Render Recipe
-    return <div className="pb-24 md:pb-4 md:max-w-[700px]">
+    return <StandardContentWrapper className="md:max-w-[700px]">
         {/* Image */}
-        <div className="mx-4 md:ml-0">
-            <Spacer height="6" />
-            {recipes.isLoading
-                ? /* Recipe Skeleton */
-                <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' alt='' />
-                : (recipe.image &&
-                    <img
-                        className="rounded-3xl h-80 object-cover transition duration-300 w-full"
-                        src={recipe.image.directory + recipe.image.filename}
-                        alt={recipe.title}
-                    />
-                )
-            }
-        </div>
+        {recipes.isLoading
+            ? /* Recipe Skeleton */ <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src='/img/default.jpg' alt='' />
+            : (recipe.image &&
+                <img
+                    className="rounded-3xl h-80 object-cover transition duration-300 w-full"
+                    src={recipe.image.directory + recipe.image.filename}
+                    alt={recipe.title}
+                />
+            )
+        }
 
         {/* Ingredients, instructions and buttons */}
         {recipes.isLoading
             ? <>
                 {/* Recipe Skeleton */}
-                <Spacer height="6" />
-
-                <div className="animate-pulse p-4 md:px-0 lg:pl-4 md:pt-9">
-                    <div
-                        className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2"></div>
+                <div className="animate-pulse pb-4 pt-10">
+                    <div className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2" />
                 </div>
 
-                <Card style="mx-4 md:ml-0 lg:ml-4">
+                <Card>
                     <TextParagraph />
                     <Spacer height="2" />
                     <TextParagraph />
@@ -301,7 +294,7 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
             : <>
                 {/* Ingredients */}
                 {tmpRecipe.ingredients?.length > 0 &&
-                    <div className="mx-4 md:ml-0">
+                    <>
                         <Spacer height="10" />
 
                         <Heading size="xl" style="ml-2">
@@ -391,12 +384,12 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
                                 }
                             </div>
                         </Card>
-                    </div>
+                    </>
                 }
 
                 {/* Instructions */}
                 {tmpRecipe.instructions?.length > 0 &&
-                    <div className="mx-4 md:ml-0">
+                    <>
                         <Spacer height="10" />
 
                         <Heading size="xl" style="ml-2">Zubereitung</Heading>
@@ -411,7 +404,7 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
                                 </div>
                             )}
                         </Card>
-                    </div>
+                    </>
                 }
 
                 {/* Show empty card if there is no image, no ingredients and no instructions */}
@@ -425,5 +418,5 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
                 <div className="mb-[5.5rem]"></div>
             </>
         }
-    </div>
+    </StandardContentWrapper>
 }
