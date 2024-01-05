@@ -55,6 +55,10 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
      * @param value A trimmed string that describes an Ingredient object.
      */
     const handleEnterKeyDown = async (value: string): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         setInputValue('')
 
         const lastPosition = getLastIngredientPosition(shoppingList.data)
@@ -71,6 +75,10 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
      * used. All modified ingredients are either patched or deleted via the Ingredients API.
      */
     const handleSumUpIngredients = async (): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         setLoading(true)
 
         const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(shoppingList.data)
@@ -87,6 +95,10 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
      * Does the same as handleSumUpIngredients, but additionally subtracts all ingredients that are in the pantry.
      */
     const handleSubtractPantry = async (): Promise<void> => {
+        if (shoppingList.isLoading || pantry.isLoading) {
+            return
+        }
+
         setLoading(true)
 
         const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(shoppingList.data)
@@ -149,6 +161,10 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
      * Deletes all checked items.
      */
     const handleDeleteChecked = async (): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const uncheckedIngredients: IngredientModel[] = [...shoppingList.data].filter(item => !item.checked)
         shoppingList.setData(uncheckedIngredients)
 
@@ -183,21 +199,21 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     // Render ShoppingList
     return <div className="pb-24 md:pb-4 md:w-[450px]">
         <Spacer height="6" />
-        
-        <div className="mx-4 md:mx-0">
-            <AddIngredientWidget
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                handleEnterKeyDown={handleEnterKeyDown}
-            />
-        </div>
-
-        <Spacer height="10" />
 
         {shoppingList.isLoading || isLoading ? (
             <Spinner />
         ) : (
             <>
+                <div className="mx-4 md:mx-0">
+                    <AddIngredientWidget
+                        inputValue={inputValue}
+                        setInputValue={setInputValue}
+                        handleEnterKeyDown={handleEnterKeyDown}
+                    />
+                </div>
+
+                <Spacer height="10" />
+
                 <Card style="mx-4 md:mx-0">
                     <div className="space-y-2 justify-center">
                         {shoppingList.data?.length === 0 &&
@@ -205,7 +221,7 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
                         }
 
                         {shoppingList.data?.map(item =>
-                            <Item  
+                            <Item
                                 key={item.id}
                                 shoppingList={shoppingList}
                                 item={item}

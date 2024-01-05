@@ -58,6 +58,10 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      * @param value A trimmed string that describes an Ingredient object.
      */
     const handleEnterKeyDown = async (value: string): Promise<void> => {
+        if (pantry.isLoading) {
+            return
+        }
+
         setInputValue('')
 
         const lastPosition = getLastIngredientPosition(pantry.data)
@@ -74,6 +78,10 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      * used. All modified ingredients are either patched or deleted via the Ingredients API.
      */
     const handleSumUpIngredients = async (): Promise<void> => {
+        if (pantry.isLoading) {
+            return
+        }
+
         setLoading(true)
 
         const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(pantry.data)
@@ -90,6 +98,10 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
      * Sorts all items by alphabet.
      */
     const handleSort = async (): Promise<void> => {
+        if (pantry.isLoading) {
+            return
+        }
+
         const sortedIngredients: IngredientModel[] = [...pantry.data]
         sortedIngredients.sort((a, b) => sortingOrder * a.name.localeCompare(b.name))
         sortedIngredients.forEach((ingredient, index) => {
@@ -144,20 +156,21 @@ export default function Pantry({ pantry, setSidebar, setTopbar }: {
     return <div className="pb-24 md:pb-4 md:w-[450px]">
         <Spacer height="6" />
 
-        <div className="mx-4 md:mx-0">
-            <AddIngredientWidget
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                handleEnterKeyDown={handleEnterKeyDown}
-            />
-        </div>
-
-        <Spacer height="10" />
-
         {pantry.isLoading || isLoading ? (
             <Spinner />
         ) : (
             <>
+
+                <div className="mx-4 md:mx-0">
+                    <AddIngredientWidget
+                        inputValue={inputValue}
+                        setInputValue={setInputValue}
+                        handleEnterKeyDown={handleEnterKeyDown}
+                    />
+                </div>
+
+                <Spacer height="10" />
+
                 <Card style="mx-4 md:mx-0">
                     <div className="space-y-2 justify-center">
                         {pantry.data.length === 0 &&

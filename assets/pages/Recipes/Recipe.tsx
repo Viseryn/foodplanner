@@ -82,6 +82,10 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
     const handleAddShoppingList = async (argRecipe: RecipeModel): Promise<void> => {
         clearShoppingListTimeout()
 
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const lastPosition = getLastIngredientPosition(shoppingList.data)
         const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
             ...ingredient,
@@ -105,6 +109,10 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToShoppingList = async (ingredient: IngredientModel): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const ingredientToAdd: IngredientModel = {
             ...ingredient,
             position: getLastIngredientPosition(shoppingList.data) + 1,
@@ -121,6 +129,10 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
      */
     const handleAddPantry = async (argRecipe: RecipeModel): Promise<void> => {
         clearPantryTimeout()
+
+        if (pantry.isLoading) {
+            return
+        }
 
         const lastPosition = getLastIngredientPosition(pantry.data)
         const ingredientsToAdd: IngredientModel[] = argRecipe.ingredients?.map((ingredient, index) => ({
@@ -144,6 +156,10 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
      * Can be invoked by the IconButtons next to each ingredient.
      */
     const handleAddSingleToPantry = async (ingredient: IngredientModel): Promise<void> => {
+        if (pantry.isLoading) {
+            return
+        }
+
         const ingredientToAdd: IngredientModel = {
             ...ingredient,
             position: getLastIngredientPosition(pantry.data) + 1,
@@ -332,7 +348,7 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
                                                 outlined={true}
                                                 role="tertiary"
                                             />
-                                            {settings.data.showPantry &&
+                                            {settings.data?.showPantry &&
                                                 <Button
                                                     style={'pantry-' + ingredient.id}
                                                     onClick={async () => {
@@ -363,7 +379,7 @@ export default function Recipe({ days, recipes, shoppingList, pantry, settings, 
                                     isSmall={true}
                                 />
 
-                                {settings.data.showPantry &&
+                                {settings.data?.showPantry &&
                                     <Button
                                         icon={showPantryDone ? 'done' : 'add_home'}
                                         outlined={true}

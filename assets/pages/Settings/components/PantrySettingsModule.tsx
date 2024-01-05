@@ -12,6 +12,10 @@ type PantrySettingsModuleProps = {
 
 export const PantrySettingsModule = ({ settings }: PantrySettingsModuleProps): ReactElement => {
     const handlePantrySettings = async (): Promise<void> => {
+        if (settings.isLoading) {
+            return
+        }
+
         const apiUrl: string = `/api/settings/${settings.data.id}`
 
         await tryApiRequest("PATCH", apiUrl, async (): Promise<AxiosResponse<SettingsModel>> => {

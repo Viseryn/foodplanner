@@ -39,6 +39,10 @@ export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
         })
 
     const handleViewMode = async (): Promise<void> => {
+        if (settings.isLoading) {
+            return
+        }
+
         const response = await axios.patch(`/api/settings/${settings.data.id}`, {
             recipeListViewMode: ViewMode.getSuccessor(settings.data.recipeListViewMode)
         })

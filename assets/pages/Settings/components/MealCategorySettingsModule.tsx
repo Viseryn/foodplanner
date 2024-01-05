@@ -16,6 +16,10 @@ export const MealCategorySettingsModule = (props: MealCategorySettingsModuleProp
     const { mealCategories, settings } = props
 
     const handleSetStandardMealCategory = async (mealCategory: MealCategoryModel): Promise<void> => {
+        if (settings.isLoading) {
+            return
+        }
+
         const apiUrl: string = `/api/settings/${settings.data.id}`
 
         await tryApiRequest("PATCH", apiUrl, async (): Promise<AxiosResponse<SettingsModel>> => {

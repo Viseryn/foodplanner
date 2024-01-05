@@ -53,6 +53,10 @@ export default function Item({ pantry, item }: {
      * Does not trigger a reload or replacement of the pantry.
      */
     const handleItemSetEditability = (item: IngredientModel): void => {
+        if (pantry.isLoading) {
+            return
+        }
+
         const copyOfPantry: IngredientModel[] = [...pantry.data]
         if (!copyOfPantry.includes(item)) {
             return
@@ -72,6 +76,10 @@ export default function Item({ pantry, item }: {
         event: React.FocusEvent<HTMLInputElement, Element> | React.KeyboardEvent<HTMLInputElement>, 
         item: IngredientModel
     ): Promise<void> => {
+        if (pantry.isLoading) {
+            return
+        }
+
         const copyOfList: IngredientModel[] = [...pantry.data]
         const index: number = copyOfList.indexOf(item)
         const newIngredient: string = (event.target as HTMLInputElement).value
@@ -100,6 +108,10 @@ export default function Item({ pantry, item }: {
      * Deletes an item.
      */
     const handleDeleteItem = async (item: IngredientModel): Promise<void> => {
+        if (pantry.isLoading) {
+            return
+        }
+
         const copyOfList: IngredientModel[] = [...pantry.data]
         const index: number = copyOfList.indexOf(item)
 
@@ -116,6 +128,10 @@ export default function Item({ pantry, item }: {
      * @param direction Possible values are -1 (up) and 1 (down).
      */
     const handleChangePosition = async (item: IngredientModel, direction: -1 | 1): Promise<void> => {
+        if (pantry.isLoading) {
+            return
+        }
+
         // Make a copy of pantry.data and find item
         const copyOfList: IngredientModel[] = [...pantry.data]
         const index: number = copyOfList.indexOf(item)

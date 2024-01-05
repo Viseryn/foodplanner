@@ -50,6 +50,10 @@ export default function Item({ shoppingList, item }: {
      * Checks or unchecks an item. Is performed on single clicks on the item or the checkboxes.
      */
     const handleCheckboxChange = async (item: IngredientModel): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const copyOfShoppingList: IngredientModel[] = [...shoppingList.data]
         if (!copyOfShoppingList.includes(item)) {
             return
@@ -70,6 +74,10 @@ export default function Item({ shoppingList, item }: {
      * Does not trigger a reload or replacement of the shoppingList.
      */
     const handleItemSetEditability = (item: IngredientModel): void => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const copyOfShoppingList: IngredientModel[] = [...shoppingList.data]
         if (!copyOfShoppingList.includes(item)) {
             return
@@ -89,6 +97,10 @@ export default function Item({ shoppingList, item }: {
         event: React.FocusEvent<HTMLInputElement, Element> | React.KeyboardEvent<HTMLInputElement>, 
         item: IngredientModel
     ): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const copyOfList: IngredientModel[] = [...shoppingList.data]
         const index: number = copyOfList.indexOf(item)
         const newIngredient: string = (event.target as HTMLInputElement).value
@@ -120,6 +132,10 @@ export default function Item({ shoppingList, item }: {
      * @param direction Possible values are -1 (up) and 1 (down).
      */
     const handleChangePosition = async (item: IngredientModel, direction: -1 | 1): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         // Make a copy of pantry.data and find item
         const copyOfList: IngredientModel[] = [...shoppingList.data]
         const index: number = copyOfList.indexOf(item)
