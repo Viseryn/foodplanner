@@ -1,15 +1,16 @@
-import React, { ReactElement, useEffect, useState } from 'react'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
-import RecipeModel from '@/types/RecipeModel'
-import { RecipeListSkeleton } from './components/RecipeListSkeleton'
-import SearchWidget from './components/SearchWidget'
+import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { RecipeImageCard } from '@/pages/Recipes/components/RecipeImageCard'
 import { RecipesGrid } from '@/pages/Recipes/components/RecipesGrid'
-import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import * as ViewMode from '@/pages/Recipes/types/ViewMode'
+import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
-import axios from 'axios'
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { RecipeListSkeleton } from './components/RecipeListSkeleton'
+import SearchWidget from './components/SearchWidget'
 
 export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
     recipes: EntityState<RecipeModel[]>
@@ -20,7 +21,7 @@ export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
     const [searchWidgetInput, setSearchWidgetInput] = useState<string>('')
 
     /** @todo [Issue #101] Implement a more intelligent search with more filters. */
-    const recipesFiltered: Array<RecipeModel> = recipes.isLoading
+    const recipesFiltered: RecipeModel[] = recipes.isLoading
         ? []
         : recipes.data.filter(recipe => {
             if (searchWidgetInput === '' || recipe.title.toLowerCase().includes(searchWidgetInput.toLowerCase())) {
@@ -43,11 +44,14 @@ export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
             return
         }
 
-        const response = await axios.patch(`/api/settings/${settings.data.id}`, {
-            recipeListViewMode: ViewMode.getSuccessor(settings.data.recipeListViewMode)
-        })
+        await tryApiRequest("PATCH", `/api/settings/${settings.data.id}`, async (apiUrl) => {
+            const response: AxiosResponse<SettingsModel> = await axios.patch(apiUrl, {
+                recipeListViewMode: ViewMode.getSuccessor(settings.data.recipeListViewMode)
+            })
 
-        settings.setData(response.data)
+            settings.setData(response.data)
+            return response
+        })
     }
 
     useEffect(() => {
