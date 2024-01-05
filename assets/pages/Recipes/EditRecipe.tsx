@@ -1,7 +1,3 @@
-import axios, { AxiosResponse } from 'axios'
-import React, { ReactElement, useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
-import swal from 'sweetalert'
 import InputRow from '@/components/form/Input/InputRow'
 import SliderRow from '@/components/form/Slider/SliderRow'
 import TextareaRow from '@/components/form/Textarea/TextareaRow'
@@ -9,35 +5,38 @@ import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
-import DayModel from '@/types/DayModel'
-import RecipeModel from '@/types/RecipeModel'
-import RecipeForm from '@/types/RecipeForm'
-import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
-import getIngredientsAsString from '@/pages/Recipes/util/getIngredientsAsString'
-import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsString'
-import { getImageModel } from '@/pages/Recipes/util/getImageModel'
-import ImageModel from '@/types/ImageModel'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { TwoColumnView } from '@/components/ui/TwoColumnView'
 import { ImageUploadWidget } from '@/pages/Recipes/components/ImageUploadWidget'
+import { getImageModel } from '@/pages/Recipes/util/getImageModel'
+import getIngredientsAsString from '@/pages/Recipes/util/getIngredientsAsString'
+import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsString'
+import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
+import DayModel from '@/types/DayModel'
+import { PageState } from "@/types/enums/PageState"
+import ImageModel from '@/types/ImageModel'
+import { Optional } from "@/types/Optional"
+import { RecipeForm } from '@/types/RecipeForm'
+import RecipeModel from '@/types/RecipeModel'
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { Navigate, NavigateFunction, useNavigate, useParams } from 'react-router-dom'
+import swal from 'sweetalert'
 
-/**
- * A component that renders a form for editing an existing recipe. After submitting via the submit
- * button, the recipe will be updated by an API and the user gets redirected to its detail page.
- *
- * @component
- */
-export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
+type EditRecipeProps = {
     recipes: EntityState<Array<RecipeModel>>
     days: EntityState<Array<DayModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): ReactElement {
+}
+
+export const EditRecipe = ({ recipes, days, setSidebar, setTopbar }: EditRecipeProps): ReactElement => {
     const { id }: { id?: string } = useParams()
     const navigate: NavigateFunction = useNavigate()
 
     const [file, setFile] = useState<File | null>(null)
-    const [isLoading, setLoading] = useState<boolean>(false)
+    const [state, setState] = useState<PageState>(PageState.LOADING)
     const [responseId, setResponseId] = useState<number>(0)
     const [recipe, setRecipe] = useState<RecipeModel>({} as RecipeModel)
     const [recipeFormData, setRecipeFormData] = useState<RecipeForm>({
@@ -55,7 +54,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
 
         const queryResult: Array<RecipeModel> = recipes.data.filter(recipe => recipe.id.toString() == id)
         if (queryResult.length === 0) {
-            navigate('/error/404')
+            navigate("/error/404")
         }
 
         const recipeResult: RecipeModel = queryResult[0]
@@ -67,6 +66,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
             ingredients: getIngredientsAsString(recipeResult.ingredients),
             instructions: getInstructionsAsString(recipeResult.instructions),
         }))
+        setState(PageState.WAITING)
     }, [id, recipes.isLoading])
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -78,25 +78,29 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-        setLoading(true)
+        setState(PageState.LOADING)
 
         const recipe: RecipeModel = getRecipeModel(recipeFormData)
-        const response: AxiosResponse<RecipeModel> = await axios.post(`/api/recipes/${id}`, recipe)
+        let recipeResponse: Optional<RecipeModel>
 
-        const imageUpload: ImageModel = await getImageModel(file, imagePreviewUrl.length === 0)
-        await axios.patch(`/api/recipes/${id}/image`, imageUpload)
+        const postResponse: boolean = await tryApiRequest("POST", `/api/recipes/${id}`, async (apiUrl) => {
+            const response: AxiosResponse<RecipeModel> = await axios.post(apiUrl, recipe)
+            recipeResponse = response.data
+            return response
+        })
 
-        recipes.load()
-        days.load()
-        setResponseId(response.data.id)
-        setLoading(false)
-    }
+        if (postResponse && recipeResponse !== undefined) {
+            const imageUpload: ImageModel = await getImageModel(file, imagePreviewUrl.length === 0)
+            await tryApiRequest("PATCH", `/api/recipes/${id}/image`, async (apiUrl) => {
+                return await axios.patch(apiUrl, imageUpload)
+            })
 
-    useEffect(() => {
-        if (responseId > 0) {
-            navigate('/recipe/' + responseId)
+            recipes.load()
+            days.load()
+            setResponseId(recipeResponse.id)
+            setState(recipeResponse.id > 0 ? PageState.SUCCESS : PageState.ERROR)
         }
-    }, [responseId])
+    }
 
     const deleteRecipe = async (id: number): Promise<void> => {
         const swalResponse = await swal({
@@ -108,10 +112,13 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
         })
 
         if (swalResponse) {
-            await axios.delete(`/api/recipes/${id}`)
-            recipes.load()
-            days.load()
-            navigate('/recipes')
+            await tryApiRequest("DELETE", `/api/recipes/${id}`, async (apiUrl) => {
+                const response: AxiosResponse = await axios.delete(apiUrl)
+                recipes.load()
+                days.load()
+                navigate("/recipes")
+                return response
+            })
         }
     }
 
@@ -121,22 +128,28 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
             title: recipe?.title,
             showBackButton: true,
             backButtonPath: '/recipe/' + id,
-            actionButtons: [
+            actionButtons: state === PageState.WAITING ? [
                 { icon: 'delete', onClick: () => deleteRecipe(recipe?.id) }
-            ],
+            ] : [],
             truncate: true,
             style: 'max-w-[900px] pr-4',
             isLoading: recipes.isLoading,
         })
 
         window.scrollTo(0, 0)
-    }, [recipe])
+    }, [recipe, state])
 
     return (
         <StandardContentWrapper className="md:max-w-[900px]">
-            {isLoading || recipes.isLoading ? (
+            {state === PageState.LOADING &&
                 <Spinner />
-            ) : (
+            }
+
+            {state === PageState.SUCCESS &&
+                <Navigate to={`/recipe/${responseId}`} />
+            }
+
+            {[PageState.WAITING, PageState.ERROR].includes(state) &&
                 <form onSubmit={handleSubmit}>
                     <TwoColumnView>
                         <Card>
@@ -222,7 +235,7 @@ export default function EditRecipe({ recipes, days, setSidebar, setTopbar }: {
                         />
                     </div>
                 </form>
-            )}
+            }
         </StandardContentWrapper>
     )
 }

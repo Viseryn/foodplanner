@@ -3,7 +3,7 @@ import getIngredientModel from '@/util/ingredients/getIngredientModel'
 import InstructionModel from '@/types/InstructionModel'
 import getInstructionModel from '@/util/instructions/getInstructionModel'
 import RecipeModel from '@/types/RecipeModel'
-import RecipeForm from '@/types/RecipeForm'
+import { RecipeForm } from '@/types/RecipeForm'
 
 export default function getRecipeModel(recipeForm: RecipeForm): RecipeModel {
     const ingredients: IngredientModel[] = recipeForm.ingredients === ''
