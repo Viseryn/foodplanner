@@ -12,12 +12,12 @@ import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
-import useFetch from '@/hooks/useFetch'
 import { UserGroupModel } from '@/types/UserGroupModel'
 import { UserModel } from '@/types/UserModel'
 import getOptions from '@/util/getOptions'
 import getEntityOptions from '@/util/getEntityOptions'
 import UserOption from '@/types/UserOption'
+import { useEntityState } from '@/hooks/useEntityState'
 
 /**
  * A component that renders a form for adding new UserGroups.
@@ -31,7 +31,7 @@ export default function AddGroup({ authentication, userGroups, setSidebar, setTo
     setTopbar: SetTopbarAction
 }) {
     // A list of all users
-    const users = useFetch<Array<UserModel>>('/api/users', authentication, undefined, false)
+    const users: EntityState<UserModel[]> = useEntityState('/api/users', authentication)
     const userOptions = getEntityOptions(users, UserOption)
 
     // A function that can change the location. Needed for the redirect after submit.

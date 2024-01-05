@@ -1,20 +1,11 @@
-/****************************
- * ./assets/layouts/App.tsx *
- ****************************/
-
-import React, { ReactElement, useEffect, useState } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
-import AuthChecker from './AuthChecker/AuthChecker'
-import SidebarDrawerButton from './Sidebar/components/SidebarDrawerButton'
-import Sidebar from './Sidebar/Sidebar'
-import SidebarDrawer from './Sidebar/SidebarDrawer'
-import Topbar from './Topbar/Topbar'
-
+import Notification from '@/components/ui/Notification'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
 import useAuthentication from '@/hooks/useAuthentication'
-import useFetch from '@/hooks/useFetch'
+import { useEntityState } from '@/hooks/useEntityState'
+import { useImageMigration } from '@/hooks/useImageMigration'
 import useRefreshDataTimestamp from '@/hooks/useRefreshDataTimestamp'
-
+import { JsonLogin } from '@/pages/Login/JsonLogin'
 import Logout from '@/pages/Logout/Logout'
 import PageNotFound from '@/pages/PageNotFound/PageNotFound'
 import Pantry from '@/pages/Pantry/Pantry'
@@ -27,22 +18,23 @@ import { Recipes } from '@/pages/Recipes/Recipes'
 import { Registration } from '@/pages/Registration/Registration'
 import AddGroup from '@/pages/Settings/AddGroup'
 import { Settings } from '@/pages/Settings/Settings'
+import { UserSettings } from '@/pages/Settings/UserSettings'
 import ShoppingList from '@/pages/ShoppingList/ShoppingList'
-
 import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
+import InstallationStatusModel from '@/types/InstallationStatusModel'
 import MealCategoryModel from '@/types/MealCategoryModel'
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import { UserGroupModel } from '@/types/UserGroupModel'
 import { UserModel } from '@/types/UserModel'
-import InstallationStatusModel from '@/types/InstallationStatusModel'
-import Spinner from '@/components/ui/Spinner'
-import Notification from '@/components/ui/Notification'
-import { useImageMigration } from '@/hooks/useImageMigration'
-import Spacer from '@/components/ui/Spacer'
-import { UserSettings } from '@/pages/Settings/UserSettings'
-import { JsonLogin } from '@/pages/Login/JsonLogin'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import AuthChecker from './AuthChecker/AuthChecker'
+import SidebarDrawerButton from './Sidebar/components/SidebarDrawerButton'
+import Sidebar from './Sidebar/Sidebar'
+import SidebarDrawer from './Sidebar/SidebarDrawer'
+import Topbar from './Topbar/Topbar'
 
 /**
  * Main component of the application. Handles the routing and provides state variables and 
@@ -96,30 +88,18 @@ export default function App(): ReactElement {
         setSidebarActionButton(sidebarActionButton)
     }
 
-    /**
-     * A shortcut function for fetching the global data. Returns the useFetch return value with the
-     * given URL and the authentication and isLoading state variable as dependencies.
-     *
-     * @param url The API url.
-     * @param parse Whether or not the response data needs to be parsed. Default is true. Set to false if the response is prettified JSON.
-     * @returns The useFetch return value.
-     */
-    const fetch = <T,>(url: string, parse: boolean = true): EntityState<T> => {
-        return useFetch<T>(url, authentication, [isLoading], parse)
-    }
-
     // Fetch installation status
-    const installationStatus = fetch<InstallationStatusModel>('/api/installation-status', false)
+    const installationStatus: EntityState<InstallationStatusModel> = useEntityState("/api/installation-status", authentication, [isLoading])
 
     // Fetch data
-    const settings = fetch<SettingsModel>('/api/settings?userid=' + user.data.id, false)
-    const userGroups = fetch<Array<UserGroupModel>>('/api/usergroups', false)
-    const visibleUserGroups = fetch<UserGroupModel[]>('/api/usergroups?hidden=false', false)
-    const mealCategories = fetch<Array<MealCategoryModel>>('/api/mealcategories', false)
-    const shoppingList = fetch<Array<IngredientModel>>('/api/storages/shoppinglist/ingredients', false)
-    const pantry = fetch<Array<IngredientModel>>('/api/storages/pantry/ingredients', false)
-    const recipes = fetch<Array<RecipeModel>>('/api/recipes', false)
-    const days = fetch<Array<DayModel>>('/api/days', false)
+    const settings: EntityState<SettingsModel> = useEntityState(`/api/settings?userid=${!user.isLoading ? user.data.id : 0}`, authentication, [isLoading])
+    const userGroups: EntityState<UserGroupModel[]> = useEntityState("/api/usergroups", authentication, [isLoading])
+    const visibleUserGroups: EntityState<UserGroupModel[]> = useEntityState("/api/usergroups?hidden=false", authentication, [isLoading])
+    const mealCategories: EntityState<MealCategoryModel[]> = useEntityState("/api/mealcategories", authentication, [isLoading])
+    const shoppingList: EntityState<IngredientModel[]> = useEntityState("/api/storages/shoppinglist/ingredients", authentication, [isLoading])
+    const pantry: EntityState<IngredientModel[]> = useEntityState("/api/storages/pantry/ingredients", authentication, [isLoading])
+    const recipes: EntityState<RecipeModel[]> = useEntityState("/api/recipes", authentication, [isLoading])
+    const days: EntityState<DayModel[]> = useEntityState("/api/days", authentication, [isLoading])
 
     // Calculate number of non-checked shopping list items for the notification dot at the shopping list sidebar item
     const [

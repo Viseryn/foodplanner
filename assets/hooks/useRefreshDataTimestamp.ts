@@ -4,8 +4,7 @@
 
 import axios from 'axios'
 import { useEffect } from 'react'
-
-import useFetch from './useFetch'
+import { useEntityState } from '@/hooks/useEntityState'
 
 /**
  * useRefreshDataTimestamp
@@ -19,7 +18,7 @@ import useFetch from './useFetch'
  */
 function useRefreshDataTimestamp(isLoading: boolean, setLoading: SetState<boolean>): void {
     // Fetch the current RefreshDataTimestamp
-    const refreshDataTimestamp = useFetch<string>('/api/refresh-data-timestamp')
+    const refreshDataTimestamp: EntityState<string> = useEntityState('/api/refresh-data-timestamp')
 
     // Create a repeating 5 seconds interval
     useEffect(() => {
