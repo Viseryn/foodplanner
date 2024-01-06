@@ -1,26 +1,31 @@
-/************************************************
- * ./assets/pages/ShoppingList/ShoppingList.tsx *
- ************************************************/
-
-import axios, { AxiosResponse } from 'axios'
-import Fraction from 'fraction.js'
-import React, { ReactElement, useEffect, useState } from 'react'
-import swal from 'sweetalert'
-
 import AddIngredientWidget from '@/components/ui/AddIngredientWidget'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
+import InfoShoppingListEmpty from '@/pages/ShoppingList/components/InfoShoppingListEmpty'
 import IngredientModel from '@/types/IngredientModel'
 import SettingsModel from '@/types/SettingsModel'
-import Item from './components/Item'
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
-import InfoShoppingListEmpty from '@/pages/ShoppingList/components/InfoShoppingListEmpty'
-import getIngredientGroups from '@/util/storages/getIngredientGroups'
-import getDeleteRequests from '@/util/storages/getDeleteRequests'
-import getPatchRequests from '@/util/storages/getPatchRequests'
+import { getDeleteRequests } from '@/util/storages/getDeleteRequests'
+import { getIngredientGroups } from '@/util/storages/getIngredientGroups'
+import { getPatchRequests } from '@/util/storages/getPatchRequests'
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios, { AxiosResponse } from 'axios'
+import Fraction from 'fraction.js'
+import React, { ReactElement, useEffect, useState } from 'react'
+import swal from 'sweetalert'
+import { Item } from './components/Item'
+
+type ShoppingListProps = {
+    shoppingList: EntityState<Array<IngredientModel>>
+    pantry: EntityState<Array<IngredientModel>>
+    settings: EntityState<SettingsModel>
+    setSidebar: SetSidebarAction
+    setTopbar: SetTopbarAction
+}
 
 /**
  * ShoppingList
@@ -33,13 +38,7 @@ import getPatchRequests from '@/util/storages/getPatchRequests'
  * 
  * @todo Add a skeleton for the loading time.
  */
-export default function ShoppingList({ shoppingList, pantry, settings, setSidebar, setTopbar }: {
-    shoppingList: EntityState<Array<IngredientModel>>
-    pantry: EntityState<Array<IngredientModel>>
-    settings: EntityState<SettingsModel>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
-}): ReactElement {
+export const ShoppingList = ({ shoppingList, pantry, settings, setSidebar, setTopbar }: ShoppingListProps): ReactElement => {
     // The input value of the Add Item Widget at the top. 
     // Will be passed to the AddIngredientWidget component together with its setter method.
     const [inputValue, setInputValue] = useState<string>('')
@@ -64,9 +63,11 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         const lastPosition = getLastIngredientPosition(shoppingList.data)
         const ingredientToAdd = getIngredientModel(value, lastPosition + 1)
 
-        const response: AxiosResponse<IngredientModel[]>
-            = await axios.post('/api/storages/shoppinglist/ingredients', [ingredientToAdd])
-        shoppingList.setData([...shoppingList.data, ...response.data])
+        await tryApiRequest("POST", "/api/storages/shoppinglist/ingredients", async (apiUrl) => {
+            const response: AxiosResponse<IngredientModel[]> = await axios.post(apiUrl, [ingredientToAdd])
+            shoppingList.setData([...shoppingList.data, ...response.data])
+            return response
+        })
     }
 
     /**
@@ -82,8 +83,8 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         setLoading(true)
 
         const { groupedIngredients, ingredientsToDelete } = getIngredientGroups(shoppingList.data)
-        const deleteRequests = getDeleteRequests(ingredientsToDelete)
-        const patchRequests = getPatchRequests(groupedIngredients, shoppingList.data)
+        const deleteRequests: Promise<void>[] = getDeleteRequests(ingredientsToDelete)
+        const patchRequests: Promise<boolean>[] = getPatchRequests(groupedIngredients, shoppingList.data)
 
         shoppingList.setData(Array.from(groupedIngredients.values()))
         await Promise.all([...deleteRequests, ...patchRequests])
@@ -131,8 +132,8 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
             }
         })
 
-        const deleteRequests = getDeleteRequests(ingredientsToDelete)
-        const patchRequests = getPatchRequests(groupedIngredients, shoppingList.data)
+        const deleteRequests: Promise<void>[] = getDeleteRequests(ingredientsToDelete)
+        const patchRequests: Promise<boolean>[] = getPatchRequests(groupedIngredients, shoppingList.data)
 
         shoppingList.setData(Array.from(groupedIngredients.values()))
         await Promise.all([...deleteRequests, ...patchRequests])
@@ -152,8 +153,11 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         })
 
         if (swalResponse) {
-            await axios.delete('/api/storages/shoppinglist/ingredients')
-            shoppingList.load()
+            void tryApiRequest("DELETE", "/api/storages/shoppinglist/ingredients", async (apiUrl) => {
+                const response = await axios.delete(apiUrl)
+                shoppingList.load()
+                return response
+            })
         }
     }
 
@@ -168,7 +172,9 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
         const uncheckedIngredients: IngredientModel[] = [...shoppingList.data].filter(item => !item.checked)
         shoppingList.setData(uncheckedIngredients)
 
-        await axios.delete('/api/storages/shoppinglist/ingredients?checked=true')
+        void tryApiRequest("DELETE", "/api/storages/shoppinglist/ingredients?checked=true", async (apiUrl) => {
+            return await axios.delete(apiUrl)
+        })
     }
 
     // Load layout 
@@ -197,60 +203,59 @@ export default function ShoppingList({ shoppingList, pantry, settings, setSideba
     }, [shoppingList.data])
 
     // Render ShoppingList
-    return <div className="pb-24 md:pb-4 md:w-[450px]">
-        <Spacer height="6" />
-
-        {shoppingList.isLoading || isLoading ? (
-            <Spinner />
-        ) : (
-            <>
-                <div className="mx-4 md:mx-0">
+    return (
+        <StandardContentWrapper className="md:w-[450px]">
+            {shoppingList.isLoading || isLoading ? (
+                <Spinner />
+            ) : (
+                <>
                     <AddIngredientWidget
                         inputValue={inputValue}
                         setInputValue={setInputValue}
                         handleEnterKeyDown={handleEnterKeyDown}
                     />
-                </div>
 
-                <Spacer height="10" />
+                    <Spacer height="10" />
 
-                <Card style="mx-4 md:mx-0">
-                    <div className="space-y-2 justify-center">
-                        {shoppingList.data?.length === 0 &&
-                            <InfoShoppingListEmpty />
-                        }
+                    <Card>
+                        <div className="space-y-2 justify-center">
+                            {shoppingList.data?.length === 0 &&
+                                <InfoShoppingListEmpty />
+                            }
 
-                        {shoppingList.data?.map(item =>
-                            <Item
-                                key={item.id}
-                                shoppingList={shoppingList}
-                                item={item}
-                            />
-                        )}
-                    </div>
-                </Card>
+                            {shoppingList.data?.map(item =>
+                                <Item
+                                    key={item.id}
+                                    shoppingList={shoppingList}
+                                    item={item}
+                                />
+                            )}
+                        </div>
+                    </Card>
 
-                {shoppingList.data !== undefined && shoppingList.data.length >= 1 &&
-                    <div className="flex flex-col items-end justify-end gap-4 mt-4 mx-4 md:mx-0 pb-[5.5rem] md:pb-0">
-                        {settings.data?.showPantry && pantry.data != undefined && pantry.data.length > 0 &&
+                    {shoppingList.data !== undefined && shoppingList.data.length >= 1 &&
+                        <div
+                            className="flex flex-col items-end justify-end gap-4 mt-4 pb-[5.5rem] md:pb-0">
+                            {settings.data?.showPantry && pantry.data != undefined && pantry.data.length > 0 &&
+                                <Button
+                                    onClick={handleSubtractPantry}
+                                    label="Vorräte verrechnen"
+                                    icon="cell_merge"
+                                    role="tertiary"
+                                    isSmall={true}
+                                />
+                            }
                             <Button
-                                onClick={handleSubtractPantry}
-                                label="Vorräte verrechnen"
-                                icon="cell_merge"
+                                onClick={handleSumUpIngredients}
+                                icon="low_priority"
+                                label="Zutaten zusammenfassen"
                                 role="tertiary"
                                 isSmall={true}
                             />
-                        }
-                        <Button
-                            onClick={handleSumUpIngredients}
-                            icon="low_priority"
-                            label="Zutaten zusammenfassen"
-                            role="tertiary"
-                            isSmall={true}
-                        />
-                    </div>
-                }
-            </>
-        )}
-    </div>
+                        </div>
+                    }
+                </>
+            )}
+        </StandardContentWrapper>
+    )
 }

@@ -2,6 +2,7 @@
  * ./assets/pages/ShoppingList/components/Item.tsx *
  ***************************************************/
 
+import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from 'axios'
 import React, { ReactElement } from 'react'
 
@@ -15,10 +16,10 @@ import getIngredientModel from '@/util/ingredients/getIngredientModel'
  * 
  * @component
  */
-export default function Item({ shoppingList, item }: {
+export const Item = ({ shoppingList, item }: {
     shoppingList: EntityState<Array<IngredientModel>>
     item: IngredientModel
-}): ReactElement {
+}): ReactElement => {
     /**
      * Handles a click event on a list item.
      */
@@ -64,8 +65,8 @@ export default function Item({ shoppingList, item }: {
         copyOfShoppingList[index].editable = false
         shoppingList.setData(copyOfShoppingList)
 
-        await axios.patch(`/api/ingredients/${item.id}`, {
-            checked: copyOfShoppingList[index].checked
+        await tryApiRequest("PATCH", `/api/ingredients/${item.id}`, async apiUrl => {
+            return await axios.patch(apiUrl, { checked: copyOfShoppingList[index].checked })
         })
     }
 
@@ -118,10 +119,12 @@ export default function Item({ shoppingList, item }: {
         copyOfList[index].editable = false
 
         shoppingList.setData(copyOfList)
-        await axios.patch(`/api/ingredients/${item.id}`, {
-            name: copyOfList[index].name,
-            quantityValue: copyOfList[index].quantityValue,
-            quantityUnit: copyOfList[index].quantityUnit,
+        await tryApiRequest("PATCH", `/api/ingredients/${item.id}`, async apiUrl => {
+            return await axios.patch(apiUrl, {
+                name: copyOfList[index].name,
+                quantityValue: copyOfList[index].quantityValue,
+                quantityUnit: copyOfList[index].quantityUnit,
+            })
         })
     }
 
@@ -155,8 +158,19 @@ export default function Item({ shoppingList, item }: {
 
             shoppingList.setData(copyOfList)
 
-            await axios.patch('/api/ingredients/' + copyOfList[index].id, { position: copyOfList[index].position })
-            await axios.patch('/api/ingredients/' + copyOfList[index + direction].id, { position: copyOfList[index + direction].position })
+            const response: boolean = await tryApiRequest(
+                "PATCH", `/api/ingredients/${copyOfList[index].id}`, async apiUrl => {
+                    return await axios.patch(apiUrl, { position: copyOfList[index].position })
+                }
+            )
+
+            if (response) {
+                await tryApiRequest(
+                    "PATCH", `/api/ingredients/${copyOfList[index + direction].id}`, async apiUrl => {
+                        return await axios.patch(apiUrl, { position: copyOfList[index + direction].position })
+                    }
+                )
+            }
         }
     }
     

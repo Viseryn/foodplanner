@@ -1,27 +1,25 @@
-/*********************************************
- * ./assets/pages/Pantry/components/Item.tsx *
- *********************************************/
-
-import axios from 'axios'
-import React, { ReactElement } from 'react'
-
 import IconButton from '@/components/ui/Buttons/IconButton'
 import IngredientModel from '@/types/IngredientModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios from 'axios'
+import React, { ReactElement } from 'react'
+
+type ItemProps = {
+    pantry: EntityState<IngredientModel[]>
+    item: IngredientModel
+}
 
 /**
- * Renders an item of the ShoppingList and handles events related to that item.
+ * Renders an item of the Pantry and handles events related to that item.
  * 
  * @component
  * @param {object} props
  * @param {object} props.pantry The pantry state variable.
  * @param {object} props.item An Ingredient object from the pantry.
  */
-export default function Item({ pantry, item }: {
-    pantry: EntityState<Array<IngredientModel>>
-    item: IngredientModel
-}): ReactElement {
+export const Item = ({ pantry, item }: ItemProps): ReactElement => {
     /**
      * Handles clicks on an item of the list.
      */
@@ -97,10 +95,12 @@ export default function Item({ pantry, item }: {
         copyOfList[index].editable = false
 
         pantry.setData(copyOfList)
-        await axios.patch(`/api/ingredients/${item.id}`, {
-            name: copyOfList[index].name,
-            quantityValue: copyOfList[index].quantityValue,
-            quantityUnit: copyOfList[index].quantityUnit,
+        await tryApiRequest("PATCH", `/api/ingredients/${item.id}`, async apiUrl => {
+            return await axios.patch(apiUrl, {
+                name: copyOfList[index].name,
+                quantityValue: copyOfList[index].quantityValue,
+                quantityUnit: copyOfList[index].quantityUnit,
+            })
         })
     }
 
@@ -117,8 +117,10 @@ export default function Item({ pantry, item }: {
 
         copyOfList.splice(index, 1)
         pantry.setData(copyOfList)
-        
-        await axios.delete(`/api/ingredients/${item.id}`)
+
+        await tryApiRequest("DELETE", `/api/ingredients/${item.id}`, async apiUrl => {
+            return await axios.delete(apiUrl)
+        })
     }
 
     /**
@@ -151,8 +153,19 @@ export default function Item({ pantry, item }: {
 
             pantry.setData(copyOfList)
 
-            await axios.patch('/api/ingredients/' + copyOfList[index].id, { position: copyOfList[index].position })
-            await axios.patch('/api/ingredients/' + copyOfList[index + direction].id, { position: copyOfList[index + direction].position })
+            const response: boolean = await tryApiRequest(
+                "PATCH", `/api/ingredients/${copyOfList[index].id}`, async apiUrl => {
+                    return await axios.patch(apiUrl, { position: copyOfList[index].position })
+                }
+            )
+
+            if (response) {
+                await tryApiRequest(
+                    "PATCH", `/api/ingredients/${copyOfList[index + direction].id}`, async apiUrl => {
+                        return await axios.patch(apiUrl, { position: copyOfList[index + direction].position })
+                    }
+                )
+            }
         }
     }
     
@@ -179,7 +192,7 @@ export default function Item({ pantry, item }: {
                         onBlur={event => handleEditItem(event, item)}
                         onKeyDown={event => { 
                             if (event.key === 'Enter') {
-                                handleEditItem(event, item);
+                                void handleEditItem(event, item);
                             }
                         }}
                     />
