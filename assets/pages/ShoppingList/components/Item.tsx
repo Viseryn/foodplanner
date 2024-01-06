@@ -144,11 +144,11 @@ export const Item = ({ shoppingList, item }: {
         const index: number = copyOfList.indexOf(item)
         const itemCopy: IngredientModel = {...copyOfList[index]}
 
-        const oldPosition: number = copyOfList[index].position!
-        const newPosition: number = copyOfList[index + direction].position!
-
         // Move item up only when it is not the first item and move item down only when it is not the last item.
         if ((direction === -1 && index !== 0) || (direction === 1 && index !== shoppingList.data?.length - 1)) {
+            const oldPosition: number = copyOfList[index].position!
+            const newPosition: number = copyOfList[index + direction].position!
+
             itemCopy.position = newPosition
             copyOfList[index].position = newPosition
             copyOfList[index + direction].position = oldPosition
