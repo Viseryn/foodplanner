@@ -30,13 +30,13 @@ class DayController extends AbstractController
 
     /**
      * Deletes all past Day objects and creates new Day objects up to ten days in the future.
-     * @todo [Issue #245] Only update timestamp when there were changes
      */
     #[Route('', name: 'api_days_patch', methods: ['PATCH'])]
     public function patch(): Response
     {
-        $this->dayControllerService->updateDays();
-        $this->refreshDataTimestampUtil->updateTimestamp();
+        if ($this->dayControllerService->updateDays()) {
+            $this->refreshDataTimestampUtil->updateTimestamp();
+        }
         return new Response(null, 200);
     }
 }
