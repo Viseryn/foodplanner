@@ -25,7 +25,7 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
     const { user, setSidebar, setTopbar } = props
 
     const [formData, setFormData] = useState<UserSettingsForm>({
-        email: user.data.email ?? '',
+        email: user.data?.email ?? '',
         password: '',
     })
 
@@ -43,6 +43,11 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
+
+        if (user.isLoading) {
+            return
+        }
+
         setLoading(true)
 
         const apiUrl: string = `/api/users/${user.data.id}`

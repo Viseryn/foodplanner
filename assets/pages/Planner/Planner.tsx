@@ -1,39 +1,29 @@
-/**************************************
- * ./assets/pages/Planner/Planner.tsx *
- **************************************/
-
-import axios, { AxiosResponse } from 'axios'
-import React, { useEffect, useState } from 'react'
-import swal from 'sweetalert'
-
 import Card from '@/components/ui/Card'
 import Carousel from '@/components/ui/Carousel/Carousel'
 import Spacer from '@/components/ui/Spacer'
 import useMediaQuery from '@/hooks/useMediaQuery'
+import useTimeout from '@/hooks/useTimeout'
 import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
 import MealModel from '@/types/MealModel'
+import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
+import swal from 'sweetalert'
 import DayCardDesktop from './components/DayCardDesktop'
 import DayCardMobile from './components/DayCardMobile'
 import DaySkeletonDesktop from './components/DaySkeletonDesktop'
 import DaySkeletonMobile from './components/DaySkeletonMobile'
-import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
-import useTimeout from '@/hooks/useTimeout'
 
-/**
- * A component that renders the Weekly Planner. Shows a list of ten Day entities which each have a 
- * variable amount of Meal entities. At the bottom of each day, there is a button for adding a meal 
- * to that specific day. There is also a SidebarActionButton that puts all ingredients of all meals 
- * into the ShoppingList.
- * 
- * @component
- */
-export default function Planner({ days, shoppingList, setSidebar, setTopbar }: {
+type PlannerProps = {
     days: EntityState<Array<DayModel>>
     shoppingList: EntityState<Array<IngredientModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): JSX.Element {
+}
+
+export const Planner = ({ days, shoppingList, setSidebar, setTopbar }: PlannerProps): ReactElement => {
     // Counts how often the SAB was pressed. Will update the SAB on change.
     const [countSabClicks, setCountSabClicks] = useState<number>(0)
 
@@ -49,32 +39,25 @@ export default function Planner({ days, shoppingList, setSidebar, setTopbar }: {
     // Current mediaQuery selector
     const medium = useMediaQuery()
 
-    /**
-     * When called, opens a SweetAlert. If it is confirmed, then the Meal Delete API is called and 
-     * the days are updated. If cancelled, nothing happens.
-     * 
-     * @param meal A Meal object.
-     */
     const deleteMeal = (meal: MealModel): void => {
         swal({
             dangerMode: true,
-            icon: 'error',
-            title: 'Mahlzeit wirklich löschen?',
+            icon: "error",
+            title: "Mahlzeit wirklich löschen?",
             buttons: ["Abbrechen", "Löschen"],
         }).then(confirm => {
             if (!confirm) {
                 return
             }
-            
-            axios.delete('/api/meals/' + meal.id).then(() => {
-                days.load() 
+
+            void tryApiRequest("DELETE", `/api/meals/${meal.id}`, async (apiUrl) => {
+                const response: AxiosResponse = await axios.delete(apiUrl)
+                days.load()
+                return response
             })
         })
     }
 
-    /**
-     * Adds the ingredients of all meals to the shopping list via the ShoppingList Add API.
-     */
     const handleAddShoppingList = async (): Promise<void> => {
         if (days.isLoading || shoppingList.isLoading) {
             return
@@ -92,9 +75,11 @@ export default function Planner({ days, shoppingList, setSidebar, setTopbar }: {
         }))
 
         if (ingredientsToAdd?.length) {
-            const response: AxiosResponse<IngredientModel[]>
-                = await axios.post('/api/storages/shoppinglist/ingredients', ingredientsToAdd)
-            shoppingList.setData([...shoppingList.data, ...response.data])
+            await tryApiRequest("POST", "/api/storages/shoppinglist/ingredients", async (apiUrl) => {
+                const response: AxiosResponse<IngredientModel[]> = await axios.post(apiUrl, ingredientsToAdd)
+                shoppingList.setData([...shoppingList.data, ...response.data])
+                return response
+            })
         }
         
         // Trigger update for the SAB
@@ -119,25 +104,16 @@ export default function Planner({ days, shoppingList, setSidebar, setTopbar }: {
         })
     }, [days.data, days.isLoading, shoppingList.isLoading, showSabDone, countSabClicks])
 
-    // Load layout
     useEffect(() => {
         setTopbar({
             title: 'Wochenplan',
         })
 
-        // Scroll to top
         window.scrollTo(0, 0)
 
-        // Calls the Update Days API, which removes all unnecessary Day object (past days and days further away than ten)
-        const updateDays = async () => {
-            try {
-                await axios.patch('/api/days')
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        updateDays()
+        void tryApiRequest("PATCH", "/api/days", async (apiUrl) => {
+            return await axios.patch(apiUrl)
+        })
     }, [])
 
     useEffect(() => {

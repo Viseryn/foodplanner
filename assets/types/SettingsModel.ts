@@ -5,6 +5,7 @@
 import { UserModel } from "@/types/UserModel";
 import { UserGroupModel } from "@/types/UserGroupModel";
 import MealCategoryModel from "@/types/MealCategoryModel";
+import { ViewMode } from '@/pages/Recipes/types/ViewMode'
 
 /**
  * Type specifications for Settings objects returned by APIs
@@ -25,7 +26,7 @@ type SettingsModel = {
     /** The user's set standard MealCategory. */
     standardMealCategory?: MealCategoryModel
 
-    recipeListViewMode: string
+    recipeListViewMode: ViewMode
 }
 
 export default SettingsModel

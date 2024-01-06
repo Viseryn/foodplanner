@@ -1,6 +1,3 @@
-import axios, { AxiosResponse } from 'axios'
-import React, { ReactElement, useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
 import InputRow from '@/components/form/Input/InputRow'
 import SliderRow from '@/components/form/Slider/SliderRow'
 import TextareaRow from '@/components/form/Textarea/TextareaRow'
@@ -8,32 +5,30 @@ import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
-import RecipeModel from '@/types/RecipeModel'
-import RecipeForm from '@/types/RecipeForm'
-import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
-import ImageModel from '@/types/ImageModel'
-import { getImageModel } from '@/pages/Recipes/util/getImageModel'
-import { TwoColumnView } from '@/components/ui/TwoColumnView'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { TwoColumnView } from '@/components/ui/TwoColumnView'
 import { ImageUploadWidget } from '@/pages/Recipes/components/ImageUploadWidget'
+import { getImageModel } from '@/pages/Recipes/util/getImageModel'
+import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
+import { PageState } from "@/types/enums/PageState"
+import ImageModel from '@/types/ImageModel'
+import { Optional } from "@/types/Optional"
+import { RecipeForm } from '@/types/RecipeForm'
+import RecipeModel from '@/types/RecipeModel'
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { Navigate } from 'react-router-dom'
 
-/**
- * AddRecipe
- *
- * A component that renders a form for adding a recipe. After submitting via the submit button,
- * the recipe will be added by an API and the user gets forwarded to its detail page.
- *
- * @component
- */
-export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
+type AddRecipeProps = {
     recipes: EntityState<Array<RecipeModel>>
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): ReactElement {
-    const navigate: NavigateFunction = useNavigate()
+}
 
+export const AddRecipe = ({ recipes, setSidebar, setTopbar }: AddRecipeProps): ReactElement => {
     const [file, setFile] = useState<File | null>(null)
-    const [isLoading, setLoading] = useState<boolean>(false)
+    const [state, setState] = useState<PageState>(PageState.LOADING)
     const [responseId, setResponseId] = useState<number>(0)
     const [recipeFormData, setRecipeFormData] = useState<RecipeForm>({
         title: '',
@@ -52,26 +47,36 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-        setLoading(true)
+        setState(PageState.LOADING)
 
         const recipe: RecipeModel = getRecipeModel(recipeFormData)
-        const response: AxiosResponse<RecipeModel> = await axios.post('/api/recipes', recipe)
+        let recipeResponse: Optional<RecipeModel>
 
-        if (file !== null) {
-            const imageUpload: ImageModel = await getImageModel(file)
-            await axios.patch(`/api/recipes/${response.data.id}/image`, imageUpload)
+        const postResponse: boolean = await tryApiRequest("POST", "/api/recipes", async (apiUrl) => {
+            const response: AxiosResponse<RecipeModel> = await axios.post(apiUrl, recipe)
+            recipeResponse = response.data
+            return response
+        })
+
+        if (postResponse && recipeResponse !== undefined) {
+            if (file !== null) {
+                const imageUpload: ImageModel = await getImageModel(file)
+                await tryApiRequest("PATCH", `/api/recipes/${recipeResponse.id}/image`, async (apiUrl) => {
+                    return await axios.patch(apiUrl, imageUpload)
+                })
+            }
+
+            recipes.load()
+            setResponseId(recipeResponse.id)
+            setState(recipeResponse.id > 0 ? PageState.SUCCESS : PageState.ERROR)
         }
-
-        recipes.load()
-        setResponseId(response.data.id)
-        setLoading(false)
     }
 
     useEffect(() => {
-        if (responseId > 0) {
-            navigate('/recipe/' + responseId)
+        if (!recipes.isLoading) {
+            setState(PageState.WAITING)
         }
-    }, [responseId])
+    }, [recipes.isLoading]);
 
     useEffect(() => {
         setSidebar('recipes')
@@ -86,9 +91,15 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
 
     return (
         <StandardContentWrapper className="md:max-w-[900px]">
-            {isLoading || recipes.isLoading ? (
+            {state === PageState.LOADING &&
                 <Spinner />
-            ) : (
+            }
+
+            {state === PageState.SUCCESS &&
+                <Navigate to={`/recipe/${responseId}`} />
+            }
+
+            {[PageState.WAITING, PageState.ERROR].includes(state) &&
                 <form onSubmit={handleSubmit}>
                     <TwoColumnView>
                         <Card>
@@ -168,7 +179,7 @@ export default function AddRecipe({ recipes, setSidebar, setTopbar }: {
                         />
                     </div>
                 </form>
-            )}
+            }
         </StandardContentWrapper>
     )
 }

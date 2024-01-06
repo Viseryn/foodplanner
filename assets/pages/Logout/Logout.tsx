@@ -1,58 +1,37 @@
-/************************************
- * ./assets/pages/Logout/Logout.tsx *
- ************************************/
-
-import axios from 'axios'
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-
-import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
+import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
+import { tryApiRequest } from "@/util/tryApiRequest"
+import axios from 'axios'
+import React, { ReactElement, useEffect } from 'react'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 
-/**
- * A component that logs a user out and redirects to the login page.
- * 
- * @component
- */
-export default function Logout({ authentication, setSidebar, setTopbar }: {
+export const Logout = ({ authentication, setSidebar, setTopbar }: {
     authentication: Authentication
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): JSX.Element {
-    // A function that can change the location. Needed for the redirect after logout.
-    const navigate = useNavigate()
+}): ReactElement => {
+    const navigate: NavigateFunction = useNavigate()
 
-    // Call Logout API
     useEffect(() => {
         if (authentication.isAuthenticated) {
-            (async () => {
-                try {
-                    // If user is authenticated, logout and reload
-                    await axios.get('/api/logout')
-                    location.reload()
-                } catch (error) {
-                    console.log(error)
-                }
-            })()
+            void tryApiRequest("GET", "/api/logout", async (apiUrl) => {
+                const response = await axios.get(apiUrl)
+                location.reload()
+                return response
+            })
         } else {
-            // Navigate to login page
             navigate('/login')
         }
     }, [])
 
-    // Load layout
     useEffect(() => {
         setSidebar()
-        setTopbar({
-            title: 'Logout',
-        })
+        setTopbar({ title: 'Logout' })
     }, [])
 
-    // Render Logout
     return (
-        <div className="pb-24 md:pb-4 md:w-[450px]">
-            <Spacer height="6" />
+        <StandardContentWrapper className="md:w-[450px]">
             <Spinner />
-        </div>
+        </StandardContentWrapper>
     )
 }

@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import InstallationStatusModel from '@/types/InstallationStatusModel'
 
-function useImageMigration(
+export const useImageMigration = (
     installationStatus: EntityState<InstallationStatusModel>,
     setMigratingImages: SetState<boolean>,
-    entitiesToUpdate: Array<EntityState>
-): void {
+    entitiesToUpdate: EntityState<any>[]
+): void => {
     useEffect(() => {
         if (installationStatus.isLoading) {
             return;
@@ -30,5 +30,3 @@ function useImageMigration(
         }
     }, [installationStatus.isLoading]);
 }
-
-export default useImageMigration

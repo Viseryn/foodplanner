@@ -2,6 +2,7 @@
  * ./assets/pages/ShoppingList/components/Item.tsx *
  ***************************************************/
 
+import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from 'axios'
 import React, { ReactElement } from 'react'
 
@@ -15,10 +16,10 @@ import getIngredientModel from '@/util/ingredients/getIngredientModel'
  * 
  * @component
  */
-export default function Item({ shoppingList, item }: {
+export const Item = ({ shoppingList, item }: {
     shoppingList: EntityState<Array<IngredientModel>>
     item: IngredientModel
-}): ReactElement {
+}): ReactElement => {
     /**
      * Handles a click event on a list item.
      */
@@ -50,6 +51,10 @@ export default function Item({ shoppingList, item }: {
      * Checks or unchecks an item. Is performed on single clicks on the item or the checkboxes.
      */
     const handleCheckboxChange = async (item: IngredientModel): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const copyOfShoppingList: IngredientModel[] = [...shoppingList.data]
         if (!copyOfShoppingList.includes(item)) {
             return
@@ -60,8 +65,8 @@ export default function Item({ shoppingList, item }: {
         copyOfShoppingList[index].editable = false
         shoppingList.setData(copyOfShoppingList)
 
-        await axios.patch(`/api/ingredients/${item.id}`, {
-            checked: copyOfShoppingList[index].checked
+        await tryApiRequest("PATCH", `/api/ingredients/${item.id}`, async apiUrl => {
+            return await axios.patch(apiUrl, { checked: copyOfShoppingList[index].checked })
         })
     }
 
@@ -70,6 +75,10 @@ export default function Item({ shoppingList, item }: {
      * Does not trigger a reload or replacement of the shoppingList.
      */
     const handleItemSetEditability = (item: IngredientModel): void => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const copyOfShoppingList: IngredientModel[] = [...shoppingList.data]
         if (!copyOfShoppingList.includes(item)) {
             return
@@ -89,6 +98,10 @@ export default function Item({ shoppingList, item }: {
         event: React.FocusEvent<HTMLInputElement, Element> | React.KeyboardEvent<HTMLInputElement>, 
         item: IngredientModel
     ): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         const copyOfList: IngredientModel[] = [...shoppingList.data]
         const index: number = copyOfList.indexOf(item)
         const newIngredient: string = (event.target as HTMLInputElement).value
@@ -106,10 +119,12 @@ export default function Item({ shoppingList, item }: {
         copyOfList[index].editable = false
 
         shoppingList.setData(copyOfList)
-        await axios.patch(`/api/ingredients/${item.id}`, {
-            name: copyOfList[index].name,
-            quantityValue: copyOfList[index].quantityValue,
-            quantityUnit: copyOfList[index].quantityUnit,
+        await tryApiRequest("PATCH", `/api/ingredients/${item.id}`, async apiUrl => {
+            return await axios.patch(apiUrl, {
+                name: copyOfList[index].name,
+                quantityValue: copyOfList[index].quantityValue,
+                quantityUnit: copyOfList[index].quantityUnit,
+            })
         })
     }
 
@@ -120,6 +135,10 @@ export default function Item({ shoppingList, item }: {
      * @param direction Possible values are -1 (up) and 1 (down).
      */
     const handleChangePosition = async (item: IngredientModel, direction: -1 | 1): Promise<void> => {
+        if (shoppingList.isLoading) {
+            return
+        }
+
         // Make a copy of pantry.data and find item
         const copyOfList: IngredientModel[] = [...shoppingList.data]
         const index: number = copyOfList.indexOf(item)
@@ -139,8 +158,19 @@ export default function Item({ shoppingList, item }: {
 
             shoppingList.setData(copyOfList)
 
-            await axios.patch('/api/ingredients/' + copyOfList[index].id, { position: copyOfList[index].position })
-            await axios.patch('/api/ingredients/' + copyOfList[index + direction].id, { position: copyOfList[index + direction].position })
+            const response: boolean = await tryApiRequest(
+                "PATCH", `/api/ingredients/${copyOfList[index].id}`, async apiUrl => {
+                    return await axios.patch(apiUrl, { position: copyOfList[index].position })
+                }
+            )
+
+            if (response) {
+                await tryApiRequest(
+                    "PATCH", `/api/ingredients/${copyOfList[index + direction].id}`, async apiUrl => {
+                        return await axios.patch(apiUrl, { position: copyOfList[index + direction].position })
+                    }
+                )
+            }
         }
     }
     
