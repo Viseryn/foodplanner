@@ -1,7 +1,7 @@
 import { LINEBREAK } from '@/lang/constants/LINEBREAK'
 
 export class StringBuilder {
-    private readonly strings: string[]
+    private strings: string[]
 
     public constructor() {
         this.strings = []
@@ -48,11 +48,17 @@ export class StringBuilder {
         return this.strings[this.strings.length - 1]
     }
 
-    public logToConsole(): void {
+    public logToConsole(): StringBuilder {
         console.log(this.build())
+        return this
     }
 
     public logLastToConsole(): void {
         console.log(this.getLast())
+    }
+
+    public clear(): StringBuilder {
+        this.strings = []
+        return this
     }
 }

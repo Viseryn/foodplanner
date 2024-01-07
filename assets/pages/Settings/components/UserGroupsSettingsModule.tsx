@@ -38,7 +38,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
     }
 
     const handleDeleteGroup = async (index: number): Promise<void> => {
-        const id: number = userGroups.data[index].id ?? -1
+        const id: number = userGroups.data?.[index].id ?? -1
 
         const swalResponse = await swal({
             dangerMode: true,
@@ -67,6 +67,10 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
     }
 
     const handleSetStandardGroup = async (userGroup: UserGroupModel): Promise<void> => {
+        if (settings.isLoading) {
+            return
+        }
+
         const apiUrl: string = `/api/settings/${settings.data.id}`
 
         await tryApiRequest("PATCH", apiUrl, async (): Promise<AxiosResponse<SettingsModel>> => {
@@ -80,6 +84,10 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
     }
 
     const handleChangePosition = async (group: UserGroupModel, direction: -1 | 1): Promise<void> => {
+        if (userGroups.isLoading) {
+            return
+        }
+
         const copyOfGroups: UserGroupModel[] = [...userGroups.data]
         const indexOfGroup: number = copyOfGroups.indexOf(group)
         const groupCopy: UserGroupModel = {...copyOfGroups[indexOfGroup]}

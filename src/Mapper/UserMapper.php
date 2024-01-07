@@ -1,5 +1,6 @@
 <?php namespace App\Mapper;
 
+use App\DataTransferObject\RegistrationDTO;
 use App\DataTransferObject\UserDTO;
 use App\Entity\User;
 
@@ -15,6 +16,13 @@ final class UserMapper implements Mapper
     public function dtoToEntity($dto): User
     {
         return (new User)->setUsername($dto->getUsername())
+                         ->setRoles($dto->getRoles())
+                         ->setEmail($dto->getEmail());
+    }
+
+    public function registrationDtoToEntity(RegistrationDTO $dto): User
+    {
+        return (new User)->setUsername($dto->getUsername())
                          ->setRoles($dto->getRoles());
     }
 
@@ -26,6 +34,7 @@ final class UserMapper implements Mapper
     {
         return (new UserDTO)->setId($entity->getId())
                             ->setUsername($entity->getUsername())
-                            ->setRoles($entity->getRoles());
+                            ->setRoles($entity->getRoles())
+                            ->setEmail($entity->getEmail());
     }
 }

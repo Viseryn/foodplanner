@@ -1,22 +1,13 @@
-/************************************************
- * ./assets/pages/PageNotFound/PageNotFound.tsx *
- ************************************************/
-
-import React, { useEffect } from 'react'
-
 import Notification from '@/components/ui/Notification'
-import Spacer from '@/components/ui/Spacer'
+import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
+import React, { ReactElement, useEffect } from 'react'
 
-/**
- * A component that is shown when an Error 404 occurs.
- * 
- * @component
- */
-export default function PageNotFound({ setSidebar, setTopbar }: {
+type PageNotFoundProps = {
     setSidebar: SetSidebarAction
     setTopbar: SetTopbarAction
-}): JSX.Element {
-    // Load layout
+}
+
+export const PageNotFound = ({ setSidebar, setTopbar }: PageNotFoundProps): ReactElement => {
     useEffect(() => {
         setSidebar()
         setTopbar({
@@ -24,20 +15,16 @@ export default function PageNotFound({ setSidebar, setTopbar }: {
         })
     }, [])
 
-    // Render PageNotFound
     return (
-        <div className="pb-24 md:pb-4 md:max-w-[450px]">
-            <Spacer height="6" />
-
-            <div className="mx-4 md:mx-0">
-                <Notification
-                    icon="error"
-                    color="red"
-                    title="Fehler 404 ¯\_(ツ)_/¯"
-                >
-                    Die angeforderte Seite konnte nicht gefunden werden. Bitte wende dich an den Administrator, falls der Fehler weiterhin auftreten sollte.
-                </Notification>
-            </div>
-        </div>
+        <StandardContentWrapper className="md:max-w-[450px]">
+            <Notification
+                icon="error"
+                color="red"
+                title="Fehler 404 ¯\_(ツ)_/¯"
+            >
+                Die angeforderte Seite konnte nicht gefunden werden. Bitte wende dich an den Administrator, falls der
+                Fehler weiterhin auftreten sollte.
+            </Notification>
+        </StandardContentWrapper>
     )
 }

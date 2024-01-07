@@ -33,14 +33,16 @@ type SetState<T> = React.Dispatch<React.SetStateAction<T>>
 
 type SetLoadingAction = (value?: React.SetStateAction<boolean>) => void
 
-type EntityState<Type = any> = {
-    data: Type
-    setData: SetState<Type>
-    isLoading: boolean
-    /** @deprecated Use load instead. */
-    setLoading: SetState<boolean>
+type EntityState<T = unknown> = {
+    setData: SetState<T | undefined>
     load: SetLoadingAction
-}
+} & ({
+    data: T
+    isLoading: false
+} | {
+    data?: T
+    isLoading: true
+})
 
 type Authentication = {
     isAuthenticated: boolean

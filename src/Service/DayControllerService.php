@@ -32,16 +32,23 @@ final class DayControllerService
 
     /**
      * Deletes all past Day objects and creates new Day objects up to ten days in the future.
+     *
+     * @return bool Returns true if the Day objects have actually changed and false otherwise.
      */
-    public function updateDays(): void
+    public function updateDays(): bool
     {
         $days = $this->dayRepository->findBy([], ['timestamp' => 'ASC']);
+        $daysCopy = $days;
 
         $this
             ->deletePastDays($days)
             ->createNewDayIfNoneSurvived()
             ->fillUpDaysToTen()
             ->deleteEverythingAfterTenDaysInTheFuture();
+
+        $days = $this->dayRepository->findBy([], ['timestamp' => 'ASC']);
+
+        return !($days === $daysCopy);
     }
 
     /** @param Day[] $days */

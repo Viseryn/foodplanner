@@ -6,7 +6,7 @@ type IngredientGroups = {
     ingredientsToDelete: IngredientModel[]
 }
 
-export default function getIngredientGroups(ingredientList: IngredientModel[]): IngredientGroups {
+export function getIngredientGroups(ingredientList: IngredientModel[]): IngredientGroups {
     const groupedIngredients: Map<string, IngredientModel> = new Map<string, IngredientModel>()
     const ingredientsToDelete: IngredientModel[] = []
 

@@ -34,8 +34,9 @@ class DayController extends AbstractController
     #[Route('', name: 'api_days_patch', methods: ['PATCH'])]
     public function patch(): Response
     {
-        $this->dayControllerService->updateDays();
-        $this->refreshDataTimestampUtil->updateTimestamp();
+        if ($this->dayControllerService->updateDays()) {
+            $this->refreshDataTimestampUtil->updateTimestamp();
+        }
         return new Response(null, 200);
     }
 }
