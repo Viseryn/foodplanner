@@ -1,6 +1,6 @@
 # FoodPlanner
 
-Current version: v1.6.3
+Current version: v1.6.4-snapshot
 
 ---
 
