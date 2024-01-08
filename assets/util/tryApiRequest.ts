@@ -44,7 +44,6 @@ export const tryApiRequest = async (
                 .newLine()
                 .append(`${error?.response?.data?.detail ?? error?.response?.data}`)
                 .logToConsole()
-                .clear()
 
             void swal({
                 dangerMode: true,
@@ -52,6 +51,8 @@ export const tryApiRequest = async (
                 title: error.message,
                 text: infoStack.build(),
             })
+
+            infoStack.clear()
         }
     }
 
