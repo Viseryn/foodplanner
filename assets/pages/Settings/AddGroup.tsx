@@ -13,7 +13,7 @@ import UserOption from '@/types/UserOption'
 import getEntityOptions from '@/util/getEntityOptions'
 import getOptions from '@/util/getOptions'
 import { tryApiRequest } from "@/util/tryApiRequest"
-import axios, { AxiosResponse } from 'axios'
+import axios from "axios"
 import React, { ReactElement, useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 
@@ -24,12 +24,37 @@ type AddGroupProps = {
     setTopbar: SetTopbarAction
 }
 
+type UserGroupForm = {
+    name: string
+    icon: string
+    users: string[]
+}
+
 export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: AddGroupProps): ReactElement => {
     const [state, setState] = useState<PageState>(PageState.WAITING)
+    const [formData, setFormData] = useState<UserGroupForm>({
+        name: "",
+        icon: "",
+        users: [],
+    })
 
     // A list of all users
     const users: EntityState<UserModel[]> = useEntityState('/api/users', authentication)
     const userOptions: UserOption[] = getEntityOptions(users, UserOption)
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        setFormData(prev => ({
+            ...prev,
+            [event.target.name]: event.target.value,
+        }))
+    }
+
+    const handleSelectedUsersChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+        setFormData(prev => ({
+            ...prev,
+            [event.target.name]: [...event.target.selectedOptions].map(option => option.value)
+        }))
+    }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -38,17 +63,29 @@ export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: 
             return
         }
 
-        const formData: FormData = new FormData(event.currentTarget)
         setState(PageState.LOADING)
 
-        void tryApiRequest("POST", "/api/usergroups", async (apiUrl) => {
-            const response: AxiosResponse<UserGroupModel> = await axios.post(apiUrl, formData)
+        const userGroupDto: UserGroupModel = {
+            ...formData,
+            id: -1,
+            hidden: false,
+            readonly: false,
+            position: 0,
+            users: formData.users.map(value =>
+                users.data.filter((user: UserModel) => user.id?.toString() === value)?.[0]
+            )
+        }
 
+        const response: boolean = await tryApiRequest("POST", "/api/usergroups", async apiUrl => {
+            return await axios.post(apiUrl, userGroupDto)
+        })
+
+        if (response) {
             userGroups.load()
             setState(PageState.SUCCESS)
-
-            return response
-        })
+        } else {
+            setState(PageState.ERROR)
+        }
     }
 
     useEffect(() => {
@@ -72,7 +109,7 @@ export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: 
                 <Navigate to="/settings" />
             }
 
-            {state === PageState.WAITING &&
+            {[PageState.WAITING, PageState.ERROR].includes(state) &&
                 <form name="user_group" onSubmit={handleSubmit}>
                     <Card>
                         <p className="text-sm">
@@ -85,11 +122,14 @@ export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: 
                         <Spacer height="6" />
 
                         <InputRow
-                            id="user_group_name"
+                            id="name"
                             label="Name der Benutzergruppe"
                             {...{
+                                value: formData.name,
                                 required: true,
                                 maxLength: 64,
+                                name: "name",
+                                onChange: handleInputChange,
                                 placeholder: 'Name der Benutzergruppe',
                             }}
                         />
@@ -97,11 +137,14 @@ export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: 
                         <Spacer height="6" />
 
                         <InputRow
-                            id="user_group_icon"
+                            id="icon"
                             label="Icon der Benutzergruppe (optional)"
                             {...{
+                                value: formData.icon,
                                 required: true,
                                 maxLength: 255,
+                                name: "icon",
+                                onChange: handleInputChange,
                                 placeholder: 'Material-Symbols-Bezeichnung, z.B. face_5',
                             }}
                         />
@@ -111,11 +154,13 @@ export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: 
                         {users.isLoading
                             ? <Spinner verticalMargin={10} />
                             : <SelectRow
-                                id="user_group_users"
+                                id="users"
                                 label="Welche Benutzer sollen zur Gruppe gehören?"
                                 options={getOptions(userOptions)}
                                 {...{
-                                    name: "user_group[users][]",
+                                    value: formData.users,
+                                    name: "users",
+                                    onChange: handleSelectedUsersChange,
                                     multiple: true,
                                     required: true,
                                     size: getOptions(userOptions).length,

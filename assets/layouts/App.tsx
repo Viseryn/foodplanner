@@ -101,6 +101,13 @@ export default function App(): ReactElement {
     const recipes: EntityState<RecipeModel[]> = useEntityState("/api/recipes", authentication, [isLoading])
     const days: EntityState<DayModel[]> = useEntityState("/api/days", authentication, [isLoading])
 
+    // Reload visibleUserGroups when userGroups updates
+    useEffect(() => {
+        if (userGroups.isLoading) {
+            visibleUserGroups.load()
+        }
+    }, [userGroups.isLoading]);
+
     // Calculate number of non-checked shopping list items for the notification dot at the shopping list sidebar item
     const [
         shoppingListNotificationDotValue,

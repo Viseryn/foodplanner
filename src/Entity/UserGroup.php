@@ -51,6 +51,17 @@ class UserGroup implements EntityInterface
         return $this->users;
     }
 
+    /**
+     * @param Collection<int, User> $users
+     * @return self
+     */
+    public function setUsers(Collection $users): self
+    {
+        $this->users = $users;
+
+        return $this;
+    }
+
     public function addUser(User $user): self
     {
         if (!$this->users->contains($user)) {
