@@ -7,6 +7,7 @@ use App\Entity\InstallationStatus;
  */
 class InstallationStatusDTO implements DataTransferObject
 {
+    private ?bool $status = null;
     private ?bool $update_v1_6 = null;
     private ?string $version = null;
 
@@ -17,6 +18,18 @@ class InstallationStatusDTO implements DataTransferObject
 
     public function setId(?int $id): self
     {
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?bool $status): self
+    {
+        $this->status = $status;
+
         return $this;
     }
 
