@@ -37,14 +37,14 @@ import SidebarDrawer from './Sidebar/SidebarDrawer'
 import Topbar from './Topbar/Topbar'
 
 /**
- * Main component of the application. Handles the routing and provides state variables and 
+ * Main component of the application. Handles the routing and provides state variables and
  * setter functions for various global components, such as the sidebar or the shopping list.
- * 
- * Renders a flex container consisting of two columns/rows: the sidebar, rendered by the 
- * Sidebar component, and the main container, which itself consists of the topbar, rendered by 
- * the Topbar component, and the actual content container, where the BrowserRouter decides 
+ *
+ * Renders a flex container consisting of two columns/rows: the sidebar, rendered by the
+ * Sidebar component, and the main container, which itself consists of the topbar, rendered by
+ * the Topbar component, and the actual content container, where the BrowserRouter decides
  * which page to  load depending on the URL.
- * 
+ *
  * @component
  */
 export default function App(): ReactElement {
@@ -64,7 +64,7 @@ export default function App(): ReactElement {
     // The configuration of the topbar
     const [topbar, setTopbar] = useState<TopbarConfiguration>({})
 
-    // Whether or not the sidebar drawer is visible
+    // Whether the sidebar drawer is visible
     const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false)
 
     // The identifier of the active sidebar item
@@ -74,12 +74,12 @@ export default function App(): ReactElement {
     const [sidebarActionButton, setSidebarActionButton] = useState<SidebarActionButtonConfiguration>({})
 
     /**
-     * Updates the active sidebar item and the SidebarActionButton. If there is no argument given, 
-     * the sidebar will have no active item and the Sidebar Action Button is invisible. This method 
-     * MUST be called by each page, otherwise the configuration of the last page will not be overriden. 
-     * See the documentation of the SidebarActionButtonConfiguration type alias for more information 
+     * Updates the active sidebar item and the SidebarActionButton. If there is no argument given,
+     * the sidebar will have no active item and the Sidebar Action Button is invisible. This method
+     * MUST be called by each page, otherwise the configuration of the last page will not be overriden.
+     * See the documentation of the SidebarActionButtonConfiguration type alias for more information
      * on the properties.
-     * 
+     *
      * @param sidebarActiveItem The sidebar item that should be active.
      * @param sidebarActionButton The configuration for the SidebarActionButton.
      */
@@ -106,7 +106,7 @@ export default function App(): ReactElement {
         if (userGroups.isLoading) {
             visibleUserGroups.load()
         }
-    }, [userGroups.isLoading]);
+    }, [userGroups.isLoading])
 
     // Calculate number of non-checked shopping list items for the notification dot at the shopping list sidebar item
     const [
@@ -120,7 +120,7 @@ export default function App(): ReactElement {
         }
 
         setShoppingListNotificationDotValue(shoppingList.data.filter(ingredientModel => !ingredientModel.checked).length)
-    }, [shoppingList]);
+    }, [shoppingList])
 
     // Migrate recipe images to v1.6 if not done already
     useImageMigration(installationStatus, setMigratingImages, [recipes, days])
