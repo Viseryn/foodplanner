@@ -13,7 +13,7 @@ import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 import { PageState } from "@/types/enums/PageState"
 import ImageModel from '@/types/ImageModel'
 import { Optional } from "@/types/Optional"
-import { RecipeForm } from '@/types/RecipeForm'
+import { RecipeForm } from '@/types/forms/RecipeForm'
 import RecipeModel from '@/types/RecipeModel'
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios, { AxiosResponse } from 'axios'

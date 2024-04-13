@@ -1,7 +1,10 @@
+import { Nullish } from "@/types/Nullish"
+
 type InstallationStatusModel = {
     id: number
-    updateV16: boolean|null
-    version: string|null
+    status: Nullish<boolean>
+    updateV16: Nullish<boolean>
+    version: Nullish<string>
 }
 
 export default InstallationStatusModel

@@ -2,13 +2,19 @@
 
 namespace App\Controller;
 
+use App\Component\Exception\ValidationFailedException;
+use App\Component\Response\ExceptionResponseFactory;
+use App\DataTransferObject\UserGroupDTO;
 use App\Entity\UserGroup;
-use App\Form\UserGroupType;
+use App\Mapper\UserGroupMapper;
 use App\Repository\SettingsRepository;
 use App\Repository\UserGroupRepository;
+use App\Repository\UserRepository;
 use App\Service\DtoResponseService;
+use App\Service\JsonDeserializer;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\UserGroupControllerService;
+use App\Validator\UserGroupValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -20,6 +26,9 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/usergroups')]
 class UserGroupController extends AbstractControllerWithMapper
 {
+    /** @var UserGroupMapper */
+    protected $mapper;
+
     /** @var UserGroup[] */
     private array $standardUserGroups;
 
@@ -28,6 +37,8 @@ class UserGroupController extends AbstractControllerWithMapper
         private readonly SettingsRepository $settingsRepository,
         private readonly UserGroupControllerService $userGroupControllerService,
         private readonly UserGroupRepository $userGroupRepository,
+        private readonly UserRepository $userRepository,
+        private readonly UserGroupValidator $validator,
     ) {
         parent::__construct(UserGroup::class);
 
@@ -91,19 +102,16 @@ class UserGroupController extends AbstractControllerWithMapper
     #[Route('', name: 'api_usergroups_post', methods: ['POST'])]
     public function post(Request $request): Response
     {
-        $userGroup = new UserGroup();
+        $userGroupDto = JsonDeserializer::jsonToDto($request->getContent(), UserGroupDTO::class);
 
-        $form = $this->createForm(UserGroupType::class, $userGroup); // TODO [Issue #116]
-        $form->handleRequest($request);
-
-        if (!$form->isSubmitted()) {
-            return (new Response)->setStatusCode(400);
+        try {
+            $this->validator->validateDto($userGroupDto);
+        } catch (ValidationFailedException $e) {
+            return ExceptionResponseFactory::getValidationFailedExceptionResponse($e);
         }
 
-        $userGroup // TODO [Issue #116]
-            ->setHidden(false)
-            ->setReadonly(false)
-            ->setPosition($this->userGroupRepository->getMaxPosition());
+        $userGroup = $this->mapper->dtoToEntityWithUsers($userGroupDto, $this->userRepository);
+        $userGroup->setPosition($this->userGroupRepository->getMaxPosition());
 
         $this->userGroupRepository->add($userGroup, true);
         $this->refreshDataTimestampUtil->updateTimestamp();
