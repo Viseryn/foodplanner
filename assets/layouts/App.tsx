@@ -20,6 +20,7 @@ import { Recipe } from '@/pages/Recipes/Recipe'
 import { Recipes } from '@/pages/Recipes/Recipes'
 import { Registration } from '@/pages/Registration/Registration'
 import { AddGroup } from '@/pages/Settings/AddGroup'
+import { EditGroup } from "@/pages/Settings/EditGroup"
 import { Settings } from '@/pages/Settings/Settings'
 import { UserSettings } from '@/pages/Settings/UserSettings'
 import { ShoppingList } from '@/pages/ShoppingList/ShoppingList'
@@ -242,6 +243,12 @@ export default function App(): ReactElement {
                                             path="/settings/groups/add"
                                             element={<AuthChecker authentication={authentication} component={
                                                 <AddGroup {...{ authentication, userGroups, setSidebar, setTopbar }} />
+                                            } />}
+                                        />
+                                        <Route
+                                            path="/settings/group/:id/edit"
+                                            element={<AuthChecker authentication={authentication} component={
+                                                <EditGroup {...{ authentication, userGroups, setSidebar, setTopbar }} />
                                             } />}
                                         />
                                         <Route

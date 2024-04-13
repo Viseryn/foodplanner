@@ -1,41 +1,64 @@
-import InputRow from '@/components/form/Input/InputRow'
-import SelectRow from '@/components/form/Select/SelectRow'
-import Button from '@/components/ui/Buttons/Button'
-import Card from '@/components/ui/Card'
-import Spacer from '@/components/ui/Spacer'
-import Spinner from '@/components/ui/Spinner'
+import InputRow from "@/components/form/Input/InputRow"
+import SelectRow from "@/components/form/Select/SelectRow"
+import Button from "@/components/ui/Buttons/Button"
+import Card from "@/components/ui/Card"
+import Spacer from "@/components/ui/Spacer"
+import Spinner from "@/components/ui/Spinner"
 import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
-import { useEntityState } from '@/hooks/useEntityState'
+import { useEntityState } from "@/hooks/useEntityState"
+import { useFindEntityById } from "@/hooks/useFindEntityById"
 import { handleSelectedUsersChange } from "@/pages/Settings/util/handleSelectedUsersChange"
 import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { PageState } from "@/types/enums/PageState"
 import { UserGroupForm } from "@/types/forms/UserGroupForm"
-import { UserGroupModel } from '@/types/UserGroupModel'
-import { UserModel } from '@/types/UserModel'
-import UserOption from '@/types/UserOption'
-import getEntityOptions from '@/util/getEntityOptions'
-import getOptions from '@/util/getOptions'
+import { Optional } from "@/types/Optional"
+import { UserGroupModel } from "@/types/UserGroupModel"
+import { UserModel } from "@/types/UserModel"
+import UserOption from "@/types/UserOption"
+import getEntityOptions from "@/util/getEntityOptions"
+import getOptions from "@/util/getOptions"
 import { handleInputChange } from "@/util/handleInputChange"
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from "axios"
-import React, { ReactElement, useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import React, { ReactElement, useEffect, useState } from "react"
+import { Navigate, useParams } from "react-router-dom"
 
-type AddGroupProps = BasePageComponentProps & {
+type EditGroupProps = BasePageComponentProps & {
     authentication: Authentication
-    userGroups: EntityState<Array<UserGroupModel>>
+    userGroups: EntityState<UserGroupModel[]>
 }
 
-export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: AddGroupProps): ReactElement => {
-    const [state, setState] = useState<PageState>(PageState.WAITING)
+type EditGroupRouteParams = {
+    id?: string
+}
+
+export const EditGroup = (props: EditGroupProps): ReactElement => {
+    const { id }: EditGroupRouteParams = useParams()
+    const users: EntityState<UserModel[]> = useEntityState('/api/users', props.authentication)
+    const userOptions: UserOption[] = getEntityOptions(users, UserOption)
+    const selectedUserGroup: Optional<UserGroupModel> = useFindEntityById(id, props.userGroups)
+
     const [formData, setFormData] = useState<UserGroupForm>({
         name: "",
         icon: "",
         users: [],
     })
+    const [pageState, setPageState] = useState<PageState>(PageState.LOADING)
 
-    const users: EntityState<UserModel[]> = useEntityState('/api/users', authentication)
-    const userOptions: UserOption[] = getEntityOptions(users, UserOption)
+    useEffect(() => {
+        if (users.isLoading) {
+            return
+        }
+
+        if (!!selectedUserGroup) {
+            setFormData({
+                name: selectedUserGroup.name,
+                icon: selectedUserGroup.icon,
+                users: selectedUserGroup.users.map(user => user.id!.toString())
+            })
+            setPageState(PageState.WAITING)
+        }
+    }, [users.isLoading, selectedUserGroup])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -44,35 +67,29 @@ export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: 
             return
         }
 
-        setState(PageState.LOADING)
+        setPageState(PageState.LOADING)
 
-        const userGroupDto: UserGroupModel = {
+        const requestData: Partial<UserGroupModel> = {
             ...formData,
-            id: -1,
-            hidden: false,
-            readonly: false,
-            position: 0,
-            users: formData.users.map(value =>
-                users.data.filter((user: UserModel) => user.id?.toString() === value)?.[0]
-            )
+            users: formData.users.map(value => users.data.find(user => user.id!.toString() === value)!)
         }
 
-        const response: boolean = await tryApiRequest("POST", "/api/usergroups", async apiUrl => {
-            return await axios.post(apiUrl, userGroupDto)
+        const response: boolean = await tryApiRequest("PATCH", `/api/usergroups/${id}`, async apiUrl => {
+            return await axios.patch(apiUrl, requestData)
         })
 
         if (response) {
-            userGroups.load()
-            setState(PageState.SUCCESS)
+            props.userGroups.load()
+            setPageState(PageState.SUCCESS)
         } else {
-            setState(PageState.ERROR)
+            setPageState(PageState.ERROR)
         }
     }
 
     useEffect(() => {
-        setSidebar()
-        setTopbar({
-            title: 'Neue Benutzergruppe',
+        props.setSidebar()
+        props.setTopbar({
+            title: 'Benutzergruppe bearbeiten',
             showBackButton: true,
             backButtonPath: '/settings',
         })
@@ -82,26 +99,17 @@ export const AddGroup = ({ authentication, userGroups, setSidebar, setTopbar }: 
 
     return (
         <StandardContentWrapper className="md:w-[450px]">
-            {state === PageState.LOADING &&
+            {pageState === PageState.LOADING &&
                 <Spinner />
             }
 
-            {state === PageState.SUCCESS &&
+            {pageState === PageState.SUCCESS &&
                 <Navigate to="/settings" />
             }
 
-            {[PageState.WAITING, PageState.ERROR].includes(state) &&
+            {[PageState.WAITING, PageState.ERROR].includes(pageState) &&
                 <form name="user_group" onSubmit={handleSubmit}>
                     <Card>
-                        <p className="text-sm">
-                            Hier kannst du eine neue Benutzergruppen hinzufügen. Die Liste von Material Symbols findest
-                            du <a target="_blank" rel="noopener noreferrer"
-                                  className="text-blue-500 hover:text-blue-400 transition duration-300"
-                                  href="https://fonts.google.com/icons?icon.style=Rounded&icon.set=Material+Symbols">hier</a>.
-                        </p>
-
-                        <Spacer height="6" />
-
                         <InputRow
                             id="name"
                             label="Name der Benutzergruppe"

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Component\Exception\ValidationFailedException;
 use App\Component\Response\ExceptionResponseFactory;
 use App\DataTransferObject\UserGroupDTO;
+use App\Entity\User;
 use App\Entity\UserGroup;
 use App\Mapper\UserGroupMapper;
 use App\Repository\SettingsRepository;
@@ -15,6 +16,7 @@ use App\Service\JsonDeserializer;
 use App\Service\RefreshDataTimestampUtil;
 use App\Service\UserGroupControllerService;
 use App\Validator\UserGroupValidator;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -93,6 +95,24 @@ class UserGroupController extends AbstractControllerWithMapper
 
         if (property_exists($data, "position") && is_int($data->position)) {
             $userGroup->setPosition($data->position);
+        }
+
+        if (property_exists($data, "name") && is_string($data->name)) {
+            $userGroup->setName($data->name);
+        }
+
+        if (property_exists($data, "icon") && is_string($data->icon)) {
+            $userGroup->setIcon($data->icon);
+        }
+
+        if (property_exists($data, "users")) {
+            $users = JsonDeserializer::jsonArrayToEntities(json_encode($data->users), User::class)
+                                     ->map(fn ($user) => $this->userRepository->findOneBy(["username" => $user->getUsername()]));
+
+            $userGroup->setUsers(new ArrayCollection);
+            foreach ($users as $user) {
+                $userGroup->addUser($user);
+            }
         }
 
         $this->userGroupRepository->add($userGroup, true);

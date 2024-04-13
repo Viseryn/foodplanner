@@ -5,6 +5,7 @@ import IconButton from '@/components/ui/Buttons/IconButton'
 import Button from '@/components/ui/Buttons/Button'
 import { UserGroupModel } from '@/types/UserGroupModel'
 import SettingsModel from '@/types/SettingsModel'
+import { useNavigate } from "react-router-dom"
 import swal from 'sweetalert'
 import { tryApiRequest } from '@/util/tryApiRequest'
 import axios, { AxiosResponse } from 'axios'
@@ -17,11 +18,9 @@ type UserGroupsSettingsModuleProps = {
     settings: EntityState<SettingsModel>
 }
 
-/**
- * @todo [Issue #222] Make UserGroups editable
- */
 export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): ReactElement => {
     const { userGroups, visibleUserGroups, days, settings } = props
+    const navigate = useNavigate()
 
     const handleChangeGroupVisibility = async (userGroup: UserGroupModel): Promise<void> => {
         const apiUrl: string = `/api/usergroups/${userGroup.id}`
@@ -81,6 +80,10 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
             settings.setData(response.data)
             return response
         })
+    }
+
+    const handleEditGroup = (group: UserGroupModel): void => {
+        navigate(`/settings/group/${group.id}/edit`)
     }
 
     const handleChangePosition = async (group: UserGroupModel, direction: -1 | 1): Promise<void> => {
@@ -166,6 +169,13 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                                         disabled={group.hidden}
                                     >
                                         favorite
+                                    </IconButton>
+
+                                    <IconButton
+                                        outlined={true}
+                                        onClick={() => handleEditGroup(group)}
+                                    >
+                                        edit
                                     </IconButton>
 
                                     <IconButton
