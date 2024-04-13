@@ -1,15 +1,11 @@
-/*************************************************
- * ./assets/components/ui/Buttons/IconButton.tsx *
- *************************************************/
-
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 /**
  * A component that renders a button with only an icon, for example for the topbar.
  * 
  * @component
  * @param props
- * @param props.outlined Whether or not the icon should be only outlines (true) or filled (false, by default).
+ * @param props.outlined Whether the icon should be only outlines (true) or filled (false, by default).
  * @param props.style Additional styling classes.
  * @param props.onClick An optional onClick handler.
  * @param props.children The Material Symbols identifier for the icon.
@@ -22,7 +18,7 @@ export default function IconButton({ outlined = false, style = '', onClick, disa
     onClick?: () => void
     disabled?: boolean
     children: string
-}): JSX.Element {
+}): ReactElement {
     if (disabled) {
         return <span className={`material-symbols-rounded cursor-not-allowed transition duration-300 ${outlined ? "outlined" : ""} p-2 text-secondary-900/50 dark:text-secondary-dark-900/30 ${style}`}>
             {children}
@@ -32,7 +28,7 @@ export default function IconButton({ outlined = false, style = '', onClick, disa
     return <span 
         onClick={onClick}
         className={
-            'material-symbols-rounded cursor-pointer transition duration-300 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 p-2 rounded-full' 
+            'material-symbols-rounded cursor-pointer transition duration-300 md:hover:bg-secondary-200 dark:md:hover:bg-secondary-dark-200 p-2 rounded-full'
             + (outlined ? ' outlined' : '')
             + ' ' + style
         }
