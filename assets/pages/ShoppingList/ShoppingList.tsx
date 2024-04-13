@@ -6,6 +6,7 @@ import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
 import InfoShoppingListEmpty from '@/pages/ShoppingList/components/InfoShoppingListEmpty'
 import IngredientModel from '@/types/IngredientModel'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import SettingsModel from '@/types/SettingsModel'
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
@@ -19,12 +20,10 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import swal from 'sweetalert'
 import { Item } from './components/Item'
 
-type ShoppingListProps = {
+type ShoppingListProps = BasePageComponentProps & {
     shoppingList: EntityState<Array<IngredientModel>>
     pantry: EntityState<Array<IngredientModel>>
     settings: EntityState<SettingsModel>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 /**

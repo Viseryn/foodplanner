@@ -11,6 +11,7 @@ import DayModel from '@/types/DayModel'
 import { PageState } from "@/types/enums/PageState"
 import MealCategoryModel from '@/types/MealCategoryModel'
 import MealCategoryOption from '@/types/MealCategoryOption'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import { UserGroupModel } from '@/types/UserGroupModel'
@@ -27,14 +28,12 @@ import RadioSkeleton from './components/RadioSkeleton'
 import RecipeListSkeleton from './components/RecipeListSkeleton'
 import SearchWidget from './components/SearchWidget'
 
-type AddMealProps = {
+type AddMealProps = BasePageComponentProps & {
     days: EntityState<Array<DayModel>>
     recipes: EntityState<Array<RecipeModel>>
     mealCategories: EntityState<Array<MealCategoryModel>>
     userGroups: EntityState<Array<UserGroupModel>>
     settings: EntityState<SettingsModel>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 type AddMealRouteParams = {

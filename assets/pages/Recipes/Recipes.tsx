@@ -4,6 +4,7 @@ import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { RecipeImageCard } from '@/pages/Recipes/components/RecipeImageCard'
 import { RecipesGrid } from '@/pages/Recipes/components/RecipesGrid'
 import * as ViewMode from '@/pages/Recipes/types/ViewMode'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import { tryApiRequest } from "@/util/tryApiRequest"
@@ -12,11 +13,9 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import { RecipeListSkeleton } from './components/RecipeListSkeleton'
 import SearchWidget from './components/SearchWidget'
 
-export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: {
+export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: BasePageComponentProps & {
     recipes: EntityState<RecipeModel[]>
     settings: EntityState<SettingsModel>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }): ReactElement => {
     const [searchWidgetInput, setSearchWidgetInput] = useState<string>('')
 

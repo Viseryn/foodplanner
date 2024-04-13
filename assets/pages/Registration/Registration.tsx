@@ -7,16 +7,15 @@ import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { RegistrationDto } from '@/types/datatransferobjects/RegistrationDto'
 import { RegistrationForm } from "@/types/forms/RegistrationForm"
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { UserModel } from '@/types/UserModel'
 import { tryApiRequest } from '@/util/tryApiRequest'
 import axios, { AxiosResponse } from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
-type RegistrationProps = {
+type RegistrationProps = BasePageComponentProps & {
     authentication: Authentication
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 export const Registration = ({ authentication, setSidebar, setTopbar }: RegistrationProps): ReactElement => {

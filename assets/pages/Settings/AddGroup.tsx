@@ -7,6 +7,7 @@ import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
 import { useEntityState } from '@/hooks/useEntityState'
 import { PageState } from "@/types/enums/PageState"
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { UserGroupModel } from '@/types/UserGroupModel'
 import { UserModel } from '@/types/UserModel'
 import UserOption from '@/types/UserOption'
@@ -17,11 +18,9 @@ import axios from "axios"
 import React, { ReactElement, useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 
-type AddGroupProps = {
+type AddGroupProps = BasePageComponentProps & {
     authentication: Authentication
     userGroups: EntityState<Array<UserGroupModel>>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 type UserGroupForm = {

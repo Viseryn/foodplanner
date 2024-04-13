@@ -1,21 +1,20 @@
-import React, { ReactElement, useEffect, useState } from 'react'
-import { PageState } from '@/types/enums/PageState'
-import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
-import Card from '@/components/ui/Card'
-import Spacer from '@/components/ui/Spacer'
 import Button from '@/components/ui/Buttons/Button'
-import Spinner from '@/components/ui/Spinner'
-import axios, { AxiosResponse } from 'axios'
-import { StringBuilder } from '@/util/StringBuilder'
+import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
-import { Navigate } from 'react-router-dom'
+import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
+import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { PageState } from '@/types/enums/PageState'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { UserModel } from '@/types/UserModel'
+import { StringBuilder } from '@/util/StringBuilder'
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { Navigate } from 'react-router-dom'
 
-type JsonLoginProps = {
+type JsonLoginProps = BasePageComponentProps & {
     user: EntityState<UserModel>
     authentication: Authentication
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 type JsonLoginForm = {
