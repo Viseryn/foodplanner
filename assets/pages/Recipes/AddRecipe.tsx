@@ -11,19 +11,18 @@ import { ImageUploadWidget } from '@/pages/Recipes/components/ImageUploadWidget'
 import { getImageModel } from '@/pages/Recipes/util/getImageModel'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 import { PageState } from "@/types/enums/PageState"
+import { RecipeForm } from '@/types/forms/RecipeForm'
 import ImageModel from '@/types/ImageModel'
 import { Optional } from "@/types/Optional"
-import { RecipeForm } from '@/types/forms/RecipeForm'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import RecipeModel from '@/types/RecipeModel'
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios, { AxiosResponse } from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 
-type AddRecipeProps = {
+type AddRecipeProps = BasePageComponentProps & {
     recipes: EntityState<Array<RecipeModel>>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 export const AddRecipe = ({ recipes, setSidebar, setTopbar }: AddRecipeProps): ReactElement => {

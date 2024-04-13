@@ -1,14 +1,13 @@
 import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from 'axios'
 import React, { ReactElement, useEffect } from 'react'
 import { NavigateFunction, useNavigate } from 'react-router-dom'
 
-export const Logout = ({ authentication, setSidebar, setTopbar }: {
+export const Logout = ({ authentication, setSidebar, setTopbar }: BasePageComponentProps & {
     authentication: Authentication
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }): ReactElement => {
     const navigate: NavigateFunction = useNavigate()
 

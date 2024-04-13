@@ -1,19 +1,18 @@
-import React, { ReactElement, useEffect, useState } from 'react'
-import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
-import Card from '@/components/ui/Card'
-import { UserModel } from '@/types/UserModel'
 import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
-import { tryApiRequest } from '@/util/tryApiRequest'
-import axios, { AxiosResponse } from 'axios'
-import Spinner from '@/components/ui/Spinner'
+import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
+import Spinner from '@/components/ui/Spinner'
+import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
+import { UserModel } from '@/types/UserModel'
+import { tryApiRequest } from '@/util/tryApiRequest'
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
 
-type UserSettingsProps = {
+type UserSettingsProps = BasePageComponentProps & {
     user: EntityState<UserModel>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 type UserSettingsForm = {

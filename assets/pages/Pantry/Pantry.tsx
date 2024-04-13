@@ -6,6 +6,7 @@ import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
 import InfoPantryEmpty from '@/pages/Pantry/components/InfoPantryEmpty'
 import IngredientModel from '@/types/IngredientModel'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import getIngredientModel from '@/util/ingredients/getIngredientModel'
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 import { getDeleteRequests } from '@/util/storages/getDeleteRequests'
@@ -17,10 +18,8 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import swal from 'sweetalert'
 import { Item } from './components/Item'
 
-type PantryProps = {
+type PantryProps = BasePageComponentProps & {
     pantry: EntityState<Array<IngredientModel>>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 /**
