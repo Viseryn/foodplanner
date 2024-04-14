@@ -14,9 +14,10 @@ import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsStrin
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
 import DayModel from '@/types/DayModel'
 import { PageState } from "@/types/enums/PageState"
+import { RecipeForm } from '@/types/forms/RecipeForm'
 import ImageModel from '@/types/ImageModel'
 import { Optional } from "@/types/Optional"
-import { RecipeForm } from '@/types/RecipeForm'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import RecipeModel from '@/types/RecipeModel'
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios, { AxiosResponse } from 'axios'
@@ -24,11 +25,9 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import { Navigate, NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 import swal from 'sweetalert'
 
-type EditRecipeProps = {
+type EditRecipeProps = BasePageComponentProps & {
     recipes: EntityState<Array<RecipeModel>>
     days: EntityState<Array<DayModel>>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 export const EditRecipe = ({ recipes, days, setSidebar, setTopbar }: EditRecipeProps): ReactElement => {

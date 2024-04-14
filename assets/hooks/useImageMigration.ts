@@ -25,8 +25,8 @@ export const useImageMigration = (
             }
         }
 
-        if (!installationStatus.data.updateV16) {
-            updateToV16()
+        if (!installationStatus.data.updateV16 && !!installationStatus.data.status) {
+            void updateToV16()
         }
     }, [installationStatus.isLoading]);
 }

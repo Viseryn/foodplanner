@@ -6,6 +6,7 @@ import useTimeout from '@/hooks/useTimeout'
 import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
 import MealModel from '@/types/MealModel'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import getLastIngredientPosition from '@/util/ingredients/getLastIngredientPosition'
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios, { AxiosResponse } from 'axios'
@@ -16,11 +17,9 @@ import DayCardMobile from './components/DayCardMobile'
 import DaySkeletonDesktop from './components/DaySkeletonDesktop'
 import DaySkeletonMobile from './components/DaySkeletonMobile'
 
-type PlannerProps = {
+type PlannerProps = BasePageComponentProps & {
     days: EntityState<Array<DayModel>>
     shoppingList: EntityState<Array<IngredientModel>>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 export const Planner = ({ days, shoppingList, setSidebar, setTopbar }: PlannerProps): ReactElement => {

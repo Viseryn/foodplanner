@@ -1,26 +1,21 @@
-import axios, { AxiosResponse } from 'axios'
-import React, { ReactElement, useEffect, useState } from 'react'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
 import InputRow from '@/components/form/Input/InputRow'
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
-import { UserModel } from '@/types/UserModel'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
-import { tryApiRequest } from '@/util/tryApiRequest'
 import { RegistrationDto } from '@/types/datatransferobjects/RegistrationDto'
+import { RegistrationForm } from "@/types/forms/RegistrationForm"
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
+import { UserModel } from '@/types/UserModel'
+import { tryApiRequest } from '@/util/tryApiRequest'
+import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 
-type RegistrationProps = {
+type RegistrationProps = BasePageComponentProps & {
     authentication: Authentication
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
-}
-
-type RegistrationForm = {
-    username: string
-    password: string
 }
 
 export const Registration = ({ authentication, setSidebar, setTopbar }: RegistrationProps): ReactElement => {

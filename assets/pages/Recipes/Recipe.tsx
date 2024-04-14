@@ -7,6 +7,7 @@ import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
 import useTimeout from '@/hooks/useTimeout'
 import DayModel from '@/types/DayModel'
 import IngredientModel from '@/types/IngredientModel'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import getFullIngredientName from '@/util/getFullIngredientName'
@@ -17,14 +18,12 @@ import Fraction from 'fraction.js'
 import React, { ReactElement, useEffect, useState } from 'react'
 import { NavigateFunction, useNavigate, useParams } from 'react-router-dom'
 
-type RecipeProps = {
+type RecipeProps = BasePageComponentProps & {
     days: EntityState<Array<DayModel>>
     recipes: EntityState<Array<RecipeModel>>
     shoppingList: EntityState<Array<IngredientModel>>
     pantry: EntityState<Array<IngredientModel>>
     settings: EntityState<SettingsModel>
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
 }
 
 /**

@@ -1,6 +1,6 @@
 # FoodPlanner
 
-Current version: v1.6.3
+Current version: v1.6.4
 
 ---
 
@@ -83,19 +83,17 @@ See https://github.com/Viseryn/foodplanner/issues for all planned features and b
 
 ## Release checklist
 
-Currently, a new release is not automatically created (see Issue #175).
 When all issues for a planned released have been resolved, follow these steps:
 
-- Create a branch `release/v{version-number}` from develop.
-- Change the version number in README.md, package.json and create a new migration. 
-  Commit with message `Realease v{version-number}`.
-- If there are any hotfixes needed, merge them into the new release branch.
-- After testing, create a new GitHub release on the release branch with a corresponding tag.
-- Create a pull request for merging the release branch into the master branch.
-- Create a pull request for merging the master branch into the develop branch.
-- Change the version number in README.md, package.json and create a new migration for the next snapshot version.
-  For example, if v1.6.1 was just released, change the version number to v.1.6.2-snapshot.
-  Commit on the develop branch with message `Snapshot v{snapshot-version-number}`.
+- In the repositories' GitHub Actions panel, run the "Release Workflow". Make sure that the three required version
+  numbers (last version number, new version number, next snapshot version number) are correct.
+- The workflow will automatically create the release branch, update all version numbers and create the corresponding
+  database migrations. After that, the release branch will automatically be merged into the `master` and `develop`
+  branches. On the `develop` branch, the version number will be updated to the next snapshot version number.
+- After the Release Workflow has finished, a new GitHub Release can be created in the Release section. Draft a new
+  release from the release branch and create a corresponding tag (e.g. `v1.6.3`).
+- Hotfixes should **not** be merged into the release branch, but the `develop` branch.
+  If a hotfix is merged, then a new release (e.g. `v1.6.3-hotfix.1`) needs to be built with the same steps as above.
 
 ---
 

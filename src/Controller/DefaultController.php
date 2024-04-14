@@ -15,14 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DefaultController extends AbstractController
 {
-    #[Route('/{reactRouting}', name: 'app_default', requirements: ['reactRouting' => '(?!api|install).+'], defaults: ['reactRouting' => null])]
+    #[Route('/{reactRouting}', name: 'app_default', requirements: ['reactRouting' => '(?!api).+'], defaults: ['reactRouting' => null])]
     public function default(InstallationStatusRepository $repository): Response
     {
-        $installationStatus = $repository->find(1);
-        if (!$installationStatus->isStatus()) {
-            return $this->redirectToRoute('api_install');
-        }
-
         return $this->render('default/index.html.twig');
     }
 }

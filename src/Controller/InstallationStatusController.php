@@ -20,7 +20,8 @@ class InstallationStatusController extends AbstractController
     public function get(): Response
     {
         $installationStatus = $this->installationStatusRepository->find(1);
-        $dto = (new InstallationStatusDTO)->setUpdateV16($installationStatus->isUpdateV16())
+        $dto = (new InstallationStatusDTO)->setStatus($installationStatus->isStatus())
+                                          ->setUpdateV16($installationStatus->isUpdateV16())
                                           ->setVersion($installationStatus->getVersion());
         return DtoResponseService::getResponse($dto);
     }

@@ -1,11 +1,9 @@
 import Notification from '@/components/ui/Notification'
 import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import React, { ReactElement, useEffect } from 'react'
 
-type PageNotFoundProps = {
-    setSidebar: SetSidebarAction
-    setTopbar: SetTopbarAction
-}
+type PageNotFoundProps = BasePageComponentProps
 
 export const PageNotFound = ({ setSidebar, setTopbar }: PageNotFoundProps): ReactElement => {
     useEffect(() => {

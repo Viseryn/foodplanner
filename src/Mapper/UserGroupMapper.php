@@ -2,6 +2,8 @@
 
 use App\DataTransferObject\UserGroupDTO;
 use App\Entity\UserGroup;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @implements Mapper<UserGroup>
@@ -47,5 +49,19 @@ final class UserGroupMapper implements Mapper
                                  ->setUsers(
                                      $entity->getUsers()->map(fn ($user) => $this->userMapper->entityToDto($user)),
                                  );
+    }
+
+    public function dtoToEntityWithUsers($dto, UserRepository $userRepository): UserGroup
+    {
+        $userGroup = $this->dtoToEntity($dto);
+        $users = $userGroup->getUsers()
+                           ->map(fn ($user) => $userRepository->findOneBy(["username" => $user->getUsername()]));
+
+        $userGroup->setUsers(new ArrayCollection);
+        foreach ($users as $user) {
+            $userGroup->addUser($user);
+        }
+
+        return $userGroup;
     }
 }
