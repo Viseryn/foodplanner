@@ -149,7 +149,7 @@ export const EditGroup = (props: EditGroupProps): ReactElement => {
                                 {...{
                                     value: formData.users,
                                     name: "users",
-                                    onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleSelectedUsersChange<UserGroupForm>(event, setFormData),
+                                    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => handleSelectedUsersChange<UserGroupForm>(event, setFormData),
                                     multiple: true,
                                     required: true,
                                     size: getOptions(userOptions).length,
