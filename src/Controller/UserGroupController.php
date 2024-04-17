@@ -97,7 +97,7 @@ class UserGroupController extends AbstractControllerWithMapper
             $userGroup->setPosition($data->position);
         }
 
-        if (property_exists($data, "name") && is_string($data->name)) {
+        if (property_exists($data, "name") && is_string($data->name) && !$userGroup->isReadonly()) {
             $userGroup->setName($data->name);
         }
 
@@ -105,7 +105,7 @@ class UserGroupController extends AbstractControllerWithMapper
             $userGroup->setIcon($data->icon);
         }
 
-        if (property_exists($data, "users")) {
+        if (property_exists($data, "users") && !$userGroup->isReadonly()) {
             $users = JsonDeserializer::jsonArrayToEntities(json_encode($data->users), User::class)
                                      ->map(fn ($user) => $this->userRepository->findOneBy(["username" => $user->getUsername()]));
 

@@ -110,20 +110,24 @@ export const EditGroup = (props: EditGroupProps): ReactElement => {
             {[PageState.WAITING, PageState.ERROR].includes(pageState) &&
                 <form name="user_group" onSubmit={handleSubmit}>
                     <Card>
-                        <InputRow
-                            id="name"
-                            label="Name der Benutzergruppe"
-                            {...{
-                                value: formData.name,
-                                required: true,
-                                maxLength: 64,
-                                name: "name",
-                                onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleInputChange<UserGroupForm>(event, setFormData),
-                                placeholder: 'Name der Benutzergruppe',
-                            }}
-                        />
+                        {!selectedUserGroup?.readonly &&
+                            <>
+                                <InputRow
+                                    id="name"
+                                    label="Name der Benutzergruppe"
+                                    {...{
+                                        value: formData.name,
+                                        required: true,
+                                        maxLength: 64,
+                                        name: "name",
+                                        onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleInputChange<UserGroupForm>(event, setFormData),
+                                        placeholder: 'Name der Benutzergruppe',
+                                    }}
+                                />
 
-                        <Spacer height="6" />
+                                <Spacer height="6" />
+                            </>
+                        }
 
                         <InputRow
                             id="icon"
@@ -138,24 +142,28 @@ export const EditGroup = (props: EditGroupProps): ReactElement => {
                             }}
                         />
 
-                        <Spacer height="6" />
+                        {!selectedUserGroup?.readonly &&
+                            <>
+                                <Spacer height="6" />
 
-                        {users.isLoading
-                            ? <Spinner verticalMargin={10} />
-                            : <SelectRow
-                                id="users"
-                                label="Welche Benutzer sollen zur Gruppe gehören?"
-                                options={getOptions(userOptions)}
-                                {...{
-                                    value: formData.users,
-                                    name: "users",
-                                    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => handleSelectedUsersChange<UserGroupForm>(event, setFormData),
-                                    multiple: true,
-                                    required: true,
-                                    size: getOptions(userOptions).length,
-                                    className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden',
-                                }}
-                            />
+                                {users.isLoading
+                                    ? <Spinner verticalMargin={10} />
+                                    : <SelectRow
+                                        id="users"
+                                        label="Welche Benutzer sollen zur Gruppe gehören?"
+                                        options={getOptions(userOptions)}
+                                        {...{
+                                            value: formData.users,
+                                            name: "users",
+                                            onChange: (event: React.ChangeEvent<HTMLSelectElement>) => handleSelectedUsersChange<UserGroupForm>(event, setFormData),
+                                            multiple: true,
+                                            required: true,
+                                            size: getOptions(userOptions).length,
+                                            className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden',
+                                        }}
+                                    />
+                                }
+                            </>
                         }
                     </Card>
 
