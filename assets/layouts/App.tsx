@@ -147,7 +147,7 @@ export default function App(): ReactElement {
                 {isInstalled &&
                     <>
                         <SidebarDrawer {...{
-                            isDrawerVisible, setDrawerVisible, authentication
+                            isDrawerVisible, setDrawerVisible, authentication, installationStatus
                         }} />
 
                         <Sidebar {...{
@@ -236,7 +236,7 @@ export default function App(): ReactElement {
                                         <Route
                                             path="/settings"
                                             element={<AuthChecker authentication={authentication} component={
-                                                <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
+                                                <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar }} />
                                             } />}
                                         />
                                         <Route
