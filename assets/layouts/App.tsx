@@ -236,7 +236,7 @@ export default function App(): ReactElement {
                                         <Route
                                             path="/settings"
                                             element={<AuthChecker authentication={authentication} component={
-                                                <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar }} />
+                                                <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, authentication, setSidebar, setTopbar }} />
                                             } />}
                                         />
                                         <Route
