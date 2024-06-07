@@ -253,6 +253,7 @@ export const Recipe = ({ days, recipes, shoppingList, pantry, settings, setSideb
                         recipes.load()
                     }
                 },
+                { icon: 'download', onClick: () => window.open(`/api/export/recipes/${id}`, '_blank', 'rel=noopener noreferrer') },
                 { icon: 'contract_edit', onClick: () => navigate('/recipe/' + id + '/edit') },
             ],
             truncate: true,

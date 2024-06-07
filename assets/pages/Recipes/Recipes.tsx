@@ -62,6 +62,9 @@ export const Recipes = ({ recipes, settings, setSidebar, setTopbar }: BasePageCo
         setTopbar({
             title: 'Rezepte',
             actionButtons: [{
+                icon: 'download',
+                onClick: () => window.open(`/api/export/recipes`, '_blank', 'rel=noopener noreferrer'),
+            }, {
                 icon: ViewMode.getIcon(settings.data.recipeListViewMode),
                 onClick: handleViewMode,
             }],
