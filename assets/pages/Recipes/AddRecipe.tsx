@@ -19,13 +19,15 @@ import RecipeModel from '@/types/RecipeModel'
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios, { AxiosResponse } from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, NavigateFunction, useNavigate } from 'react-router-dom'
 
 type AddRecipeProps = BasePageComponentProps & {
     recipes: EntityState<Array<RecipeModel>>
 }
 
 export const AddRecipe = ({ recipes, setSidebar, setTopbar }: AddRecipeProps): ReactElement => {
+    const navigate: NavigateFunction = useNavigate()
+
     const [file, setFile] = useState<File | null>(null)
     const [state, setState] = useState<PageState>(PageState.LOADING)
     const [responseId, setResponseId] = useState<number>(0)
@@ -83,6 +85,11 @@ export const AddRecipe = ({ recipes, setSidebar, setTopbar }: AddRecipeProps): R
             title: 'Neues Rezept',
             showBackButton: true,
             backButtonPath: '/recipes',
+            actionButtons: [
+                { icon: 'upload', onClick: () => navigate(`/recipe/import`) },
+            ],
+            truncate: true,
+            style: 'md:max-w-[900px]',
         })
 
         window.scrollTo(0, 0)
