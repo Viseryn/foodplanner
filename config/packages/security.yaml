@@ -48,6 +48,8 @@ security:
         - { path: ^/api/meals, role: ROLE_ADMIN }
         - { path: ^/api/recipes, roles: ROLE_ADMIN }
         - { path: ^/api/storages, roles: ROLE_ADMIN }
+        - { path: ^/api/export, roles: ROLE_ADMIN }
+        - { path: ^/api/import, roles: ROLE_ADMIN }
         #- { path: ^/, roles: ROLE_ADMIN }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

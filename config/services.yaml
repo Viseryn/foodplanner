@@ -29,6 +29,9 @@ services:
     App\Service\Files\RecipeImageManager:
         arguments:
             $targetDirectory: '%kernel.project_dir%/'
+    App\Mapper\RecipeExportMapper:
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/'
     App\Service\Files\ThumbnailManager:
         arguments:
             $targetDirectory: '%kernel.project_dir%/'
