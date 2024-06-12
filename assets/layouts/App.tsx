@@ -16,6 +16,7 @@ import { AddMeal } from '@/pages/Planner/AddMeal'
 import { Planner } from '@/pages/Planner/Planner'
 import { AddRecipe } from '@/pages/Recipes/AddRecipe'
 import { EditRecipe } from '@/pages/Recipes/EditRecipe'
+import { ImportRecipe } from "@/pages/Recipes/ImportRecipe"
 import { Recipe } from '@/pages/Recipes/Recipe'
 import { Recipes } from '@/pages/Recipes/Recipes'
 import { Registration } from '@/pages/Registration/Registration'
@@ -207,6 +208,12 @@ export default function App(): ReactElement {
                                             path="/recipes"
                                             element={<AuthChecker authentication={authentication} component={
                                                 <Recipes {...{ recipes, settings, setSidebar, setTopbar }} />
+                                            } />}
+                                        />
+                                        <Route
+                                            path="/recipe/import"
+                                            element={<AuthChecker authentication={authentication} component={
+                                                <ImportRecipe {...{ recipes, setSidebar, setTopbar }} />
                                             } />}
                                         />
                                         <Route
