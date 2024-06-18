@@ -195,6 +195,6 @@ type ButtonOptions = {
     /** @deprecated Use isSmall instead. */
     small?: boolean
     isSmall?: boolean
-    onClick?: () => void
+    onClick?: (() => void) | (() => Promise<void>)
     isIconRight?: boolean
 }
