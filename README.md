@@ -63,19 +63,18 @@ Apart from that, the app should really be self-explanatory.
 
 ## Contributing to FoodPlanner
 
-Everyone is welcome to contribute to FoodPlanner. If you think of a new feature, feel free to open a new issue to 
-discuss your idea! If you have a bug fix or cool new feature and want to merge it, create a pull request into the 
-`develop` branch.
+Everyone is welcome to contribute to FoodPlanner. If you think of a new feature, feel free to open a new issue to
+discuss your idea! There is a JIRA board for current open tasks in the project, see
+https://viseryn.atlassian.net/jira/software/projects/FP/boards/1.
+
+If you have a bug fix or cool new feature and want to merge it, create a pull request into the `develop` branch.
 
 A new feature/bugfix/update should be implemented in a corresponding branch from `develop`, and ideally be linked to 
-some issue, e.g. `issue/28/sweetalert-cancel-buttons-disappeared`.
-
-When all issues for a future release version are closed, a new release branch will be created, e.g. `release/v1.5`,
-that will be merged into `master`. Hotfixes may be merged into a corresponding release branch.
+some JIRA ticket, e.g. `ticket/FP-xx/title-of-the-jira-ticket`.
 
 ## Planned features
 
-See https://github.com/Viseryn/foodplanner/issues for all planned features and bugfixes. Among them:
+See https://viseryn.atlassian.net/jira/software/projects/FP/boards/1 for all planned features and bugfixes. Among them:
 
 - Localization, especially English (US).
 - Notifications, e.g. reminders for the shopping list.
@@ -83,7 +82,7 @@ See https://github.com/Viseryn/foodplanner/issues for all planned features and b
 
 ## Release checklist
 
-When all issues for a planned released have been resolved, follow these steps:
+When all tickets for a planned released have been resolved, follow these steps:
 
 - In the repositories' GitHub Actions panel, run the "Release Workflow". Make sure that the three required version
   numbers (last version number, new version number, next snapshot version number) are correct.
