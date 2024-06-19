@@ -1,5 +1,6 @@
 import Button from "@/components/ui/Buttons/Button"
 import FileSelectButton from "@/components/ui/Buttons/FileSelectButton"
+import IconButton from "@/components/ui/Buttons/IconButton"
 import Card from "@/components/ui/Card"
 import Notification from "@/components/ui/Notification"
 import Spacer from "@/components/ui/Spacer"
@@ -18,6 +19,10 @@ type ImportRecipeProps = BasePageComponentProps & {
     recipes: EntityState<RecipeModel[]>
 }
 
+type SelectedRecipeExportDto = RecipeExportDto & {
+    isSelected: boolean
+}
+
 enum ReadFileState {
     WAITING, READING, ERROR
 }
@@ -27,7 +32,7 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
     const [file, setFile] = useState<File | null>(null)
     const [state, setState] = useState<PageState>(PageState.WAITING)
     const [readFileState, setReadFileState] = useState<ReadFileState>(ReadFileState.WAITING)
-    const [importedRecipes, setImportedRecipes] = useState<RecipeExportDto[]>([])
+    const [importedRecipes, setImportedRecipes] = useState<SelectedRecipeExportDto[]>([])
 
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const uploadedFile: File | null = event.target.files?.[0] || null
@@ -71,7 +76,10 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
         setState(PageState.WAITING)
         setReadFileState(ReadFileState.READING)
         const jsonFileContents: RecipeExportDto | RecipeExportDto[] = await readJsonFileContents(file)
-        setImportedRecipes(Array.isArray(jsonFileContents) ? jsonFileContents : [jsonFileContents])
+        const selectedRecipeExportDtos: SelectedRecipeExportDto[]
+            = (Array.isArray(jsonFileContents) ? jsonFileContents : [jsonFileContents])
+                .map(recipe => ({ ...recipe, isSelected: true }))
+        setImportedRecipes(selectedRecipeExportDtos)
         setReadFileState(ReadFileState.WAITING)
     }
 
@@ -79,6 +87,13 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
         setFile(null)
         setImportedRecipes([])
         setUploadButtonText(DATEI_AUSWAEHLEN)
+    }
+
+    const handleCheckboxChange = (selectedRecipeExportDto: SelectedRecipeExportDto): void => {
+        const newImportedRecipes: SelectedRecipeExportDto[] = [...importedRecipes]
+        const recipe: SelectedRecipeExportDto = newImportedRecipes?.[newImportedRecipes.indexOf(selectedRecipeExportDto)]
+        recipe.isSelected = !recipe.isSelected
+        setImportedRecipes(newImportedRecipes)
     }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -176,15 +191,20 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
                         <>
                             <Spacer height={6} />
                             <Card>
-                                <p>Folgende Rezepte wurden in der Rezepte-Datei gelesen:</p>
+                                <p>
+                                    Die folgenden Rezepte wurden aus der Rezepte-Datei gelesen.
+                                    Du kannst markieren, welche Rezepte du importieren möchtest.
+                                </p>
 
                                 <Spacer height={6} />
 
-                                {importedRecipes.map((recipeExportDto, index) =>
+                                {importedRecipes.map((selectedRecipeExportDto, index) =>
                                     <div key={index} className="flex justify-between items-center">
                                         <div className="flex items-center">
-                                            <span className="material-symbols-rounded outlined mr-4">check_box</span>
-                                            {recipeExportDto.title}
+                                            <IconButton style={"mr-4"} onClick={() => handleCheckboxChange(selectedRecipeExportDto)}>
+                                                {selectedRecipeExportDto.isSelected ? "check_box" : "check_box_outline_blank"}
+                                            </IconButton>
+                                            {selectedRecipeExportDto.title}
                                         </div>
                                     </div>
                                 )}
