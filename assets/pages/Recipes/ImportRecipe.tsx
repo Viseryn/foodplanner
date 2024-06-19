@@ -104,9 +104,9 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
 
         setState(PageState.LOADING)
 
-        const response: boolean = await tryApiRequest(
-            "POST", `/api/import/recipes`, async apiUrl => await axios.post(apiUrl, importedRecipes)
-        )
+        const response: boolean = await tryApiRequest("POST", `/api/import/recipes`, async apiUrl => await axios.post(
+            apiUrl, importedRecipes.filter(recipe => recipe.isSelected)
+        ))
 
         resetReadFileState()
 
