@@ -1,5 +1,6 @@
 import Button from "@/components/ui/Buttons/Button"
 import FileSelectButton from "@/components/ui/Buttons/FileSelectButton"
+import IconButton from "@/components/ui/Buttons/IconButton"
 import Card from "@/components/ui/Card"
 import Notification from "@/components/ui/Notification"
 import Spacer from "@/components/ui/Spacer"
@@ -11,18 +12,27 @@ import { RecipeExportDto } from "@/types/datatransferobjects/RecipeExportDto"
 import { PageState } from "@/types/enums/PageState"
 import RecipeModel from "@/types/RecipeModel"
 import { tryApiRequest } from "@/util/tryApiRequest"
-import axios, { AxiosResponse } from "axios"
+import axios from "axios"
 import React, { ReactElement, useEffect, useState } from "react"
 
 type ImportRecipeProps = BasePageComponentProps & {
     recipes: EntityState<RecipeModel[]>
 }
 
+type SelectedRecipeExportDto = RecipeExportDto & {
+    isSelected: boolean
+}
+
+enum ReadFileState {
+    WAITING, READING, ERROR
+}
+
 export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
     const [uploadButtonText, setUploadButtonText] = useState<string>(DATEI_AUSWAEHLEN)
     const [file, setFile] = useState<File | null>(null)
-    const [state, setState] = useState<PageState>(PageState.LOADING)
-    const [importedRecipes, setImportedRecipes] = useState<number>(0)
+    const [state, setState] = useState<PageState>(PageState.WAITING)
+    const [readFileState, setReadFileState] = useState<ReadFileState>(ReadFileState.WAITING)
+    const [importedRecipes, setImportedRecipes] = useState<SelectedRecipeExportDto[]>([])
 
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const uploadedFile: File | null = event.target.files?.[0] || null
@@ -32,7 +42,12 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
         setFile(uploadedFile)
     }
 
-    const getJsonFileContents = async (file: File): Promise<RecipeExportDto | RecipeExportDto[]> => {
+    const handleReadFileError = (): void => {
+        setReadFileState(ReadFileState.ERROR)
+        resetReadFileState()
+    }
+
+    const readJsonFileContents = async (file: File): Promise<RecipeExportDto | RecipeExportDto[]> => {
         return new Promise<RecipeExportDto | RecipeExportDto[]>((resolve, reject): void => {
             const reader: FileReader = new FileReader()
 
@@ -41,9 +56,7 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
                     const jsonFileContents: RecipeExportDto | RecipeExportDto[] = JSON.parse(event.target?.result?.toString() || '')
                     resolve(jsonFileContents)
                 } catch (error) {
-                    setState(PageState.ERROR)
-                    setFile(null)
-                    setUploadButtonText(DATEI_AUSWAEHLEN)
+                    handleReadFileError()
                 }
             }
 
@@ -55,48 +68,62 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
         })
     }
 
+    const handleReadFileButton = async (): Promise<void> => {
+        if (file === null) {
+            return
+        }
+
+        setState(PageState.WAITING)
+        setReadFileState(ReadFileState.READING)
+        const jsonFileContents: RecipeExportDto | RecipeExportDto[] = await readJsonFileContents(file)
+        const selectedRecipeExportDtos: SelectedRecipeExportDto[]
+            = (Array.isArray(jsonFileContents) ? jsonFileContents : [jsonFileContents])
+                .map(recipe => ({ ...recipe, isSelected: true }))
+        setImportedRecipes(selectedRecipeExportDtos)
+        setReadFileState(ReadFileState.WAITING)
+    }
+
+    const resetReadFileState = (): void => {
+        setFile(null)
+        setImportedRecipes([])
+        setUploadButtonText(DATEI_AUSWAEHLEN)
+    }
+
+    const handleCheckboxChange = (selectedRecipeExportDto: SelectedRecipeExportDto): void => {
+        const newImportedRecipes: SelectedRecipeExportDto[] = [...importedRecipes]
+        const recipe: SelectedRecipeExportDto = newImportedRecipes?.[newImportedRecipes.indexOf(selectedRecipeExportDto)]
+        recipe.isSelected = !recipe.isSelected
+        setImportedRecipes(newImportedRecipes)
+    }
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-
         if (file === null) {
             return
         }
 
         setState(PageState.LOADING)
 
-        const recipeExportDtos: RecipeExportDto | RecipeExportDto[] = await getJsonFileContents(file)
-        const response: boolean = await tryApiRequest("POST", `/api/import/recipes`, async apiUrl => {
-            const response: AxiosResponse<RecipeModel[]> = await axios.post(apiUrl, Array.isArray(recipeExportDtos) ? recipeExportDtos : [recipeExportDtos])
-            setImportedRecipes(response.data.length)
-            return response
-        })
+        const response: boolean = await tryApiRequest(
+            "POST", `/api/import/recipes`, async apiUrl => await axios.post(apiUrl, importedRecipes)
+        )
+
+        resetReadFileState()
 
         if (response) {
             setState(PageState.SUCCESS)
-            setFile(null)
-            setUploadButtonText(DATEI_AUSWAEHLEN)
+            setReadFileState(ReadFileState.WAITING)
             props.recipes.load()
         } else {
             setState(PageState.ERROR)
-            setFile(null)
-            setUploadButtonText(DATEI_AUSWAEHLEN)
+            setReadFileState(ReadFileState.WAITING)
         }
     }
 
     useEffect(() => {
-        if (props.recipes.isLoading) {
-            return
-        }
-
-        if (importedRecipes === 0) {
-            setState(PageState.WAITING)
-        }
-    }, [props.recipes])
-
-    useEffect(() => {
         props.setSidebar('recipes')
         props.setTopbar({
-            title: 'Rezepte aus JSON importieren',
+            title: 'Rezepte importieren',
             showBackButton: true,
             backButtonPath: '/recipe/add',
         })
@@ -106,8 +133,8 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
 
     return (
         <StandardContentWrapper className="md:max-w-[600px]">
-            {state === PageState.SUCCESS && <>
-                <Notification color="green">Es wurde(n) erfolgreich {importedRecipes} Rezept(e) importiert.</Notification>
+            {readFileState === ReadFileState.ERROR && <>
+                <Notification color="red">Die ausgewählte Datei konnte nicht gelesen werden.</Notification>
                 <Spacer height={6} />
             </>}
 
@@ -116,7 +143,12 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
                 <Spacer height={6} />
             </>}
 
-            {state === PageState.LOADING ? (
+            {state === PageState.SUCCESS && <>
+                <Notification color="green">Die Rezepte wurden erfolgreich importiert.</Notification>
+                <Spacer height={6} />
+            </>}
+
+            {state === PageState.LOADING || props.recipes.isLoading ? (
                 <Spinner />
             ) : (
                 <form onSubmit={handleSubmit}>
@@ -137,20 +169,60 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
                                 onChange={handleFilePick}
                             />
                         </div>
+
+                        <Spacer height={6} />
+
+                        <div className="flex justify-end">
+                            <Button
+                                icon="folder_open"
+                                label="Rezepte-Datei öffnen"
+                                isSmall={true}
+                                role={file === null || readFileState === ReadFileState.READING ? "disabled" : "primary"}
+                                onClick={handleReadFileButton}
+                            />
+                        </div>
                     </Card>
 
-                    <div className="flex justify-end md:mt-4 pb-[5.5rem] md:pb-0">
-                        {file != null && (
-                            <Button
-                                type="submit"
-                                icon="upload"
-                                label="Importieren"
-                                isElevated={true}
-                                outlined={true}
-                                isFloating={true}
-                            />
-                        )}
-                    </div>
+                    {readFileState === ReadFileState.READING && (
+                        <Spinner />
+                    )}
+
+                    {importedRecipes.length > 0 && (
+                        <>
+                            <Spacer height={6} />
+                            <Card>
+                                <p>
+                                    Die folgenden Rezepte wurden aus der Rezepte-Datei gelesen.
+                                    Du kannst markieren, welche Rezepte du importieren möchtest.
+                                </p>
+
+                                <Spacer height={6} />
+
+                                {importedRecipes.map((selectedRecipeExportDto, index) =>
+                                    <div key={index} className="flex justify-between items-center">
+                                        <div className="flex items-center">
+                                            <IconButton style={"mr-4"} onClick={() => handleCheckboxChange(selectedRecipeExportDto)}>
+                                                {selectedRecipeExportDto.isSelected ? "check_box" : "check_box_outline_blank"}
+                                            </IconButton>
+                                            {selectedRecipeExportDto.title}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <Spacer height={6} />
+
+                                <div className="flex justify-end">
+                                    <Button
+                                        type="submit"
+                                        icon="upload"
+                                        label="Rezepte importieren"
+                                        isSmall={true}
+                                        role="primary"
+                                    />
+                                </div>
+                            </Card>
+                        </>
+                    )}
                 </form>
             )}
         </StandardContentWrapper>
