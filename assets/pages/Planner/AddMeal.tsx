@@ -1,4 +1,4 @@
-import Label from '@/components/form/Label'
+import { Label } from '@/components/form/Label'
 import RadioWidget from '@/components/form/Radio/RadioWidget'
 import nameFromId from '@/components/form/util/nameFromId'
 import Button from '@/components/ui/Buttons/Button'
