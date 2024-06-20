@@ -1,4 +1,4 @@
-import { SwitchWidget } from "@/components/form2/SwitchWidget"
+import { SwitchWidget } from "@/components/form/SwitchWidget"
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import { SwitchValue } from "@/lang/constants/SwitchValue"

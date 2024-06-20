@@ -1,6 +1,6 @@
-import { InputWidget } from "@/components/form2/InputWidget"
-import { LabelledFormWidget } from "@/components/form2/LabelledFormWidget"
-import { SelectWidget } from "@/components/form2/SelectWidget"
+import { InputWidget } from "@/components/form/InputWidget"
+import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
+import { SelectWidget } from "@/components/form/SelectWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'

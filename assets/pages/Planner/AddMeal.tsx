@@ -1,6 +1,6 @@
 import { Label } from '@/components/form/Label'
-import { LabelledFormWidget } from "@/components/form2/LabelledFormWidget"
-import { RadioWidget } from "@/components/form2/RadioWidget"
+import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
+import { RadioWidget } from "@/components/form/RadioWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'

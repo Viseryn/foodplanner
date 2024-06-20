@@ -1,4 +1,4 @@
-import { InputWidget } from "@/components/form2/InputWidget"
+import { InputWidget } from "@/components/form/InputWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
