@@ -1,6 +1,7 @@
-import InputRow from '@/components/form/Input/InputRow'
-import SliderRow from '@/components/form/Slider/SliderRow'
-import TextareaRow from '@/components/form/Textarea/TextareaRow'
+import { InputWidget } from "@/components/form2/InputWidget"
+import { LabelledFormWidget } from "@/components/form2/LabelledFormWidget"
+import { SliderWidget } from "@/components/form2/SliderWidget"
+import { TextareaWidget } from "@/components/form2/TextareaWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Spacer from '@/components/ui/Spacer'
@@ -12,12 +13,12 @@ import { getImageModel } from '@/pages/Recipes/util/getImageModel'
 import getIngredientsAsString from '@/pages/Recipes/util/getIngredientsAsString'
 import getInstructionsAsString from '@/pages/Recipes/util/getInstructionsAsString'
 import getRecipeModel from '@/pages/Recipes/util/getRecipeModel'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import DayModel from '@/types/DayModel'
 import { PageState } from "@/types/enums/PageState"
 import { RecipeForm } from '@/types/forms/RecipeForm'
 import ImageModel from '@/types/ImageModel'
 import { Optional } from "@/types/Optional"
-import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import RecipeModel from '@/types/RecipeModel'
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios, { AxiosResponse } from 'axios'
@@ -67,13 +68,6 @@ export const EditRecipe = ({ recipes, days, setSidebar, setTopbar }: EditRecipeP
         }))
         setState(PageState.WAITING)
     }, [id, recipes.isLoading])
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setRecipeFormData(prev => ({
-            ...prev,
-            [event.target.name]: event.target.value,
-        }))
-    }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -152,36 +146,35 @@ export const EditRecipe = ({ recipes, days, setSidebar, setTopbar }: EditRecipeP
                 <form onSubmit={handleSubmit}>
                     <TwoColumnView>
                         <Card>
-                            <InputRow
-                                id="title"
-                                label="Titel"
-                                {...{
-                                    required: true,
-                                    maxLength: 255,
-                                    onChange: handleInputChange,
-                                    name: 'title',
-                                    value: recipeFormData.title,
-                                }}
+                            <LabelledFormWidget
+                                id={"title"}
+                                label={"Titel"}
+                                widget={
+                                    <InputWidget
+                                        field={"title"}
+                                        formData={recipeFormData}
+                                        setFormData={setRecipeFormData}
+                                        required={true}
+                                        maxLength={255}
+                                    />
+                                }
                             />
 
                             <Spacer height="6" />
 
-                            <SliderRow
-                                key={recipe?.id}
-                                id="portionSize"
-                                label="Wie viele Portionen?"
-                                {...{
-                                    min: 1,
-                                    max: 10,
-                                    step: 1,
-                                    marks: [...Array(10)].map((value, index) => ({
-                                        value: index + 1,
-                                        label: index + 1,
-                                    })),
-                                    onChange: handleInputChange,
-                                    name: 'portionSize',
-                                    value: recipeFormData.portionSize,
-                                }}
+                            <LabelledFormWidget
+                                id={"portionSize"}
+                                label={"Wie viele Portionen?"}
+                                widget={
+                                    <SliderWidget
+                                        field={"portionSize"}
+                                        formData={recipeFormData}
+                                        setFormData={setRecipeFormData}
+                                        min={1}
+                                        max={10}
+                                        step={1}
+                                    />
+                                }
                             />
 
                             <Spacer height="6" />
@@ -195,30 +188,34 @@ export const EditRecipe = ({ recipes, days, setSidebar, setTopbar }: EditRecipeP
                         </Card>
 
                         <Card>
-                            <TextareaRow
-                                id="ingredients"
-                                label="Zutaten"
-                                {...{
-                                    rows: 10,
-                                    placeholder: "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
-                                    onChange: handleInputChange,
-                                    name: 'ingredients',
-                                    value: recipeFormData.ingredients,
-                                }}
+                            <LabelledFormWidget
+                                id={"ingredients"}
+                                label={"Zutaten"}
+                                widget={
+                                    <TextareaWidget
+                                        field={"ingredients"}
+                                        formData={recipeFormData}
+                                        setFormData={setRecipeFormData}
+                                        rows={10}
+                                        placeholder={"250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"}
+                                    />
+                                }
                             />
 
                             <Spacer height="6" />
 
-                            <TextareaRow
-                                id="instructions"
-                                label="Zubereitung"
-                                {...{
-                                    rows: 10,
-                                    placeholder: "Schreibe jeden Schritt in eine eigene Zeile.",
-                                    onChange: handleInputChange,
-                                    name: 'instructions',
-                                    value: recipeFormData.instructions,
-                                }}
+                            <LabelledFormWidget
+                                id={"instructions"}
+                                label={"Zubereitung"}
+                                widget={
+                                    <TextareaWidget
+                                        field={"instructions"}
+                                        formData={recipeFormData}
+                                        setFormData={setRecipeFormData}
+                                        rows={10}
+                                        placeholder={"Schreibe jeden Schritt in eine eigene Zeile."}
+                                    />
+                                }
                             />
                         </Card>
                     </TwoColumnView>
