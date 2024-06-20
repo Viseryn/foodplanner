@@ -1,5 +1,5 @@
 export type RadioOption = {
-    /** The id of the option. (NOT the id of the entity!) */
+    /** The id of the option. (NOT the id of the entity!). Could for example be `fieldName_entityId`. */
     id: string
 
     /** The label (i.e., the displayed text) of the option. */

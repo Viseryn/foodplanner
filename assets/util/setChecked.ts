@@ -1,16 +1,13 @@
-/*******************************
- * ./assets/util/setChecked.ts *
- *******************************/
-
-import RadioOption from '@/types/RadioOption'
+import { RadioOption } from '@/types/RadioOption'
 
 /**
- * For a list of RadioOptions and a defaultChecked value, updated the option.checked value to true if option.value matches the defaultCheckedValue.
+ * For a list of `RadioOption`s and a `defaultChecked` value, updates the `option.checked` value to `true` if
+ * `option.value` matches the `defaultCheckedValue`.
  *
- * @param options A set of RadioOptions.
- * @param defaultCheckedValue The value that is the defaultChecked value. If undefined, the method returns the original argument.
+ * @param options A set of `RadioOption`s.
+ * @param defaultCheckedValue The value that is the `defaultChecked` value. If undefined, the method returns the original argument.
  */
-function setChecked(options: Array<RadioOption>, defaultCheckedValue?: number): Array<RadioOption> {
+export function setChecked(options: Array<RadioOption>, defaultCheckedValue?: number): RadioOption[] {
     if (!defaultCheckedValue) {
         return options
     }
@@ -24,5 +21,3 @@ function setChecked(options: Array<RadioOption>, defaultCheckedValue?: number): 
 
     return optionsCopy
 }
-
-export default setChecked
