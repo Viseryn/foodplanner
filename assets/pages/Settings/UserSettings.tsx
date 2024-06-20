@@ -5,6 +5,7 @@ import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import useTimeout from "@/hooks/useTimeout"
 import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { UserModel } from '@/types/UserModel'
 import { tryApiRequest } from '@/util/tryApiRequest'
@@ -28,6 +29,10 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
         password: '',
     })
 
+    const successTimeout = useTimeout(() => {
+        setSuccess(false)
+    }, 5000)
+
     const [isLoading, setLoading] = useState<boolean>(false)
     const [isSuccess, setSuccess] = useState<boolean>(false)
 
@@ -42,6 +47,8 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
+        setSuccess(false)
+        successTimeout.clearTimeout()
 
         if (user.isLoading) {
             return
@@ -62,6 +69,8 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
         }
 
         setLoading(false)
+
+        successTimeout.startTimeout()
     }
 
     useEffect(() => {
