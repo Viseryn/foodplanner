@@ -1,8 +1,8 @@
 import { useFormChange } from "@/hooks/useFormChange"
 import { Form } from "@/types/forms/Form"
 import { FormWidgetProps } from "@/types/props/FormWidgetProps"
-import { RadioOption } from "@/types/RadioOption"
-import { validateFormWidgetProps } from "@/util/validateFormWidgetProps"
+import { RadioOption } from "@/types/options/RadioOption"
+import { validateFormWidgetProps } from "@/util/forms/validateFormWidgetProps"
 import React, { ReactElement } from "react"
 
 type OptionLabelMapper = (option: RadioOption) => ReactElement

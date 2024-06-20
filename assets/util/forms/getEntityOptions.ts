@@ -1,5 +1,5 @@
-import { ModelOption } from '@/types/ModelOption'
-import { WidgetOption } from "@/types/WidgetOption"
+import { ModelOption } from '@/types/options/ModelOption'
+import { WidgetOption } from "@/types/options/WidgetOption"
 
 /**
  * This function takes an `EntityState` object of an entity array and returns an array of corresponding

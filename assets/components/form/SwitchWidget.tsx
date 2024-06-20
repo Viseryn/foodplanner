@@ -3,7 +3,7 @@ import { SwitchValue } from "@/lang/constants/SwitchValue"
 import { Form } from "@/types/forms/Form"
 import { Optional } from "@/types/Optional"
 import { FormWidgetProps } from "@/types/props/FormWidgetProps"
-import { validateFormWidgetProps } from "@/util/validateFormWidgetProps"
+import { validateFormWidgetProps } from "@/util/forms/validateFormWidgetProps"
 import React, { ReactElement } from "react"
 
 const { ON, OFF } = SwitchValue;

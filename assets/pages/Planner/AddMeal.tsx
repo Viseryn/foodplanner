@@ -9,19 +9,19 @@ import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import DayModel from '@/types/DayModel'
-import { DayOption } from "@/types/DayOption"
+import { DayOption } from "@/types/options/DayOption"
 import { PageState } from "@/types/enums/PageState"
 import { Form } from "@/types/forms/Form"
 import MealCategoryModel from '@/types/MealCategoryModel'
-import { MealCategoryOption } from '@/types/MealCategoryOption'
+import { MealCategoryOption } from '@/types/options/MealCategoryOption'
 import RecipeModel from '@/types/RecipeModel'
-import { RecipeOption } from "@/types/RecipeOption"
+import { RecipeOption } from "@/types/options/RecipeOption"
 import SettingsModel from '@/types/SettingsModel'
 import { UserGroupModel } from '@/types/UserGroupModel'
-import { UserGroupOption } from '@/types/UserGroupOption'
-import { getEntityOptions } from '@/util/getEntityOptions'
-import { getFormOptions } from '@/util/getFormOptions'
-import { setChecked } from "@/util/setChecked"
+import { UserGroupOption } from '@/types/options/UserGroupOption'
+import { getEntityOptions } from '@/util/forms/getEntityOptions'
+import { getFormOptions } from '@/util/forms/getFormOptions'
+import { setChecked } from "@/util/forms/setChecked"
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'

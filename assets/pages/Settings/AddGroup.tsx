@@ -12,9 +12,9 @@ import { PageState } from "@/types/enums/PageState"
 import { UserGroupForm } from "@/types/forms/UserGroupForm"
 import { UserGroupModel } from '@/types/UserGroupModel'
 import { UserModel } from '@/types/UserModel'
-import { UserOption } from '@/types/UserOption'
-import { getEntityOptions } from '@/util/getEntityOptions'
-import { getFormOptions } from '@/util/getFormOptions'
+import { UserOption } from '@/types/options/UserOption'
+import { getEntityOptions } from '@/util/forms/getEntityOptions'
+import { getFormOptions } from '@/util/forms/getFormOptions'
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from "axios"
 import React, { ReactElement, useEffect, useState } from 'react'

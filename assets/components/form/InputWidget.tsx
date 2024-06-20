@@ -2,7 +2,7 @@ import { useFormChange } from "@/hooks/useFormChange"
 import { useFormWidgetStyling } from "@/hooks/useFormWidgetStyling"
 import { Form } from "@/types/forms/Form"
 import { FormWidgetProps } from "@/types/props/FormWidgetProps"
-import { validateFormWidgetProps } from "@/util/validateFormWidgetProps"
+import { validateFormWidgetProps } from "@/util/forms/validateFormWidgetProps"
 import React, { ReactElement } from "react"
 
 type InputWidgetProps<T extends Form> = FormWidgetProps<T> & {

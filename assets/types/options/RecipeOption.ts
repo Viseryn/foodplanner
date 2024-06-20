@@ -1,5 +1,5 @@
-import { ModelOption } from "@/types/ModelOption"
-import { RadioOption } from "@/types/RadioOption"
+import { ModelOption } from "@/types/options/ModelOption"
+import { RadioOption } from "@/types/options/RadioOption"
 import RecipeModel from "@/types/RecipeModel"
 
 export class RecipeOption extends ModelOption<RecipeModel, RadioOption> {

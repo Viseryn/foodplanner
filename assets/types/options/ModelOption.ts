@@ -1,4 +1,4 @@
-import { WidgetOption } from "@/types/WidgetOption"
+import { WidgetOption } from "@/types/options/WidgetOption"
 
 /**
  * For an entity represented by the type `T`, a `ModelOption<T, OptionType>` subclass needs to be implemented if the

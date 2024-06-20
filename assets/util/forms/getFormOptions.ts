@@ -1,5 +1,5 @@
-import { ModelOption } from '@/types/ModelOption'
-import { WidgetOption } from "@/types/WidgetOption"
+import { ModelOption } from '@/types/options/ModelOption'
+import { WidgetOption } from "@/types/options/WidgetOption"
 
 /**
  * This function takes an array of `ModelOption<Model, OptionType>` objects and returns a fitting array of `OptionType`

@@ -1,4 +1,4 @@
-import { RadioOption } from '@/types/RadioOption'
+import { RadioOption } from '@/types/options/RadioOption'
 
 /**
  * For a list of `RadioOption`s and a `defaultChecked` value, updates the `option.checked` value to `true` if

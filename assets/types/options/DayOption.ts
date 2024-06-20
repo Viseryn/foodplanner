@@ -1,6 +1,6 @@
 import DayModel from "@/types/DayModel"
-import { ModelOption } from "@/types/ModelOption"
-import { RadioOption } from "@/types/RadioOption"
+import { ModelOption } from "@/types/options/ModelOption"
+import { RadioOption } from "@/types/options/RadioOption"
 
 export class DayOption extends ModelOption<DayModel, RadioOption> {
     getOption(): RadioOption {

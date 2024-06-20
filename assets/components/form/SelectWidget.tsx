@@ -3,8 +3,8 @@ import { useFormWidgetStyling } from "@/hooks/useFormWidgetStyling"
 import { Form } from "@/types/forms/Form"
 import { Optional } from "@/types/Optional"
 import { FormWidgetProps } from "@/types/props/FormWidgetProps"
-import { SelectOption } from "@/types/SelectOption"
-import { validateFormWidgetProps } from "@/util/validateFormWidgetProps"
+import { SelectOption } from "@/types/options/SelectOption"
+import { validateFormWidgetProps } from "@/util/forms/validateFormWidgetProps"
 import React, { ReactElement } from "react"
 
 type SelectWidgetProps<T extends Form> = FormWidgetProps<T> & {
