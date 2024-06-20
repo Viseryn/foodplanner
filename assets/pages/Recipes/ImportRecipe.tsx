@@ -11,7 +11,6 @@ import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { RecipeExportDto } from "@/types/datatransferobjects/RecipeExportDto"
 import { PageState } from "@/types/enums/PageState"
 import RecipeModel from "@/types/RecipeModel"
-import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from "axios"
 import React, { ReactElement, useEffect, useState } from "react"
 
@@ -19,7 +18,7 @@ type ImportRecipeProps = BasePageComponentProps & {
     recipes: EntityState<RecipeModel[]>
 }
 
-type SelectedRecipeExportDto = RecipeExportDto & {
+type ImportedRecipeExportDto = RecipeExportDto & {
     isSelected: boolean
 }
 
@@ -32,7 +31,8 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
     const [file, setFile] = useState<File | null>(null)
     const [state, setState] = useState<PageState>(PageState.WAITING)
     const [readFileState, setReadFileState] = useState<ReadFileState>(ReadFileState.WAITING)
-    const [importedRecipes, setImportedRecipes] = useState<SelectedRecipeExportDto[]>([])
+    const [importedRecipes, setImportedRecipes] = useState<ImportedRecipeExportDto[]>([])
+    const [errorRecipes, setErrorRecipes] = useState<ImportedRecipeExportDto[]>([])
 
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const uploadedFile: File | null = event.target.files?.[0] || null
@@ -47,25 +47,32 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
         resetReadFileState()
     }
 
-    const readJsonFileContents = async (file: File): Promise<RecipeExportDto | RecipeExportDto[]> => {
-        return new Promise<RecipeExportDto | RecipeExportDto[]>((resolve, reject): void => {
-            const reader: FileReader = new FileReader()
+    const readImportedRecipeExportDtos = async (file: File): Promise<ImportedRecipeExportDto[]> => {
+        const readJsonFileContents = async (file: File): Promise<RecipeExportDto | RecipeExportDto[]> => {
+            return new Promise<RecipeExportDto | RecipeExportDto[]>((resolve, reject): void => {
+                const reader: FileReader = new FileReader()
 
-            reader.onload = (event: ProgressEvent<FileReader>): void => {
-                try {
-                    const jsonFileContents: RecipeExportDto | RecipeExportDto[] = JSON.parse(event.target?.result?.toString() || '')
-                    resolve(jsonFileContents)
-                } catch (error) {
-                    handleReadFileError()
+                reader.onload = (event: ProgressEvent<FileReader>): void => {
+                    try {
+                        const jsonFileContents: RecipeExportDto | RecipeExportDto[] = JSON.parse(event.target?.result?.toString() || '')
+                        resolve(jsonFileContents)
+                    } catch (error) {
+                        handleReadFileError()
+                    }
                 }
-            }
 
-            reader.onerror = (error: ProgressEvent<FileReader>): void => {
-                reject(error)
-            }
+                reader.onerror = (error: ProgressEvent<FileReader>): void => {
+                    reject(error)
+                }
 
-            reader.readAsText(file)
-        })
+                reader.readAsText(file)
+            })
+        }
+
+        const jsonFileContents: RecipeExportDto | RecipeExportDto[] = await readJsonFileContents(file)
+
+        return (Array.isArray(jsonFileContents) ? jsonFileContents : [jsonFileContents])
+            .map(recipe => ({ ...recipe, isSelected: true }))
     }
 
     const handleReadFileButton = async (): Promise<void> => {
@@ -75,11 +82,8 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
 
         setState(PageState.WAITING)
         setReadFileState(ReadFileState.READING)
-        const jsonFileContents: RecipeExportDto | RecipeExportDto[] = await readJsonFileContents(file)
-        const selectedRecipeExportDtos: SelectedRecipeExportDto[]
-            = (Array.isArray(jsonFileContents) ? jsonFileContents : [jsonFileContents])
-                .map(recipe => ({ ...recipe, isSelected: true }))
-        setImportedRecipes(selectedRecipeExportDtos)
+        const importedRecipeExportDtos: ImportedRecipeExportDto[] = await readImportedRecipeExportDtos(file)
+        setImportedRecipes(importedRecipeExportDtos)
         setReadFileState(ReadFileState.WAITING)
     }
 
@@ -89,35 +93,51 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
         setUploadButtonText(DATEI_AUSWAEHLEN)
     }
 
-    const handleCheckboxChange = (selectedRecipeExportDto: SelectedRecipeExportDto): void => {
-        const newImportedRecipes: SelectedRecipeExportDto[] = [...importedRecipes]
-        const recipe: SelectedRecipeExportDto = newImportedRecipes?.[newImportedRecipes.indexOf(selectedRecipeExportDto)]
+    const handleCheckboxChange = (selectedRecipeExportDto: ImportedRecipeExportDto): void => {
+        const newImportedRecipes: ImportedRecipeExportDto[] = [...importedRecipes]
+        const recipe: ImportedRecipeExportDto = newImportedRecipes?.[newImportedRecipes.indexOf(selectedRecipeExportDto)]
         recipe.isSelected = !recipe.isSelected
         setImportedRecipes(newImportedRecipes)
     }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-        if (file === null) {
-            return
-        }
-
         setState(PageState.LOADING)
+        setErrorRecipes([])
 
-        const response: boolean = await tryApiRequest("POST", `/api/import/recipes`, async apiUrl => await axios.post(
-            apiUrl, importedRecipes.filter(recipe => recipe.isSelected)
-        ))
-
-        resetReadFileState()
-
-        if (response) {
-            setState(PageState.SUCCESS)
-            setReadFileState(ReadFileState.WAITING)
-            props.recipes.load()
-        } else {
-            setState(PageState.ERROR)
-            setReadFileState(ReadFileState.WAITING)
+        let errorCount: number = 0
+        let tmpErrorRecipes: ImportedRecipeExportDto[] = []
+        const doImportRequest = async (recipeExportDto: ImportedRecipeExportDto) => {
+            try {
+                await axios.post(`/api/import/recipes`, [recipeExportDto]) // ignore response
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    errorCount++
+                    tmpErrorRecipes.push(recipeExportDto)
+                    setErrorRecipes(errorRecipes => [...errorRecipes, recipeExportDto])
+                }
+            }
         }
+
+        await Promise.all(
+            importedRecipes
+                .filter(recipe => recipe.isSelected)
+                .map(recipe => doImportRequest(recipe))
+        )
+
+        if (errorCount === importedRecipes.filter(recipe => recipe.isSelected).length) {
+            setState(PageState.ERROR)
+            resetReadFileState()
+        } else if (errorCount > 0) {
+            setState(PageState.WAITING)
+            resetReadFileState()
+            setImportedRecipes(tmpErrorRecipes)
+        } else if (errorCount == 0) {
+            setState(PageState.SUCCESS)
+            resetReadFileState()
+        }
+
+        props.recipes.load()
     }
 
     useEffect(() => {
@@ -192,11 +212,19 @@ export const ImportRecipe = (props: ImportRecipeProps): ReactElement => {
                             <Spacer height={6} />
                             <Card>
                                 <p>
-                                    Die folgenden Rezepte wurden aus der Rezepte-Datei gelesen.
+                                    Die folgenden Rezepte wurden aus der Rezepte-Datei eingelesen.
                                     Du kannst markieren, welche Rezepte du importieren möchtest.
                                 </p>
 
                                 <Spacer height={6} />
+
+                                {errorRecipes.length > 0 && <>
+                                    <Notification color="red">
+                                        Die folgenden Rezepte konnten aufgrund eines Übertragungsfehlers nicht importiert werden.
+                                        Du kannst nochmal versuchen, sie zu importieren.
+                                    </Notification>
+                                    <Spacer height={6} />
+                                </>}
 
                                 {importedRecipes.map((selectedRecipeExportDto, index) =>
                                     <div key={index} className="flex justify-between items-center">
