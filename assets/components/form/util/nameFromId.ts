@@ -7,6 +7,7 @@
  * @returns The name for the corresponding Symfony form field.
  * 
  * @example const name = nameFromId('user_group_name') // 'user_group[name]'
+ * @deprecated
  */
 export default function nameFromId(id: string): string {
     const index: number = id?.lastIndexOf('_')
