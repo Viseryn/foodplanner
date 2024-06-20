@@ -1,12 +1,8 @@
-/********************************
- * ./assets/types/UserOption.ts *
- ********************************/
-
-import ModelOption from '@/types/ModelOption'
+import { ModelOption } from '@/types/ModelOption'
+import { SelectOption } from '@/types/SelectOption'
 import { UserModel } from '@/types/UserModel'
-import SelectOption from '@/types/SelectOption'
 
-class UserOption extends ModelOption<UserModel, SelectOption> {
+export class UserOption extends ModelOption<UserModel, SelectOption> {
     getOption(): SelectOption {
         return {
             id: this.entity.id?.toString() ?? '-1',
@@ -14,5 +10,3 @@ class UserOption extends ModelOption<UserModel, SelectOption> {
         }
     }
 }
-
-export default UserOption
