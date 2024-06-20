@@ -1,10 +1,4 @@
-/*************************************************
- * ./assets/components/form/FileSelectButton.tsx *
- *************************************************/
-
 import React, { ReactElement } from 'react'
-
-import nameFromId from '../../form/util/nameFromId'
 
 /**
  * A component that renders a File Picker button which prompts a file select. 
@@ -42,7 +36,7 @@ export default function FileSelectButton({ id, label, onChange, enabled = true }
             disabled={!enabled}
             type="file" 
             id={id} 
-            name={nameFromId(id)}
+            name={id}
             className="file-input hidden" 
             onChange={onChange}
         />

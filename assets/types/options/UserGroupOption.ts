@@ -1,12 +1,8 @@
-/*************************************
- * ./assets/types/UserGroupOption.ts *
- *************************************/
-
-import ModelOption from '@/types/ModelOption'
+import { ModelOption } from '@/types/options/ModelOption'
 import { UserGroupModel } from '@/types/UserGroupModel'
-import RadioOption from '@/types/RadioOption'
+import { RadioOption } from '@/types/options/RadioOption'
 
-class UserGroupOption extends ModelOption<UserGroupModel, RadioOption> {
+export class UserGroupOption extends ModelOption<UserGroupModel, RadioOption> {
     getOption(): RadioOption {
         return {
             id: 'userGroup_' + this.entity.name,
@@ -17,5 +13,3 @@ class UserGroupOption extends ModelOption<UserGroupModel, RadioOption> {
         }
     }
 }
-
-export default UserGroupOption

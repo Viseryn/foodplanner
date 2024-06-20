@@ -1,11 +1,12 @@
+import { InputWidget } from "@/components/form/InputWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
-import { PageState } from '@/types/enums/PageState'
 import { BasePageComponentProps } from "@/types/BasePageComponentProps"
+import { PageState } from '@/types/enums/PageState'
 import { UserModel } from '@/types/UserModel'
 import { StringBuilder } from '@/util/StringBuilder'
 import axios, { AxiosResponse } from 'axios'
@@ -32,13 +33,6 @@ const errorStringBuilder: StringBuilder = new StringBuilder()
 export const JsonLogin = (props: JsonLoginProps): ReactElement => {
     const [state, setState] = useState<PageState>(PageState.LOADING)
     const [formData, setFormData] = useState<JsonLoginForm>(formDataInitialState)
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setFormData(prev => ({
-            ...prev,
-            [event.target.name]: event.target.value,
-        }))
-    }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -110,41 +104,36 @@ export const JsonLogin = (props: JsonLoginProps): ReactElement => {
                 <>
                     <Card style="!rounded-3xl">
                         <form onSubmit={handleSubmit}>
-                            <div
-                                className="rounded-full font-semibold bg-secondary-200 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
-                            <span className="material-symbols-rounded mr-2 cursor-default">
-                                account_circle
-                            </span>
+                            <div className="rounded-full font-semibold bg-secondary-200 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
+                                <span className="material-symbols-rounded mr-2 cursor-default">
+                                    account_circle
+                                </span>
 
-                                <input
-                                    className="bg-secondary-200 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
-                                    placeholder="Dein Benutzername"
-                                    type="text"
-                                    id="username"
-                                    name="username"
+                                <InputWidget
+                                    field={"username"}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                    placeholder={"Dein Benutzername"}
                                     required={true}
-                                    value={formData.username}
-                                    onChange={handleInputChange}
+                                    styleOverride={`bg-secondary-200 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0`}
                                 />
                             </div>
 
                             <Spacer height={6} />
 
-                            <div
-                                className="rounded-full font-semibold bg-secondary-200 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
-                            <span className="material-symbols-rounded mr-2 cursor-default">
-                                key
-                            </span>
+                            <div className="rounded-full font-semibold bg-secondary-200 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
+                                <span className="material-symbols-rounded mr-2 cursor-default">
+                                    key
+                                </span>
 
-                                <input
-                                    className="bg-secondary-200 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
-                                    placeholder="Dein Passwort"
-                                    type="password"
-                                    id="password"
-                                    name="password"
+                                <InputWidget
+                                    field={"password"}
+                                    type={"password"}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                    placeholder={"Dein Passwort"}
                                     required={true}
-                                    value={formData.password}
-                                    onChange={handleInputChange}
+                                    styleOverride={`bg-secondary-200 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0`}
                                 />
                             </div>
 
