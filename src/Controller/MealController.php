@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\DataTransferObject\AddMealRequestDto;
 use App\Entity\Meal;
-use App\Form\MealType;
 use App\Mapper\AddMealRequestMapper;
 use App\Repository\MealRepository;
 use App\Service\DtoResponseService;
