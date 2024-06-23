@@ -23,15 +23,35 @@ final class AddMealRequestDto implements DataTransferObject {
         return $this->mealCategory;
     }
 
+    public function setMealCategory(?int $mealCategory): self {
+        $this->mealCategory = $mealCategory;
+        return $this;
+    }
+
     public function getDay(): ?int {
         return $this->day;
+    }
+
+    public function setDay(?int $day): self {
+        $this->day = $day;
+        return $this;
     }
 
     public function getUserGroup(): ?int {
         return $this->userGroup;
     }
 
+    public function setUserGroup(?int $userGroup): self {
+        $this->userGroup = $userGroup;
+        return $this;
+    }
+
     public function getRecipe(): ?int {
         return $this->recipe;
+    }
+
+    public function setRecipe(?int $recipe): self {
+        $this->recipe = $recipe;
+        return $this;
     }
 }
