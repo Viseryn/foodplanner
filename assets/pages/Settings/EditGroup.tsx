@@ -1,5 +1,6 @@
-import InputRow from "@/components/form/Input/InputRow"
-import SelectRow from "@/components/form/Select/SelectRow"
+import { InputWidget } from "@/components/form/InputWidget"
+import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
+import { SelectWidget } from "@/components/form/SelectWidget"
 import Button from "@/components/ui/Buttons/Button"
 import Card from "@/components/ui/Card"
 import Spacer from "@/components/ui/Spacer"
@@ -7,17 +8,15 @@ import Spinner from "@/components/ui/Spinner"
 import { StandardContentWrapper } from "@/components/ui/StandardContentWrapper"
 import { useEntityState } from "@/hooks/useEntityState"
 import { useFindEntityById } from "@/hooks/useFindEntityById"
-import { handleSelectedUsersChange } from "@/pages/Settings/util/handleSelectedUsersChange"
 import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { PageState } from "@/types/enums/PageState"
 import { UserGroupForm } from "@/types/forms/UserGroupForm"
 import { Optional } from "@/types/Optional"
 import { UserGroupModel } from "@/types/UserGroupModel"
 import { UserModel } from "@/types/UserModel"
-import UserOption from "@/types/UserOption"
-import getEntityOptions from "@/util/getEntityOptions"
-import getOptions from "@/util/getOptions"
-import { handleInputChange } from "@/util/handleInputChange"
+import { UserOption } from "@/types/options/UserOption"
+import { getEntityOptions } from "@/util/forms/getEntityOptions"
+import { getFormOptions } from "@/util/forms/getFormOptions"
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from "axios"
 import React, { ReactElement, useEffect, useState } from "react"
@@ -112,34 +111,38 @@ export const EditGroup = (props: EditGroupProps): ReactElement => {
                     <Card>
                         {!selectedUserGroup?.readonly &&
                             <>
-                                <InputRow
-                                    id="name"
-                                    label="Name der Benutzergruppe"
-                                    {...{
-                                        value: formData.name,
-                                        required: true,
-                                        maxLength: 64,
-                                        name: "name",
-                                        onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleInputChange<UserGroupForm>(event, setFormData),
-                                        placeholder: 'Name der Benutzergruppe',
-                                    }}
+                                <LabelledFormWidget
+                                    id={"name"}
+                                    label={"Name der Benutzergruppe"}
+                                    widget={
+                                        <InputWidget
+                                            field={"name"}
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            required={true}
+                                            maxLength={64}
+                                            placeholder={"Name der Benutzergruppe"}
+                                        />
+                                    }
                                 />
 
                                 <Spacer height="6" />
                             </>
                         }
 
-                        <InputRow
-                            id="icon"
-                            label="Icon der Benutzergruppe"
-                            {...{
-                                value: formData.icon,
-                                required: true,
-                                maxLength: 255,
-                                name: "icon",
-                                onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleInputChange<UserGroupForm>(event, setFormData),
-                                placeholder: 'Material-Symbols-Bezeichnung, z.B. face_5',
-                            }}
+                        <LabelledFormWidget
+                            id={"icon"}
+                            label={"Icon der Benutzergruppe"}
+                            widget={
+                                <InputWidget
+                                    field={"icon"}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                    required={true}
+                                    maxLength={255}
+                                    placeholder={"Material-Symbols-Bezeichnung, z.B. face_5"}
+                                />
+                            }
                         />
 
                         {!selectedUserGroup?.readonly &&
@@ -148,19 +151,20 @@ export const EditGroup = (props: EditGroupProps): ReactElement => {
 
                                 {users.isLoading
                                     ? <Spinner verticalMargin={10} />
-                                    : <SelectRow
-                                        id="users"
-                                        label="Welche Benutzer sollen zur Gruppe gehören?"
-                                        options={getOptions(userOptions)}
-                                        {...{
-                                            value: formData.users,
-                                            name: "users",
-                                            onChange: (event: React.ChangeEvent<HTMLSelectElement>) => handleSelectedUsersChange<UserGroupForm>(event, setFormData),
-                                            multiple: true,
-                                            required: true,
-                                            size: getOptions(userOptions).length,
-                                            className: 'dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden',
-                                        }}
+                                    : <LabelledFormWidget
+                                        id={"users"}
+                                        label={"Welche Benutzer sollen zur Gruppe gehören?"}
+                                        widget={
+                                            <SelectWidget
+                                                field={"users"}
+                                                formData={formData}
+                                                setFormData={setFormData}
+                                                multiple={true}
+                                                required={true}
+                                                options={getFormOptions(userOptions)}
+                                                styleOverride={`dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md px-6 w-full transition duration-300 focus:border-primary-100 overflow-hidden`}
+                                            />
+                                        }
                                     />
                                 }
                             </>

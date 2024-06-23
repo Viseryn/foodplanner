@@ -1,13 +1,14 @@
-import InputRow from '@/components/form/Input/InputRow'
+import { InputWidget } from "@/components/form/InputWidget"
+import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { RegistrationDto } from '@/types/datatransferobjects/RegistrationDto'
 import { RegistrationForm } from "@/types/forms/RegistrationForm"
-import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import { UserModel } from '@/types/UserModel'
 import { tryApiRequest } from '@/util/tryApiRequest'
 import axios, { AxiosResponse } from 'axios'
@@ -27,15 +28,6 @@ export const Registration = ({ authentication, setSidebar, setTopbar }: Registra
         username: '',
         password: '',
     })
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setFormData((prev: RegistrationForm) => ({
-            ...prev,
-            [event.target.name]: event.target.value,
-        }))
-
-        setSuccess(false)
-    }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -97,29 +89,33 @@ export const Registration = ({ authentication, setSidebar, setTopbar }: Registra
             {!isSuccess && !isLoading &&
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <Card>
-                        <InputRow
-                            id="username"
-                            label="Benutzername"
-                            {...{
-                                'required': true,
-                                onChange: handleInputChange,
-                                name: 'username',
-                                value: formData.username,
-                            }}
+                        <LabelledFormWidget
+                            id={"username"}
+                            label={"Benutzername"}
+                            widget={
+                                <InputWidget
+                                    field={"username"}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                    required={true}
+                                />
+                            }
                         />
 
                         <Spacer height="6" />
 
-                        <InputRow
-                            id="password"
-                            label="Password"
-                            {...{
-                                'type': 'password',
-                                'required': true,
-                                onChange: handleInputChange,
-                                name: 'password',
-                                value: formData.password,
-                            }}
+                        <LabelledFormWidget
+                            id={"password"}
+                            label={"Passwort"}
+                            widget={
+                                <InputWidget
+                                    field={"password"}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                    required={true}
+                                    type={"password"}
+                                />
+                            }
                         />
 
                         <Spacer height="6" />

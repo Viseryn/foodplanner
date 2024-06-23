@@ -1,24 +1,27 @@
-import Label from '@/components/form/Label'
-import RadioWidget from '@/components/form/Radio/RadioWidget'
-import nameFromId from '@/components/form/util/nameFromId'
+import { Label } from '@/components/form/Label'
+import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
+import { RadioWidget } from "@/components/form/RadioWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import DayModel from '@/types/DayModel'
 import { PageState } from "@/types/enums/PageState"
+import { Form } from "@/types/forms/Form"
 import MealCategoryModel from '@/types/MealCategoryModel'
-import MealCategoryOption from '@/types/MealCategoryOption'
-import { BasePageComponentProps } from "@/types/BasePageComponentProps"
+import { DayOption } from "@/types/options/DayOption"
+import { MealCategoryOption } from '@/types/options/MealCategoryOption'
+import { RecipeOption } from "@/types/options/RecipeOption"
+import { UserGroupOption } from '@/types/options/UserGroupOption'
 import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import { UserGroupModel } from '@/types/UserGroupModel'
-import UserGroupOption from '@/types/UserGroupOption'
-import getEntityOptions from '@/util/getEntityOptions'
-import getOptions from '@/util/getOptions'
-import setChecked from '@/util/setChecked'
+import { getEntityOptions } from '@/util/forms/getEntityOptions'
+import { getFormOptions } from '@/util/forms/getFormOptions'
+import { setChecked } from "@/util/forms/setChecked"
 import { tryApiRequest } from "@/util/tryApiRequest"
 import axios from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
@@ -40,6 +43,13 @@ type AddMealRouteParams = {
     id?: string
 }
 
+type AddMealForm = Form & {
+    day: string
+    mealCategory: string
+    userGroup: string
+    recipe: string
+}
+
 export function AddMeal(props: AddMealProps): ReactElement {
     const {
         days,
@@ -51,7 +61,7 @@ export function AddMeal(props: AddMealProps): ReactElement {
         setTopbar,
     } = props
 
-    const { id }: AddMealRouteParams = useParams() // The id parameter of the route '/planner/add/:id'
+    const { id }: AddMealRouteParams = useParams() // The id parameter of the route '/planner/add/:id' which corresponds to a Day entity
     const searchParams: URLSearchParams = useSearchParams()[0]
     const navigate: NavigateFunction = useNavigate()
 
@@ -61,6 +71,23 @@ export function AddMeal(props: AddMealProps): ReactElement {
     const [recipeQuery, setRecipeQuery] = useState<string>('')
     const [selectedRecipe, setSelectedRecipe] = useState<number>(0)
     const [state, setState] = useState<PageState>(PageState.WAITING)
+
+    const [formData, setFormData] = useState<AddMealForm>({
+        day: id ?? "",
+        mealCategory: "",
+        userGroup: "",
+        recipe: "",
+    })
+
+    useEffect(() => {
+        if (!settings.isLoading) {
+            setFormData(formData => ({
+                ...formData,
+                mealCategory: settings.data.standardMealCategory?.id.toString() ?? "",
+                userGroup: settings.data.standardUserGroup?.id.toString() ?? "",
+            }))
+        }
+    }, [settings]);
 
     useEffect(() => {
         let isRecipeInResults: boolean = false
@@ -84,7 +111,6 @@ export function AddMeal(props: AddMealProps): ReactElement {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
-        const formData = new FormData(event.currentTarget)
 
         if (selectedRecipe == 0) {
             setState(PageState.ERROR)
@@ -114,6 +140,10 @@ export function AddMeal(props: AddMealProps): ReactElement {
                     recipe => recipe.id === parseInt(searchParams.get('recipe')!),
                 )?.title,
             )
+            setFormData(formData => ({
+                ...formData,
+                recipe: searchParams.get('recipe')!,
+            }))
         }
     }, [recipes]);
 
@@ -143,58 +173,67 @@ export function AddMeal(props: AddMealProps): ReactElement {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                         <div className="md:order-last">
                             <Card>
-                                <Label htmlFor="meal_day">Für welchen Tag?</Label>
-                                {days.isLoading ? (
-                                    <DayRadioSkeleton />
-                                ) : (
-                                    <div className="grid grid-cols-5 gap-2">
-                                        {days.data.map(day =>
-                                            <div key={day.id}>
-                                                <input
-                                                    id={`day_${day.id}`}
-                                                    name={nameFromId("meal_day")}
-                                                    type="radio"
-                                                    defaultValue={day.id}
-                                                    defaultChecked={id == day.id.toString()}
-                                                    className="peer hidden"
-                                                />
+                                <LabelledFormWidget
+                                    id={"day"}
+                                    label={"Für welchen Tag?"}
+                                    widget={days.isLoading ? (
+                                        <DayRadioSkeleton />
+                                    ) : (
+                                        <RadioWidget
+                                            field={"day"}
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            options={setChecked(getFormOptions(getEntityOptions(days, DayOption)), +id!)}
+                                            required={true}
+                                            gridStyling={`grid grid-cols-5 gap-2`}
+                                            optionLabelMapper={option => (
                                                 <label
-                                                    htmlFor={`day_${day.id}`}
+                                                    htmlFor={option.id}
                                                     className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
                                                 >
-                                                    <span className="text-sm font-semibold">{day.weekday.slice(0, 2)}</span>
-                                                    <span className="text-xs">{day.date.slice(0, day.date.lastIndexOf('.') + 1)}</span>
+                                                    <span className="text-sm font-semibold">{option.icon}</span>
+                                                    <span className="text-xs">{option.label}</span>
                                                 </label>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
+                                            )}
+                                        />
+                                    )}
+                                />
 
                                 <Spacer height="6" />
 
-                                <Label htmlFor="meal_mealCategory">Wann ist die Mahlzeit?</Label>
-                                {mealCategories.isLoading || settings.isLoading ? (
-                                    <RadioSkeleton />
-                                ) : (
-                                    <RadioWidget
-                                        id="meal_mealCategory"
-                                        options={setChecked(getOptions(mealCategoryOptions), settings.data.standardMealCategory?.id)}
-                                        required={true}
-                                    />
-                                )}
+                                <LabelledFormWidget
+                                    id={"mealCategory"}
+                                    label={"Wann ist die Mahlzeit?"}
+                                    widget={mealCategories.isLoading || settings.isLoading ? (
+                                        <RadioSkeleton />
+                                    ) : (
+                                        <RadioWidget
+                                            field={"mealCategory"}
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            options={setChecked(getFormOptions(mealCategoryOptions), settings.data.standardMealCategory?.id)}
+                                            required={true}
+                                        />
+                                    )}
+                                />
 
                                 <Spacer height="6" />
 
-                                <Label htmlFor="meal_userGroup">Für wen ist die Mahlzeit?</Label>
-                                {userGroups.isLoading || settings.isLoading ? (
-                                    <RadioSkeleton />
-                                ) : (
-                                    <RadioWidget
-                                        id="meal_userGroup"
-                                        options={setChecked(getOptions(userGroupOptions), settings.data.standardUserGroup?.id)}
-                                        required={true}
-                                    />
-                                )}
+                                <LabelledFormWidget
+                                    id={"userGroup"}
+                                    label={"Für wen ist die Mahlzeit?"}
+                                    widget={userGroups.isLoading || settings.isLoading ? (
+                                        <RadioSkeleton />
+                                    ) : (
+                                        <RadioWidget
+                                            field={"userGroup"}
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            options={setChecked(getFormOptions(userGroupOptions), settings.data.standardUserGroup?.id)}
+                                            required={true}
+                                        />
+                                    )}
+                                />
                             </Card>
 
                             <div className="flex justify-end md:pt-4">
@@ -211,7 +250,7 @@ export function AddMeal(props: AddMealProps): ReactElement {
                         </div>
 
                         <Card>
-                            <Label htmlFor="meal_recipe">Welches Rezept?</Label>
+                            <Label htmlFor="recipe">Welches Rezept?</Label>
                             {recipes.isLoading ? (
                                 <RecipeListSkeleton />
                             ) : (
@@ -236,45 +275,45 @@ export function AddMeal(props: AddMealProps): ReactElement {
 
                                     <Spacer height="4" />
 
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {recipes.data
-                                            .filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase()))
-                                            .map(recipe =>
-                                                <div key={recipe.id}>
-                                                    <input
-                                                        id={`recipe_${recipe.id}`}
-                                                        name={nameFromId("meal_recipe")}
-                                                        type="radio"
-                                                        defaultValue={recipe.id}
-                                                        defaultChecked={parseInt(searchParams.get('recipe')!) === recipe.id}
-                                                        className="peer hidden"
+                                    <RadioWidget
+                                        field={"recipe"}
+                                        formData={formData}
+                                        setFormData={setFormData}
+                                        options={setChecked(getFormOptions(getEntityOptions({
+                                            ...recipes,
+                                            data: recipes.data.filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())),
+                                        }, RecipeOption)), parseInt(searchParams.get('recipe')!))}
+                                        required={true}
+                                        gridStyling={`grid grid-cols-2 gap-2`}
+                                        optionLabelMapper={option => {
+                                            const optionRecipe: RecipeModel = recipes.data.filter(recipe => recipe.id === +(option.value!))[0]
+                                            return (
+                                                <label
+                                                    htmlFor={option.id}
+                                                    className="flex flex-row items-center cursor-pointer rounded-xl h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
+                                                    onClick={() => {
+                                                        setSelectedRecipe(optionRecipe.id)
+                                                        setState(PageState.WAITING) // Removes a warning
+                                                    }}
+                                                >
+                                                    <img
+                                                        className="rounded-xl h-12 w-12 object-cover transition duration-300"
+                                                        src={optionRecipe.image ? (optionRecipe.image?.directory + 'THUMBNAIL__' + optionRecipe.image?.filename) : '/img/default.jpg'}
+                                                        alt={optionRecipe.title}
                                                     />
-                                                    <label
-                                                        htmlFor={`recipe_${recipe.id}`}
-                                                        className="flex flex-row items-center cursor-pointer rounded-xl h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
-                                                        onClick={() => {
-                                                            setSelectedRecipe(recipe.id)
-                                                            setState(PageState.WAITING)
-                                                        }}
-                                                    >
-                                                        <img
-                                                            className="rounded-xl h-12 w-12 object-cover transition duration-300"
-                                                            src={recipe.image ? (recipe.image?.directory + 'THUMBNAIL__' + recipe.image?.filename) : '/img/default.jpg'}
-                                                            alt={recipe.title}
-                                                        />
-                                                        <div
-                                                            className="px-4 whitespace-nowrap overflow-hidden text-ellipsis">{recipe.title}</div>
-                                                    </label>
-                                                </div>
+                                                    <div className="px-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        {option.label}
+                                                    </div>
+                                                </label>
                                             )
-                                        }
+                                        }}
+                                    />
 
-                                        {recipes.data.filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())).length == 0 &&
-                                            <div className="col-span-2">
-                                                <Notification title="Keine Rezepte gefunden." />
-                                            </div>
-                                        }
-                                    </div>
+                                    {recipes.data.filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())).length == 0 &&
+                                        <div className="col-span-2">
+                                            <Notification title="Keine Rezepte gefunden." />
+                                        </div>
+                                    }
                                 </div>
                             )}
                         </Card>

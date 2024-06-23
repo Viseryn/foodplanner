@@ -1,16 +1,31 @@
-import React, { ReactElement } from 'react'
+import { SwitchWidget } from "@/components/form/SwitchWidget"
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
-import SwitchRow from '@/components/form/Switch/SwitchRow'
+import { SwitchValue } from "@/lang/constants/SwitchValue"
+import { Form } from "@/types/forms/Form"
 import SettingsModel from '@/types/SettingsModel'
 import { tryApiRequest } from '@/util/tryApiRequest'
 import axios, { AxiosResponse } from 'axios'
+import React, { ReactElement, useEffect, useState } from 'react'
+
+const { ON, OFF } = SwitchValue;
 
 type PantrySettingsModuleProps = {
     settings: EntityState<SettingsModel>
 }
 
 export const PantrySettingsModule = ({ settings }: PantrySettingsModuleProps): ReactElement => {
+    const [formData, setFormData]
+        = useState<Form & { showPantry: SwitchValue }>({ showPantry: OFF })
+
+    useEffect(() => {
+        if (settings.isLoading) {
+            return
+        }
+
+        setFormData({ showPantry: !!settings.data.showPantry ? ON : OFF })
+    }, [settings.isLoading, settings.data])
+
     const handlePantrySettings = async (): Promise<void> => {
         if (settings.isLoading) {
             return
@@ -40,14 +55,14 @@ export const PantrySettingsModule = ({ settings }: PantrySettingsModuleProps): R
             {settings.isLoading ? (
                 <Spinner />
             ) : (
-                <SwitchRow
-                    id="showPantry"
-                    label={'Vorratskammer wird ' + (!settings.data.showPantry ? 'nicht ' : '') + 'angezeigt'}
-                    checked={settings.data.showPantry}
-                    {...{
-                        onClick: handlePantrySettings
-                    }}
-                />
+                <span onClick={handlePantrySettings}>
+                    <SwitchWidget
+                        field={"showPantry"}
+                        displayedText={`Vorratskammer wird ${!settings.data.showPantry ? "nicht angezeigt" : "angezeigt"}`}
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                </span>
             )}
         </>
     )

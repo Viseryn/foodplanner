@@ -1,11 +1,14 @@
-import InputRow from '@/components/form/Input/InputRow'
+import { InputWidget } from "@/components/form/InputWidget"
+import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
 import Button from '@/components/ui/Buttons/Button'
 import Card from '@/components/ui/Card'
 import Notification from '@/components/ui/Notification'
 import Spacer from '@/components/ui/Spacer'
 import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
+import useTimeout from "@/hooks/useTimeout"
 import { BasePageComponentProps } from "@/types/BasePageComponentProps"
+import { Form } from "@/types/forms/Form"
 import { UserModel } from '@/types/UserModel'
 import { tryApiRequest } from '@/util/tryApiRequest'
 import axios, { AxiosResponse } from 'axios'
@@ -15,7 +18,7 @@ type UserSettingsProps = BasePageComponentProps & {
     user: EntityState<UserModel>
 }
 
-type UserSettingsForm = {
+type UserSettingsForm = Form & {
     email?: string
     password?: string
 }
@@ -28,20 +31,17 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
         password: '',
     })
 
+    const successTimeout = useTimeout(() => {
+        setSuccess(false)
+    }, 5000)
+
     const [isLoading, setLoading] = useState<boolean>(false)
     const [isSuccess, setSuccess] = useState<boolean>(false)
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        setFormData((prev: UserSettingsForm) => ({
-            ...prev,
-            [event.target.name]: event.target.value,
-        }))
-
-        setSuccess(false)
-    }
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
+        setSuccess(false)
+        successTimeout.clearTimeout()
 
         if (user.isLoading) {
             return
@@ -62,6 +62,8 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
         }
 
         setLoading(false)
+
+        successTimeout.startTimeout()
     }
 
     useEffect(() => {
@@ -96,27 +98,31 @@ export const UserSettings = (props: UserSettingsProps): ReactElement => {
                         <Spinner verticalMargin={10} />
                     ) : (
                         <>
-                            <InputRow
-                                id="email"
-                                label="Email-Adresse"
-                                {...{
-                                    maxLength: 255,
-                                    onChange: handleInputChange,
-                                    name: 'email',
-                                    value: formData.email,
-                                }}
+                            <LabelledFormWidget
+                                id={"email"}
+                                label={"Email-Adresse"}
+                                widget={
+                                    <InputWidget
+                                        field={"email"}
+                                        formData={formData}
+                                        setFormData={setFormData}
+                                        type={"email"}
+                                        maxLength={255}
+                                    />
+                                }
                             />
 
-                            <InputRow
-                                id="password"
-                                label="Neues Passwort festlegen"
-                                {...{
-                                    maxLength: 255,
-                                    onChange: handleInputChange,
-                                    name: 'password',
-                                    value: formData.password,
-                                    type: 'password',
-                                }}
+                            <LabelledFormWidget
+                                id={"password"}
+                                label={"Neues Passwort festlegen"}
+                                widget={
+                                    <InputWidget
+                                        field={"password"}
+                                        formData={formData}
+                                        setFormData={setFormData}
+                                        type={"password"}
+                                    />
+                                }
                             />
 
                             <div />

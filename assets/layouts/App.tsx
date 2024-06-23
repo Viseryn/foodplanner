@@ -16,6 +16,7 @@ import { AddMeal } from '@/pages/Planner/AddMeal'
 import { Planner } from '@/pages/Planner/Planner'
 import { AddRecipe } from '@/pages/Recipes/AddRecipe'
 import { EditRecipe } from '@/pages/Recipes/EditRecipe'
+import { ImportRecipe } from "@/pages/Recipes/ImportRecipe"
 import { Recipe } from '@/pages/Recipes/Recipe'
 import { Recipes } from '@/pages/Recipes/Recipes'
 import { Registration } from '@/pages/Registration/Registration'
@@ -147,7 +148,7 @@ export default function App(): ReactElement {
                 {isInstalled &&
                     <>
                         <SidebarDrawer {...{
-                            isDrawerVisible, setDrawerVisible, authentication
+                            isDrawerVisible, setDrawerVisible, authentication, installationStatus
                         }} />
 
                         <Sidebar {...{
@@ -210,6 +211,12 @@ export default function App(): ReactElement {
                                             } />}
                                         />
                                         <Route
+                                            path="/recipe/import"
+                                            element={<AuthChecker authentication={authentication} component={
+                                                <ImportRecipe {...{ recipes, setSidebar, setTopbar }} />
+                                            } />}
+                                        />
+                                        <Route
                                             path="/recipe/add"
                                             element={<AuthChecker authentication={authentication} component={
                                                 <AddRecipe {...{ recipes, setSidebar, setTopbar }} />
@@ -236,7 +243,7 @@ export default function App(): ReactElement {
                                         <Route
                                             path="/settings"
                                             element={<AuthChecker authentication={authentication} component={
-                                                <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, setSidebar, setTopbar, installationStatus }} />
+                                                <Settings {...{ settings, userGroups, visibleUserGroups, mealCategories, days, authentication, setSidebar, setTopbar }} />
                                             } />}
                                         />
                                         <Route
