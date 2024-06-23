@@ -9,16 +9,16 @@ import Spinner from '@/components/ui/Spinner'
 import { StandardContentWrapper } from '@/components/ui/StandardContentWrapper'
 import { BasePageComponentProps } from "@/types/BasePageComponentProps"
 import DayModel from '@/types/DayModel'
-import { DayOption } from "@/types/options/DayOption"
 import { PageState } from "@/types/enums/PageState"
 import { Form } from "@/types/forms/Form"
 import MealCategoryModel from '@/types/MealCategoryModel'
+import { DayOption } from "@/types/options/DayOption"
 import { MealCategoryOption } from '@/types/options/MealCategoryOption'
-import RecipeModel from '@/types/RecipeModel'
 import { RecipeOption } from "@/types/options/RecipeOption"
+import { UserGroupOption } from '@/types/options/UserGroupOption'
+import RecipeModel from '@/types/RecipeModel'
 import SettingsModel from '@/types/SettingsModel'
 import { UserGroupModel } from '@/types/UserGroupModel'
-import { UserGroupOption } from '@/types/options/UserGroupOption'
 import { getEntityOptions } from '@/util/forms/getEntityOptions'
 import { getFormOptions } from '@/util/forms/getFormOptions'
 import { setChecked } from "@/util/forms/setChecked"
@@ -61,7 +61,7 @@ export function AddMeal(props: AddMealProps): ReactElement {
         setTopbar,
     } = props
 
-    const { id }: AddMealRouteParams = useParams() // The id parameter of the route '/planner/add/:id'
+    const { id }: AddMealRouteParams = useParams() // The id parameter of the route '/planner/add/:id' which corresponds to a Day entity
     const searchParams: URLSearchParams = useSearchParams()[0]
     const navigate: NavigateFunction = useNavigate()
 
@@ -293,7 +293,7 @@ export function AddMeal(props: AddMealProps): ReactElement {
                                                     className="flex flex-row items-center cursor-pointer rounded-xl h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-200 dark:border-secondary-dark-200"
                                                     onClick={() => {
                                                         setSelectedRecipe(optionRecipe.id)
-                                                        setState(PageState.WAITING)
+                                                        setState(PageState.WAITING) // Removes a warning
                                                     }}
                                                 >
                                                     <img
