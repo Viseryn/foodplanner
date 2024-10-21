@@ -34,16 +34,7 @@ export function Settings({ settings, userGroups, visibleUserGroups, mealCategori
 
     return (
         <StandardContentWrapper className={"md:max-w-[900px]"}>
-            <Heading size="xl" style="pl-2 mb-2">Benutzer</Heading>
-            <Card>
-                <UserListSettingsModule
-                    authentication={authentication}
-                />
-            </Card>
-
-            <Spacer height="10" />
-
-            <TwoColumnView>
+            <TwoColumnView className="gap-y-10">
                 <div>
                     <Heading size="xl" style="pl-2 mb-2">Benutzergruppen verwalten</Heading>
                     <Card>
@@ -52,6 +43,15 @@ export function Settings({ settings, userGroups, visibleUserGroups, mealCategori
                             visibleUserGroups={visibleUserGroups}
                             days={days}
                             settings={settings}
+                        />
+                    </Card>
+
+                    <Spacer height="10" />
+
+                    <Heading size="xl" style="pl-2 mb-2">Benutzer</Heading>
+                    <Card>
+                        <UserListSettingsModule
+                            authentication={authentication}
                         />
                     </Card>
                 </div>
