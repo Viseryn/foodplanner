@@ -3,6 +3,7 @@
 use App\Component\Exception\ValidationFailedException;
 use App\DataTransferObject\RegistrationDTO;
 use App\Entity\EntityInterface;
+use App\Entity\Roles;
 use Symfony\Component\Serializer\Exception\UnsupportedException;
 
 class RegistrationValidator implements Validator
@@ -22,7 +23,7 @@ class RegistrationValidator implements Validator
             throw new ValidationFailedException("Password must not be empty.");
         }
 
-        if ($dto->getRoles() != ["ROLE_USER"]) {
+        if ($dto->getRoles() != [Roles::ROLE_USER->value]) {
             throw new ValidationFailedException("User roles were illegally modified.");
         }
     }
