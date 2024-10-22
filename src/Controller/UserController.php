@@ -39,6 +39,13 @@ class UserController extends AbstractControllerWithMapper
         return DtoResponseService::getResponse($userDTOs);
     }
 
+    #[Route('/users/{id}', name: 'api_user_get', methods: ['GET'])]
+    public function get(User $user): Response
+    {
+        $userDTO = $this->mapper->entityToDto($user);
+        return DtoResponseService::getResponse($userDTO);
+    }
+
     #[Route('/users/{id}', name: 'api_users_patch', methods: ['PATCH'])]
     public function patch(Request $request, User $user): Response
     {
