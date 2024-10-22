@@ -5,4 +5,5 @@ export type UserModel = {
     username?: string
     email?: string
     roles: Role[]
+    active?: boolean
 }

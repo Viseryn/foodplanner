@@ -3,6 +3,7 @@
 use App\Component\Exception\ValidationFailedException;
 use App\Component\Response\ExceptionResponseFactory;
 use App\DataTransferObject\RegistrationDTO;
+use App\Entity\Roles;
 use App\Entity\User;
 use App\Mapper\UserMapper;
 use App\Repository\InstallationStatusRepository;
@@ -48,7 +49,8 @@ class InstallController extends AbstractControllerWithMapper
 
         $user = $this->mapper->registrationDtoToEntity($dto);
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $dto->getPassword()))
-             ->setRoles(['ROLE_ADMIN']);
+             ->setRoles([Roles::ROLE_ADMIN->value, Roles::ROLE_USER_ADMINISTRATION->value])
+             ->setActive(true);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

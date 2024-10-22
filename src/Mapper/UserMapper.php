@@ -17,13 +17,15 @@ final class UserMapper implements Mapper
     {
         return (new User)->setUsername($dto->getUsername())
                          ->setRoles($dto->getRoles())
-                         ->setEmail($dto->getEmail());
+                         ->setEmail($dto->getEmail())
+                         ->setActive($dto->getActive());
     }
 
     public function registrationDtoToEntity(RegistrationDTO $dto): User
     {
         return (new User)->setUsername($dto->getUsername())
-                         ->setRoles($dto->getRoles());
+                         ->setRoles($dto->getRoles())
+                         ->setActive(true);
     }
 
     /**
@@ -35,6 +37,7 @@ final class UserMapper implements Mapper
         return (new UserDTO)->setId($entity->getId())
                             ->setUsername($entity->getUsername())
                             ->setRoles($entity->getRoles())
-                            ->setEmail($entity->getEmail());
+                            ->setEmail($entity->getEmail())
+                            ->setActive($entity->isActive());
     }
 }
