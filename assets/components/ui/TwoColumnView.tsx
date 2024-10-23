@@ -11,11 +11,13 @@ import React, { ReactElement, ReactNode } from 'react'
  *     <Card ... />
  * </TwoColumnView>
  */
-export const TwoColumnView = ({ children }: {
-    children?: ReactNode
+export const TwoColumnView = ({ children, className, overrideClassname }: {
+    children?: ReactNode,
+    className?: string,
+    overrideClassname?: string,
 }): ReactElement => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className={overrideClassname ?? `grid grid-cols-1 md:grid-cols-2 gap-4 ${className}`}>
             { children }
         </div>
     )

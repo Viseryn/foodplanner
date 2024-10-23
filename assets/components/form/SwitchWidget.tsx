@@ -10,6 +10,7 @@ const { ON, OFF } = SwitchValue;
 
 type SwitchWidgetProps<T extends Form> = FormWidgetProps<T> & {
     displayedText: string
+    onClick?: (() => void) | (() => Promise<void>)
 }
 
 export const SwitchWidget = <T extends Form>(props: SwitchWidgetProps<T>): ReactElement => {
@@ -17,7 +18,7 @@ export const SwitchWidget = <T extends Form>(props: SwitchWidgetProps<T>): React
     validateSwitchWidgetField(props)
 
     return (
-        <label htmlFor={props.field} className={"inline-flex items-center relative cursor-pointer"}>
+        <label htmlFor={props.field} className={"inline-flex items-center relative cursor-pointer"} onClick={props.onClick}>
             <input
                 id={props.field}
                 name={props.field}
