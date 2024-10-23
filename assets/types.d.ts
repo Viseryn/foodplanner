@@ -47,4 +47,5 @@ type EntityState<T = unknown, TLoading = boolean> = {
 type Authentication = {
     isAuthenticated: boolean
     isLoading: boolean
+    roles: Role[]
 }

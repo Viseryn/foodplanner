@@ -9,6 +9,7 @@ class UserDTO implements DataTransferObject
     private ?string $username = null;
     private ?array $roles = null;
     private ?string $email = null;
+    private ?bool $active = null;
 
     public function getId(): ?int 
     {
@@ -51,6 +52,15 @@ class UserDTO implements DataTransferObject
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getActive(): ?bool {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): self {
+        $this->active = $active;
         return $this;
     }
 }

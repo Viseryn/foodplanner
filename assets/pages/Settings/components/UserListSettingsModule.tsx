@@ -3,6 +3,7 @@ import Spacer from "@/components/ui/Spacer"
 import Spinner from "@/components/ui/Spinner"
 import { useEntityState } from "@/hooks/useEntityState"
 import { UserModel } from "@/types/UserModel"
+import { hasRoleUserAdministration } from "@/util/auth/hasRoleUserAdministration"
 import React, { ReactElement } from "react"
 import { NavigateFunction, useNavigate } from "react-router-dom"
 
@@ -27,9 +28,11 @@ export const UserListSettingsModule = (props: UserListSettingsModuleProps): Reac
                 Rollen: {user.roles.join(", ")}
             </td>
             <td className={"px-4 py-2 rounded-r-2xl"}>
-                <IconButton outlined={true} onClick={() => handleEditUser(user)}>
-                    edit
-                </IconButton>
+                {hasRoleUserAdministration(props.authentication) &&
+                    <IconButton outlined={true} onClick={() => handleEditUser(user)}>
+                        edit
+                    </IconButton>
+                }
             </td>
         </tr>
     )

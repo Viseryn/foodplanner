@@ -23,6 +23,7 @@ import { Registration } from '@/pages/Registration/Registration'
 import { AddGroup } from '@/pages/Settings/AddGroup'
 import { EditGroup } from "@/pages/Settings/EditGroup"
 import { Settings } from '@/pages/Settings/Settings'
+import { UserAdministration } from "@/pages/Settings/UserAdministration"
 import { UserSettings } from '@/pages/Settings/UserSettings'
 import { ShoppingList } from '@/pages/ShoppingList/ShoppingList'
 import DayModel from '@/types/DayModel'
@@ -262,6 +263,12 @@ export default function App(): ReactElement {
                                             path="/settings/user"
                                             element={<AuthChecker authentication={authentication} component={
                                                 <UserSettings {...{ user, setSidebar, setTopbar }} />
+                                            } />}
+                                        />
+                                        <Route
+                                            path="/settings/user/:id/edit"
+                                            element={<AuthChecker authentication={authentication} component={
+                                                <UserAdministration {...{ authentication, userGroups, setSidebar, setTopbar }} />
                                             } />}
                                         />
                                         <Route

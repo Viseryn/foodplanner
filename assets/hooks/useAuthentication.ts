@@ -2,6 +2,7 @@
  * ./assets/hooks/useAuthentication.ts *
  ***************************************/
 
+import { Role } from "@/types/Role"
 import { useEffect, useState } from 'react'
 
 import { UserModel } from '@/types/UserModel'
@@ -21,9 +22,11 @@ function useAuthentication(): [EntityState<UserModel>, Authentication] {
     // Whether the user is currently authenticated.
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
 
+    const [roles, setRoles] = useState<Role[]>([])
+
     // UserModel and Authentication objects
     const user: EntityState<UserModel> = useEntityState("/api/user")
-    const authentication: Authentication = { isAuthenticated, isLoading }
+    const authentication: Authentication = { isAuthenticated, isLoading, roles }
 
     // Each time the user data changes, check if authenticated
     useEffect(() => {
@@ -31,6 +34,7 @@ function useAuthentication(): [EntityState<UserModel>, Authentication] {
 
         setAuthenticated(authenticated)
         setLoading(true)
+        setRoles(user.data?.roles ?? [])
 
         // The loading of the authentication will only be stopped once the user data is loaded
         if (!user.isLoading) {
