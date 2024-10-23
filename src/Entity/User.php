@@ -40,9 +40,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     #[ORM\Column]
     private ?bool $active = null;
 
+    #[ORM\ManyToMany(targetEntity: Recipe::class)]
+    private Collection $recipeFavorites;
+
     public function __construct()
     {
         $this->userGroups = new ArrayCollection();
+        $this->recipeFavorites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +166,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Recipe>
+     */
+    public function getRecipeFavorites(): Collection
+    {
+        return $this->recipeFavorites;
+    }
+
+    public function addRecipeFavorite(Recipe $recipeFavorite): static
+    {
+        if (!$this->recipeFavorites->contains($recipeFavorite)) {
+            $this->recipeFavorites->add($recipeFavorite);
+        }
+
+        return $this;
+    }
+
+    public function removeRecipeFavorite(Recipe $recipeFavorite): static
+    {
+        $this->recipeFavorites->removeElement($recipeFavorite);
 
         return $this;
     }
