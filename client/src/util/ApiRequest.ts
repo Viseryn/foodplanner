@@ -156,28 +156,38 @@ export class ApiRequest<TResponse extends ApiResource> {
 
             if (axios.isAxiosError(error)) {
                 this._error = error
-                this.showErrorMessage(this._error)
+                await this.showErrorMessage(this._error)
             }
         }
 
         return this._successful
     }
 
-    private showErrorMessage(error?: AxiosError): void {
+    private async showErrorMessage(error?: AxiosError): Promise<void> {
         if (error) {
-            void swal({
+            const swalResponse: Promise<boolean> = swal({
                 dangerMode: true,
                 icon: "error",
                 title: error.message,
                 text: `[ERROR] (${this.httpMethod} ${this.url}): ${error.code}`,
+                buttons: ["Ignore", "Reload"],
             })
+
+            if (await swalResponse) {
+                location.reload()
+            }
         } else {
-            void swal({
+            const swalResponse: Promise<boolean> = swal({
                 dangerMode: true,
                 icon: "error",
                 title: "Unknown error",
                 text: "An unknown error occurred while fetching the response data.",
+                buttons: ["Ignore", "Reload"],
             })
+
+            if (await swalResponse) {
+                location.reload()
+            }
         }
     }
 }
