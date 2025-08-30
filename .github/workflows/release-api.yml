@@ -1,0 +1,130 @@
+name: API Release Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: 'New API version number (e.g. 1.9); DO NOT INCLUDE THE CLIENT VERSION NUMBER'
+        required: true
+
+jobs:
+  prepare_release_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set git user information
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Fetch develop branch
+        run: git fetch origin develop
+
+      - name: Create release branch
+        run: |
+          git checkout develop
+          git pull origin develop
+          git checkout -b "release/v${{ inputs.new_version }}.0"
+          git push origin "release/v${{ inputs.new_version }}.0"
+
+      - name: Update version number in package.json and package-lock.json
+        working-directory: ./client
+        run: |
+          npm version "${{ inputs.new_version }}.0" --no-git-tag-version --allow-same-version
+          git add package.json package-lock.json
+          git commit -m "Release v${{ inputs.new_version }}.0"
+          git push origin "release/v${{ inputs.new_version }}.0"
+
+      - name: Create PHP Migration File
+        working-directory: ./api
+        run: |
+          timestamp=$(date +'%Y%m%d%H%M%S')
+          migration_file="./migrations/Version${timestamp}.php"
+          echo "<?php 
+          
+          declare(strict_types=1);
+
+          namespace DoctrineMigrations;
+          
+          use Doctrine\DBAL\Schema\Schema;
+          use Doctrine\Migrations\AbstractMigration;
+          
+          final class Version${timestamp} extends AbstractMigration
+          {
+            public function getDescription(): string
+              {
+                return '';
+              }
+          
+            public function up(Schema \$schema): void
+              {
+                // this up() migration is auto-generated
+                \$this->addSql('UPDATE installation_status SET api_version = \'${{ inputs.new_version }}\' WHERE id = 1');
+              }
+          }" > "${migration_file}"
+          git add "./migrations/Version${timestamp}.php"
+          git commit -m "Release v${{ inputs.new_version }}.0"
+          git push origin "release/v${{ inputs.new_version }}.0"
+
+  create_pull_requests:
+    needs: prepare_release_branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set git user information
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Wait
+        run: sleep 10s
+
+      - name: Fetch release branch
+        run: git fetch origin "release/v${{ inputs.new_version }}.0" --depth=1
+
+      - name: Create pull request from release branch to master
+        run: |
+          gh pr create --base master --head "release/v${{ inputs.new_version }}.0" --title "v${{ inputs.new_version }}.0 --> master" --body "Automated PR creation for release v${{ inputs.new_version }}.0"
+          gh pr merge "release/v${{ inputs.new_version }}.0" --merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create pull request from master to develop
+        run: |
+          gh pr create --base develop --head "master" --title "master --> develop" --body "Automated PR creation for release v${{ inputs.new_version }}.0"
+          gh pr merge "master" --merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  prepare_snapshot_version:
+    needs: create_pull_requests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set git user information
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Fetch develop branch
+        run: |
+          git fetch origin develop
+          git checkout develop
+          git pull origin develop
+
+      - name: Update version number in package.json and package-lock.json
+        working-directory: ./client
+        run: |
+          npm version "${{ inputs.new_version }}.0-snapshot" --no-git-tag-version --allow-same-version
+          git add package.json package-lock.json
+          git commit -m "Snapshot v${{ inputs.new_version }}.0-snapshot"
+          git push origin develop
