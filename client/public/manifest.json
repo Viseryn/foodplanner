@@ -1,0 +1,91 @@
+{
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "name": "FoodPlanner",
+  "short_name": "FoodPlanner",
+  "lang": "de",
+  "description": "FoodPlanner",
+  "theme_color": "#fdfdf5",
+  "background_color": "#fdfdf5",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "handle_links": "auto",
+  "scope_extensions": [],
+  "orientation": "portrait",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "launch_handler": {
+    "client_mode": "auto"
+  },
+  "icons": [
+    {
+      "src": "/img/icons/192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/img/icons/192-transparent.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/img/icons/512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/img/icons/512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/img/icons/1024.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/icons/1024-maskable.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/img/icons/1024-transparent.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    },
+    {
+      "src": "/img/icons/favicon.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    }
+  ],
+  "categories": [
+    "food",
+    "productivity",
+    "lifestyle"
+  ],
+  "screenshots": [
+    {
+      "src": "/img/screenshots/screenshot1.png",
+      "sizes": "409x911",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/screenshots/screenshot2.png",
+      "sizes": "409x911",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/screenshots/screenshot3.png",
+      "sizes": "409x911",
+      "type": "image/png"
+    }
+  ]
+}

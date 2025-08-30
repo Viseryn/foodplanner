@@ -1,0 +1,15 @@
+when@dev:
+  web_profiler:
+    toolbar: true
+    intercept_redirects: false
+
+  framework:
+    profiler: { enabled: true }
+
+when@test:
+  web_profiler:
+    toolbar: true
+    intercept_redirects: false
+
+  framework:
+    profiler: { enabled: true }
