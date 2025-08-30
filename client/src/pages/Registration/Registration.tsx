@@ -58,7 +58,10 @@ export const Registration = (): ReactElement => {
 
     useEffect(() => {
         sidebar.useDefault()
-        topbar.useDefault("Registrierung")
+        topbar.configuration
+            .title("Registrieren")
+            .backButton({ isVisible: true, path: "/login" })
+            .rebuild()
     }, [])
 
     return (
@@ -130,14 +133,12 @@ export const Registration = (): ReactElement => {
                         {/*    </label>*/}
                         {/*</div>*/}
 
-                        <hr className="my-6 border-t-secondary-200 dark:border-t-secondary-dark-200" />
-
-                        <p className="text-justify">
-                            Nach der Registrierung muss deinem Account manuell der Admin-Status verliehen werden, ehe du
+                        <Notification>
+                            Nach der Registrierung muss dein Account von einem Administrator freigeschaltet werden, ehe du
                             FoodPlanner nutzen kannst.
-                        </p>
+                        </Notification>
 
-                        <Spacer height="4" />
+                        <Spacer height="6" />
 
                         <div className="flex justify-end">
                             <Button
