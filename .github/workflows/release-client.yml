@@ -1,0 +1,99 @@
+name: Client Release Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: 'New client version number (e.g. 1.9.5); IT MUST MATCH THE CURRENT API VERSION!'
+        required: true
+
+jobs:
+  prepare_release_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set git user information
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Fetch develop branch
+        run: git fetch origin develop
+
+      - name: Create release branch
+        run: |
+          git checkout develop
+          git pull origin develop
+          git checkout -b "release/v${{ inputs.new_version }}"
+          git push origin "release/v${{ inputs.new_version }}"
+
+      - name: Update version number in package.json and package-lock.json
+        working-directory: ./client
+        run: |
+          npm version "${{ inputs.new_version }}" --no-git-tag-version --allow-same-version
+          git add package.json package-lock.json
+          git commit -m "Release v${{ inputs.new_version }}"
+          git push origin "release/v${{ inputs.new_version }}"
+
+  create_pull_requests:
+    needs: prepare_release_branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set git user information
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Wait
+        run: sleep 10s
+
+      - name: Fetch release branch
+        run: git fetch origin "release/v${{ inputs.new_version }}" --depth=1
+
+      - name: Create pull request from release branch to master
+        run: |
+          gh pr create --base master --head "release/v${{ inputs.new_version }}" --title "v${{ inputs.new_version }} --> master" --body "Automated PR creation for release v${{ inputs.new_version }}"
+          gh pr merge "release/v${{ inputs.new_version }}" --merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create pull request from master to develop
+        run: |
+          gh pr create --base develop --head "master" --title "master --> develop" --body "Automated PR creation for release v${{ inputs.new_version }}"
+          gh pr merge "master" --merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  prepare_snapshot_version:
+    needs: create_pull_requests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set git user information
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Fetch develop branch
+        run: |
+          git fetch origin develop
+          git checkout develop
+          git pull origin develop
+
+      - name: Update version number in package.json and package-lock.json
+        working-directory: ./client
+        run: |
+          npm version "${{ inputs.new_version }}-snapshot" --no-git-tag-version --allow-same-version
+          git add package.json package-lock.json
+          git commit -m "Snapshot v${{ inputs.new_version }}-snapshot"
+          git push origin develop

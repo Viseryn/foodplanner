@@ -1,0 +1,9 @@
+/.env*
+!.env
+
+/dist/
+
+/node_modules/
+
+/public/.well-known/
+/public/img/default.jpg

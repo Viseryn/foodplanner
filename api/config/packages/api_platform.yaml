@@ -1,0 +1,9 @@
+api_platform:
+  title: API Platform
+  version: 1.0.0
+  defaults:
+    pagination_enabled: false
+    stateless: false
+    cache_headers:
+      vary: [ 'Content-Type', 'Authorization', 'Origin' ]
+  use_symfony_listeners: true

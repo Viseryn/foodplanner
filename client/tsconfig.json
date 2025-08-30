@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "exclude": [
+    "dist",
+    "vendor",
+  ],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
