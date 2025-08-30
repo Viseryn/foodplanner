@@ -43,7 +43,7 @@ export const SidebarDrawer = (): ReactElement => {
                                     <SidebarDrawerItem
                                         id="login"
                                         icon="login"
-                                        label="Einloggen"
+                                        label="Anmelden"
                                     />
                                     <SidebarDrawerItem
                                         id="register"
@@ -54,18 +54,18 @@ export const SidebarDrawer = (): ReactElement => {
                             ) : (
                                 <>
                                     <SidebarDrawerItem
+                                        id="settings"
+                                        icon="settings"
+                                        label="Einstellungen"
+                                    />
+                                    <SidebarDrawerItem
                                         onClick={async (): Promise<void> => {
                                             await apiClient.get(`/api/logout`)
                                             location.reload()
                                         }}
                                         id="logout"
                                         icon="logout"
-                                        label="Ausloggen"
-                                    />
-                                    <SidebarDrawerItem
-                                        id="settings"
-                                        icon="settings"
-                                        label="Einstellungen"
+                                        label="Abmelden"
                                     />
                                 </>
                             )}
@@ -74,18 +74,7 @@ export const SidebarDrawer = (): ReactElement => {
                                 onClick={() => location.reload()}
                                 id="refresh"
                                 icon="refresh"
-                                label="Aktualisieren"
-                            />
-                        </ul>
-
-                        <hr className="m-4 md:mx-0 border-t-secondary-dark-300" />
-
-                        <ul className="flex flex-col space-y-2">
-                            <SidebarDrawerItem
-                                path="https://github.com/Viseryn/foodplanner"
-                                id="github"
-                                icon="developer_mode"
-                                label="GitHub"
+                                label="App neuladen"
                             />
                         </ul>
                     </div>

@@ -414,3 +414,25 @@ span.material-symbols-rounded {
         font-variation-settings: 'FILL' 0;
     }
 }
+
+@keyframes jump {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-25px);
+    }
+    50% {
+        transform: translateY(0);
+    }
+    75% {
+        transform: translateY(-25px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.animate-jump {
+    animation: jump 1.2s ease-out;
+}

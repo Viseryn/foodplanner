@@ -43,6 +43,20 @@ export const JsonLogin = (): ReactElement => {
     const [state, setState] = useState<PageState>(PageState.LOADING)
     const [formData, setFormData] = useState<JsonLoginForm>(formDataInitialState)
 
+    const [isMascotJumping, setMascotJumping] = useState<boolean>(false)
+
+    const handleJump = () => {
+        if (isMascotJumping) {
+            return
+        }
+
+        setMascotJumping(true)
+
+        setTimeout(() => {
+            setMascotJumping(false)
+        }, 3000)
+    }
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
         setState(PageState.LOADING)
@@ -86,7 +100,7 @@ export const JsonLogin = (): ReactElement => {
 
     useEffect(() => {
         sidebar.useDefault()
-        topbar.useDefault("Login")
+        topbar.useDefault("FoodPlanner")
     }, [])
 
     return (
@@ -111,9 +125,18 @@ export const JsonLogin = (): ReactElement => {
 
             {[PageState.WAITING, PageState.ERROR].includes(state) &&
                 <>
+                    <Spacer height={6} />
+
+                    <img src="/img/icons/192-transparent.png" className={StringBuilder.cn(
+                        "w-32 h-32 mx-auto transition duration-300",
+                        [isMascotJumping, "animate-jump"],
+                    )} onClick={handleJump} alt="FoodPlanner" />
+
+                    <Spacer height={12} />
+
                     <OuterCard className="!rounded-3xl">
                         <form onSubmit={handleSubmit}>
-                            <div className="rounded-full font-semibold bg-secondary-200 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
+                            <div className="rounded-t-3xl rounded-b-md font-semibold bg-white dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
                                 <span className="material-symbols-rounded mr-2 cursor-default">
                                     account_circle
                                 </span>
@@ -122,15 +145,15 @@ export const JsonLogin = (): ReactElement => {
                                     field={"username"}
                                     formData={formData}
                                     setFormData={setFormData}
-                                    placeholder={"Dein Benutzername"}
+                                    placeholder={"Benutzername"}
                                     required={true}
-                                    styleOverride={`bg-secondary-200 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0`}
+                                    styleOverride={`bg-white dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0`}
                                 />
                             </div>
 
-                            <Spacer height={6} />
+                            <Spacer height={1} />
 
-                            <div className="rounded-full font-semibold bg-secondary-200 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
+                            <div className="rounded-full rounded-t-md rounded-b-3xl font-semibold bg-white dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4">
                                 <span className="material-symbols-rounded mr-2 cursor-default">
                                     key
                                 </span>
@@ -140,9 +163,9 @@ export const JsonLogin = (): ReactElement => {
                                     type={"password"}
                                     formData={formData}
                                     setFormData={setFormData}
-                                    placeholder={"Dein Passwort"}
+                                    placeholder={"Passwort"}
                                     required={true}
-                                    styleOverride={`bg-secondary-200 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0`}
+                                    styleOverride={`bg-white dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0`}
                                 />
                             </div>
 
@@ -152,14 +175,14 @@ export const JsonLogin = (): ReactElement => {
                                 <Button
                                     type="submit"
                                     icon="login"
-                                    label="Einloggen"
+                                    label="Anmelden"
                                     role="primary"
                                 />
                             </div>
                         </form>
                     </OuterCard>
 
-                    <Spacer height={20} />
+                    <Spacer height={12} />
 
                     <div className="flex justify-center">
                         <Button
@@ -167,6 +190,7 @@ export const JsonLogin = (): ReactElement => {
                             label="Passwort vergessen?"
                             role="tertiary"
                             isSmall={true}
+                            onClick={handleResetPassword}
                         />
                     </div>
                     <Spacer height={4} />
@@ -182,4 +206,13 @@ export const JsonLogin = (): ReactElement => {
             }
         </StandardContentWrapper>
     )
+}
+
+const handleResetPassword = (): void => {
+    void swal({
+        dangerMode: true,
+        icon: "error",
+        title: "Passwort zurücksetzen",
+        text: "Diese Funktion ist momentan nicht verfügbar.",
+    })
 }
