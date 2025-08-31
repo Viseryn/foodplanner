@@ -54,7 +54,7 @@ export const HomepageSettingsModule = (props: HomepageSettingsModuleProps): Reac
     return (
         <>
             <p className="text-sm">
-                Hier kannst du die Startseite von FoodPlanner einstellen.
+                Welche Seite soll standardmäßig geöffnet werden, wenn du FoodPlanner öffnest?
             </p>
 
             <Spacer height="4" />
