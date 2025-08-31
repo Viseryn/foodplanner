@@ -10,6 +10,7 @@ import { SidebarContext } from "@/context/SidebarContext"
 import { TopbarContext } from "@/context/TopbarContext"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { useScrollCache } from "@/hooks/useScrollCache"
+import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
 import { AppInformationSettingsModule } from "@/pages/Settings/components/AppInformationSettingsModule"
 import { HomepageSettingsModule } from "@/pages/Settings/components/HomepageSettingsModule"
@@ -24,7 +25,7 @@ import { GlobalAppData } from "@/types/GlobalAppData"
 import { ManagedResource } from "@/types/ManagedResource"
 import { Sidebar } from "@/types/sidebar/Sidebar"
 import { Topbar } from "@/types/topbar/Topbar"
-import { ReactElement, useEffect } from "react"
+import { ReactElement, useCallback, useEffect } from "react"
 
 export function Settings(): ReactElement {
     const authentication: Authentication = useNullishContext(AuthenticationContext)
@@ -32,6 +33,11 @@ export function Settings(): ReactElement {
     const topbar: Topbar = useNullishContext(TopbarContext)
     const settings: ManagedResource<SettingsApiResource> = useNullishContext(SettingsContext)
     const { meals, userGroups, visibleUserGroups, mealCategories }: Partial<GlobalAppData> = useNullishContext(GlobalAppDataContext)
+
+    const systemSettingsCollapsed: boolean = useStateCache(state => state.systemSettingsCollapsed)
+    const toggleSystemSettingsCollapsed = useCallback((): void => {
+        stateCacheStore.getState().toggle("systemSettingsCollapsed")
+    }, [])
 
     useScrollCache("settings")
 
@@ -91,11 +97,12 @@ export function Settings(): ReactElement {
 
             <Spacer height="6" />
 
-            <OuterCard>
-                <CardHeading size="text-xl" className="ml-2">Systemverwaltung</CardHeading>
-
-                <Spacer height="4" />
-
+            <CollapsibleCard
+                cardComponent={OuterCard}
+                heading={<CardHeading size="text-xl" className="ml-2">Systemverwaltung</CardHeading>}
+                collapsed={systemSettingsCollapsed}
+                onCollapse={toggleSystemSettingsCollapsed}
+            >
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
                     heading: <CardHeading size="text-md" className="font-bold">Benutzergruppen verwalten</CardHeading>,
@@ -127,7 +134,7 @@ export function Settings(): ReactElement {
                 }}>
                     <AppInformationSettingsModule />
                 </CollapsibleCard>
-            </OuterCard>
+            </CollapsibleCard>
         </StandardContentWrapper>
     )
 }
