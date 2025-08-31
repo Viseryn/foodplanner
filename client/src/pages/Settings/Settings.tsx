@@ -16,6 +16,7 @@ import { AppInformationSettingsModule } from "@/pages/Settings/components/AppInf
 import { HomepageSettingsModule } from "@/pages/Settings/components/HomepageSettingsModule"
 import { MealCategorySettingsModule } from "@/pages/Settings/components/MealCategorySettingsModule"
 import { PantrySettingsModule } from "@/pages/Settings/components/PantrySettingsModule"
+import { StandardUserGroupSettingsModule } from "@/pages/Settings/components/StandardUserGroupSettingsModule"
 import { UserGroupsSettingsModule } from "@/pages/Settings/components/UserGroupsSettingsModule"
 import { UserListSettingsModule } from "@/pages/Settings/components/UserListSettingsModule"
 import { UserSettingsSettingsModule } from "@/pages/Settings/components/UserSettingsSettingsModule"
@@ -64,6 +65,17 @@ export function Settings(): ReactElement {
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
+                    heading: <CardHeading size="text-md" className="font-bold">Startseite</CardHeading>,
+                }}>
+                    <HomepageSettingsModule
+                        settings={settings}
+                    />
+                </CollapsibleCard>
+
+                <Spacer height="6" />
+
+                <CollapsibleCard {...{
+                    cardComponent: InnerCard,
                     heading: <CardHeading size="text-md" className="font-bold">Vorratskammer anzeigen</CardHeading>,
                 }}>
                     <PantrySettingsModule
@@ -87,9 +99,10 @@ export function Settings(): ReactElement {
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Startseite</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">Standardgruppe für Mahlzeiten</CardHeading>,
                 }}>
-                    <HomepageSettingsModule
+                    <StandardUserGroupSettingsModule
+                        userGroups={visibleUserGroups}
                         settings={settings}
                     />
                 </CollapsibleCard>

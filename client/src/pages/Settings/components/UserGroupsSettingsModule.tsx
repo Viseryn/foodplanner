@@ -2,7 +2,6 @@ import Button from "@/components/ui/Buttons/Button"
 import IconButton from "@/components/ui/Buttons/IconButton"
 import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
-import { Detached } from "@/types/api/Detached"
 import { Meal } from "@/types/api/Meal"
 import { Settings } from "@/types/api/Settings"
 import { UserGroup } from "@/types/api/UserGroup"
@@ -64,21 +63,6 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
         }
     }
 
-    const handleSetStandardGroup = async (userGroup: UserGroup): Promise<void> => {
-        if (settings.isLoading) {
-            return
-        }
-
-        const settingsPatch: Partial<Detached<Settings>> = { standardUserGroup: userGroup["@id"] }
-
-        // Optimistic feedback
-        settings.setData({ ...settings.data, ...settingsPatch })
-
-        await ApiRequest
-            .patch<Settings>(`/api/users/me/settings`, settingsPatch)
-            .execute()
-    }
-
     const handleEditGroup = (group: UserGroup): void => {
         navigate(`/settings/group/${group.id}/edit`)
     }
@@ -86,11 +70,16 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
     return (
         <>
             <p className="text-sm">
-                Hier kannst du Benutzergruppen verwalten. Jede Mahlzeit, die du einträgst, gehört zu einer
-                Benutzergruppe. Es gibt automatisch angelegte Benutzergruppen für jeden Benutzer und eine
-                "Alle"-Gruppe, die nicht bearbeitbar, aber ausblendbar sind. Du kannst aber auch weitere Benutzergruppen
-                erstellen, bearbeiten und löschen. Außerdem kannst du hier eine Standardgruppe für neue Mahlzeiten
-                einstellen.
+                Hier kannst du alle Benutzergruppen im System verwalten. Benutzergruppen werden bei Mahlzeiten ausgewählt.
+            </p>
+
+            <Spacer height={2} />
+
+            <p className="text-sm">
+                Es gibt eine Benutzergruppe "Alle", zu der jede*r Benutzer*in im System gehört, und für jede*n Benutzer*in gibt es auch eine automatisch
+                angelegte Benutzergruppe. Du kannst Benutzergruppen aus der Oberfläche ausblenden, wenn sie nicht benutzt werden, und ihre Icons bearbeiten.
+
+                Außerdem können neue Benutzergruppen mit beliebigen Benutzer*innen angelegt werden. Diese sind voll konfigurierbar.
             </p>
 
             <Spacer height="4" />
@@ -128,14 +117,6 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                                         disabled={settings.data.standardUserGroup === userGroup["@id"]}
                                     >
                                         {userGroup.hidden ? "visibility_off" : "visibility"}
-                                    </IconButton>
-
-                                    <IconButton
-                                        outlined={settings.data.standardUserGroup !== userGroup["@id"]}
-                                        onClick={() => handleSetStandardGroup(userGroup)}
-                                        disabled={userGroup.hidden}
-                                    >
-                                        favorite
                                     </IconButton>
 
                                     <IconButton
