@@ -35,7 +35,7 @@ export const MealCategorySettingsModule = (props: MealCategorySettingsModuleProp
     return (
         <>
             <p className="text-sm">
-                Hier kannst du auswählen, welche Tageszeit standardmäßig für neue Mahlzeiten ausgewählt ist.
+                Welche Tageszeit soll standardmäßig ausgewählt sein, wenn du eine neue Mahlzeit planst?
             </p>
 
             <Spacer height="4" />
