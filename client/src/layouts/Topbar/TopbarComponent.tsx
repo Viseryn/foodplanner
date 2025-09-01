@@ -83,7 +83,10 @@ export const TopbarComponent = (): ReactElement => {
                 )}
 
                 <div className="flex flex-1 justify-between items-center">
-                    <div className="font-semibold text-primary-200 dark:text-secondary-dark-900 transition-all duration-300 text-xl w-[230px] whitespace-nowrap truncate">
+                    <div className={StringBuilder.cn(
+                        "font-semibold text-primary-200 dark:text-secondary-dark-900 transition-all duration-300 text-xl w-[230px] whitespace-nowrap",
+                        [topbar.truncate, "truncate"]
+                    )}>
                         {TopbarHeadingTitle}
                     </div>
 
