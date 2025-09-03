@@ -1,21 +1,26 @@
 import Button from "@/components/ui/Buttons/Button"
 import Spacer from "@/components/ui/Spacer"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
+import { SettingsTranslations } from "@/pages/Settings/SettingsTranslations"
 import { ReactElement } from "react"
 
-export const UserSettingsSettingsModule = (): ReactElement => (
-    <>
-        <p className="text-sm">
-            Hier kannst du deine Email-Adresse eintragen (z.B. für den Fall, dass du dein Passwort
-            vergessen hast) und dein Passwort erneuern.
-        </p>
+export const UserSettingsSettingsModule = (): ReactElement => {
+    const t: TranslationFunction = useTranslation(SettingsTranslations)
 
-        <Spacer height="6" />
+    return (
+        <>
+            <p className="text-sm">
+                {t("user.settings.description")}
+            </p>
 
-        <Button
-            role="secondary"
-            location="/settings/user"
-            label="Benutzereinstellungen öffnen"
-            icon="settings_account_box"
-        />
-    </>
-)
+            <Spacer height="6" />
+
+            <Button
+                role="secondary"
+                location="/settings/user"
+                label={t("user.settings.button")}
+                icon="settings_account_box"
+            />
+        </>
+    )
+}

@@ -2,6 +2,8 @@ import IconButton from "@/components/ui/Buttons/IconButton"
 import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
 import { useApiResourceCollection } from "@/hooks/useApiResourceCollection"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
+import { SettingsTranslations } from "@/pages/Settings/SettingsTranslations"
 import { User } from "@/types/api/User"
 import { Authentication } from "@/types/Authentication"
 import { ManagedResourceCollection } from "@/types/ManagedResourceCollection"
@@ -15,6 +17,7 @@ type UserListSettingsModuleProps = {
 
 export const UserListSettingsModule = (props: UserListSettingsModuleProps): ReactElement => {
     const navigate: NavigateFunction = useNavigate()
+    const t: TranslationFunction = useTranslation(SettingsTranslations)
 
     // "active" and "email" are not returned by this endpoint, so they have to be omitted
     const users: ManagedResourceCollection<Omit<User, "active" | "email">> = useApiResourceCollection("/api/users", true)
@@ -25,7 +28,7 @@ export const UserListSettingsModule = (props: UserListSettingsModuleProps): Reac
 
     return (
         <>
-            <p className="text-sm">Folgende Benutzer sind im System vorhanden:</p>
+            <p className="text-sm">{t("users.description")}</p>
 
             <Spacer height="4" />
 

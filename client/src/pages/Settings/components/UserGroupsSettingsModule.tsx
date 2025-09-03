@@ -2,6 +2,8 @@ import Button from "@/components/ui/Buttons/Button"
 import IconButton from "@/components/ui/Buttons/IconButton"
 import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
+import { SettingsTranslations } from "@/pages/Settings/SettingsTranslations"
 import { Meal } from "@/types/api/Meal"
 import { Settings } from "@/types/api/Settings"
 import { UserGroup } from "@/types/api/UserGroup"
@@ -23,6 +25,7 @@ type UserGroupsSettingsModuleProps = {
 export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): ReactElement => {
     const { userGroups, visibleUserGroups, meals, settings } = props
     const navigate = useNavigate()
+    const t: TranslationFunction = useTranslation(SettingsTranslations)
 
     const [isLoading, setLoading] = useState<ComponentLoadingState>(ComponentLoadingState.WAITING)
 
@@ -70,16 +73,13 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
     return (
         <>
             <p className="text-sm">
-                Hier kannst du alle Benutzergruppen im System verwalten. Benutzergruppen werden bei Mahlzeiten ausgewählt.
+                {t("usergroups.description.1")}
             </p>
 
             <Spacer height={2} />
 
             <p className="text-sm">
-                Es gibt eine Benutzergruppe "Alle", zu der jede*r Benutzer*in im System gehört, und für jede*n Benutzer*in gibt es auch eine automatisch
-                angelegte Benutzergruppe. Du kannst Benutzergruppen aus der Oberfläche ausblenden, wenn sie nicht benutzt werden, und ihre Icons bearbeiten.
-
-                Außerdem können neue Benutzergruppen mit beliebigen Benutzer*innen angelegt werden. Diese sind voll konfigurierbar.
+                {t("usergroups.description.2")}
             </p>
 
             <Spacer height="4" />
@@ -93,7 +93,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                             <div key={userGroup.id} className="p-2 rounded-2xl transition duration-300 hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40">
                                 <div className="flex items-center">
                                     <span className="material-symbols-rounded mr-4">{userGroup.icon}</span>
-                                    {userGroup.name}
+                                    {userGroup.name === "Alle" ? t(`global.usergroup.${userGroup.name}`) : userGroup.name}
                                     &nbsp;
                                     {(userGroup.users.length > 1 || !userGroup.readonly) &&
                                         <>({userGroup.users.map(user => user.username).join(', ')})</>
@@ -136,7 +136,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                         <Button
                             role="secondary"
                             location="/settings/groups/add"
-                            label="Neue Gruppe hinzufügen"
+                            label={t("usergroups.button.add")}
                             icon="add"
                             isSmall={true}
                         />

@@ -1,6 +1,8 @@
 import { SwitchWidget } from "@/components/form/SwitchWidget"
 import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
+import { SettingsTranslations } from "@/pages/Settings/SettingsTranslations"
 import { Settings } from "@/types/api/Settings"
 import { SwitchValue } from "@/types/enums/SwitchValue"
 import { Form } from "@/types/forms/Form"
@@ -15,6 +17,8 @@ type PantrySettingsModuleProps = {
 }
 
 export const PantrySettingsModule = ({ settings }: PantrySettingsModuleProps): ReactElement => {
+    const t: TranslationFunction = useTranslation(SettingsTranslations)
+
     const [formData, setFormData]
         = useState<Form & { showPantry: SwitchValue }>({ showPantry: OFF })
 
@@ -40,8 +44,7 @@ export const PantrySettingsModule = ({ settings }: PantrySettingsModuleProps): R
     return (
         <>
             <p className="text-sm">
-                Hier kannst du auswählen, ob die Vorratskammer in der Navigationsleiste (links bzw. unten) angezeigt
-                werden soll oder nicht. Damit verbundene Funktionen werden dann ebenfalls ein- oder ausgeblendet.
+                {t("show.pantry.settings.description")}
             </p>
 
             <Spacer height="4" />
@@ -52,7 +55,7 @@ export const PantrySettingsModule = ({ settings }: PantrySettingsModuleProps): R
                 <span onClick={handlePantrySettings}>
                     <SwitchWidget
                         field={"showPantry"}
-                        displayedText={`Vorratskammer wird ${!settings.data.showPantry ? "nicht angezeigt" : "angezeigt"}`}
+                        displayedText={settings.data.showPantry ? t("show.pantry.switch.label.true") : t("show.pantry.switch.label.false")}
                         formData={formData}
                         setFormData={setFormData}
                     />
