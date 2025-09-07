@@ -10,6 +10,7 @@ import { useNullishContext } from "@/hooks/useNullishContext"
 import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { useScrollCache } from "@/hooks/useScrollCache"
 import useTimeout from "@/hooks/useTimeout"
+import { motion } from "motion/react"
 import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
 import { Meal } from "@/types/api/Meal"
@@ -127,9 +128,9 @@ export const Planner = (): ReactElement => {
 
     // Map the number of columns to each media query selector
     const mediaColumnMap: Map<string, number> = new Map()
-    mediaColumnMap.set('md', 3)
-    mediaColumnMap.set('lg', 5)
-    mediaColumnMap.set('xl', 5)
+    mediaColumnMap.set("md", 3)
+    mediaColumnMap.set("lg", 5)
+    mediaColumnMap.set("xl", 5)
 
     // Calculate the width of a container for the carousel
     const calculateWidth = (visibleItems: number, gap: number): number => {
@@ -144,35 +145,47 @@ export const Planner = (): ReactElement => {
     })
 
     // Render Planner component
-    return <div className={`pb-24 md:pb-4 w-full`} style={mediumStyle.get(medium)}>
-        <Spacer height="6" />
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: [0, 0.71, 0.2, 1.01],
+            }}
+        >
+            <div className={`pb-24 md:pb-4 w-full`} style={mediumStyle.get(medium)}>
+                <Spacer height="6" />
 
-        {mediaColumnMap.has(medium) ? ( /* Desktop view (>= md) */
-            meals.isLoading ? (
-                <DaySkeletonDesktop gap={gap} columns={mediaColumnMap.get(medium)!} />
-            ) : (
-                <OuterCard>
-                    <Carousel visibleItems={mediaColumnMap.get(medium)} gap={gap} translation={160 + gap * 4}>
-                        {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
-                            <DayCardDesktop key={entry[0]} mapEntry={entry} />
-                        )}
-                    </Carousel>
-                </OuterCard>
-            )
-        ) : ( /* Mobile view (<= sm) */
-            meals.isLoading ? (
-                <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
-                    <DaySkeletonMobile />
-                    <DaySkeletonMobile />
-                    <DaySkeletonMobile />
-                </div>
-            ) : (
-                <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
-                    {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
-                        <DayCardMobile key={entry[0]} mapEntry={entry} />
-                    )}
-                </div>
-            )
-        )}
-    </div>
+                {mediaColumnMap.has(medium) ? ( /* Desktop view (>= md) */
+                    meals.isLoading ? (
+                        <DaySkeletonDesktop gap={gap} columns={mediaColumnMap.get(medium)!} />
+                    ) : (
+                        <OuterCard>
+                            <Carousel visibleItems={mediaColumnMap.get(medium)} gap={gap} translation={160 + gap * 4}>
+                                {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
+                                    <DayCardDesktop key={entry[0]} mapEntry={entry} />,
+                                )}
+                            </Carousel>
+                        </OuterCard>
+                    )
+                ) : ( /* Mobile view (<= sm) */
+                    meals.isLoading ? (
+                        <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
+                            <DaySkeletonMobile />
+                            <DaySkeletonMobile />
+                            <DaySkeletonMobile />
+                        </div>
+                    ) : (
+                        <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
+                            {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
+                                <DayCardMobile key={entry[0]} mapEntry={entry} />,
+                            )}
+                        </div>
+                    )
+                )}
+            </div>
+        </motion.div>
+    )
 }
