@@ -208,11 +208,15 @@ export function AddMeal(): ReactElement {
                                             setFormData={setFormData}
                                             options={setChecked(getFormOptions(dayOptions), id)}
                                             required={true}
-                                            gridStyling={`grid grid-cols-5 gap-2`}
+                                            gridStyling={`grid grid-cols-5 gap-1`}
                                             optionLabelMapper={option => (
                                                 <label
                                                     htmlFor={option.id}
-                                                    className="cursor-pointer rounded-xl h-12 transition duration-300 flex flex-col justify-center items-center active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-300 peer-checked:border-secondary-200 dark:border-secondary-dark-300 dark:peer-checked:border-secondary-dark-200"
+                                                    className={"cursor-pointer rounded-lg peer-checked:rounded-full h-12 transition duration-300 flex " +
+                                                        "flex-col active:scale-95 justify-center items-center text-primary-100 dark:text-primary-dark-100 " +
+                                                        "peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
+                                                        "bg-secondary-200 dark:bg-secondary-dark-200 " +
+                                                        "peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200"}
                                                 >
                                                     <span className="text-sm font-semibold">{option.icon}</span>
                                                     <span className="text-xs">{option.label}</span>
@@ -324,29 +328,33 @@ export function AddMeal(): ReactElement {
                                                 .filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())),
                                         }, RecipeOption)), `/api/recipes/${searchParams.get("recipe")}`)}
                                         required={true}
-                                        gridStyling={`grid grid-cols-2 gap-2`}
+                                        gridStyling={`grid grid-cols-2 gap-1`}
                                         optionLabelMapper={(option: RadioOption) => {
                                             const optionRecipe: Recipe = recipes.data.filter(recipe => recipe["@id"] === option.value)[0]
                                             return (
                                                 <label
                                                     htmlFor={option.id}
-                                                    className="flex flex-row items-center pr-2 cursor-pointer rounded-xl h-12 font-[500] w-full transition duration-300 active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200 dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200 dark:peer-checked:bg-secondary-dark-200 border border-secondary-300 peer-checked:border-secondary-200 dark:border-secondary-dark-300 dark:peer-checked:border-secondary-dark-200"
+                                                    className={"p-2 flex flex-row items-center cursor-pointer rounded-lg peer-checked:rounded-full h-full" +
+                                                        " active:scale-95 font-[500] w-full transition duration-300 text-primary-100" +
+                                                        " dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 " +
+                                                        " peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
+                                                        " peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200"}
                                                     onClick={() => {
                                                         setSelectedRecipe(optionRecipe.id)
                                                         setState(PageState.WAITING) // Removes a warning
                                                     }}
                                                 >
                                                     <img
-                                                        className="rounded-xl min-h-12 h-12 min-w-12 w-12 object-cover transition duration-300"
+                                                        className="rounded-full h-14 w-14 object-cover transition duration-300 border-secondary-100 border-2 "
                                                         src={optionRecipe.image ? (apiClient.defaults.baseURL + optionRecipe.image?.directory + "THUMBNAIL__" + optionRecipe.image?.filename) : "/img/default.jpg"}
                                                         alt={optionRecipe.title}
                                                     />
-                                                    <div className="flex flex-1 justify-between overflow-hidden text-ellipsis">
-                                                        <div className="px-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                                                    <div className="flex flex-1 justify-between items-center overflow-hidden">
+                                                        <div className="pl-2 overflow-hidden text-ellipsis">
                                                             {option.label}
                                                         </div>
                                                         {user.data?.recipeFavorites.includes(option.value as Iri<Recipe>) && (
-                                                            <span className="material-symbols-rounded text-base">star</span>
+                                                            <span className="material-symbols-rounded text-base pl-1">star</span>
                                                         )}
                                                     </div>
                                                 </label>

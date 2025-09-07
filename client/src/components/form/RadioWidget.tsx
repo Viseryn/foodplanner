@@ -18,16 +18,18 @@ type RadioWidgetProps<T extends Form> = FormWidgetProps<T> & {
 export const RadioWidget = <T extends Form>(props: RadioWidgetProps<T>): ReactElement => {
     validateFormWidgetProps(props)
 
-    const gridStyling = props.gridStyling ?? `flex flex-wrap justify-between gap-2`
+    const gridStyling = props.gridStyling ?? `flex flex-wrap justify-between gap-1`
 
     const defaultOptionLabelMapper: OptionLabelMapper = option => (
         <label
             htmlFor={option.id}
             className={StringBuilder.cn(
-                "cursor-pointer overflow-ellipsis rounded-xl h-9 px-2 font-semibold text-sm transition duration-300 flex items-center",
-                "active:scale-95 text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100 hover:bg-secondary-200",
-                "dark:hover:bg-secondary-dark-200 peer-checked:bg-secondary-200  dark:peer-checked:bg-secondary-dark-200 -dark:peer-checked:text-blue-800",
-                "border border-secondary-300 peer-checked:border-secondary-200 dark:border-secondary-dark-300 dark:peer-checked:border-secondary-dark-200"
+                "cursor-pointer overflow-ellipsis rounded-lg peer-checked:rounded-full h-9 px-2 font-semibold text-sm transition",
+                "duration-300 flex items-center active:scale-95",
+                "text-primary-100 dark:text-primary-dark-100 bg-secondary-100 dark:bg-secondary-dark-100",
+                "peer-checked:text-white dark:peer-checked:text-primary-dark-100",
+                "bg-secondary-200 dark:bg-secondary-dark-200",
+                "peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200",
             )}
         >
             <span className="material-symbols-rounded">{option.icon}</span>
