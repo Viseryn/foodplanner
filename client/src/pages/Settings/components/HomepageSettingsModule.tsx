@@ -1,6 +1,8 @@
 import IconButton from "@/components/ui/Buttons/IconButton"
 import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
+import { useTranslation } from "@/hooks/useTranslation"
+import { SettingsTranslations } from "@/pages/Settings/SettingsTranslations"
 import { Detached } from "@/types/api/Detached"
 import { Settings } from "@/types/api/Settings"
 import { HOMEPAGE_CONFIGS } from "@/types/constants/HOMEPAGE_CONFIGS"
@@ -54,7 +56,7 @@ export const HomepageSettingsModule = (props: HomepageSettingsModuleProps): Reac
     return (
         <>
             <p className="text-sm">
-                Hier kannst du die Startseite von FoodPlanner einstellen.
+                {useTranslation(SettingsTranslations)("homepage.settings.description")}
             </p>
 
             <Spacer height="4" />

@@ -2,7 +2,8 @@ import Button from "@/components/ui/Buttons/Button"
 import IconButton from "@/components/ui/Buttons/IconButton"
 import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
-import { Detached } from "@/types/api/Detached"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
+import { SettingsTranslations } from "@/pages/Settings/SettingsTranslations"
 import { Meal } from "@/types/api/Meal"
 import { Settings } from "@/types/api/Settings"
 import { UserGroup } from "@/types/api/UserGroup"
@@ -24,6 +25,7 @@ type UserGroupsSettingsModuleProps = {
 export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): ReactElement => {
     const { userGroups, visibleUserGroups, meals, settings } = props
     const navigate = useNavigate()
+    const t: TranslationFunction = useTranslation(SettingsTranslations)
 
     const [isLoading, setLoading] = useState<ComponentLoadingState>(ComponentLoadingState.WAITING)
 
@@ -64,21 +66,6 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
         }
     }
 
-    const handleSetStandardGroup = async (userGroup: UserGroup): Promise<void> => {
-        if (settings.isLoading) {
-            return
-        }
-
-        const settingsPatch: Partial<Detached<Settings>> = { standardUserGroup: userGroup["@id"] }
-
-        // Optimistic feedback
-        settings.setData({ ...settings.data, ...settingsPatch })
-
-        await ApiRequest
-            .patch<Settings>(`/api/users/me/settings`, settingsPatch)
-            .execute()
-    }
-
     const handleEditGroup = (group: UserGroup): void => {
         navigate(`/settings/group/${group.id}/edit`)
     }
@@ -86,11 +73,13 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
     return (
         <>
             <p className="text-sm">
-                Hier kannst du Benutzergruppen verwalten. Jede Mahlzeit, die du einträgst, gehört zu einer
-                Benutzergruppe. Es gibt automatisch angelegte Benutzergruppen für jeden Benutzer und eine
-                "Alle"-Gruppe, die nicht bearbeitbar, aber ausblendbar sind. Du kannst aber auch weitere Benutzergruppen
-                erstellen, bearbeiten und löschen. Außerdem kannst du hier eine Standardgruppe für neue Mahlzeiten
-                einstellen.
+                {t("usergroups.description.1")}
+            </p>
+
+            <Spacer height={2} />
+
+            <p className="text-sm">
+                {t("usergroups.description.2")}
             </p>
 
             <Spacer height="4" />
@@ -104,7 +93,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                             <div key={userGroup.id} className="p-2 rounded-2xl transition duration-300 hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40">
                                 <div className="flex items-center">
                                     <span className="material-symbols-rounded mr-4">{userGroup.icon}</span>
-                                    {userGroup.name}
+                                    {userGroup.name === "Alle" ? t(`global.usergroup.${userGroup.name}`) : userGroup.name}
                                     &nbsp;
                                     {(userGroup.users.length > 1 || !userGroup.readonly) &&
                                         <>({userGroup.users.map(user => user.username).join(', ')})</>
@@ -131,14 +120,6 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                                     </IconButton>
 
                                     <IconButton
-                                        outlined={settings.data.standardUserGroup !== userGroup["@id"]}
-                                        onClick={() => handleSetStandardGroup(userGroup)}
-                                        disabled={userGroup.hidden}
-                                    >
-                                        favorite
-                                    </IconButton>
-
-                                    <IconButton
                                         outlined={true}
                                         onClick={() => handleEditGroup(userGroup)}
                                     >
@@ -155,7 +136,7 @@ export const UserGroupsSettingsModule = (props: UserGroupsSettingsModuleProps): 
                         <Button
                             role="secondary"
                             location="/settings/groups/add"
-                            label="Neue Gruppe hinzufügen"
+                            label={t("usergroups.button.add")}
                             icon="add"
                             isSmall={true}
                         />

@@ -19,7 +19,7 @@ export default function DayCardDesktop({ mapEntry }: {
     const [dateKey, meals] = mapEntry
     const date: Date = new Date(dateKey)
 
-    return <div className="flex flex-col gap-2 w-40">
+    return <div className="flex flex-col gap-1 w-40">
         <div className="flex justify-between items-center pb-2">
             <Heading size="lg" style="pl-2">
                 {getWeekday(date)},<br />

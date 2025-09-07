@@ -2,6 +2,7 @@ import Spacer from "@/components/ui/Spacer"
 import { MainViewWidthContext } from "@/context/MainViewWidthContext"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { StringBuilder } from "@/util/StringBuilder"
+import { motion } from "motion/react"
 import { ReactElement, ReactNode } from "react"
 
 /**
@@ -17,9 +18,19 @@ export const StandardContentWrapper = ({ children, className }: {
     const mainViewWidth: string = useNullishContext(MainViewWidthContext).mainViewWidth
 
     return (
-        <div className={StringBuilder.cn(`mx-4 pb-24 md:mx-0 md:pb-4`, mainViewWidth, className)}>
-            <Spacer height="6" />
-            {children}
-        </div>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: [0, 0.71, 0.2, 1.01],
+            }}
+        >
+            <div className={StringBuilder.cn(`mx-4 pb-24 md:mx-0 md:pb-4`, mainViewWidth, className)}>
+                <Spacer height="6" />
+                {children}
+            </div>
+        </motion.div>
     )
 }

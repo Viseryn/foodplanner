@@ -10,46 +10,56 @@ import { SidebarContext } from "@/context/SidebarContext"
 import { TopbarContext } from "@/context/TopbarContext"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { useScrollCache } from "@/hooks/useScrollCache"
+import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
 import { AppInformationSettingsModule } from "@/pages/Settings/components/AppInformationSettingsModule"
 import { HomepageSettingsModule } from "@/pages/Settings/components/HomepageSettingsModule"
 import { MealCategorySettingsModule } from "@/pages/Settings/components/MealCategorySettingsModule"
 import { PantrySettingsModule } from "@/pages/Settings/components/PantrySettingsModule"
+import { StandardUserGroupSettingsModule } from "@/pages/Settings/components/StandardUserGroupSettingsModule"
 import { UserGroupsSettingsModule } from "@/pages/Settings/components/UserGroupsSettingsModule"
 import { UserListSettingsModule } from "@/pages/Settings/components/UserListSettingsModule"
 import { UserSettingsSettingsModule } from "@/pages/Settings/components/UserSettingsSettingsModule"
+import { SettingsTranslations } from "@/pages/Settings/SettingsTranslations"
 import { Settings as SettingsApiResource } from "@/types/api/Settings"
 import { Authentication } from "@/types/Authentication"
 import { GlobalAppData } from "@/types/GlobalAppData"
 import { ManagedResource } from "@/types/ManagedResource"
 import { Sidebar } from "@/types/sidebar/Sidebar"
 import { Topbar } from "@/types/topbar/Topbar"
-import { ReactElement, useEffect } from "react"
+import { ReactElement, useCallback, useEffect } from "react"
 
 export function Settings(): ReactElement {
+    const t: TranslationFunction = useTranslation(SettingsTranslations)
     const authentication: Authentication = useNullishContext(AuthenticationContext)
     const sidebar: Sidebar = useNullishContext(SidebarContext)
     const topbar: Topbar = useNullishContext(TopbarContext)
     const settings: ManagedResource<SettingsApiResource> = useNullishContext(SettingsContext)
     const { meals, userGroups, visibleUserGroups, mealCategories }: Partial<GlobalAppData> = useNullishContext(GlobalAppDataContext)
 
+    const systemSettingsCollapsed: boolean = useStateCache(state => state.systemSettingsCollapsed)
+    const toggleSystemSettingsCollapsed = useCallback((): void => {
+        stateCacheStore.getState().toggle("systemSettingsCollapsed")
+    }, [])
+
     useScrollCache("settings")
 
     useEffect(() => {
         sidebar.useDefault()
-        topbar.useDefault("Einstellungen")
+        topbar.useDefault(t("topbar.title"))
     }, [])
 
     return (
         <StandardContentWrapper className={"md:max-w-[700px]"}>
             <OuterCard>
-                <CardHeading size="text-xl">Persönliche Einstellungen</CardHeading>
+                <CardHeading size="text-xl">{t("personal.settings.card.title")}</CardHeading>
 
                 <Spacer height="4" />
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Benutzereinstellungen</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("user.settings.card.title")}</CardHeading>,
                 }}>
                     <UserSettingsSettingsModule />
                 </CollapsibleCard>
@@ -58,7 +68,18 @@ export function Settings(): ReactElement {
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Vorratskammer anzeigen</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("homepage.settings.card.title")}</CardHeading>,
+                }}>
+                    <HomepageSettingsModule
+                        settings={settings}
+                    />
+                </CollapsibleCard>
+
+                <Spacer height="6" />
+
+                <CollapsibleCard {...{
+                    cardComponent: InnerCard,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("show.pantry.settings.card.title")}</CardHeading>,
                 }}>
                     <PantrySettingsModule
                         settings={settings}
@@ -69,7 +90,7 @@ export function Settings(): ReactElement {
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Standardzeit für Mahlzeiten</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("standard.mealcategory.card.title")}</CardHeading>,
                 }}>
                     <MealCategorySettingsModule
                         mealCategories={mealCategories}
@@ -81,9 +102,10 @@ export function Settings(): ReactElement {
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Startseite</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("standard.usergroup.card.title")}</CardHeading>,
                 }}>
-                    <HomepageSettingsModule
+                    <StandardUserGroupSettingsModule
+                        userGroups={visibleUserGroups}
                         settings={settings}
                     />
                 </CollapsibleCard>
@@ -91,14 +113,15 @@ export function Settings(): ReactElement {
 
             <Spacer height="6" />
 
-            <OuterCard>
-                <CardHeading size="text-xl" className="ml-2">Systemverwaltung</CardHeading>
-
-                <Spacer height="4" />
-
+            <CollapsibleCard
+                cardComponent={OuterCard}
+                heading={<CardHeading size="text-xl" className="ml-2">{t("system.settings.card.title")}</CardHeading>}
+                collapsed={systemSettingsCollapsed}
+                onCollapse={toggleSystemSettingsCollapsed}
+            >
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Benutzergruppen verwalten</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("usergroups.card.title")}</CardHeading>,
                 }}>
                     <UserGroupsSettingsModule
                         userGroups={userGroups}
@@ -112,7 +135,7 @@ export function Settings(): ReactElement {
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Benutzer verwalten</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("users.card.title")}</CardHeading>,
                 }}>
                     <UserListSettingsModule
                         authentication={authentication}
@@ -123,11 +146,11 @@ export function Settings(): ReactElement {
 
                 <CollapsibleCard {...{
                     cardComponent: InnerCard,
-                    heading: <CardHeading size="text-md" className="font-bold">Versionsinformationen</CardHeading>,
+                    heading: <CardHeading size="text-md" className="font-bold">{t("version.info.card.title")}</CardHeading>,
                 }}>
                     <AppInformationSettingsModule />
                 </CollapsibleCard>
-            </OuterCard>
+            </CollapsibleCard>
         </StandardContentWrapper>
     )
 }

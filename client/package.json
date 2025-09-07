@@ -1,6 +1,6 @@
 {
     "name": "foodplanner",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "author": "Kevin Sporbeck",
     "type": "module",
     "license": "UNLICENSED",
@@ -20,6 +20,7 @@
         "axios": "^1.7.9",
         "flowbite-react": "^0.10.2",
         "fraction.js": "^5.2.1",
+        "motion": "^12.23.12",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-router-dom": "^7.1.5",

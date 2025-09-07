@@ -11,6 +11,9 @@ type StateCache = {
     /** Whether the instruction list in a recipe is collapsed. */
     recipeInstructionsCollapsed: boolean
 
+    /** Whether the system settings in the settings page are collapsed. */
+    systemSettingsCollapsed: boolean
+
     /** Whether only favorite recipes should be shown in the recipe list. */
     onlyShowFavoriteRecipes: boolean
 
@@ -36,6 +39,8 @@ export const stateCacheStore: StoreApi<StateCache> = createStore<StateCache>((se
     recipeIngredientsCollapsed: false,
 
     recipeInstructionsCollapsed: false,
+
+    systemSettingsCollapsed: true,
 
     onlyShowFavoriteRecipes: false,
 

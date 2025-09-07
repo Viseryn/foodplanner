@@ -10,7 +10,7 @@ export const TopbarActionButtons = (style: string = ""): ReactElement => {
     const topbar: Topbar = useNullishContext(TopbarContext)
 
     return (
-        <div className={`flex gap-2 ${style}`}>
+        <div className={`flex space-x-2 ${style}`}>
             {topbar.actionButtons.map((button, index) =>
                 <IconButton
                     key={index}
@@ -21,7 +21,6 @@ export const TopbarActionButtons = (style: string = ""): ReactElement => {
                 </IconButton>,
             )}
 
-            {/* TODO: Darkmode!!!*/}
             {topbar.dropdownMenuItems.length > 0 && (
                 <Menu>
                     <MenuButton className="focus:outline-none">
@@ -36,9 +35,9 @@ export const TopbarActionButtons = (style: string = ""): ReactElement => {
                         {topbar.dropdownMenuItems.map((dropdownMenuItem: TopbarDropdownMenuItem, index: number) =>
                             <MenuItem key={index}>
                                 <div onClick={dropdownMenuItem.onClick} className="flex items-center gap-4 h-10 p-2 rounded-xl hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40 cursor-pointer transition duration-300">
-                                        <span className={`material-symbols-rounded text-balance ${!dropdownMenuItem.filled ? "outlined" : ""}`}>
-                                            {dropdownMenuItem.icon}
-                                        </span>
+                                    <span className={`material-symbols-rounded text-balance ${!dropdownMenuItem.filled ? "outlined" : ""}`}>
+                                        {dropdownMenuItem.icon}
+                                    </span>
                                     {dropdownMenuItem.label}
                                 </div>
                             </MenuItem>,
