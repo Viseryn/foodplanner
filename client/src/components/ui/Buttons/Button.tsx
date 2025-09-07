@@ -151,8 +151,8 @@ const buttonStyle = (
         noLabel: "p-2",
         elevated: "shadow-xl active:shadow-xl",
         elevatedTertiary: "border border-gray-100 dark:border-[#252f38]",
-        floating: "fixed bottom-[6.5rem] right-6 md:right-0 z-[60] md:relative md:bottom-0 !text-primary-100 !dark:text-primary-dark-100 !bg-secondary-200" +
-            " !dark:bg-secondary-dark-200 !hover:bg-secondary-300 !dark:hover:bg-secondary-dark-300 !rounded-2xl !h-14 !shadow-xl",
+        floating: "fixed bottom-[6.5rem] right-6 md:right-0 z-[60] md:relative md:bottom-0 !text-tertiary-900 dark:!text-tertiary-dark-900 " +
+            "!bg-tertiary-100 dark:!bg-tertiary-dark-100 !rounded-2xl !h-14 !shadow-xl",
         small: "h-10 px-3",
         disabled: "text-notification-600 dark:text-notification-800 bg-notification-500 dark:bg-notification-600 active:!scale-100 cursor-text",
     }
