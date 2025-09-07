@@ -43,10 +43,10 @@ export default function MealTile({ meal, isSmall }: {
 
     // Render MealTile
     return (
-        <div className={`h-40 ${widthStyle} rounded-2xl transition duration-300`}>
-            <div className="relative group">
+        <div className={`h-40 ${widthStyle} group transition duration-300`}>
+            <div className="relative">
                 <img
-                    className={`rounded-2xl h-40 ${widthStyle} object-cover brightness-[.7]`}
+                    className={`h-40 ${widthStyle} object-cover brightness-[.7] rounded-lg group-first-of-type:rounded-t-3xl group-last-of-type:rounded-b-3xl`}
                     src={recipe.image?.filename != null
                         ? apiClient.defaults.baseURL + recipe.image?.directory + 'THUMBNAIL__' + recipe.image?.filename
                         : '/img/default.jpg'

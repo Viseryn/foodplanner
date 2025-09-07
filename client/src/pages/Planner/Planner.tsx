@@ -111,7 +111,7 @@ export const Planner = (): ReactElement => {
                    icon: showSabDone ? "done" : "add_shopping_cart",
                    label: showSabDone
                        ? "Erledigt!" + (countSabClicks > 1 ? ` (${countSabClicks})` : "")
-                       : "Zur Einkaufsliste",
+                       : "Alles auf die Einkaufsliste",
                    onClick: handleAddShoppingList,
                })
                .rebuild()
@@ -162,7 +162,7 @@ export const Planner = (): ReactElement => {
                     meals.isLoading ? (
                         <DaySkeletonDesktop gap={gap} columns={mediaColumnMap.get(medium)!} />
                     ) : (
-                        <OuterCard>
+                        <OuterCard className={"!rounded-3xl"}>
                             <Carousel visibleItems={mediaColumnMap.get(medium)} gap={gap} translation={160 + gap * 4}>
                                 {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
                                     <DayCardDesktop key={entry[0]} mapEntry={entry} />,
@@ -178,7 +178,7 @@ export const Planner = (): ReactElement => {
                             <DaySkeletonMobile />
                         </div>
                     ) : (
-                        <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
+                        <div className="pb-[5.5rem] mx-4 flex flex-col gap-1">
                             {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
                                 <DayCardMobile key={entry[0]} mapEntry={entry} />,
                             )}
