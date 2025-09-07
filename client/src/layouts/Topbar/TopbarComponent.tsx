@@ -39,9 +39,9 @@ export const TopbarComponent = (): ReactElement => {
     // The topbar for large screens (md+). Hidden on small screens.
     const TopbarLargeScreens: ReactElement = (
         <div className={StringBuilder.cn(
-            "hidden transition-all duration-500 md:fixed z-20 bg-bg dark:bg-bg-dark md:flex justify-between items-center w-[calc(100%-7rem)] h-[5.5rem] pt-6 pb-2",
+            "hidden transition-all duration-500 md:fixed z-[100] bg-bg dark:bg-bg-dark md:flex justify-between items-center w-[calc(100%-7rem)] h-[5.5rem]",
+            "pt-6 pb-2",
             mainViewWidth.length > 0 ? mainViewWidth : "md:max-w-[1000px]",
-            [scrollPosition > 0, "shadow-[0_10px_5px_-5px_rgba(0,0,0,0.1)]"],
         )}>
             <div>
                 {topbar.backButton.isVisible
@@ -61,7 +61,6 @@ export const TopbarComponent = (): ReactElement => {
         <>
             <div className={StringBuilder.cn(
                 "md:hidden w-full h-[4.5rem] pl-2 flex gap-4 justify-start items-center fixed z-20 bg-bg dark:bg-bg-dark transition-all duration-500",
-                [scrollPosition > 0, "shadow-lg"],
             )}>
                 {topbar.backButton.isVisible ? (
                     <Link
