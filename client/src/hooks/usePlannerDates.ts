@@ -3,7 +3,9 @@ import { UserContext } from "@/context/UserContext"
 import { findEntityByIri } from "@/hooks/findEntityByIri"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { useStateCache } from "@/hooks/useStateCache"
+import { Iri } from "@/types/api/Iri"
 import { Meal } from "@/types/api/Meal"
+import { MealCategory } from "@/types/api/MealCategory"
 import { User } from "@/types/api/User"
 import { UserGroup } from "@/types/api/UserGroup"
 import { MAXIMUM_NUMBER_OF_DAYS_IN_PLANNER } from "@/types/constants/MAXIMUM_NUMBER_OF_DAYS_IN_PLANNER"
@@ -21,7 +23,7 @@ import { toId } from "@/util/toId"
  * @returns {Map<DateKey, Meal[]>}
  */
 export const usePlannerDates = (): Map<DateKey, Meal[]> => {
-    const { meals, userGroups }: Pick<GlobalAppData, "meals" | "userGroups"> = useNullishContext(GlobalAppDataContext)
+    const { meals, userGroups, mealCategories }: Pick<GlobalAppData, "meals" | "userGroups" | "mealCategories"> = useNullishContext(GlobalAppDataContext)
     const user: ManagedResource<User> = useNullishContext(UserContext)
 
     const onlyShowOwnMeals: boolean = useStateCache(state => state.onlyShowOwnMeals)
@@ -34,7 +36,7 @@ export const usePlannerDates = (): Map<DateKey, Meal[]> => {
 
     meals
         .data
-        .filter(meal => {
+        .filter((meal: Meal) => {
             const userGroup: Maybe<UserGroup> = findEntityByIri<UserGroup>(meal.userGroup, userGroups)
 
             if (!onlyShowOwnMeals || !userGroup) {
@@ -42,6 +44,13 @@ export const usePlannerDates = (): Map<DateKey, Meal[]> => {
             }
 
             return userGroup.users.map(toId).includes(user.data.id)
+        })
+        .sort((a: Meal, b: Meal) => {
+            const mealCategoryRank = (mealCategory: Iri<MealCategory>): number => {
+                return findEntityByIri(mealCategory, mealCategories)?.id ?? 0
+            }
+
+            return mealCategoryRank(a.mealCategory) - mealCategoryRank(b.mealCategory)
         })
         .forEach((meal: Meal) => {
             const mealDates: Maybe<Meal[]> = dateMealMap.get(dateKeyOf(new Date(meal.date)))
