@@ -30,7 +30,7 @@ export const usePlannerDates = (): Map<DateKey, Meal[]> => {
 
     const dateMealMap: Map<DateKey, Meal[]> = getDefaultDateMealMap()
 
-    if (meals.isLoading || userGroups.isLoading || user.isLoading) {
+    if (meals.isLoading || userGroups.isLoading || mealCategories.isLoading || user.isLoading) {
         return dateMealMap
     }
 
