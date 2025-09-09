@@ -19,6 +19,7 @@ export class ApiRequest<TResponse extends ApiResource> {
         private readonly url: Iri<ApiResource>,
         private readonly requestBody?: unknown,
         private readonly ifSuccessfulCallbackFn?: (() => void) | ((responseData: TResponse) => void),
+        private readonly onErrorCallbackFn?: (error: unknown) => void,
         private readonly customHandler?: (url: Iri<ApiResource>) => Promise<AxiosResponse<TResponse>>,
     ) {
     }
@@ -151,10 +152,12 @@ export class ApiRequest<TResponse extends ApiResource> {
 
             this._responseData = response.data
             this._successful = true
-        } catch (error) {
+        } catch (error: unknown) {
             this._successful = false
 
-            if (axios.isAxiosError(error)) {
+            if (this.onErrorCallbackFn !== undefined) {
+                this.onErrorCallbackFn(error)
+            } else if (axios.isAxiosError(error)) {
                 this._error = error
                 await this.showErrorMessage(this._error)
             }
@@ -163,7 +166,7 @@ export class ApiRequest<TResponse extends ApiResource> {
         return this._successful
     }
 
-    private async showErrorMessage(error?: AxiosError): Promise<void> {
+    public async showErrorMessage(error?: AxiosError): Promise<void> {
         if (error) {
             const swalResponse: Promise<boolean> = swal({
                 dangerMode: true,
