@@ -9,7 +9,9 @@ import useMediaQuery from "@/hooks/useMediaQuery"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { useScrollCache } from "@/hooks/useScrollCache"
+import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
 import useTimeout from "@/hooks/useTimeout"
+import { delay } from "@/util/delay"
 import { motion } from "motion/react"
 import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
@@ -23,7 +25,7 @@ import { StorageIngredient } from "@/types/StorageIngredient"
 import { Topbar } from "@/types/topbar/Topbar"
 import { ApiRequest } from "@/util/ApiRequest"
 import { getHighestPosition } from "@/util/ingredients/getHighestPosition"
-import { ReactElement, useEffect, useState } from "react"
+import { ReactElement, useCallback, useEffect, useState } from "react"
 import DayCardDesktop from "./components/DayCardDesktop"
 import DayCardMobile from "./components/DayCardMobile"
 import DaySkeletonDesktop from "./components/DaySkeletonDesktop"
@@ -34,6 +36,11 @@ export const Planner = (): ReactElement => {
     const topbar: Topbar = useNullishContext(TopbarContext)
     const { meals, recipes, shoppingList }: Pick<GlobalAppData, "meals" | "recipes" | "shoppingList"> = useNullishContext(GlobalAppDataContext)
     const dates: Map<DateKey, Meal[]> = usePlannerDates()
+
+    const onlyShowOwnMeals: boolean = useStateCache(state => state.onlyShowOwnMeals)
+    const toggleOnlyShowOwnMeals = useCallback((): void => {
+        stateCacheStore.getState().toggle("onlyShowOwnMeals")
+    }, [])
 
     // Counts how often the SAB was pressed. Will update the SAB on change.
     const [countSabClicks, setCountSabClicks] = useState<number>(0)
@@ -89,7 +96,7 @@ export const Planner = (): ReactElement => {
 
         await Promise.all(postRequests)
         shoppingList.setData([...ingredientsForShoppingList, ...shoppingList.data])
-        
+
         // Trigger update for the SAB
         setShowSabDone(true)
         setCountSabClicks(count => count + 1)
@@ -117,12 +124,8 @@ export const Planner = (): ReactElement => {
                .rebuild()
     }, [meals.data, meals.isLoading, shoppingList.isLoading, showSabDone, countSabClicks])
 
-    useEffect(() => {
-        topbar.useDefault("Wochenplan")
-    }, [])
-
     useScrollCache("planner")
-    
+
     // Configure carousel
     const gap: number = 5
 
@@ -143,6 +146,23 @@ export const Planner = (): ReactElement => {
     mediaColumnMap.forEach((columns, medium) => {
         mediumStyle.set(medium, { width: `${calculateWidth(columns ?? 0, gap)}px` })
     })
+
+    useEffect(() => {
+        topbar
+            .configuration
+            .title("Wochenplan")
+            .dropdownMenuItems([
+                {
+                    icon: onlyShowOwnMeals ? "group_search" : "person_search",
+                    label: onlyShowOwnMeals ? "Alle Mahlzeiten anzeigen" : "Nur meine Mahlzeiten anzeigen",
+                    onClick: async () => {
+                        await delay(300)
+                        toggleOnlyShowOwnMeals()
+                    },
+                },
+            ])
+            .rebuild()
+    }, [onlyShowOwnMeals])
 
     // Render Planner component
     return (

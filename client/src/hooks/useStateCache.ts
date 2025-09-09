@@ -17,6 +17,9 @@ type StateCache = {
     /** Whether only favorite recipes should be shown in the recipe list. */
     onlyShowFavoriteRecipes: boolean
 
+    /** Whether only meals for the user's own user groups should be shown in the planner. */
+    onlyShowOwnMeals: boolean
+
     /** The vertical scroll positions of pages. */
     scrollPositions: Record<string, number>
 
@@ -43,6 +46,8 @@ export const stateCacheStore: StoreApi<StateCache> = createStore<StateCache>((se
     systemSettingsCollapsed: true,
 
     onlyShowFavoriteRecipes: false,
+
+    onlyShowOwnMeals: false,
 
     scrollPositions: {},
 
