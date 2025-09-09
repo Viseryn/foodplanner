@@ -6,9 +6,7 @@ import { getLocaleDateString } from "@/pages/Planner/util/getLocaleDateString"
 import { getWeekday } from "@/pages/Planner/util/getWeekday"
 import { Meal } from "@/types/api/Meal"
 import { DateKey } from "@/types/DateKey"
-import { StringBuilder } from "@/util/StringBuilder"
 import { ReactElement } from "react"
-import { Link } from "react-router-dom"
 import MealTile from "./MealTile"
 
 /**
@@ -23,27 +21,29 @@ export default function DayCardMobile({ mapEntry }: {
     const [dateKey, meals] = mapEntry
     const date: Date = new Date(dateKey)
 
-    return <OuterCard key={date.toLocaleDateString()} className={"!rounded-lg first:!rounded-t-3xl last:!rounded-b-3xl"}>
-        <Heading size="lg" style={"place-self-center"}>{getWeekday(date)}, {getLocaleDateString(date)}</Heading>
+    return (
+        <OuterCard key={date.toLocaleDateString()} className={"!rounded-lg first:!rounded-t-3xl last:!rounded-b-3xl"}>
+            <Heading size="lg" style={"place-self-center"}>{getWeekday(date)}, {getLocaleDateString(date)}</Heading>
 
-        <Spacer height="4" />
+            <Spacer height="4" />
 
-        <div className="grid grid-cols-1 gap-1 place-items-center">
-            {meals.map(meal =>
-                <MealTile key={meal.id} meal={meal} />,
-            )}
+            <div className="grid grid-cols-1 gap-1 place-items-center">
+                {meals.map(meal =>
+                    <MealTile key={meal.id} meal={meal} />,
+                )}
 
-            <Button
-                label={"Neue Mahlzeit"}
-                icon={"add"}
-                role={"secondary"}
-                location={`/planner/add/${dateKey}`}
-                className={
-                    meals.length > 0
-                        ? "mt-4"
-                        : "h-[7.5rem] w-full !rounded-3xl justify-center"
-                }
-            />
-        </div>
-    </OuterCard>
+                <Button
+                    label={"Neue Mahlzeit"}
+                    icon={"add"}
+                    role={"secondary"}
+                    location={`/planner/add/${dateKey}`}
+                    className={
+                        meals.length > 0
+                            ? "mt-4"
+                            : "h-[7.5rem] w-full !rounded-3xl justify-center"
+                    }
+                />
+            </div>
+        </OuterCard>
+    )
 }

@@ -10,6 +10,7 @@ export class ApiRequestBuilder<TResponse extends ApiResource, TData = never> imp
     private _requestBody?: TData
     private _customHandler?: (url: Iri<ApiResource>) => Promise<AxiosResponse<TResponse>>
     private _ifSuccessfulCallbackFn?: (() => void) | ((responseData: TResponse) => void)
+    private _onErrorCallbackFn?: (error: unknown) => void
 
     private constructor(
         private readonly httpMethod: HttpMethod,
@@ -52,12 +53,18 @@ export class ApiRequestBuilder<TResponse extends ApiResource, TData = never> imp
         return this
     }
 
+    public onError(callbackFn: (error: unknown) => void): ApiRequestBuilder<TResponse, TData> {
+        this._onErrorCallbackFn = callbackFn
+        return this
+    }
+
     public build(): ApiRequest<TResponse> {
         return new ApiRequest<TResponse>(
             this.httpMethod,
             this.url,
             this._requestBody,
             this._ifSuccessfulCallbackFn,
+            this._onErrorCallbackFn,
             this._customHandler,
         )
     }

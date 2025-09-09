@@ -2,7 +2,8 @@ import { usePolling } from "@/hooks/usePolling"
 import { useUnauthenticatedApiResource } from "@/hooks/useUnauthenticatedApiResource"
 import { RefreshDataTimestamp } from "@/types/api/RefreshDataTimestamp"
 import { ManagedResource } from "@/types/ManagedResource"
-import { ApiRequest } from "@/util/ApiRequest"
+import { ApiRequestBuilder } from "@/util/ApiRequestBuilder"
+import axios from "axios"
 
 
 /**
@@ -22,13 +23,24 @@ export const useRefreshDataTimestamp = (isLoading: boolean, setLoading: SetState
     // Create a repeating 5 seconds interval
     usePolling(() => {
         // Fetch the current RefreshDataTimestamp
-        void ApiRequest
+        const request: ApiRequestBuilder<RefreshDataTimestamp> = ApiRequestBuilder
             .get<RefreshDataTimestamp>("/api/refresh_data_timestamp")
             .ifSuccessful(timestampResponse => {
                 // Check if timestamp has changed. If yes, update and set the state variable argument to true.
                 if (!refreshDataTimestamp.isLoading && timestampResponse.timestamp !== refreshDataTimestamp.data.timestamp) {
                     refreshDataTimestamp.setData(timestampResponse)
                     setLoading(true)
+                }
+            })
+
+        void request
+            .onError((error: unknown): void => {
+                if (axios.isAxiosError(error)) {
+                    if (error.code === "ERR_NETWORK") {
+                        // Ignore
+                    } else {
+                        void request.build().showErrorMessage(error)
+                    }
                 }
             })
             .execute()
