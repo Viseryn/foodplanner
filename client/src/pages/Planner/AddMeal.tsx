@@ -193,9 +193,9 @@ export function AddMeal(): ReactElement {
 
             {[PageState.WAITING, PageState.ERROR].includes(state) &&
                 <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                         <div className="md:order-last">
-                            <OuterCard>
+                            <div className={"px-2"}>
                                 <LabelledFormWidget
                                     id={"date"}
                                     label={"Für welchen Tag?"}
@@ -230,7 +230,7 @@ export function AddMeal(): ReactElement {
 
                                 <LabelledFormWidget
                                     id={"mealCategory"}
-                                    label={"Wann ist die Mahlzeit?"}
+                                    label={"Für welche Tageszeit?"}
                                     widget={mealCategories.isLoading || settings.isLoading ? (
                                         <RadioSkeleton />
                                     ) : (
@@ -261,7 +261,7 @@ export function AddMeal(): ReactElement {
                                         />
                                     )}
                                 />
-                            </OuterCard>
+                            </div>
 
                             <div className="flex justify-end md:pt-4">
                                 {!meals.isLoading && !mealCategories.isLoading && !recipes.isLoading && !userGroups.isLoading &&
@@ -276,13 +276,13 @@ export function AddMeal(): ReactElement {
                             </div>
                         </div>
 
-                        <OuterCard>
+                        <div className={"px-2"}>
                             <Label htmlFor="recipe">Welches Rezept?</Label>
                             {recipes.isLoading ? (
                                 <RecipeListSkeleton />
                             ) : (
                                 <div>
-                                    <Spacer height={"2"} />
+                                    <Spacer height={"1"} />
 
                                     <div className="flex items-center justify-between gap-1">
                                         <SearchWidget
@@ -369,7 +369,7 @@ export function AddMeal(): ReactElement {
                                     }
                                 </div>
                             )}
-                        </OuterCard>
+                        </div>
                     </div>
 
                     <div className="pb-[5.5rem] md:pb-0" />

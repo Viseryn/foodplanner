@@ -16,11 +16,11 @@ export default function SearchWidget({ inputValue, setInputValue, placeholder = 
     placeholder?: string
 }): ReactElement {
     // Render SearchWidget
-    return <div className="rounded-l-[2rem] rounded-r-lg flex flex-1 items-center h-12 pl-6 pr-4 font-semibold bg-white dark:bg-secondary-dark-200">
+    return <div className="rounded-l-[2rem] rounded-r-lg flex flex-1 items-center h-12 pl-6 pr-4 font-semibold bg-secondary-100 dark:bg-secondary-dark-200">
         <span className="material-symbols-rounded mr-2 cursor-default">search</span>
 
         <input 
-            className="bg-white dark:bg-secondary-dark-200 placeholder-[#55624c] dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
+            className="bg-secondary-100 dark:bg-secondary-dark-200 placeholder-secondary-900 dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
             placeholder={placeholder}
             id="search"
             name="search"
