@@ -118,7 +118,7 @@ export const Planner = (): ReactElement => {
                    icon: showSabDone ? "done" : "add_shopping_cart",
                    label: showSabDone
                        ? "Erledigt!" + (countSabClicks > 1 ? ` (${countSabClicks})` : "")
-                       : "Alles auf die Einkaufsliste",
+                       : "Zur Einkaufsliste",
                    onClick: handleAddShoppingList,
                })
                .rebuild()
