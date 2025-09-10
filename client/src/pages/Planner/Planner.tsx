@@ -1,18 +1,13 @@
-import { OuterCard } from "@/components/ui/Cards/OuterCard"
-import Carousel from "@/components/ui/Carousel/Carousel"
-import Spacer from "@/components/ui/Spacer"
 import { GlobalAppDataContext } from "@/context/GlobalAppDataContext"
 import { SidebarContext } from "@/context/SidebarContext"
 import { TopbarContext } from "@/context/TopbarContext"
 import { findEntityByIri } from "@/hooks/findEntityByIri"
-import useMediaQuery from "@/hooks/useMediaQuery"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { useScrollCache } from "@/hooks/useScrollCache"
 import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
 import useTimeout from "@/hooks/useTimeout"
-import { delay } from "@/util/delay"
-import { motion } from "motion/react"
+import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
 import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
 import { Meal } from "@/types/api/Meal"
@@ -24,11 +19,10 @@ import { Sidebar } from "@/types/sidebar/Sidebar"
 import { StorageIngredient } from "@/types/StorageIngredient"
 import { Topbar } from "@/types/topbar/Topbar"
 import { ApiRequest } from "@/util/ApiRequest"
+import { delay } from "@/util/delay"
 import { getHighestPosition } from "@/util/ingredients/getHighestPosition"
 import { ReactElement, useCallback, useEffect, useState } from "react"
-import DayCardDesktop from "./components/DayCardDesktop"
-import DayCardMobile from "./components/DayCardMobile"
-import DaySkeletonDesktop from "./components/DaySkeletonDesktop"
+import { DayCard } from "./components/DayCard"
 import DaySkeletonMobile from "./components/DaySkeletonMobile"
 
 export const Planner = (): ReactElement => {
@@ -36,6 +30,8 @@ export const Planner = (): ReactElement => {
     const topbar: Topbar = useNullishContext(TopbarContext)
     const { meals, recipes, shoppingList }: Pick<GlobalAppData, "meals" | "recipes" | "shoppingList"> = useNullishContext(GlobalAppDataContext)
     const dates: Map<DateKey, Meal[]> = usePlannerDates()
+
+    useScrollCache("planner")
 
     const onlyShowOwnMeals: boolean = useStateCache(state => state.onlyShowOwnMeals)
     const toggleOnlyShowOwnMeals = useCallback((): void => {
@@ -53,9 +49,6 @@ export const Planner = (): ReactElement => {
         setShowSabDone(false)
         setCountSabClicks(0)
     }, 5000)
-
-    // Current mediaQuery selector
-    const medium = useMediaQuery()
 
     const handleAddShoppingList = async (): Promise<void> => {
         if (meals.isLoading || shoppingList.isLoading) {
@@ -124,28 +117,6 @@ export const Planner = (): ReactElement => {
                .rebuild()
     }, [meals.data, meals.isLoading, shoppingList.isLoading, showSabDone, countSabClicks])
 
-    useScrollCache("planner")
-
-    // Configure carousel
-    const gap: number = 5
-
-    // Map the number of columns to each media query selector
-    const mediaColumnMap: Map<string, number> = new Map()
-    mediaColumnMap.set("md", 3)
-    mediaColumnMap.set("lg", 5)
-    mediaColumnMap.set("xl", 5)
-
-    // Calculate the width of a container for the carousel
-    const calculateWidth = (visibleItems: number, gap: number): number => {
-        // Each column is 160px, each gap is 4*gap wide, padding of 16 on both ends
-        return visibleItems * 160 + (visibleItems - 1) * 4 * gap + 32
-    }
-
-    // Build styling classes for the width of the container for the carousel
-    const mediumStyle: Map<string, { width: string }> = new Map()
-    mediaColumnMap.forEach((columns, medium) => {
-        mediumStyle.set(medium, { width: `${calculateWidth(columns ?? 0, gap)}px` })
-    })
 
     useEffect(() => {
         topbar
@@ -161,51 +132,26 @@ export const Planner = (): ReactElement => {
                     },
                 },
             ])
+            .mainViewWidth("max-w-[900px]")
             .rebuild()
     }, [onlyShowOwnMeals])
 
-    // Render Planner component
-    return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-                duration: 0.8,
-                delay: 0.2,
-                ease: [0, 0.71, 0.2, 1.01],
-            }}
-        >
-            <div className={`pb-24 md:pb-4 w-full`} style={mediumStyle.get(medium)}>
-                <Spacer height="6" />
 
-                {mediaColumnMap.has(medium) ? ( /* Desktop view (>= md) */
-                    meals.isLoading ? (
-                        <DaySkeletonDesktop gap={gap} columns={mediaColumnMap.get(medium)!} />
-                    ) : (
-                        <OuterCard className={"!rounded-3xl"}>
-                            <Carousel visibleItems={mediaColumnMap.get(medium)} gap={gap} translation={160 + gap * 4}>
-                                {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
-                                    <DayCardDesktop key={entry[0]} mapEntry={entry} />,
-                                )}
-                            </Carousel>
-                        </OuterCard>
-                    )
-                ) : ( /* Mobile view (<= sm) */
-                    meals.isLoading ? (
-                        <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
-                            <DaySkeletonMobile />
-                            <DaySkeletonMobile />
-                            <DaySkeletonMobile />
-                        </div>
-                    ) : (
-                        <div className="pb-[5.5rem] mx-4 flex flex-col gap-1">
-                            {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
-                                <DayCardMobile key={entry[0]} mapEntry={entry} />,
-                            )}
-                        </div>
-                    )
-                )}
-            </div>
-        </motion.div>
+    return (
+        <StandardContentWrapper>
+            {meals.isLoading ? (
+                <div className="pb-[5.5rem] mx-4 flex flex-col gap-4">
+                    <DaySkeletonMobile />
+                    <DaySkeletonMobile />
+                    <DaySkeletonMobile />
+                </div>
+            ) : (
+                <div className="pb-[5.5rem] flex flex-col gap-1">
+                    {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
+                        <DayCard key={entry[0]} mapEntry={entry} />
+                    )}
+                </div>
+            )}
+        </StandardContentWrapper>
     )
 }

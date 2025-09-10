@@ -10,72 +10,73 @@ import { ManagedResourceCollection } from "@/types/ManagedResourceCollection"
 import { Maybe } from "@/types/Maybe"
 import { apiClient } from "@/util/apiClient"
 import { ApiRequest } from "@/util/ApiRequest"
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
 import { ReactElement } from "react"
 import { Link } from "react-router-dom"
 import swal from "sweetalert"
 
-/**
- * A components that renders an appropriate rectangular (or smaller square) tile for a meal in 
- * the Planner view.
- * 
- * @param props
- * @param props.meal
- * @param props.isSmall Optional: Whether the tile should be displayed as a smaller square instead as rectangle.
- */
-export default function MealTile({ meal, isSmall }: {
-    meal: Meal
-    isSmall?: boolean
-}): ReactElement {
-    const { meals, recipes, userGroups, mealCategories }: Pick<GlobalAppData, "meals" | "recipes" | "userGroups" | "mealCategories"> = useNullishContext(GlobalAppDataContext)
+export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
+    const { meals, recipes, userGroups, mealCategories, }: Pick<GlobalAppData, "meals" | "recipes" | "userGroups" | "mealCategories"> = useNullishContext(GlobalAppDataContext)
 
     const recipe: Maybe<Recipe> = findEntityByIri(meal.recipe, recipes)
     const userGroup: Maybe<UserGroup> = findEntityByIri(meal.userGroup, userGroups)
     const mealCategory: Maybe<MealCategory> = findEntityByIri(meal.mealCategory, mealCategories)
 
     if (!recipe || !userGroup || !mealCategory) {
-        return <></>
+        return (
+            <></>
+        )
     }
 
-    // Styling classes for the tile
-    const widthStyle: string = isSmall ? 'w-40' : 'w-full'
-    const titleStyle: string = isSmall ? 'text-base' : 'text-xl'
-    const textStyle: string = isSmall ? 'text-sm' : 'text-base'
-
-    // Render MealTile
     return (
-        <div className={`h-40 ${widthStyle} group transition duration-300`}>
+        <div className={`h-40 w-full group transition duration-300`}>
             <div className="relative">
                 <img
-                    className={`h-40 ${widthStyle} object-cover brightness-[.7] rounded-lg group-first-of-type:rounded-t-3xl group-last-of-type:rounded-b-3xl`}
+                    className={"h-40 w-full object-cover brightness-[.7] rounded-lg group-first-of-type:rounded-t-3xl group-last-of-type:rounded-b-3xl sm:!rounded-lg"}
                     src={recipe.image?.filename != null
-                        ? apiClient.defaults.baseURL + recipe.image?.directory + 'THUMBNAIL__' + recipe.image?.filename
-                        : '/img/default.jpg'
+                        ? apiClient.defaults.baseURL + recipe.image?.directory + "THUMBNAIL__" + recipe.image?.filename
+                        : "/img/default.jpg"
                     }
                     alt={recipe.title}
                 />
 
                 <Link
-                    to={'/recipe/' + recipe.id}
-                    className={`absolute ${widthStyle} bottom-4 px-4 text-white font-semibold`}
+                    to={"/recipe/" + recipe.id}
+                    className={`absolute w-full top-4 px-4 flex flex-col justify-between h-full pb-8 text-white font-semibold`}
                 >
-                    <div className={`${titleStyle} mr-4`}>{recipe.title}</div>
-                    <div className={`${textStyle} flex items-center mt-2`}>
-                        <span className="material-symbols-rounded mr-2">{userGroup.icon}</span>
-                        <span>{userGroup.name}</span>
-                    </div>
-                    <div className={`${textStyle} flex items-center mt-2`}>
-                        <span className="material-symbols-rounded mr-2">{mealCategory.icon}</span>
-                        <span>{mealCategory.name}</span>
+                    <div className={`text-xl mr-10`}>{recipe.title}</div>
+
+                    <div className={"flex gap-1"}>
+                        <div className={`text-sm flex items-center bg-white bg-opacity-30 rounded-l-3xl rounded-r-lg px-2`}>
+                            <span className="material-symbols-rounded text-base mr-2">{mealCategory.icon}</span>
+                            <span>{mealCategory.name}</span>
+                        </div>
+
+                        <div className={`text-sm flex items-center bg-white bg-opacity-30 rounded-l-lg rounded-r-3xl px-2`}>
+                            <span className="material-symbols-rounded text-base mr-2">{userGroup.icon}</span>
+                            <span>{userGroup.name}</span>
+                        </div>
                     </div>
                 </Link>
 
-                <span
-                    onClick={() => deleteMeal(meal, meals)}
-                    className="cursor-pointer transition duration-300 group-hover:block material-symbols-rounded text-white absolute top-2 right-2
-                    hover:bg-gray-600/40 p-1 rounded-full"
-                >
-                    close
-                </span>
+                <Menu>
+                    <MenuButton className="focus:outline-none cursor-pointer transition duration-300 material-symbols-rounded text-white absolute top-3.5 right-2 p-1 rounded-full">
+                        <span className={`material-symbols-rounded text-balance`}>more_vert</span>
+                    </MenuButton>
+
+                    <MenuItems
+                        transition
+                        anchor="bottom end"
+                        className="z-[500] bg-white dark:bg-secondary-dark-100 origin-top-right mt-2 shadow-2xl rounded-2xl p-2 space-y-2 transition duration-300 ease-out focus:outline-none"
+                    >
+                        <MenuItem key={meal.id}>
+                            <div onClick={() => deleteMeal(meal, meals)} className="flex items-center gap-4 h-10 p-2 rounded-xl hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40 cursor-pointer transition duration-300">
+                                <span className={"material-symbols-rounded text-balance"}>delete_sweep</span>
+                                Mahlzeit löschen
+                            </div>
+                        </MenuItem>
+                    </MenuItems>
+                </Menu>
             </div>
         </div>
     )
