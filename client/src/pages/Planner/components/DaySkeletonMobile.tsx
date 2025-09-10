@@ -13,11 +13,9 @@ export default function DaySkeletonMobile(): ReactElement {
 
         <Spacer height="4" />
 
-        <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 gap-4 ">
+        <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 ">
             <div className="rounded-xl h-40 w-full object-cover bg-notification-500 dark:bg-notification-700" />
             <div className="rounded-xl h-40 w-full object-cover bg-notification-500/75 dark:bg-notification-700/75" />
-
-            <div className="rounded-2xl h-14 sm:col-span-2 w-full object-cover bg-notification-500 dark:bg-notification-700" />
         </div>
     </OuterCard>
 }

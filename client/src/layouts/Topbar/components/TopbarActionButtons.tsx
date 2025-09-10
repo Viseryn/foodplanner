@@ -30,7 +30,7 @@ export const TopbarActionButtons = (style: string = ""): ReactElement => {
                     <MenuItems
                         transition
                         anchor="bottom end"
-                        className="z-50 bg-white dark:bg-secondary-dark-100 origin-top-right mt-2 shadow-2xl rounded-2xl p-2 space-y-2 transition duration-300 ease-out focus:outline-none"
+                        className="z-[500] bg-white dark:bg-secondary-dark-100 origin-top-right mt-2 shadow-2xl rounded-2xl p-2 space-y-2 transition duration-300 ease-out focus:outline-none"
                     >
                         {topbar.dropdownMenuItems.map((dropdownMenuItem: TopbarDropdownMenuItem, index: number) =>
                             <MenuItem key={index}>
