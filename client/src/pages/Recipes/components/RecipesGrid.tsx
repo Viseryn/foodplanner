@@ -5,7 +5,7 @@ export function RecipesGrid(props: { viewMode?: ViewMode, children: ReactNode })
     switch (props.viewMode) {
         case "LIST":
             return (
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-1">
                     {props.children}
                 </div>
             )
