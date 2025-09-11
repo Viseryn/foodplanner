@@ -4,6 +4,7 @@ import { CardHeading } from "@/components/ui/Cards/CardHeading"
 import { CollapsibleCard } from "@/components/ui/Cards/CollapsibleCard"
 import { InnerCard } from "@/components/ui/Cards/InnerCard"
 import { OuterCard } from "@/components/ui/Cards/OuterCard"
+import Notification from "@/components/ui/Notification"
 import Spacer from "@/components/ui/Spacer"
 import { GlobalAppDataContext } from "@/context/GlobalAppDataContext"
 import { SettingsContext } from "@/context/SettingsContext"
@@ -15,6 +16,7 @@ import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { stateCacheStore } from "@/hooks/useStateCache"
 import useTimeout from "@/hooks/useTimeout"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
+import { TwoColumnView } from "@/layouts/TwoColumnView"
 import { TooltippedInstruction } from "@/pages/Recipes/components/TooltippedInstruction"
 import { isFavorite } from "@/pages/Recipes/util/isFavorite"
 import { Detached } from "@/types/api/Detached"
@@ -34,8 +36,8 @@ import { StorageIngredient } from "@/types/StorageIngredient"
 import { Topbar } from "@/types/topbar/Topbar"
 import { apiClient } from "@/util/apiClient"
 import { ApiRequest } from "@/util/ApiRequest"
-import { getFullIngredientName } from "@/util/ingredients/getFullIngredientName"
 import { getHighestPosition } from "@/util/ingredients/getHighestPosition"
+import { StringBuilder } from "@/util/StringBuilder"
 import Fraction from "fraction.js"
 import React, { ReactElement, useEffect, useState } from "react"
 import { NavigateFunction, useNavigate, useParams } from "react-router-dom"
@@ -360,7 +362,7 @@ export const RecipePage = (): ReactElement => {
                   },
               ])
               .truncate(true)
-              .mainViewWidth("md:max-w-[700px]")
+              .mainViewWidth("md:max-w-[900px]")
               .isLoading(recipes.isLoading)
               .rebuild()
 
@@ -372,171 +374,189 @@ export const RecipePage = (): ReactElement => {
         {recipes.isLoading
             ? /* Recipe Skeleton */ <img className="animate-pulse rounded-3xl h-80 w-full object-cover" src="/img/default.jpg" alt="" />
             : (recipe.image &&
-                <img
-                    className="rounded-3xl h-80 object-cover transition duration-300 w-full"
-                    src={apiClient.defaults.baseURL + recipe.image.directory + recipe.image.filename}
-                    alt={recipe.title}
-                />
+                <>
+                    <img
+                        className="rounded-3xl h-80 object-cover transition duration-300 w-full"
+                        src={apiClient.defaults.baseURL + recipe.image.directory + recipe.image.filename}
+                        alt={recipe.title}
+                    />
+                    <Spacer height="6" />
+                </>
             )
         }
 
-        {/* Ingredients, instructions and buttons */}
-        {recipes.isLoading
-            ? <>
-                {/* Recipe Skeleton */}
-                <Spacer height="6" />
+        <TwoColumnView>
+            {/* Ingredients, instructions and buttons */}
+            {recipes.isLoading ? (
+                <div>
+                    {/* Recipe Skeleton */}
+                    <Spacer height="6" />
 
-                <OuterCard>
-                    <div className="animate-pulse">
-                        <div className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2" />
-                    </div>
-                    <Spacer height="4" />
-                    <InnerCard>
-                        <TextParagraph />
-                        <Spacer height="2" />
-                        <TextParagraph />
-                    </InnerCard>
-                </OuterCard>
-            </>
-            : <>
-                {/* Ingredients */}
-                {tmpRecipe.ingredients?.length > 0 &&
-                    <>
-                        <Spacer height="6" />
+                    <OuterCard>
+                        <div className="animate-pulse">
+                            <div className="h-10 bg-notification-500 dark:bg-notification-700 rounded-full w-3/4 md:w-1/2" />
+                        </div>
+                        <Spacer height="4" />
+                        <InnerCard>
+                            <TextParagraph />
+                            <Spacer height="2" />
+                            <TextParagraph />
+                        </InnerCard>
+                    </OuterCard>
+                </div>
+            ) : (
+                <>
+                    {/* Ingredients */}
+                    {tmpRecipe.ingredients?.length > 0 && (
+                        <div>
+                            <CollapsibleCard {...{
+                                cardComponent: OuterCard,
+                                heading: (
+                                    <CardHeading size="text-xl" className="ml-2">
+                                        Zutaten für
+                                        <select
+                                            value={portionSize}
+                                            onChange={e => setPortionSize(+e.target.value)}
+                                            className="dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-10 w-20 px-6 mx-4 transition duration-300 focus:border-primary-100 dark:after:bg-red-500"
+                                        >
+                                            {[...Array(10)].map((value, index) =>
+                                                <option
+                                                    key={index + 1}
+                                                    value={index + 1}
+                                                >
+                                                    {index + 1}
+                                                </option>,
+                                            )}
+                                        </select>
+                                        {portionSize == 1 ? "Portion" : "Portionen"}
+                                    </CardHeading>
+                                ),
+                                collapsed: stateCacheStore.getState().recipeIngredientsCollapsed,
+                                onCollapse: () => stateCacheStore.getState().toggle("recipeIngredientsCollapsed"),
+                            }}>
+                                <>
+                                    <div className="grid grid-cols-1 gap-0.5">
+                                        {tmpRecipe.ingredients.map(ingredient =>
+                                            <div key={ingredient.id} className="flex items-center justify-between bg-white dark:bg-bg-dark rounded-md first:rounded-t-2xl last:rounded-b-2xl pl-6 pr-4 py-2">
+                                                <span>
+                                                    {new StringBuilder().append(ingredient.quantityValue).append(ingredient.quantityUnit).build(" ")}
 
-                        <CollapsibleCard {...{
-                            cardComponent: OuterCard,
-                            heading: (
-                                <CardHeading size="text-xl" className="ml-2">
-                                    Zutaten für
-                                    <select
-                                        value={portionSize}
-                                        onChange={e => setPortionSize(+e.target.value)}
-                                        className="dark:placeholder-secondary-dark-900 dark:bg-secondary-dark-200 border border-gray-300 dark:border-none rounded-md h-10 w-20 px-6 mx-4 transition duration-300 focus:border-primary-100 dark:after:bg-red-500"
-                                    >
-                                        {[...Array(10)].map((value, index) =>
-                                            <option
-                                                key={index + 1}
-                                                value={index + 1}
-                                            >
-                                                {index + 1}
-                                            </option>,
-                                        )}
-                                    </select>
-                                    {portionSize == 1 ? "Portion" : "Portionen"}
-                                </CardHeading>
-                            ),
-                            collapsed: stateCacheStore.getState().recipeIngredientsCollapsed,
-                            onCollapse: () => stateCacheStore.getState().toggle("recipeIngredientsCollapsed"),
-                        }}>
-                            <InnerCard>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                    {tmpRecipe.ingredients.map(ingredient =>
-                                        <div key={ingredient.id} className="flex items-center justify-between">
-                                            <span>
-                                                {getFullIngredientName(ingredient)}
-                                            </span>
+                                                    <span className={StringBuilder.cn(
+                                                        "font-semibold",
+                                                        [!!ingredient.quantityValue || !!ingredient.quantityUnit, "ml-1.5"],
+                                                    )}>
+                                                        {ingredient.name}
+                                                    </span>
+                                                </span>
 
-                                            <div className="flex flex-row">
-                                                <Button
-                                                    className={"shoppinglist-" + ingredient.id}
-                                                    onClick={async () => {
-                                                        const element = document.getElementsByClassName("shoppinglist-" + ingredient.id)[0].firstChild! as HTMLElement
-                                                        setTimeout(() => {
-                                                            element.innerHTML = "add_shopping_cart"
-                                                        }, 5000)
-                                                        await handleAddSingleToShoppingList(ingredient)
-                                                        element.innerHTML = "done"
-                                                    }}
-                                                    icon="add_shopping_cart"
-                                                    outlined={true}
-                                                    role="tertiary"
-                                                />
-                                                {settings.data?.showPantry &&
+                                                <div className="flex flex-row">
                                                     <Button
-                                                        className={"pantry-" + ingredient.id}
+                                                        className={"shoppinglist-" + ingredient.id}
                                                         onClick={async () => {
-                                                            const element = document.getElementsByClassName("pantry-" + ingredient.id)[0].firstChild! as HTMLElement
+                                                            const element = document.getElementsByClassName("shoppinglist-" + ingredient.id)[0].firstChild! as HTMLElement
                                                             setTimeout(() => {
-                                                                element.innerHTML = "add_home_work"
+                                                                element.innerHTML = "add_shopping_cart"
                                                             }, 5000)
-                                                            await handleAddSingleToPantry(ingredient)
+                                                            await handleAddSingleToShoppingList(ingredient)
                                                             element.innerHTML = "done"
                                                         }}
-                                                        icon="add_home_work"
+                                                        icon="add_shopping_cart"
                                                         outlined={true}
                                                         role="tertiary"
                                                     />
-                                                }
-                                            </div>
+                                                    {settings.data?.showPantry &&
+                                                        <Button
+                                                            className={"pantry-" + ingredient.id}
+                                                            onClick={async () => {
+                                                                const element = document.getElementsByClassName("pantry-" + ingredient.id)[0].firstChild! as HTMLElement
+                                                                setTimeout(() => {
+                                                                    element.innerHTML = "add_home_work"
+                                                                }, 5000)
+                                                                await handleAddSingleToPantry(ingredient)
+                                                                element.innerHTML = "done"
+                                                            }}
+                                                            icon="add_home_work"
+                                                            outlined={true}
+                                                            role="tertiary"
+                                                        />
+                                                    }
+                                                </div>
+                                            </div>,
+                                        )}
+                                    </div>
+                                </>
+
+                                <div className="flex flex-row md:flex-col items-stretch justify-center gap-1 mt-4">
+                                    <div className={"flex-1 flex justify-end md:justify-center"}>
+                                        <Button
+                                            icon={showShoppingListDone ? "done" : "add_shopping_cart"}
+                                            outlined={true}
+                                            label={showShoppingListDone ? "Erledigt!" : "Alles auf die Einkaufsliste"}
+                                            onClick={() => handleAddShoppingList(tmpRecipe)}
+                                            role={showShoppingListDone ? "primary" : "secondary"}
+                                            className="flex-1 md:flex-none md:!rounded-full transition-all duration-300"
+                                            roundedRight={showShoppingListDone || !settings.data?.showPantry}
+                                        />
+                                    </div>
+                                    {settings.data?.showPantry && (
+                                        <div className={"flex-1 flex justify-start md:justify-center"}>
+                                            <Button
+                                                icon={showPantryDone ? "done" : "add_home_work"}
+                                                outlined={true}
+                                                label={showPantryDone ? "Erledigt!" : "Alles in die Vorratskammer"}
+                                                onClick={() => handleAddPantry(tmpRecipe)}
+                                                role={showPantryDone ? "primary" : "secondary"}
+                                                className="flex-1 md:flex-none md:!rounded-full transition-all duration-300"
+                                                roundedLeft={showPantryDone}
+                                            />
                                         </div>
                                     )}
                                 </div>
-                            </InnerCard>
+                            </CollapsibleCard>
+                        </div>
+                    )}
 
-                            <div className="flex flex-row items-stretch justify-center gap-1 mt-4">
-                                <div className={"flex-1 flex justify-end"}>
-                                    <Button
-                                        icon={showShoppingListDone ? "done" : "add_shopping_cart"}
-                                        outlined={true}
-                                        label={showShoppingListDone ? "Erledigt!" : "Alles auf die Einkaufsliste"}
-                                        onClick={() => handleAddShoppingList(tmpRecipe)}
-                                        role={showShoppingListDone ? "primary" : "secondary"}
-                                        className="flex-1 md:flex-none transition-all duration-300"
-                                        roundedRight={showShoppingListDone}
-                                    />
+                    {/* Instructions */}
+                    {tmpRecipe.instructions?.length > 0 && (
+                        <div>
+                            <CollapsibleCard {...{
+                                cardComponent: OuterCard,
+                                heading: <CardHeading size="text-xl" className="ml-2">Zubereitung</CardHeading>,
+                                collapsed: stateCacheStore.getState().recipeInstructionsCollapsed,
+                                onCollapse: () => stateCacheStore.getState().toggle("recipeInstructionsCollapsed"),
+                            }}>
+                                <div className="space-y-0.5">
+                                    {recipe.instructions.map((instruction, index) =>
+                                        <div key={instruction.id} className="flex bg-white dark:bg-bg-dark rounded-md first:rounded-t-2xl last:rounded-b-2xl px-6 py-4 gap-4">
+                                            <span className={"font-bold "}>{index + 1}.</span>
+                                            <TooltippedInstruction instruction={instruction} ingredients={tmpRecipe.ingredients} />
+                                        </div>,
+                                    )}
                                 </div>
-                                <div className={"flex-1 flex justify-start"}>
-                                    {settings.data?.showPantry &&
-                                        <Button
-                                            icon={showPantryDone ? "done" : "add_home_work"}
-                                            outlined={true}
-                                            label={showPantryDone ? "Erledigt!" : "Alles in die Vorratskammer"}
-                                            onClick={() => handleAddPantry(tmpRecipe)}
-                                            role={showPantryDone ? "primary" : "secondary"}
-                                            className="flex-1 md:flex-none transition-all duration-300"
-                                            roundedLeft={showPantryDone}
-                                        />
-                                    }
-                                </div>
-                            </div>
-                        </CollapsibleCard>
-                    </>
-                }
+                            </CollapsibleCard>
+                        </div>
+                    )}
 
-                {/* Instructions */}
-                {tmpRecipe.instructions?.length > 0 &&
-                    <>
-                        <Spacer height="6" />
+                    {/* Show empty card if there is no image, no ingredients and no instructions */}
+                    {tmpRecipe.ingredients?.length === 0 && tmpRecipe.instructions?.length === 0 && (
+                        <div className="px-4 pt-6 md:p-0">
+                            <Notification>Hier gibt es noch nichts zu sehen.</Notification>
 
-                        <CollapsibleCard {...{
-                            cardComponent: OuterCard,
-                            heading: <CardHeading size="text-xl" className="ml-2">Zubereitung</CardHeading>,
-                            collapsed: stateCacheStore.getState().recipeInstructionsCollapsed,
-                            onCollapse: () => stateCacheStore.getState().toggle("recipeInstructionsCollapsed"),
-                        }}>
-                            <div className="space-y-0.5">
-                                {recipe.instructions.map((instruction, index) =>
-                                    <div key={instruction.id} className="flex bg-white dark:bg-bg-dark rounded-lg first:rounded-t-2xl last:rounded-b-2xl px-6 py-4 gap-4">
-                                        <span className={"font-bold "}>{index + 1}.</span>
-                                        <TooltippedInstruction instruction={instruction} ingredients={tmpRecipe.ingredients} />
-                                    </div>
-                                )}
-                            </div>
-                        </CollapsibleCard>
-                    </>
-                }
+                            <Spacer height={6} />
 
-                {/* Show empty card if there is no image, no ingredients and no instructions */}
-                {recipe.image == undefined && tmpRecipe.ingredients?.length === 0 && tmpRecipe.instructions?.length === 0 &&
-                    <OuterCard className="flex items-center mt-6">
-                        <span className="material-symbols-rounded outlined mr-4">info</span>
-                        Hier gibt es noch nichts zu sehen.
-                    </OuterCard>
-                }
+                            <Button
+                                label={"Rezept bearbeiten"}
+                                icon={"contract_edit"}
+                                outlined={true}
+                                className={"place-content-center"}
+                                location={`/recipe/${id}/edit`}
+                            />
+                        </div>
+                    )}
+                </>
+            )}
+        </TwoColumnView>
 
-                <div className="mb-[5.5rem]"></div>
-            </>
-        }
+        <div className="mb-[5.5rem]"></div>
     </StandardContentWrapper>
 }
