@@ -14,7 +14,7 @@ export const TooltippedInstruction = (props: TooltippedInstructionProps): ReactE
 
     const tooltippedInstruction = (): ReactNode[] => {
         if (props.ingredients.length === 0) {
-            return [<>instruction.instruction</>]
+            return [<>{props.instruction.instruction}</>]
         }
 
         const ingredientNames: string[] = props.ingredients.map(ingredient => ingredient.name).sort(byLength).reverse()
