@@ -28,7 +28,7 @@ export const StandardContentWrapper = ({ children, className }: {
             }}
         >
             <div className={StringBuilder.cn(`mx-4 pb-24 md:mx-0 md:pb-4`, mainViewWidth, className)}>
-                <Spacer height="6" />
+                <Spacer height="2" />
                 {children}
             </div>
         </motion.div>
