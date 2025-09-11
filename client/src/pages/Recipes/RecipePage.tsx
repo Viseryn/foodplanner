@@ -15,6 +15,7 @@ import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { stateCacheStore } from "@/hooks/useStateCache"
 import useTimeout from "@/hooks/useTimeout"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
+import { TooltippedInstruction } from "@/pages/Recipes/components/TooltippedInstruction"
 import { isFavorite } from "@/pages/Recipes/util/isFavorite"
 import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
@@ -82,12 +83,12 @@ export const RecipePage = (): ReactElement => {
     // Timeouts for Done-info
     const { clearTimeout: clearShoppingListTimeout, startTimeout: startShoppingListTimeout }
         = useTimeout(() => {
-            setShowShoppingListDone(false)
-        }, 5000)
+        setShowShoppingListDone(false)
+    }, 5000)
     const { clearTimeout: clearPantryTimeout, startTimeout: startPantryTimeout }
         = useTimeout(() => {
-            setShowPantryDone(false)
-        }, 5000)
+        setShowPantryDone(false)
+    }, 5000)
 
     /**
      * Handles adding the whole recipe to the ShoppingList. Is invoked by the SAB.
@@ -267,7 +268,7 @@ export const RecipePage = (): ReactElement => {
 
         // If recipe does not exist, redirect to 404 page
         if (queryResult.length === 0) {
-            navigate('/error/404')
+            navigate("/error/404")
         }
     }, [id, recipes.isLoading])
 
@@ -297,15 +298,15 @@ export const RecipePage = (): ReactElement => {
         recipe.ingredients?.forEach(ingredient => {
             const newIngredient: Ingredient = { ...ingredient }
 
-            const newQuantityValue: Fraction = new Fraction(ingredient.quantityValue ? ingredient.quantityValue : '0')
+            const newQuantityValue: Fraction = new Fraction(ingredient.quantityValue ? ingredient.quantityValue : "0")
 
-            newIngredient['quantityValue'] = newQuantityValue
+            newIngredient["quantityValue"] = newQuantityValue
                 .div(new Fraction(recipe.portionSize))
                 .mul(new Fraction(portionSize))
                 .toFraction(true)
 
-            if (newIngredient['quantityValue'] === '0') {
-                newIngredient['quantityValue'] = ''
+            if (newIngredient["quantityValue"] === "0") {
+                newIngredient["quantityValue"] = ""
             }
 
             newRecipe.ingredients.push(newIngredient)
@@ -325,8 +326,8 @@ export const RecipePage = (): ReactElement => {
                    .activeItem("recipes")
                    .actionButton({
                        isVisible: true,
-                       icon: 'calendar_add_on',
-                       label: 'Mahlzeit planen',
+                       icon: "calendar_add_on",
+                       label: "Mahlzeit planen",
                        path: `/planner/add/${[...dateMealMap.keys()][0]}?recipe=${recipe.id}`,
                    })
                    .rebuild()
@@ -340,7 +341,7 @@ export const RecipePage = (): ReactElement => {
               ])
               .dropdownMenuItems([
                   { icon: "contract_edit", label: "Rezept bearbeiten", onClick: () => navigate(`/recipe/${id}/edit`) },
-                  { icon: 'delete', label: "Rezept löschen", onClick: () => deleteRecipe(id) },
+                  { icon: "delete", label: "Rezept löschen", onClick: () => deleteRecipe(id) },
                   {
                       icon: "download",
                       label: "Rezept exportieren",
@@ -403,7 +404,7 @@ export const RecipePage = (): ReactElement => {
                     <>
                         <Spacer height="6" />
 
-                        <CollapsibleCard { ...{
+                        <CollapsibleCard {...{
                             cardComponent: OuterCard,
                             heading: (
                                 <CardHeading size="text-xl" className="ml-2">
@@ -427,7 +428,7 @@ export const RecipePage = (): ReactElement => {
                             ),
                             collapsed: stateCacheStore.getState().recipeIngredientsCollapsed,
                             onCollapse: () => stateCacheStore.getState().toggle("recipeIngredientsCollapsed"),
-                        } }>
+                        }}>
                             <InnerCard>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                                     {tmpRecipe.ingredients.map(ingredient =>
@@ -508,20 +509,20 @@ export const RecipePage = (): ReactElement => {
                     <>
                         <Spacer height="6" />
 
-                        <CollapsibleCard { ...{
+                        <CollapsibleCard {...{
                             cardComponent: OuterCard,
                             heading: <CardHeading size="text-xl" className="ml-2">Zubereitung</CardHeading>,
                             collapsed: stateCacheStore.getState().recipeInstructionsCollapsed,
                             onCollapse: () => stateCacheStore.getState().toggle("recipeInstructionsCollapsed"),
-                        } }>
-                            <InnerCard className="space-y-2">
+                        }}>
+                            <div className="space-y-0.5">
                                 {recipe.instructions.map((instruction, index) =>
-                                    <div key={instruction.id} className="flex">
-                                        <span className="mr-2">{index + 1}.</span>
-                                        {instruction.instruction}
+                                    <div key={instruction.id} className="flex bg-white dark:bg-bg-dark rounded-lg first:rounded-t-2xl last:rounded-b-2xl px-6 py-4 gap-4">
+                                        <span className={"font-bold "}>{index + 1}.</span>
+                                        <TooltippedInstruction instruction={instruction} ingredients={tmpRecipe.ingredients} />
                                     </div>
                                 )}
-                            </InnerCard>
+                            </div>
                         </CollapsibleCard>
                     </>
                 }
