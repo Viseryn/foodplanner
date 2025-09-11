@@ -1,6 +1,8 @@
 import { GlobalAppDataContext } from "@/context/GlobalAppDataContext"
 import { findEntityByIri } from "@/hooks/findEntityByIri"
 import { useNullishContext } from "@/hooks/useNullishContext"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
+import { PlannerTranslations } from "@/pages/Planner/PlannerTranslations"
 import { Meal } from "@/types/api/Meal"
 import { MealCategory } from "@/types/api/MealCategory"
 import { Recipe } from "@/types/api/Recipe"
@@ -16,6 +18,7 @@ import { Link } from "react-router-dom"
 import swal from "sweetalert"
 
 export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
+    const t: TranslationFunction = useTranslation(PlannerTranslations)
     const { meals, recipes, userGroups, mealCategories, }: Pick<GlobalAppData, "meals" | "recipes" | "userGroups" | "mealCategories"> = useNullishContext(GlobalAppDataContext)
 
     const recipe: Maybe<Recipe> = findEntityByIri(meal.recipe, recipes)
@@ -29,10 +32,11 @@ export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
     }
 
     return (
-        <div className={`h-40 w-full group transition duration-300`}>
+        <div className={`h-32 w-full group transition duration-300`}>
             <div className="relative">
                 <img
-                    className={"h-40 w-full object-cover brightness-[.7] rounded-lg group-first-of-type:rounded-t-3xl group-last-of-type:rounded-b-3xl sm:!rounded-lg"}
+                    className={"h-32 w-full object-cover brightness-[.7] rounded-lg group-first-of-type:rounded-t-3xl group-last-of-type:rounded-b-3xl" +
+                        " sm:!rounded-lg"}
                     src={recipe.image?.filename != null
                         ? apiClient.defaults.baseURL + recipe.image?.directory + "THUMBNAIL__" + recipe.image?.filename
                         : "/img/default.jpg"
@@ -49,12 +53,12 @@ export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
                     <div className={"flex gap-1"}>
                         <div className={`text-sm flex items-center bg-white bg-opacity-30 rounded-l-3xl rounded-r-lg px-2`}>
                             <span className="material-symbols-rounded text-base mr-2">{mealCategory.icon}</span>
-                            <span>{mealCategory.name}</span>
+                            <span>{t(`global.mealcategory.${mealCategory.name}`)}</span>
                         </div>
 
                         <div className={`text-sm flex items-center bg-white bg-opacity-30 rounded-l-lg rounded-r-3xl px-2`}>
                             <span className="material-symbols-rounded text-base mr-2">{userGroup.icon}</span>
-                            <span>{userGroup.name}</span>
+                            <span>{userGroup.name === "Alle" ? t(`global.usergroup.${userGroup.name}`) : userGroup.name}</span>
                         </div>
                     </div>
                 </Link>
@@ -72,7 +76,7 @@ export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
                         <MenuItem key={meal.id}>
                             <div onClick={() => deleteMeal(meal, meals)} className="flex items-center gap-4 h-10 p-2 rounded-xl hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40 cursor-pointer transition duration-300">
                                 <span className={"material-symbols-rounded text-balance"}>delete_sweep</span>
-                                Mahlzeit löschen
+                                {t("dropdown.delete.meal")}
                             </div>
                         </MenuItem>
                     </MenuItems>

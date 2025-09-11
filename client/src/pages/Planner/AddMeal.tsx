@@ -14,7 +14,9 @@ import { UserContext } from "@/context/UserContext"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
+import { PlannerTranslations } from "@/pages/Planner/PlannerTranslations"
 import { Iri } from "@/types/api/Iri"
 import { Meal } from "@/types/api/Meal"
 import { MealCategory } from "@/types/api/MealCategory"
@@ -67,6 +69,7 @@ export function AddMeal(): ReactElement {
     const { id }: AddMealRouteParams = useParams() // The id parameter of the route '/planner/add/:id' which corresponds to a Day entity
     const searchParams: URLSearchParams = useSearchParams()[0]
     const navigate: NavigateFunction = useNavigate()
+    const t: TranslationFunction = useTranslation(PlannerTranslations)
 
     const sidebar: Sidebar = useNullishContext(SidebarContext)
     const topbar: Topbar = useNullishContext(TopbarContext)
@@ -173,7 +176,7 @@ export function AddMeal(): ReactElement {
                .activeItem("planner")
                .rebuild()
         topbar.configuration
-              .title("Neue Mahlzeit")
+              .title(t("topbar.title.add.meal"))
               .backButton({ isVisible: true, onClick: () => navigate(-1) })
               .mainViewWidth("md:max-w-[900px]")
               .rebuild()
@@ -198,7 +201,7 @@ export function AddMeal(): ReactElement {
                             <div className={"px-2"}>
                                 <LabelledFormWidget
                                     id={"date"}
-                                    label={"Für welchen Tag?"}
+                                    label={t("label.date")}
                                     widget={meals.isLoading ? (
                                         <DayRadioSkeleton />
                                     ) : (
@@ -230,7 +233,7 @@ export function AddMeal(): ReactElement {
 
                                 <LabelledFormWidget
                                     id={"mealCategory"}
-                                    label={"Für welche Tageszeit?"}
+                                    label={t("label.mealcategory")}
                                     widget={mealCategories.isLoading || settings.isLoading ? (
                                         <RadioSkeleton />
                                     ) : (
@@ -248,7 +251,7 @@ export function AddMeal(): ReactElement {
 
                                 <LabelledFormWidget
                                     id={"userGroup"}
-                                    label={"Für wen ist die Mahlzeit?"}
+                                    label={t("label.usergroup")}
                                     widget={userGroups.isLoading || settings.isLoading ? (
                                         <RadioSkeleton />
                                     ) : (
@@ -268,7 +271,7 @@ export function AddMeal(): ReactElement {
                                     <Button
                                         type="submit"
                                         icon="save"
-                                        label="Speichern"
+                                        label={t("button.save")}
                                         outlined={true}
                                         isFloating={true}
                                     />
@@ -277,7 +280,7 @@ export function AddMeal(): ReactElement {
                         </div>
 
                         <div className={"px-2"}>
-                            <Label htmlFor="recipe">Welches Rezept?</Label>
+                            <Label htmlFor="recipe">{t("label.recipe")}</Label>
                             {recipes.isLoading ? (
                                 <RecipeListSkeleton />
                             ) : (
@@ -288,7 +291,7 @@ export function AddMeal(): ReactElement {
                                         <SearchWidget
                                             inputValue={recipeQuery}
                                             setInputValue={setRecipeQuery}
-                                            placeholder="Suche nach Rezepten ..."
+                                            placeholder={t("search.widget.placeholder")}
                                         />
 
                                         <Button

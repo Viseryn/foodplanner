@@ -2,7 +2,9 @@ import Button from "@/components/ui/Buttons/Button"
 import { OuterCard } from "@/components/ui/Cards/OuterCard"
 import Heading from "@/components/ui/Heading"
 import Spacer from "@/components/ui/Spacer"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { MealTile } from "@/pages/Planner/components/MealTile"
+import { PlannerTranslations } from "@/pages/Planner/PlannerTranslations"
 import { getLocaleDateString } from "@/pages/Planner/util/getLocaleDateString"
 import { getWeekday } from "@/pages/Planner/util/getWeekday"
 import { Meal } from "@/types/api/Meal"
@@ -18,6 +20,7 @@ export const DayCard = ({ mapEntry }: {
 }): ReactElement => {
     const [dateKey, meals] = mapEntry
     const date: Date = new Date(dateKey)
+    const t: TranslationFunction = useTranslation(PlannerTranslations)
 
     return (
         <OuterCard key={date.toLocaleDateString()} className={"!rounded-lg first:!rounded-t-3xl last:!rounded-b-3xl"}>
@@ -43,7 +46,7 @@ export const DayCard = ({ mapEntry }: {
 
                 {meals.length === 0 && (
                     <Button
-                        label={"Neue Mahlzeit"}
+                        label={t("button.add.meal")}
                         icon={"add"}
                         role={"secondary"}
                         location={`/planner/add/${dateKey}`}
