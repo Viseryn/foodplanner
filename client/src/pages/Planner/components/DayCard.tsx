@@ -51,7 +51,7 @@ export const DayCard = ({ mapEntry }: {
                         role={"secondary"}
                         location={`/planner/add/${dateKey}`}
                         isSmall={true}
-                        className={"h-[7.5rem] w-full !rounded-3xl justify-center"}
+                        className={"h-32 w-full !rounded-3xl justify-center"}
                     />
                 )}
             </div>
