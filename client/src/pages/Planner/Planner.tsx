@@ -7,7 +7,9 @@ import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { useScrollCache } from "@/hooks/useScrollCache"
 import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
 import useTimeout from "@/hooks/useTimeout"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
+import { PlannerTranslations } from "@/pages/Planner/PlannerTranslations"
 import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
 import { Meal } from "@/types/api/Meal"
@@ -28,6 +30,7 @@ import DaySkeletonMobile from "./components/DaySkeletonMobile"
 export const Planner = (): ReactElement => {
     const sidebar: Sidebar = useNullishContext(SidebarContext)
     const topbar: Topbar = useNullishContext(TopbarContext)
+    const t: TranslationFunction = useTranslation(PlannerTranslations)
     const { meals, recipes, shoppingList }: Pick<GlobalAppData, "meals" | "recipes" | "shoppingList"> = useNullishContext(GlobalAppDataContext)
     const dates: Map<DateKey, Meal[]> = usePlannerDates()
 
@@ -110,8 +113,8 @@ export const Planner = (): ReactElement => {
                    isVisible: true,
                    icon: showSabDone ? "done" : "add_shopping_cart",
                    label: showSabDone
-                       ? "Erledigt!" + (countSabClicks > 1 ? ` (${countSabClicks})` : "")
-                       : "Zur Einkaufsliste",
+                       ? t("sab.label.done") + (countSabClicks > 1 ? ` (${countSabClicks})` : "")
+                       : t("sab.label"),
                    onClick: handleAddShoppingList,
                })
                .rebuild()
@@ -121,11 +124,11 @@ export const Planner = (): ReactElement => {
     useEffect(() => {
         topbar
             .configuration
-            .title("Wochenplan")
+            .title(t("topbar.title"))
             .dropdownMenuItems([
                 {
                     icon: onlyShowOwnMeals ? "group_search" : "person_search",
-                    label: onlyShowOwnMeals ? "Alle Mahlzeiten anzeigen" : "Nur meine Mahlzeiten anzeigen",
+                    label: onlyShowOwnMeals ? t("dropdown.show.all.meals") : t("dropdown.show.own.meals"),
                     onClick: async () => {
                         await delay(300)
                         toggleOnlyShowOwnMeals()
@@ -146,7 +149,7 @@ export const Planner = (): ReactElement => {
                     <DaySkeletonMobile />
                 </div>
             ) : (
-                <div className="pb-[5.5rem] flex flex-col gap-1">
+                <div className="pb-[5.5rem] flex flex-col gap-0.5">
                     {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
                         <DayCard key={entry[0]} mapEntry={entry} />
                     )}
