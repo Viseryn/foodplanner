@@ -149,7 +149,7 @@ export const Planner = (): ReactElement => {
                     <DaySkeletonMobile />
                 </div>
             ) : (
-                <div className="pb-[5.5rem] flex flex-col gap-1">
+                <div className="pb-[5.5rem] flex flex-col gap-0.5">
                     {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
                         <DayCard key={entry[0]} mapEntry={entry} />
                     )}

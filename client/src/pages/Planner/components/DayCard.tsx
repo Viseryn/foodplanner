@@ -23,7 +23,7 @@ export const DayCard = ({ mapEntry }: {
     const t: TranslationFunction = useTranslation(PlannerTranslations)
 
     return (
-        <OuterCard key={date.toLocaleDateString()} className={"!rounded-lg first:!rounded-t-3xl last:!rounded-b-3xl"}>
+        <OuterCard key={date.toLocaleDateString()} className={"!rounded-md first:!rounded-t-3xl last:!rounded-b-3xl"}>
             <div className={"flex justify-center md:justify-start items-center h-8 relative"}>
                 <Heading size="lg md:text-xl" style={"pl-1"}>{getWeekday(date)}, {getLocaleDateString(date)}</Heading>
 
@@ -39,7 +39,7 @@ export const DayCard = ({ mapEntry }: {
 
             <Spacer height="4" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1 place-items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-0.5 place-items-center">
                 {meals.map(meal =>
                     <MealTile key={meal.id} meal={meal} />,
                 )}

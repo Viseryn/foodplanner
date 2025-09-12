@@ -198,7 +198,7 @@ export function AddMeal(): ReactElement {
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                         <div className="md:order-last">
-                            <div className={"px-2"}>
+                            <div>
                                 <LabelledFormWidget
                                     id={"date"}
                                     label={t("label.date")}
@@ -279,7 +279,7 @@ export function AddMeal(): ReactElement {
                             </div>
                         </div>
 
-                        <div className={"px-2"}>
+                        <div>
                             <Label htmlFor="recipe">{t("label.recipe")}</Label>
                             {recipes.isLoading ? (
                                 <RecipeListSkeleton />

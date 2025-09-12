@@ -35,7 +35,7 @@ export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
         <div className={`h-32 w-full group transition duration-300`}>
             <div className="relative">
                 <img
-                    className={"h-32 w-full object-cover brightness-[.7] rounded-lg group-first-of-type:rounded-t-3xl group-last-of-type:rounded-b-3xl" +
+                    className={"h-32 w-full object-cover brightness-[.7] rounded-md group-first-of-type:rounded-t-3xl group-last-of-type:rounded-b-3xl" +
                         " sm:!rounded-lg"}
                     src={recipe.image?.filename != null
                         ? apiClient.defaults.baseURL + recipe.image?.directory + "THUMBNAIL__" + recipe.image?.filename
