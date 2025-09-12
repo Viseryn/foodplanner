@@ -61,7 +61,7 @@ export const ShoppingListPage = (): ReactElement => {
                 .filter(pantryIngredient => shoppingList.data.map(ingredient => ingredient.name).includes(pantryIngredient.name))
                 .map(pantryIngredient => ({
                     ...pantryIngredient,
-                    quantityValue: (pantryIngredient.quantityValue === "") ? "" : `-${pantryIngredient.quantityValue}`,
+                    quantityValue: (pantryIngredient.quantityValue === "") ? "-1" : `-${pantryIngredient.quantityValue}`,
                 }))
 
         // Subtract pantry ingredients
