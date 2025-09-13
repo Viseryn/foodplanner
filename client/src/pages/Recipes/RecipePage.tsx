@@ -550,7 +550,7 @@ export const RecipePage = (): ReactElement => {
                                         cardComponent={OuterCard}
                                         heading={<CardHeading size={"text-xl"} className={""}>{t("externalUrl.card.title")}</CardHeading>}
                                     >
-                                        <div className={"bg-white p-4 rounded-2xl"}>
+                                        <div className={"bg-white dark:bg-bg-dark p-4 rounded-2xl"}>
                                             <div className="flex gap-2">
                                                 <span className="material-symbols-rounded text-base">open_in_new</span>
 
