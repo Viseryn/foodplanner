@@ -3,6 +3,7 @@ import { Logout } from "@/pages/Logout/Logout"
 import { PageNotFound } from "@/pages/PageNotFound/PageNotFound"
 import { PantryPage } from "@/pages/Pantry/PantryPage"
 import { AddMeal } from "@/pages/Planner/AddMeal"
+import { EditMealPage } from "@/pages/Planner/EditMealPage"
 import { Planner } from "@/pages/Planner/Planner"
 import { AddRecipe } from "@/pages/Recipes/AddRecipe"
 import { EditRecipe } from "@/pages/Recipes/EditRecipe"
@@ -31,6 +32,12 @@ export const PAGE_CONFIGS: Page[] = [
         id: "planner_meal_add",
         path: "/planner/add/:id",
         element: <AddMeal />,
+        authenticationNeeded: true,
+    },
+    {
+        id: "planner_meal_edit",
+        path: "/planner/edit/:id",
+        element: <EditMealPage />,
         authenticationNeeded: true,
     },
     {
