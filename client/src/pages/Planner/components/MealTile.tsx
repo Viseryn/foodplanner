@@ -14,11 +14,12 @@ import { apiClient } from "@/util/apiClient"
 import { ApiRequest } from "@/util/ApiRequest"
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
 import { ReactElement } from "react"
-import { Link } from "react-router-dom"
+import { Link, NavigateFunction, useNavigate } from "react-router-dom"
 import swal from "sweetalert"
 
 export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
     const t: TranslationFunction = useTranslation(PlannerTranslations)
+    const navigate: NavigateFunction = useNavigate()
     const { meals, recipes, userGroups, mealCategories, }: Pick<GlobalAppData, "meals" | "recipes" | "userGroups" | "mealCategories"> = useNullishContext(GlobalAppDataContext)
 
     const recipe: Maybe<Recipe> = findEntityByIri(meal.recipe, recipes)
@@ -73,9 +74,15 @@ export const MealTile = ({ meal }: { meal: Meal }): ReactElement => {
                         anchor="bottom end"
                         className="z-[500] bg-white dark:bg-secondary-dark-100 origin-top-right mt-2 shadow-2xl rounded-2xl p-2 space-y-2 transition duration-300 ease-out focus:outline-none"
                     >
-                        <MenuItem key={meal.id}>
+                        <MenuItem key={meal.id + "edit"}>
+                            <div onClick={() => { navigate(`/planner/edit/${meal.id}`) }} className="flex items-center gap-4 h-10 p-2 rounded-xl hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40 cursor-pointer transition duration-300">
+                                <span className={"material-symbols-rounded outlined text-balance"}>edit_square</span>
+                                {t("dropdown.edit.meal")}
+                            </div>
+                        </MenuItem>
+                        <MenuItem key={meal.id + "delete"}>
                             <div onClick={() => deleteMeal(meal, meals)} className="flex items-center gap-4 h-10 p-2 rounded-xl hover:bg-secondary-200/40 dark:hover:bg-secondary-dark-200/40 cursor-pointer transition duration-300">
-                                <span className={"material-symbols-rounded text-balance"}>delete_sweep</span>
+                                <span className={"material-symbols-rounded outlined text-balance"}>delete_sweep</span>
                                 {t("dropdown.delete.meal")}
                             </div>
                         </MenuItem>

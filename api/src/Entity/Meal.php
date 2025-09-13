@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Provider\MealProvider;
 use App\Repository\MealRepository;
@@ -17,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
             provider: MealProvider::class,
         ),
         new Post(),
-        // new Patch(), // TODO: FP-84
+        new Patch(),
         new Delete(),
     ],
     security: 'is_granted("ROLE_ADMIN")',
