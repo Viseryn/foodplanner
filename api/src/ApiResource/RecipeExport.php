@@ -30,6 +30,9 @@ final readonly class RecipeExport {
     #[Groups(["recipe:export"])]
     private int $portionSize;
 
+    #[Groups(["recipe:export"])]
+    private string $externalUrl;
+
     /** @var ReadableCollection<IngredientExport> */
     #[Groups(["recipe:export"])]
     private ReadableCollection $ingredients;
@@ -41,10 +44,19 @@ final readonly class RecipeExport {
     #[Groups(["recipe:export"])]
     private string $image;
 
-    public function __construct(int $id, string $title, int $portionSize, ReadableCollection $ingredients, ReadableCollection $instructions, string $image) {
+    public function __construct(
+        int $id,
+        string $title,
+        int $portionSize,
+        string $externalUrl,
+        ReadableCollection $ingredients,
+        ReadableCollection $instructions,
+        string $image,
+    ) {
         $this->id = $id;
         $this->title = $title;
         $this->portionSize = $portionSize;
+        $this->externalUrl = $externalUrl;
         $this->ingredients = $ingredients;
         $this->instructions = $instructions;
         $this->image = $image;
@@ -60,6 +72,10 @@ final readonly class RecipeExport {
 
     public function getPortionSize(): int {
         return $this->portionSize;
+    }
+
+    public function getExternalUrl(): string {
+        return $this->externalUrl;
     }
 
     public function getIngredients(): ReadableCollection {

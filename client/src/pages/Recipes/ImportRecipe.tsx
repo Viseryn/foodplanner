@@ -55,6 +55,7 @@ const createRecipe = (importRecipe: ImportedRecipeExportDto): [Detached<Recipe>,
         instructions: importRecipe.instructions.map(importInstruction => ({ ...importInstruction, "@type": "Instruction" })),
         portionSize: importRecipe.portionSize,
         title: importRecipe.title,
+        externalUrl: importRecipe.externalUrl,
     }, {
         "@type": "Image",
             imageContents: importRecipe.image,

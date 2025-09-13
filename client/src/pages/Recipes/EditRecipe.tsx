@@ -44,10 +44,11 @@ export const EditRecipe = (): ReactElement => {
     const [responseId, setResponseId] = useState<number>(0)
     const [recipe, setRecipe] = useState<Recipe>({} as Recipe)
     const [recipeFormData, setRecipeFormData] = useState<RecipeForm>({
-        title: '',
+        title: "",
         portionSize: 1,
-        ingredients: '',
-        instructions: '',
+        ingredients: "",
+        instructions: "",
+        externalUrl: "",
     })
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
@@ -69,6 +70,7 @@ export const EditRecipe = (): ReactElement => {
             portionSize: recipeResult.portionSize,
             ingredients: getIngredientsAsString(recipeResult.ingredients),
             instructions: getInstructionsAsString(recipeResult.instructions),
+            externalUrl: recipeResult.externalUrl ?? "",
         }))
         setState(PageState.WAITING)
     }, [id, recipes.isLoading])
@@ -85,7 +87,6 @@ export const EditRecipe = (): ReactElement => {
             const noNewImage: boolean = imagePreviewUrl.length === 0
 
             if (recipeResponse.image && noNewImage) {
-                console.log(noNewImage, recipeResponse.image)
                 await ApiRequest.delete(`${recipeResponse["@id"]}/image`).execute()
             } else if (file) {
                 const newRecipeImage: Base64Image = await createRecipeImage(file)
@@ -169,6 +170,21 @@ export const EditRecipe = (): ReactElement => {
                                 imagePreviewUrl={imagePreviewUrl}
                                 setImagePreviewUrl={setImagePreviewUrl}
                                 recipe={recipe}
+                            />
+
+                            <Spacer height="6" />
+
+                            <LabelledFormWidget
+                                id={"externalUrl"}
+                                label={"Externes Rezept verlinken?"}
+                                widget={
+                                    <InputWidget
+                                        field={"externalUrl"}
+                                        formData={recipeFormData}
+                                        setFormData={setRecipeFormData}
+                                        placeholder={"https://..."}
+                                    />
+                                }
                             />
                         </OuterCard>
 

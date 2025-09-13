@@ -39,10 +39,11 @@ export const AddRecipe = (): ReactElement => {
     const [state, setState] = useState<PageState>(PageState.LOADING)
     const [responseId, setResponseId] = useState<number>(0)
     const [recipeFormData, setRecipeFormData] = useState<RecipeForm>({
-        title: '',
+        title: "",
         portionSize: 1,
-        ingredients: '',
-        instructions: '',
+        ingredients: "",
+        instructions: "",
+        externalUrl: "",
     })
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
@@ -138,6 +139,21 @@ export const AddRecipe = (): ReactElement => {
                                 setFile={setFile}
                                 imagePreviewUrl={imagePreviewUrl}
                                 setImagePreviewUrl={setImagePreviewUrl}
+                            />
+
+                            <Spacer height="6" />
+
+                            <LabelledFormWidget
+                                id={"externalUrl"}
+                                label={"Externes Rezept verlinken?"}
+                                widget={
+                                    <InputWidget
+                                        field={"externalUrl"}
+                                        formData={recipeFormData}
+                                        setFormData={setRecipeFormData}
+                                        placeholder={"https://..."}
+                                    />
+                                }
                             />
                         </OuterCard>
 

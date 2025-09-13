@@ -5,4 +5,5 @@ export type RecipeForm = Form & {
     portionSize: number
     ingredients: string
     instructions: string
+    externalUrl: string
 }
