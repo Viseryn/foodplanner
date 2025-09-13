@@ -16,4 +16,5 @@ export type RecipeExport = {
     ingredients: IngredientExport[]
     instructions: InstructionExport[]
     image: Nullish<string>
+    externalUrl?: string
 }
