@@ -15,9 +15,11 @@ import { useNullishContext } from "@/hooks/useNullishContext"
 import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { stateCacheStore } from "@/hooks/useStateCache"
 import useTimeout from "@/hooks/useTimeout"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
 import { TwoColumnView } from "@/layouts/TwoColumnView"
 import { TooltippedInstruction } from "@/pages/Recipes/components/TooltippedInstruction"
+import { RecipeTranslations } from "@/pages/Recipes/RecipeTranslations"
 import { isFavorite } from "@/pages/Recipes/util/isFavorite"
 import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
@@ -48,6 +50,7 @@ import swal from "sweetalert"
  * @todo Write an easier to read skeleton.
  */
 export const RecipePage = (): ReactElement => {
+    const t: TranslationFunction = useTranslation(RecipeTranslations)
     const user: ManagedResource<User> = useNullishContext(UserContext)
     const sidebar: Sidebar = useNullishContext(SidebarContext)
     const topbar: Topbar = useNullishContext(TopbarContext)
@@ -329,7 +332,7 @@ export const RecipePage = (): ReactElement => {
                    .actionButton({
                        isVisible: true,
                        icon: "calendar_add_on",
-                       label: "Mahlzeit planen",
+                       label: t("sab.label"),
                        path: `/planner/add/${[...dateMealMap.keys()][0]}?recipe=${recipe.id}`,
                    })
                    .rebuild()
@@ -342,11 +345,11 @@ export const RecipePage = (): ReactElement => {
                   { icon: "star", filled: isFavorite(recipe, user.data), onClick: handleFavoriteButtonClick },
               ])
               .dropdownMenuItems([
-                  { icon: "contract_edit", label: "Rezept bearbeiten", onClick: () => navigate(`/recipe/${id}/edit`) },
-                  { icon: "delete", label: "Rezept löschen", onClick: () => deleteRecipe(id) },
+                  { icon: "contract_edit", label: t("dropdown.edit.recipe"), onClick: () => navigate(`/recipe/${id}/edit`) },
+                  { icon: "delete", label: t("dropdown.delete.recipe"), onClick: () => deleteRecipe(id) },
                   {
                       icon: "download",
-                      label: "Rezept exportieren",
+                      label: t("dropdown.export.recipe"),
                       onClick: () => {
                           const downloadUrl: string = apiClient.defaults.baseURL + `/api/recipes/export/${id}`
                           window.open(downloadUrl, "_blank", "rel=noopener noreferrer")
@@ -354,7 +357,7 @@ export const RecipePage = (): ReactElement => {
                   },
                   {
                       icon: "refresh",
-                      label: "Aktualisieren",
+                      label: t("dropdown.refresh"),
                       onClick: () => {
                           setPortionSize(0)
                           recipes.load()
@@ -413,7 +416,7 @@ export const RecipePage = (): ReactElement => {
                                 cardComponent: OuterCard,
                                 heading: (
                                     <CardHeading size="text-xl" className="ml-2">
-                                        Zutaten für
+                                        {t("ingredients.card.title.1")}
                                         <select
                                             value={portionSize}
                                             onChange={e => setPortionSize(+e.target.value)}
@@ -428,7 +431,7 @@ export const RecipePage = (): ReactElement => {
                                                 </option>,
                                             )}
                                         </select>
-                                        {portionSize == 1 ? "Portion" : "Portionen"}
+                                        {portionSize == 1 ? t("ingredients.card.title.2") : t("ingredients.card.title.3")}
                                     </CardHeading>
                                 ),
                                 collapsed: stateCacheStore.getState().recipeIngredientsCollapsed,
@@ -491,7 +494,7 @@ export const RecipePage = (): ReactElement => {
                                         <Button
                                             icon={showShoppingListDone ? "done" : "add_shopping_cart"}
                                             outlined={true}
-                                            label={showShoppingListDone ? "Erledigt!" : "Alles auf die Einkaufsliste"}
+                                            label={showShoppingListDone ? t("ingredients.button.done") : t("ingredients.button.shoppinglist")}
                                             onClick={() => handleAddShoppingList(tmpRecipe)}
                                             role={showShoppingListDone ? "primary" : "secondary"}
                                             className="flex-1 md:flex-none md:!rounded-full transition-all duration-300"
@@ -503,7 +506,7 @@ export const RecipePage = (): ReactElement => {
                                             <Button
                                                 icon={showPantryDone ? "done" : "add_home_work"}
                                                 outlined={true}
-                                                label={showPantryDone ? "Erledigt!" : "Alles in die Vorratskammer"}
+                                                label={showPantryDone ? t("ingredients.button.done") : t("ingredients.button.pantry")}
                                                 onClick={() => handleAddPantry(tmpRecipe)}
                                                 role={showPantryDone ? "primary" : "secondary"}
                                                 className="flex-1 md:flex-none md:!rounded-full transition-all duration-300"
@@ -516,36 +519,73 @@ export const RecipePage = (): ReactElement => {
                         </div>
                     )}
 
-                    {/* Instructions */}
-                    {tmpRecipe.instructions?.length > 0 && (
+                    {/* Instructions and external URL */}
+                    {(tmpRecipe.instructions?.length > 0 || recipe.externalUrl) && (
                         <div>
-                            <CollapsibleCard {...{
-                                cardComponent: OuterCard,
-                                heading: <CardHeading size="text-xl" className="ml-2">Zubereitung</CardHeading>,
-                                collapsed: stateCacheStore.getState().recipeInstructionsCollapsed,
-                                onCollapse: () => stateCacheStore.getState().toggle("recipeInstructionsCollapsed"),
-                            }}>
-                                <div className="space-y-0.5">
-                                    {recipe.instructions.map((instruction, index) =>
-                                        <div key={instruction.id} className="flex bg-white dark:bg-bg-dark rounded-md first:rounded-t-2xl last:rounded-b-2xl px-6 py-4 gap-4">
-                                            <span className={"font-bold "}>{index + 1}.</span>
-                                            <TooltippedInstruction instruction={instruction} ingredients={tmpRecipe.ingredients} />
-                                        </div>,
-                                    )}
-                                </div>
-                            </CollapsibleCard>
+                            {tmpRecipe.instructions?.length > 0 && (
+                                <CollapsibleCard {...{
+                                    cardComponent: OuterCard,
+                                    heading: <CardHeading size="text-xl" className="ml-2">{t("instructions.card.title")}</CardHeading>,
+                                    collapsed: stateCacheStore.getState().recipeInstructionsCollapsed,
+                                    onCollapse: () => stateCacheStore.getState().toggle("recipeInstructionsCollapsed"),
+                                }}>
+                                    <div className="space-y-0.5">
+                                        {recipe.instructions.map((instruction, index) =>
+                                            <div key={instruction.id} className="flex bg-white dark:bg-bg-dark rounded-md first:rounded-t-2xl last:rounded-b-2xl px-6 py-4 gap-4">
+                                                <span className={"font-bold "}>{index + 1}.</span>
+                                                <TooltippedInstruction instruction={instruction} ingredients={tmpRecipe.ingredients} />
+                                            </div>,
+                                        )}
+                                    </div>
+                                </CollapsibleCard>
+                            )}
+
+                            {tmpRecipe.instructions?.length > 0 && recipe.externalUrl && (
+                                <Spacer height={4} />
+                            )}
+
+                            {recipe.externalUrl && (
+                                <>
+                                    <CollapsibleCard
+                                        cardComponent={OuterCard}
+                                        heading={<CardHeading size={"text-xl"} className={""}>{t("externalUrl.card.title")}</CardHeading>}
+                                    >
+                                        <div className={"bg-white p-4 rounded-2xl"}>
+                                            <div className="flex gap-2">
+                                                <span className="material-symbols-rounded text-base">open_in_new</span>
+
+                                                <a
+                                                    href={recipe.externalUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={"text-blue-500 underline overflow-hidden text-ellipsis"}
+                                                >
+                                                    {recipe.externalUrl}
+                                                </a>
+                                            </div>
+
+                                            <Spacer height={4} />
+
+                                            <p className={"text-sm"}>{t("externalUrl.description")}</p>
+                                        </div>
+                                    </CollapsibleCard>
+                                </>
+                            )}
                         </div>
                     )}
 
                     {/* Show empty card if there is no image, no ingredients and no instructions */}
                     {tmpRecipe.ingredients?.length === 0 && tmpRecipe.instructions?.length === 0 && (
                         <div className="px-4 pt-6 md:p-0">
-                            <Notification>Hier gibt es noch nichts zu sehen.</Notification>
-
-                            <Spacer height={6} />
+                            {!tmpRecipe.externalUrl && (
+                                <>
+                                    <Notification>{t("empty.recipe.notification")}</Notification>
+                                    <Spacer height={6} />
+                                </>
+                            )}
 
                             <Button
-                                label={"Rezept bearbeiten"}
+                                label={t("empty.recipe.button.label")}
                                 icon={"contract_edit"}
                                 outlined={true}
                                 className={"place-content-center"}
