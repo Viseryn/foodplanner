@@ -16,6 +16,7 @@ import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
 import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
+import { DayOptionLabel } from "@/pages/Planner/components/DayOptionLabel"
 import { PlannerTranslations } from "@/pages/Planner/PlannerTranslations"
 import { Iri } from "@/types/api/Iri"
 import { Meal } from "@/types/api/Meal"
@@ -212,19 +213,7 @@ export function AddMeal(): ReactElement {
                                             options={setChecked(getFormOptions(dayOptions), id)}
                                             required={true}
                                             gridStyling={`grid grid-cols-5 gap-1`}
-                                            optionLabelMapper={option => (
-                                                <label
-                                                    htmlFor={option.id}
-                                                    className={"cursor-pointer rounded-lg peer-checked:rounded-full h-12 transition duration-300 flex " +
-                                                        "flex-col active:scale-95 justify-center items-center text-primary-100 dark:text-primary-dark-100 " +
-                                                        "peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
-                                                        "bg-secondary-200 dark:bg-secondary-dark-200 " +
-                                                        "peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200"}
-                                                >
-                                                    <span className="text-sm font-semibold">{option.icon}</span>
-                                                    <span className="text-xs">{option.label}</span>
-                                                </label>
-                                            )}
+                                            optionLabelMapper={option => DayOptionLabel({ option })}
                                         />
                                     )}
                                 />
@@ -337,7 +326,7 @@ export function AddMeal(): ReactElement {
                                             return (
                                                 <label
                                                     htmlFor={option.id}
-                                                    className={"p-2 flex flex-row items-center cursor-pointer rounded-lg peer-checked:rounded-full h-full" +
+                                                    className={"p-2 flex flex-row items-center cursor-pointer rounded-lg peer-checked:rounded-3xl h-full" +
                                                         " active:scale-95 font-[500] w-full transition duration-300 text-primary-100" +
                                                         " dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 " +
                                                         " peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
