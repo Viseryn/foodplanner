@@ -1,3 +1,4 @@
+import { SwitchValue } from "@/types/enums/SwitchValue"
 import { Form } from "@/types/forms/Form"
 
 export type RecipeForm = Form & {
@@ -6,4 +7,5 @@ export type RecipeForm = Form & {
     ingredients: string
     instructions: string
     externalUrl: string
+    sideDish: SwitchValue
 }

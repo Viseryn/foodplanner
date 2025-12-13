@@ -9,6 +9,9 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Provider\MealProvider;
 use App\Repository\MealRepository;
+use App\Validator\IsSideDish;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -44,6 +47,15 @@ class Meal {
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
+
+    /** @var Collection<int, Recipe> */
+    #[ORM\ManyToMany(targetEntity: Recipe::class)]
+    #[IsSideDish]
+    private Collection $sideDishes;
+
+    public function __construct() {
+        $this->sideDishes = new ArrayCollection();
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -85,6 +97,25 @@ class Meal {
 
     public function setDate(\DateTimeInterface $date): static {
         $this->date = $date;
+
+        return $this;
+    }
+
+    /** @return Collection<int, Recipe> */
+    public function getSideDishes(): Collection {
+        return $this->sideDishes;
+    }
+
+    public function addSideDish(Recipe $sideDish): static {
+        if (!$this->sideDishes->contains($sideDish)) {
+            $this->sideDishes->add($sideDish);
+        }
+
+        return $this;
+    }
+
+    public function removeSideDish(Recipe $sideDish): static {
+        $this->sideDishes->removeElement($sideDish);
 
         return $this;
     }

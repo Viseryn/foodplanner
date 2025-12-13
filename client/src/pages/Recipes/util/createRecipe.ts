@@ -2,6 +2,7 @@ import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
 import { Instruction } from "@/types/api/Instruction"
 import { Recipe } from "@/types/api/Recipe"
+import { SwitchValue } from "@/types/enums/SwitchValue"
 import { RecipeForm } from "@/types/forms/RecipeForm"
 import { createIngredient } from "@/util/ingredients/createIngredient"
 import { createInstruction } from "@/util/instructions/createInstruction"
@@ -24,6 +25,7 @@ export function createRecipe(recipeForm: RecipeForm): Detached<Recipe> {
         "@type": "Recipe",
         ingredients: ingredients,
         instructions: instructions,
-        image: undefined
+        image: undefined,
+        sideDish: recipeForm.sideDish === SwitchValue.ON,
     }
 }

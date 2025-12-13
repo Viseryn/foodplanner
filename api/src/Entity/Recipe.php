@@ -104,6 +104,10 @@ class Recipe {
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $externalUrl = null;
 
+    #[Groups(["recipe:read", "recipe:post", "recipe:patch"])]
+    #[ORM\Column]
+    private ?bool $sideDish = null;
+
     public function __construct() {
         $this->ingredients = new ArrayCollection();
         $this->instructions = new ArrayCollection();
@@ -213,6 +217,18 @@ class Recipe {
     public function setExternalUrl(?string $externalUrl): static
     {
         $this->externalUrl = $externalUrl;
+
+        return $this;
+    }
+
+    public function isSideDish(): ?bool
+    {
+        return $this->sideDish;
+    }
+
+    public function setSideDish(bool $sideDish): static
+    {
+        $this->sideDish = $sideDish;
 
         return $this;
     }

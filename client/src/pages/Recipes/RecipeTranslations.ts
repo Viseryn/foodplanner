@@ -30,6 +30,7 @@ export const RecipeTranslations: Translations = {
         "topbar.title.add.recipe": "Add recipe",
 
         "label.title": "Recipe title",
+        "label.sideDish": "Save as side dish",
         "label.portionSize": "How many portions?",
         "label.image": "Upload image",
         "label.externalUrl": "External link",
@@ -69,6 +70,7 @@ export const RecipeTranslations: Translations = {
         "topbar.title.add.recipe": "Neues Rezept",
 
         "label.title": "Titel des Rezepts",
+        "label.sideDish": "Als Beilage speichern",
         "label.portionSize": "Wie viele Portionen?",
         "label.image": "Bild hochladen",
         "label.externalUrl": "Externes Rezept verlinken",

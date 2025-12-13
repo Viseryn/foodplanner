@@ -18,4 +18,5 @@ export type Recipe = ApiResource & {
     image?: Image
     deleted?: boolean
     externalUrl?: string
+    sideDish: boolean
 }

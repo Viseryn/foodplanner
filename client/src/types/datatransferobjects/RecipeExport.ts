@@ -17,4 +17,5 @@ export type RecipeExport = {
     instructions: InstructionExport[]
     image: Nullish<string>
     externalUrl?: string
+    sideDish: boolean
 }

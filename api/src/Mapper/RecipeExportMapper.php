@@ -33,6 +33,7 @@ final class RecipeExportMapper {
             $this->toIngredientExportDtos($recipe->getIngredients()),
             $this->toInstructionExportDtos($recipe->getInstructions()),
             $this->toBase64String($recipe->getImage()),
+            $recipe->isSideDish(),
         );
     }
 
@@ -94,6 +95,7 @@ final class RecipeExportMapper {
             "ingredients" => $recipeExportDto->getIngredients()->toArray(),
             "instructions" => $recipeExportDto->getInstructions()->toArray(),
             "image" => $recipeExportDto->getImage(),
+            "sideDish" => $recipeExportDto->isSideDish(),
         ];
     }
 }

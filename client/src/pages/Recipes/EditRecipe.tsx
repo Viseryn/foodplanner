@@ -54,6 +54,7 @@ export const EditRecipe = (): ReactElement => {
         ingredients: "",
         instructions: "",
         externalUrl: "",
+        sideDish: SwitchValue.OFF,
     })
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
@@ -76,6 +77,7 @@ export const EditRecipe = (): ReactElement => {
             ingredients: getIngredientsAsString(recipeResult.ingredients),
             instructions: getInstructionsAsString(recipeResult.instructions),
             externalUrl: recipeResult.externalUrl ?? "",
+            sideDish: recipeResult.sideDish ? SwitchValue.ON : SwitchValue.OFF,
         }))
         setState(PageState.WAITING)
     }, [id, recipes.isLoading])
@@ -149,6 +151,23 @@ export const EditRecipe = (): ReactElement => {
                                         maxLength={255}
                                     />
                                 }
+                            />
+
+                            <Spacer height="6" />
+
+                            <SwitchWidget
+                                field={"sideDish"}
+                                formData={recipeFormData}
+                                setFormData={setRecipeFormData}
+                                displayedText={t("label.sideDish")}
+                                onClick={() => {
+                                    setRecipeFormData({
+                                        ...recipeFormData,
+                                        sideDish: recipeFormData.sideDish === SwitchValue.OFF
+                                            ? SwitchValue.ON
+                                            : SwitchValue.OFF,
+                                    })
+                                }}
                             />
 
                             <Spacer height="6" />
