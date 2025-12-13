@@ -26,6 +26,20 @@ export const RecipeTranslations: Translations = {
 
         "empty.recipe.notification": "There's nothing to see here yet.",
         "empty.recipe.button.label": "Edit recipe",
+
+        "topbar.title.add.recipe": "Add recipe",
+
+        "label.title": "Recipe title",
+        "label.portionSize": "How many portions?",
+        "label.image": "Upload image",
+        "label.externalUrl": "External link",
+        "label.ingredients": "Ingredients",
+        "label.instructions": "Instructions",
+
+        "placeholder.ingredients": "250 ml vegetable broth\n1/2 tube tomato paste\n10 g salt",
+        "placeholder.instructions": "Write each step into a separate line.",
+
+        "button.save": "Save recipe",
     },
 
     de: {
@@ -51,5 +65,19 @@ export const RecipeTranslations: Translations = {
 
         "empty.recipe.notification": "Hier gibt es noch nichts zu sehen.",
         "empty.recipe.button.label": "Rezept bearbeiten",
+
+        "topbar.title.add.recipe": "Neues Rezept",
+
+        "label.title": "Titel des Rezepts",
+        "label.portionSize": "Wie viele Portionen?",
+        "label.image": "Bild hochladen",
+        "label.externalUrl": "Externes Rezept verlinken",
+        "label.ingredients": "Zutaten",
+        "label.instructions": "Zubereitung",
+
+        "placeholder.ingredients": "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
+        "placeholder.instructions": "Schreibe jeden Schritt in eine eigene Zeile.",
+
+        "button.save": "Rezept speichern",
     },
 }
