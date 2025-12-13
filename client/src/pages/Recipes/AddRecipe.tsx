@@ -49,6 +49,7 @@ export const AddRecipe = (): ReactElement => {
         ingredients: "",
         instructions: "",
         externalUrl: "",
+        sideDish: SwitchValue.OFF,
     })
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
@@ -119,6 +120,23 @@ export const AddRecipe = (): ReactElement => {
                                         maxLength={255}
                                     />
                                 }
+                            />
+
+                            <Spacer height="6" />
+
+                            <SwitchWidget
+                                field={"sideDish"}
+                                formData={recipeFormData}
+                                setFormData={setRecipeFormData}
+                                displayedText={t("label.sideDish")}
+                                onClick={() => {
+                                    setRecipeFormData({
+                                        ...recipeFormData,
+                                        sideDish: recipeFormData.sideDish === SwitchValue.OFF
+                                            ? SwitchValue.ON
+                                            : SwitchValue.OFF,
+                                    })
+                                }}
                             />
 
                             <Spacer height="6" />

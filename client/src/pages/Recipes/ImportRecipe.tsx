@@ -56,6 +56,7 @@ const createRecipe = (importRecipe: ImportedRecipeExportDto): [Detached<Recipe>,
         portionSize: importRecipe.portionSize,
         title: importRecipe.title,
         externalUrl: importRecipe.externalUrl,
+        sideDish: importRecipe.sideDish,
     }, {
         "@type": "Image",
             imageContents: importRecipe.image,
