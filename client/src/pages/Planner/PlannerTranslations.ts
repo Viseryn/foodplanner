@@ -23,8 +23,12 @@ export const PlannerTranslations: Translations = {
         "label.mealcategory": "For what time?",
         "label.usergroup": "For whom?",
         "label.recipe": "What recipe?",
+        "label.sideDishes": "Any side dishes?",
+        "label.hasSideDishes": "Add side dishes to this meal",
 
         "search.widget.placeholder": "Search for recipes ...",
+
+        "text.no.side.dishes": "You currently don't have any side dish recipes. You can edit a recipe and mark it as side dish.",
     },
 
     de: {
@@ -47,7 +51,11 @@ export const PlannerTranslations: Translations = {
         "label.mealcategory": "Für welche Tageszeit?",
         "label.usergroup": "Für wen?",
         "label.recipe": "Welches Rezept?",
+        "label.sideDishes": "Beilagen?",
+        "label.hasSideDishes": "Füge Beilagen zur Mahlzeit hinzu",
 
         "search.widget.placeholder": "Suche nach Rezepten ...",
+
+        "text.no.side.dishes": "Du hast aktuell keine Beilagenrezepte. Du kannst ein Rezept bearbeiten und es dann als Beilage markieren.",
     },
 }
