@@ -17,4 +17,6 @@ export type Recipe = ApiResource & {
     instructions: Instruction[]
     image?: Image
     deleted?: boolean
+    externalUrl?: string
+    sideDish: boolean
 }

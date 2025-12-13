@@ -1,1 +1,0 @@
-export const DATEI_AUSWAEHLEN = "Datei auswählen"

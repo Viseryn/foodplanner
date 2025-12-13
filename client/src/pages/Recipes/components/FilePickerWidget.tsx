@@ -1,6 +1,8 @@
 import FileSelectButton from "@/components/ui/Buttons/FileSelectButton"
 import IconButton from "@/components/ui/Buttons/IconButton"
-import { DATEI_AUSWAEHLEN } from "@/pages/Recipes/constants/DATEI_AUSWAEHLEN"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
+import { PICK_FILE } from "@/pages/Recipes/constants/PICK_FILE"
+import { RecipeTranslations } from "@/pages/Recipes/RecipeTranslations"
 import React, { ReactElement, useState } from "react"
 
 type FilePickerWidgetProps = {
@@ -16,16 +18,18 @@ export const FilePickerWidget = ({
     imagePreviewUrl,
     setImagePreviewUrl,
 }: FilePickerWidgetProps): ReactElement => {
+    const t: TranslationFunction = useTranslation(RecipeTranslations)
+
     const [
         uploadButtonText,
         setUploadButtonText,
-    ] = useState<string>(DATEI_AUSWAEHLEN)
+    ] = useState<string>(PICK_FILE)
 
     const handleFilePick = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const uploadedFile: File | null = event.target.files?.[0] || null
         const filename: string = uploadedFile?.name || ''
 
-        setUploadButtonText(filename || DATEI_AUSWAEHLEN)
+        setUploadButtonText(filename || PICK_FILE)
         setFile(uploadedFile)
 
         if (uploadedFile !== null) {
@@ -35,7 +39,7 @@ export const FilePickerWidget = ({
     }
 
     const handleDeleteUploadedImage = (): void => {
-        setUploadButtonText(DATEI_AUSWAEHLEN)
+        setUploadButtonText(PICK_FILE)
         setFile(null)
         setImagePreviewVisible(false)
         setImagePreviewUrl('')
@@ -43,7 +47,7 @@ export const FilePickerWidget = ({
 
     return (
         <>
-            <div className="text-sm font-semibold block mb-2">Bild hochladen</div>
+            <div className="text-sm font-semibold block mb-2">{t("label.image")}</div>
 
             <div className="flex justify-between items-center gap-4 h-10">
                 <div className="overflow-hidden w-full">

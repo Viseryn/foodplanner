@@ -1,8 +1,9 @@
 import { Label } from "@/components/form/Label"
 import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
 import { RadioWidget } from "@/components/form/RadioWidget"
+import { SideDishesWidget } from "@/components/form/SideDishesWidget"
+import { SwitchWidget } from "@/components/form/SwitchWidget"
 import Button from "@/components/ui/Buttons/Button"
-import { OuterCard } from "@/components/ui/Cards/OuterCard"
 import Notification from "@/components/ui/Notification"
 import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
@@ -16,17 +17,18 @@ import { usePlannerDates } from "@/hooks/usePlannerDates"
 import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
 import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
+import { DayOptionLabel } from "@/pages/Planner/components/DayOptionLabel"
 import { PlannerTranslations } from "@/pages/Planner/PlannerTranslations"
 import { Iri } from "@/types/api/Iri"
 import { Meal } from "@/types/api/Meal"
-import { MealCategory } from "@/types/api/MealCategory"
 import { Recipe } from "@/types/api/Recipe"
 import { Settings } from "@/types/api/Settings"
 import { User } from "@/types/api/User"
 import { UserGroup } from "@/types/api/UserGroup"
 import { DateKey } from "@/types/DateKey"
 import { PageState } from "@/types/enums/PageState"
-import { Form } from "@/types/forms/Form"
+import { SwitchValue } from "@/types/enums/SwitchValue"
+import { AddMealForm } from "@/types/forms/AddMealForm"
 import { GlobalAppData } from "@/types/GlobalAppData"
 import { ManagedResource } from "@/types/ManagedResource"
 import { ManagedResourceCollection } from "@/types/ManagedResourceCollection"
@@ -34,6 +36,7 @@ import { DayOption } from "@/types/options/DayOption"
 import { MealCategoryOption } from "@/types/options/MealCategoryOption"
 import { RadioOption } from "@/types/options/RadioOption"
 import { RecipeOption } from "@/types/options/RecipeOption"
+import { SideDishOption } from "@/types/options/SideDishOption"
 import { UserGroupOption } from "@/types/options/UserGroupOption"
 import { Sidebar } from "@/types/sidebar/Sidebar"
 import { Topbar } from "@/types/topbar/Topbar"
@@ -42,6 +45,7 @@ import { ApiRequest } from "@/util/ApiRequest"
 import { getEntityOptions } from "@/util/forms/getEntityOptions"
 import { getFormOptions } from "@/util/forms/getFormOptions"
 import { setChecked } from "@/util/forms/setChecked"
+import { isSideDish } from "@/util/isSideDish"
 import React, { ReactElement, useCallback, useEffect, useState } from "react"
 import { Navigate, NavigateFunction, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import DayRadioSkeleton from "./components/DayRadioSkeleton"
@@ -51,13 +55,6 @@ import SearchWidget from "./components/SearchWidget"
 
 type AddMealRouteParams = {
     id?: DateKey
-}
-
-type AddMealForm = Form & {
-    date: DateKey
-    mealCategory: Iri<MealCategory>
-    userGroup: Iri<UserGroup>
-    recipe: Iri<Recipe>
 }
 
 export function AddMeal(): ReactElement {
@@ -94,6 +91,8 @@ export function AddMeal(): ReactElement {
         mealCategory: "/api/",
         userGroup: "/api/",
         recipe: "/api/",
+        hasSideDishes: SwitchValue.OFF,
+        sideDishes: [],
     })
 
     useEffect(() => {
@@ -143,6 +142,7 @@ export function AddMeal(): ReactElement {
                 recipe: formData.recipe,
                 mealCategory: formData.mealCategory,
                 userGroup: formData.userGroup,
+                sideDishes: formData.sideDishes,
             })
             .ifSuccessful(() => {
                 meals.load()
@@ -212,19 +212,7 @@ export function AddMeal(): ReactElement {
                                             options={setChecked(getFormOptions(dayOptions), id)}
                                             required={true}
                                             gridStyling={`grid grid-cols-5 gap-1`}
-                                            optionLabelMapper={option => (
-                                                <label
-                                                    htmlFor={option.id}
-                                                    className={"cursor-pointer rounded-lg peer-checked:rounded-full h-12 transition duration-300 flex " +
-                                                        "flex-col active:scale-95 justify-center items-center text-primary-100 dark:text-primary-dark-100 " +
-                                                        "peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
-                                                        "bg-secondary-200 dark:bg-secondary-dark-200 " +
-                                                        "peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200"}
-                                                >
-                                                    <span className="text-sm font-semibold">{option.icon}</span>
-                                                    <span className="text-xs">{option.label}</span>
-                                                </label>
-                                            )}
+                                            optionLabelMapper={option => DayOptionLabel({ option })}
                                         />
                                     )}
                                 />
@@ -317,52 +305,125 @@ export function AddMeal(): ReactElement {
 
                                     <Spacer height="4" />
 
-                                    <RadioWidget
-                                        field={"recipe"}
-                                        formData={formData}
-                                        setFormData={setFormData}
-                                        options={setChecked(getFormOptions(getEntityOptions({
-                                            ...recipes,
-                                            data: recipes
-                                                .data
-                                                .filter(recipe => {
-                                                    return !(onlyFavorites && !user.data?.recipeFavorites.includes(recipe["@id"]));
-                                                })
-                                                .filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())),
-                                        }, RecipeOption)), `/api/recipes/${searchParams.get("recipe")}`)}
-                                        required={true}
-                                        gridStyling={`grid grid-cols-2 gap-1`}
-                                        optionLabelMapper={(option: RadioOption) => {
-                                            const optionRecipe: Recipe = recipes.data.filter(recipe => recipe["@id"] === option.value)[0]
-                                            return (
-                                                <label
-                                                    htmlFor={option.id}
-                                                    className={"p-2 flex flex-row items-center cursor-pointer rounded-lg peer-checked:rounded-full h-full" +
-                                                        " active:scale-95 font-[500] w-full transition duration-300 text-primary-100" +
-                                                        " dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 " +
-                                                        " peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
-                                                        " peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200"}
-                                                    onClick={() => {
-                                                        setSelectedRecipe(optionRecipe.id)
-                                                        setState(PageState.WAITING) // Removes a warning
-                                                    }}
-                                                >
-                                                    <img
-                                                        className="rounded-full h-14 w-14 object-cover transition duration-300 border-secondary-100 border-2 "
-                                                        src={optionRecipe.image ? (apiClient.defaults.baseURL + optionRecipe.image?.directory + "THUMBNAIL__" + optionRecipe.image?.filename) : "/img/default.jpg"}
-                                                        alt={optionRecipe.title}
-                                                    />
-                                                    <div className="flex flex-1 justify-between items-center overflow-hidden">
-                                                        <div className="pl-2 overflow-hidden text-ellipsis">
-                                                            {option.label}
+                                    <div className={"md:max-h-[calc(100vh-35rem)] overflow-y-auto"}>
+                                        <RadioWidget
+                                            field={"recipe"}
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            options={setChecked(getFormOptions(getEntityOptions({
+                                                ...recipes,
+                                                data: recipes
+                                                    .data
+                                                    .filter(recipe => {
+                                                        return !(onlyFavorites && !user.data?.recipeFavorites.includes(recipe["@id"]));
+                                                    })
+                                                    .filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())),
+                                            }, RecipeOption)), `/api/recipes/${searchParams.get("recipe")}`)}
+                                            required={true}
+                                            gridStyling={`grid grid-cols-2 gap-1`}
+                                            optionLabelMapper={(option: RadioOption) => {
+                                                const optionRecipe: Recipe = recipes.data.filter(recipe => recipe["@id"] === option.value)[0]
+                                                return (
+                                                    <label
+                                                        htmlFor={option.id}
+                                                        className={"p-2 flex flex-row items-center cursor-pointer rounded-lg peer-checked:rounded-3xl h-full" +
+                                                            " active:scale-95 font-[500] w-full transition duration-300 text-primary-100" +
+                                                            " dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 " +
+                                                            " peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
+                                                            " peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200"}
+                                                        onClick={() => {
+                                                            setSelectedRecipe(optionRecipe.id)
+                                                            setState(PageState.WAITING) // Removes a warning
+                                                        }}
+                                                    >
+                                                        <img
+                                                            className="rounded-full h-14 w-14 object-cover transition duration-300 border-secondary-100 border-2 "
+                                                            src={optionRecipe.image ? (apiClient.defaults.baseURL + optionRecipe.image?.directory + "THUMBNAIL__" + optionRecipe.image?.filename) : "/img/default.jpg"}
+                                                            alt={optionRecipe.title}
+                                                        />
+                                                        <div className="flex flex-1 justify-between items-center overflow-hidden">
+                                                            <div className="pl-2 overflow-hidden text-ellipsis">
+                                                                {option.label}
+                                                            </div>
+                                                            {user.data?.recipeFavorites.includes(option.value as Iri<Recipe>) && (
+                                                                <span className="material-symbols-rounded text-base pl-1">star</span>
+                                                            )}
                                                         </div>
-                                                        {user.data?.recipeFavorites.includes(option.value as Iri<Recipe>) && (
-                                                            <span className="material-symbols-rounded text-base pl-1">star</span>
+                                                    </label>
+                                                )
+                                            }}
+                                        />
+                                    </div>
+
+                                    <Spacer height="6" />
+
+                                    <LabelledFormWidget
+                                        id={"sideDishes"}
+                                        label={t("label.sideDishes")}
+                                        widget={
+                                            <>
+                                                <SwitchWidget
+                                                    field={"hasSideDishes"}
+                                                    formData={formData}
+                                                    setFormData={setFormData}
+                                                    displayedText={t("label.hasSideDishes")}
+                                                    onClick={() => {
+                                                        setFormData({
+                                                            ...formData,
+                                                            sideDishes: [],
+                                                            hasSideDishes: formData.hasSideDishes === SwitchValue.OFF
+                                                                ? SwitchValue.ON
+                                                                : SwitchValue.OFF,
+                                                        })
+                                                    }}
+                                                />
+
+                                                {formData.hasSideDishes == SwitchValue.ON && (
+                                                    <>
+                                                        <Spacer height={"2"} />
+
+                                                        {recipes.data.filter(isSideDish).length > 0 ? (
+                                                            <SideDishesWidget
+                                                                field={"sideDishes"}
+                                                                formData={formData}
+                                                                setFormData={setFormData}
+                                                                options={getFormOptions(getEntityOptions({
+                                                                    ...recipes,
+                                                                    data: recipes.data.filter(isSideDish),
+                                                                }, SideDishOption))}
+                                                                gridStyling={`grid grid-cols-2 gap-1`}
+                                                                optionLabelMapper={(option: RadioOption) => {
+                                                                    const optionRecipe: Recipe = recipes.data.filter(recipe => recipe["@id"] === option.value)[0]
+                                                                    return (
+                                                                        <label
+                                                                            htmlFor={option.id}
+                                                                            className={"p-2 flex flex-row items-center cursor-pointer rounded-lg peer-checked:rounded-3xl h-full" +
+                                                                                " active:scale-95 font-[500] w-full transition duration-300 text-primary-100" +
+                                                                                " dark:text-primary-dark-100 bg-secondary-200 dark:bg-secondary-dark-200 " +
+                                                                                " peer-checked:text-white dark:peer-checked:text-primary-dark-100 " +
+                                                                                " peer-checked:bg-primary-100 dark:peer-checked:bg-primary-dark-200"}
+                                                                        >
+                                                                            <img
+                                                                                className="rounded-full h-14 w-14 object-cover transition duration-300 border-secondary-100 border-2 "
+                                                                                src={optionRecipe.image ? (apiClient.defaults.baseURL + optionRecipe.image?.directory + "THUMBNAIL__" + optionRecipe.image?.filename) : "/img/default.jpg"}
+                                                                                alt={optionRecipe.title}
+                                                                            />
+                                                                            <div className="pl-2 overflow-hidden text-ellipsis">
+                                                                                {option.label}
+                                                                            </div>
+                                                                        </label>
+                                                                    )
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <Notification color={"gray"}>
+                                                                {t("text.no.side.dishes")}
+                                                            </Notification>
                                                         )}
-                                                    </div>
-                                                </label>
-                                            )
-                                        }}
+                                                    </>
+                                                )}
+                                            </>
+                                        }
                                     />
 
                                     {recipes.data.filter(recipe => recipe.title.toLowerCase().includes(recipeQuery.toLowerCase())).length == 0 &&

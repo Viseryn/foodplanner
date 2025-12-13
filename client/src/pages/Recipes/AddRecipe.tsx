@@ -1,6 +1,7 @@
 import { InputWidget } from "@/components/form/InputWidget"
 import { LabelledFormWidget } from "@/components/form/LabelledFormWidget"
 import { SliderWidget } from "@/components/form/SliderWidget"
+import { SwitchWidget } from "@/components/form/SwitchWidget"
 import { TextareaWidget } from "@/components/form/TextareaWidget"
 import Button from "@/components/ui/Buttons/Button"
 import { OuterCard } from "@/components/ui/Cards/OuterCard"
@@ -10,9 +11,11 @@ import { GlobalAppDataContext } from "@/context/GlobalAppDataContext"
 import { SidebarContext } from "@/context/SidebarContext"
 import { TopbarContext } from "@/context/TopbarContext"
 import { useNullishContext } from "@/hooks/useNullishContext"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
 import { TwoColumnView } from "@/layouts/TwoColumnView"
 import { ImageUploadWidget } from "@/pages/Recipes/components/ImageUploadWidget"
+import { RecipeTranslations } from "@/pages/Recipes/RecipeTranslations"
 import { createRecipe } from "@/pages/Recipes/util/createRecipe"
 import { createRecipeImage } from "@/pages/Recipes/util/createRecipeImage"
 import { Detached } from "@/types/api/Detached"
@@ -20,6 +23,7 @@ import { Image } from "@/types/api/Image"
 import { Recipe } from "@/types/api/Recipe"
 import { Base64Image } from "@/types/Base64Image"
 import { PageState } from "@/types/enums/PageState"
+import { SwitchValue } from "@/types/enums/SwitchValue"
 import { RecipeForm } from "@/types/forms/RecipeForm"
 import { GlobalAppData } from "@/types/GlobalAppData"
 import { Maybe } from "@/types/Maybe"
@@ -30,6 +34,7 @@ import React, { ReactElement, useEffect, useState } from "react"
 import { Navigate, NavigateFunction, useNavigate } from "react-router-dom"
 
 export const AddRecipe = (): ReactElement => {
+    const t: TranslationFunction = useTranslation(RecipeTranslations)
     const navigate: NavigateFunction = useNavigate()
     const sidebar: Sidebar = useNullishContext(SidebarContext)
     const topbar: Topbar = useNullishContext(TopbarContext)
@@ -39,10 +44,12 @@ export const AddRecipe = (): ReactElement => {
     const [state, setState] = useState<PageState>(PageState.LOADING)
     const [responseId, setResponseId] = useState<number>(0)
     const [recipeFormData, setRecipeFormData] = useState<RecipeForm>({
-        title: '',
+        title: "",
         portionSize: 1,
-        ingredients: '',
-        instructions: '',
+        ingredients: "",
+        instructions: "",
+        externalUrl: "",
+        sideDish: SwitchValue.OFF,
     })
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
@@ -78,7 +85,7 @@ export const AddRecipe = (): ReactElement => {
                .activeItem("recipes")
                .rebuild()
         topbar.configuration
-              .title("Neues Rezept")
+              .title(t("topbar.title.add.recipe"))
               .backButton({ isVisible: true, path: "/recipes" })
               .truncate(true)
               .mainViewWidth("md:max-w-[900px]")
@@ -103,7 +110,7 @@ export const AddRecipe = (): ReactElement => {
                         <OuterCard>
                             <LabelledFormWidget
                                 id={"title"}
-                                label={"Titel"}
+                                label={t("label.title")}
                                 widget={
                                     <InputWidget
                                         field={"title"}
@@ -117,9 +124,26 @@ export const AddRecipe = (): ReactElement => {
 
                             <Spacer height="6" />
 
+                            <SwitchWidget
+                                field={"sideDish"}
+                                formData={recipeFormData}
+                                setFormData={setRecipeFormData}
+                                displayedText={t("label.sideDish")}
+                                onClick={() => {
+                                    setRecipeFormData({
+                                        ...recipeFormData,
+                                        sideDish: recipeFormData.sideDish === SwitchValue.OFF
+                                            ? SwitchValue.ON
+                                            : SwitchValue.OFF,
+                                    })
+                                }}
+                            />
+
+                            <Spacer height="6" />
+
                             <LabelledFormWidget
                                 id={"portionSize"}
-                                label={"Wie viele Portionen?"}
+                                label={t("label.portionSize")}
                                 widget={
                                     <SliderWidget
                                          field={"portionSize"}
@@ -139,19 +163,34 @@ export const AddRecipe = (): ReactElement => {
                                 imagePreviewUrl={imagePreviewUrl}
                                 setImagePreviewUrl={setImagePreviewUrl}
                             />
+
+                            <Spacer height="6" />
+
+                            <LabelledFormWidget
+                                id={"externalUrl"}
+                                label={t("label.externalUrl")}
+                                widget={
+                                    <InputWidget
+                                        field={"externalUrl"}
+                                        formData={recipeFormData}
+                                        setFormData={setRecipeFormData}
+                                        placeholder={"https://..."}
+                                    />
+                                }
+                            />
                         </OuterCard>
 
                         <OuterCard>
                             <LabelledFormWidget
                                 id={"ingredients"}
-                                label={"Zutaten"}
+                                label={t("label.ingredients")}
                                 widget={
                                     <TextareaWidget
                                         field={"ingredients"}
                                         formData={recipeFormData}
                                         setFormData={setRecipeFormData}
                                         rows={10}
-                                        placeholder={"250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz"}
+                                        placeholder={t("placeholder.ingredients")}
                                     />
                                 }
                             />
@@ -160,14 +199,14 @@ export const AddRecipe = (): ReactElement => {
 
                             <LabelledFormWidget
                                 id={"instructions"}
-                                label={"Zubereitung"}
+                                label={t("label.instructions")}
                                 widget={
                                     <TextareaWidget
                                         field={"instructions"}
                                         formData={recipeFormData}
                                         setFormData={setRecipeFormData}
                                         rows={10}
-                                        placeholder={"Schreibe jeden Schritt in eine eigene Zeile."}
+                                        placeholder={t("placeholder.instructions")}
                                     />
                                 }
                             />
@@ -178,7 +217,7 @@ export const AddRecipe = (): ReactElement => {
                         <Button
                             type="submit"
                             icon="save"
-                            label="Speichern"
+                            label={t("button.save")}
                             isElevated={true}
                             outlined={true}
                             isFloating={true}

@@ -30,6 +30,9 @@ final readonly class RecipeExport {
     #[Groups(["recipe:export"])]
     private int $portionSize;
 
+    #[Groups(["recipe:export"])]
+    private string $externalUrl;
+
     /** @var ReadableCollection<IngredientExport> */
     #[Groups(["recipe:export"])]
     private ReadableCollection $ingredients;
@@ -41,13 +44,27 @@ final readonly class RecipeExport {
     #[Groups(["recipe:export"])]
     private string $image;
 
-    public function __construct(int $id, string $title, int $portionSize, ReadableCollection $ingredients, ReadableCollection $instructions, string $image) {
+    #[Groups(["recipe:export"])]
+    private bool $sideDish;
+
+    public function __construct(
+        int $id,
+        string $title,
+        int $portionSize,
+        string $externalUrl,
+        ReadableCollection $ingredients,
+        ReadableCollection $instructions,
+        string $image,
+        bool $sideDish,
+    ) {
         $this->id = $id;
         $this->title = $title;
         $this->portionSize = $portionSize;
+        $this->externalUrl = $externalUrl;
         $this->ingredients = $ingredients;
         $this->instructions = $instructions;
         $this->image = $image;
+        $this->sideDish = $sideDish;
     }
 
     public function getId(): int {
@@ -62,6 +79,10 @@ final readonly class RecipeExport {
         return $this->portionSize;
     }
 
+    public function getExternalUrl(): string {
+        return $this->externalUrl;
+    }
+
     public function getIngredients(): ReadableCollection {
         return $this->ingredients;
     }
@@ -72,5 +93,9 @@ final readonly class RecipeExport {
 
     public function getImage(): string {
         return $this->image;
+    }
+
+    public function isSideDish(): bool {
+        return $this->sideDish;
     }
 }

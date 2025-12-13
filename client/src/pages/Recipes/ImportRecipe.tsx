@@ -10,7 +10,7 @@ import { SidebarContext } from "@/context/SidebarContext"
 import { TopbarContext } from "@/context/TopbarContext"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
-import { DATEI_AUSWAEHLEN } from "@/pages/Recipes/constants/DATEI_AUSWAEHLEN"
+import { PICK_FILE } from "@/pages/Recipes/constants/PICK_FILE"
 import { Detached } from "@/types/api/Detached"
 import { Image } from "@/types/api/Image"
 import { Recipe } from "@/types/api/Recipe"
@@ -55,6 +55,8 @@ const createRecipe = (importRecipe: ImportedRecipeExportDto): [Detached<Recipe>,
         instructions: importRecipe.instructions.map(importInstruction => ({ ...importInstruction, "@type": "Instruction" })),
         portionSize: importRecipe.portionSize,
         title: importRecipe.title,
+        externalUrl: importRecipe.externalUrl,
+        sideDish: importRecipe.sideDish,
     }, {
         "@type": "Image",
             imageContents: importRecipe.image,
@@ -69,7 +71,7 @@ export const ImportRecipe = (): ReactElement => {
     const topbar: Topbar = useNullishContext(TopbarContext)
     const { recipes }: Partial<GlobalAppData> = useNullishContext(GlobalAppDataContext)
 
-    const [uploadButtonText, setUploadButtonText] = useState<string>(DATEI_AUSWAEHLEN)
+    const [uploadButtonText, setUploadButtonText] = useState<string>(PICK_FILE)
     const [file, setFile] = useState<File | null>(null)
     const [state, setState] = useState<PageState>(PageState.WAITING)
     const [readFileState, setReadFileState] = useState<ReadFileState>(ReadFileState.WAITING)
@@ -80,7 +82,7 @@ export const ImportRecipe = (): ReactElement => {
         const uploadedFile: File | null = event.target.files?.[0] || null
         const filename: string = uploadedFile?.name || ""
 
-        setUploadButtonText(filename || DATEI_AUSWAEHLEN)
+        setUploadButtonText(filename || PICK_FILE)
         setFile(uploadedFile)
     }
 
@@ -132,7 +134,7 @@ export const ImportRecipe = (): ReactElement => {
     const resetReadFileState = (): void => {
         setFile(null)
         setImportedRecipes([])
-        setUploadButtonText(DATEI_AUSWAEHLEN)
+        setUploadButtonText(PICK_FILE)
     }
 
     const handleCheckboxChange = (selectedRecipeExportDto: ImportedRecipeExportDto): void => {

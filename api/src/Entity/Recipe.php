@@ -20,6 +20,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Url;
 
 #[ApiResource(
     operations: [
@@ -97,6 +98,15 @@ class Recipe {
     #[Groups(["recipe:patch"])]
     #[ORM\Column(nullable: true)]
     private ?bool $deleted = null;
+
+    #[Groups(["recipe:read", "recipe:post", "recipe:patch"])]
+    #[Url]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $externalUrl = null;
+
+    #[Groups(["recipe:read", "recipe:post", "recipe:patch"])]
+    #[ORM\Column]
+    private ?bool $sideDish = null;
 
     public function __construct() {
         $this->ingredients = new ArrayCollection();
@@ -195,6 +205,30 @@ class Recipe {
 
     public function setDeleted(?bool $deleted): static {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function getExternalUrl(): ?string
+    {
+        return $this->externalUrl;
+    }
+
+    public function setExternalUrl(?string $externalUrl): static
+    {
+        $this->externalUrl = $externalUrl;
+
+        return $this;
+    }
+
+    public function isSideDish(): ?bool
+    {
+        return $this->sideDish;
+    }
+
+    public function setSideDish(bool $sideDish): static
+    {
+        $this->sideDish = $sideDish;
 
         return $this;
     }

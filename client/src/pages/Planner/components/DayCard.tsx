@@ -39,9 +39,9 @@ export const DayCard = ({ mapEntry }: {
 
             <Spacer height="4" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-0.5 place-items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-0.5 place-items-start">
                 {meals.map(meal =>
-                    <MealTile key={meal.id} meal={meal} />,
+                    <MealTile key={meal.id} meal={meal} lastMealHasSideDishes={meals[meals.length - 1].sideDishes.length > 0} />,
                 )}
 
                 {meals.length === 0 && (
