@@ -100,20 +100,20 @@ export const RecipeListPage = (): ReactElement => {
     useEffect(() => {
         if (settings.isLoading) {
             topbar.configuration
-                  .title("Rezepte")
+                  .title(t("topbar.title.recipes"))
                   .mainViewWidth("md:max-w-[900px]")
                   .rebuild()
             return
         }
 
         topbar.configuration
-              .title("Rezepte")
+              .title(t("topbar.title.recipes"))
               .actionButtons([
                   { icon: ViewMode.getIcon(settings.data.recipeListViewMode), onClick: handleViewMode },
               ])
               .dropdownMenuItems([
-                  { icon: "upload", label: "Rezepte importieren", onClick: () => navigate(`/recipe/import`) },
-                  { icon: "restore_from_trash", label: "Gelöschte Rezepte ansehen", onClick: () => navigate(`/recipes/restore`) },
+                  { icon: "upload", label: t("dropdown.import.recipe"), onClick: () => navigate(`/recipe/import`) },
+                  { icon: "restore_from_trash", label: t("dropdown.restore"), onClick: () => navigate(`/recipes/restore`) },
               ])
               .mainViewWidth("md:max-w-[700px]")
               .rebuild()
@@ -128,7 +128,7 @@ export const RecipeListPage = (): ReactElement => {
                    isVisible: true,
                    icon: "add",
                    path: "/recipe/add",
-                   label: "Neues Rezept",
+                   label: t("sab.label.new"),
                })
                .rebuild()
     }, [])
@@ -139,7 +139,7 @@ export const RecipeListPage = (): ReactElement => {
                 <SearchWidget
                     inputValue={searchWidgetInput}
                     setInputValue={setSearchWidgetInput}
-                    placeholder="Suche nach Rezepten ..."
+                    placeholder={t("placeholder.search")}
                 />
 
                 <Button

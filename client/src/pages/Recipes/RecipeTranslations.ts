@@ -7,9 +7,12 @@ export const RecipeTranslations: Translations = {
         "dropdown.edit.recipe": "Edit recipe",
         "dropdown.delete.recipe": "Delete recipe",
         "dropdown.export.recipe": "Download recipe",
+        "dropdown.import.recipe": "Import recipes",
         "dropdown.refresh": "Refresh",
+        "dropdown.restore": "View deleted recipes",
 
         "sab.label": "Plan meal",
+        "sab.label.new": "New recipe",
 
         "ingredients.card.title.1": "Ingredients for",
         "ingredients.card.title.2": "portion",
@@ -28,9 +31,11 @@ export const RecipeTranslations: Translations = {
         "empty.recipe.button.label": "Edit recipe",
 
         "topbar.title.add.recipe": "Add recipe",
+        "topbar.title.recipes": "Recipes",
 
         "heading.sideDishes": "Side dishes",
 
+        "no.recipes.found.notification": "No recipes found.",
 
         "label.title": "Recipe title",
         "label.sideDish": "Save as side dish",
@@ -42,6 +47,7 @@ export const RecipeTranslations: Translations = {
 
         "placeholder.ingredients": "250 ml vegetable broth\n1/2 tube tomato paste\n10 g salt",
         "placeholder.instructions": "Write each step into a separate line.",
+        "placeholder.search": "Search for a recipe ...",
 
         "button.save": "Save recipe",
     },
@@ -50,9 +56,12 @@ export const RecipeTranslations: Translations = {
         "dropdown.edit.recipe": "Rezept bearbeiten",
         "dropdown.delete.recipe": "Rezept löschen",
         "dropdown.export.recipe": "Rezept exportieren",
+        "dropdown.import.recipe": "Rezepte importieren",
         "dropdown.refresh": "Aktualisieren",
+        "dropdown.restore": "Gelöschte Rezepte ansehen",
 
         "sab.label": "Mahlzeit planen",
+        "sab.label.new": "Neues Rezept",
 
         "ingredients.card.title.1": "Zutaten für",
         "ingredients.card.title.2": "Portion",
@@ -71,9 +80,11 @@ export const RecipeTranslations: Translations = {
         "empty.recipe.button.label": "Rezept bearbeiten",
 
         "topbar.title.add.recipe": "Neues Rezept",
+        "topbar.title.recipes": "Rezepte",
 
         "heading.sideDishes": "Beilagen",
 
+        "no.recipes.found.notification": "Keine Rezepte gefunden.",
 
         "label.title": "Titel des Rezepts",
         "label.sideDish": "Als Beilage speichern",
@@ -85,6 +96,7 @@ export const RecipeTranslations: Translations = {
 
         "placeholder.ingredients": "250 ml Gemüsebrühe\n1/2 Tube Tomatenmark\n10 g Salz",
         "placeholder.instructions": "Schreibe jeden Schritt in eine eigene Zeile.",
+        "placeholder.search": "Suche nach Rezepten ...",
 
         "button.save": "Rezept speichern",
     },
