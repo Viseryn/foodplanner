@@ -1,4 +1,5 @@
 import Button from "@/components/ui/Buttons/Button"
+import Heading from "@/components/ui/Heading"
 import Notification from "@/components/ui/Notification"
 import Spacer from "@/components/ui/Spacer"
 import { GlobalAppDataContext } from "@/context/GlobalAppDataContext"
@@ -9,9 +10,11 @@ import { UserContext } from "@/context/UserContext"
 import { useNullishContext } from "@/hooks/useNullishContext"
 import { useScrollCache } from "@/hooks/useScrollCache"
 import { stateCacheStore, useStateCache } from "@/hooks/useStateCache"
+import { TranslationFunction, useTranslation } from "@/hooks/useTranslation"
 import { StandardContentWrapper } from "@/layouts/StandardContentWrapper"
 import { RecipeImageCard } from "@/pages/Recipes/components/RecipeImageCard"
 import { RecipesGrid } from "@/pages/Recipes/components/RecipesGrid"
+import { RecipeTranslations } from "@/pages/Recipes/RecipeTranslations"
 import * as ViewMode from "@/pages/Recipes/types/ViewMode"
 import { Recipe } from "@/types/api/Recipe"
 import { Settings } from "@/types/api/Settings"
@@ -28,6 +31,7 @@ import { RecipeListSkeleton } from "./components/RecipeListSkeleton"
 import SearchWidget from "./components/SearchWidget"
 
 export const RecipeListPage = (): ReactElement => {
+    const t: TranslationFunction = useTranslation(RecipeTranslations)
     const sidebar: Sidebar = useNullishContext(SidebarContext)
     const topbar: Topbar = useNullishContext(TopbarContext)
     const settings: ManagedResource<Settings> = useNullishContext(SettingsContext)
@@ -67,6 +71,9 @@ export const RecipeListPage = (): ReactElement => {
 
             return returnValue
         })
+
+    const nonSideDishes: Recipe[] = recipesFiltered.filter(recipe => !recipe.sideDish)
+    const sideDishes: Recipe[] = recipesFiltered.filter(recipe => recipe.sideDish)
 
     const handleViewMode = async (): Promise<void> => {
         if (settings.isLoading) {
@@ -146,15 +153,32 @@ export const RecipeListPage = (): ReactElement => {
 
             <Spacer height="6" />
 
-            {recipesFiltered.length === 0 && !recipes.isLoading
-                ? <Notification color="red" title="Keine Rezepte gefunden." />
+            {nonSideDishes.length === 0 && !recipes.isLoading
+                ? <Notification color="red" title={t("no.recipes.found.notification")} />
                 : <RecipesGrid viewMode={settings.data?.recipeListViewMode}>
                     {recipes.isLoading || isLoading === ComponentLoadingState.LOADING
                         ? <RecipeListSkeleton />
-                        : recipesFiltered.map(recipe => <RecipeImageCard key={recipe.id} recipe={recipe} />)
+                        : nonSideDishes.map(recipe => <RecipeImageCard key={recipe.id} recipe={recipe} />)
                     }
                 </RecipesGrid>
             }
+
+            {sideDishes.length > 0 && (
+                <>
+                    <Spacer height="10" />
+
+                    <Heading size={"xl"}>{t("heading.sideDishes")}</Heading>
+
+                    <Spacer height="4" />
+
+                    <RecipesGrid viewMode={settings.data?.recipeListViewMode}>
+                        {recipes.isLoading || isLoading === ComponentLoadingState.LOADING
+                            ? <RecipeListSkeleton />
+                            : sideDishes.map(recipe => <RecipeImageCard key={recipe.id} recipe={recipe} />)
+                        }
+                    </RecipesGrid>
+                </>
+            )}
 
             <div className="mb-[5.5rem] md:mb-0"></div>
         </StandardContentWrapper>

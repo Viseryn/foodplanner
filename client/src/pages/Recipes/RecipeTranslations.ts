@@ -29,6 +29,9 @@ export const RecipeTranslations: Translations = {
 
         "topbar.title.add.recipe": "Add recipe",
 
+        "heading.sideDishes": "Side dishes",
+
+
         "label.title": "Recipe title",
         "label.sideDish": "Save as side dish",
         "label.portionSize": "How many portions?",
@@ -68,6 +71,9 @@ export const RecipeTranslations: Translations = {
         "empty.recipe.button.label": "Rezept bearbeiten",
 
         "topbar.title.add.recipe": "Neues Rezept",
+
+        "heading.sideDishes": "Beilagen",
+
 
         "label.title": "Titel des Rezepts",
         "label.sideDish": "Als Beilage speichern",
