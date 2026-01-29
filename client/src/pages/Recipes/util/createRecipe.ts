@@ -11,14 +11,16 @@ export function createRecipe(recipeForm: RecipeForm): Detached<Recipe> {
     const ingredients: Detached<Ingredient>[] = recipeForm.ingredients === ''
         ? []
         : recipeForm.ingredients
-            .split(/[\r\n]+/)
-            .map((ingredientString: string) => createIngredient(ingredientString))
+                    .split(/[\r\n]+/)
+                    .filter((ingredientString: string) => !!ingredientString)
+                    .map((ingredientString: string) => createIngredient(ingredientString))
 
     const instructions: Detached<Instruction>[] = recipeForm.instructions === ''
         ? []
         : recipeForm.instructions
-            .split(/[\r\n]+/)
-            .map((instructionString: string) => createInstruction(instructionString))
+                    .split(/[\r\n]+/)
+                    .filter((instructionString: string) => !!instructionString)
+                    .map((instructionString: string) => createInstruction(instructionString))
 
     return {
         ...recipeForm,
