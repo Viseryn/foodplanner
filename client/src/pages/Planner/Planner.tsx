@@ -13,7 +13,6 @@ import { PlannerTranslations } from "@/pages/Planner/PlannerTranslations"
 import { Detached } from "@/types/api/Detached"
 import { Ingredient } from "@/types/api/Ingredient"
 import { Meal } from "@/types/api/Meal"
-import { Recipe } from "@/types/api/Recipe"
 import { SHOPPINGLIST_IRI } from "@/types/constants/SHOPPINGLIST_IRI"
 import { DateKey } from "@/types/DateKey"
 import { GlobalAppData } from "@/types/GlobalAppData"
@@ -63,7 +62,10 @@ export const Planner = (): ReactElement => {
         const highestPosition = getHighestPosition(shoppingList.data)
 
         const getIngredientsFromMeal = (meal: Meal): Ingredient[] => {
-            return findEntityByIri<Recipe>(meal.recipe, recipes)?.ingredients ?? []
+            const baseRecipeIngredients: Ingredient[] = findEntityByIri(meal.recipe, recipes)?.ingredients ?? []
+            const sideDishIngredients: Ingredient[] = meal.sideDishes?.flatMap(sideDish => findEntityByIri(sideDish, recipes)?.ingredients ?? []) ?? []
+
+            return Array.of(...baseRecipeIngredients, ...sideDishIngredients)
         }
 
         const ingredientsToAdd: Detached<StorageIngredient>[] = Array
@@ -151,7 +153,7 @@ export const Planner = (): ReactElement => {
             ) : (
                 <div className="pb-[5.5rem] flex flex-col gap-0.5">
                     {[...dates.entries()].map((entry: [DateKey, Meal[]]) =>
-                        <DayCard key={entry[0]} mapEntry={entry} />
+                        <DayCard key={entry[0]} mapEntry={entry} />,
                     )}
                 </div>
             )}
