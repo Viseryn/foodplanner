@@ -580,7 +580,14 @@ export const RecipePage = (): ReactElement => {
                             {!tmpRecipe.externalUrl && (
                                 <>
                                     <Notification>{t("empty.recipe.notification")}</Notification>
-                                    <Spacer height={6} />
+
+                                    {!recipe.image ? (
+                                        <img src="/img/sleeping.png" className={StringBuilder.cn(
+                                            "max-w-[400px] max-h-[400px] w-full mx-auto transition duration-300",
+                                        )} alt="FoodPlanner" />
+                                    ) : (
+                                        <Spacer height={6} />
+                                    )}
                                 </>
                             )}
 

@@ -1,6 +1,4 @@
 import Button from "@/components/ui/Buttons/Button"
-import { OuterCard } from "@/components/ui/Cards/OuterCard"
-import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
 import { AddIngredientField } from "@/components/ui/storage/AddIngredientField"
 import { DraggableItemList } from "@/components/ui/storage/DraggableItemList"
@@ -109,44 +107,39 @@ export const ShoppingListPage = (): ReactElement => {
         <StandardContentWrapper>
             <AddIngredientField storage={shoppingList} storageIri={SHOPPINGLIST_IRI} />
 
-            <Spacer height="6" />
             {shoppingList.isLoading || state === ComponentLoadingState.LOADING ? (
                 <Spinner />
             ) : (
-                <OuterCard>
+                <>
 
                     <DraggableItemList storage={shoppingList} storageIri={SHOPPINGLIST_IRI} mode={"CHECKABLE"} />
 
-                    {shoppingList.data.length >= 1 && (
+                    {shoppingList.data.filter(ingredient => !ingredient.checked).length >= 1 && (
                         <div className="flex flex-row items-stretch justify-center gap-1 mt-4">
-                            <div className={"flex-1 flex justify-end"}>
-                                {settings.data?.showPantry && !pantry.isLoading && pantry.data.length > 0 &&
-                                    <Button
-                                        onClick={handleSubtractPantry}
-                                        label="Vorräte verrechnen"
-                                        icon="cell_merge"
-                                        role="secondary"
-                                        roundedRight={false}
-                                    />
-                                }
-                            </div>
-                            <div className={"flex-1 flex justify-start"}>
+                            {settings.data?.showPantry && !pantry.isLoading && pantry.data.length > 0 &&
                                 <Button
-                                    onClick={() => handleGroupIngredients(shoppingList, setState)}
-                                    icon="low_priority"
-                                    label="Zutaten bündeln"
+                                    onClick={handleSubtractPantry}
+                                    label="Vorrat verrechnen"
+                                    icon="cell_merge"
                                     role="secondary"
-                                    isIconRight={true}
-                                    roundedLeft={!settings.data?.showPantry}
+                                    roundedRight={false}
                                 />
-                            </div>
+                            }
+
+                            <Button
+                                onClick={() => handleGroupIngredients(shoppingList, setState)}
+                                icon="low_priority"
+                                label="Bündeln"
+                                role="secondary"
+                                roundedLeft={!(settings.data?.showPantry && !pantry.isLoading && pantry.data.length > 0)}
+                            />
                         </div>
                     )}
 
                     {shoppingList.data.filter(ingredient => ingredient.checked).length > 0 && (
                         <CheckedItemList />
                     )}
-                </OuterCard>
+                </>
             )}
         </StandardContentWrapper>
     )

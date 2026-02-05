@@ -41,7 +41,7 @@ import { Link } from "react-router-dom"
 export default function Button({
                                    className, type = "link", role = "primary", location = "#", icon, label, title = "",
                                    outlined, elevated, isElevated, floating, isFloating, small, isSmall, onClick, isIconRight,
-                                   roundedLeft = true, roundedRight = true,
+                                   roundedLeft = true, roundedRight = true, customRounded = "",
                                }: ButtonOptions): ReactElement {
     // Generate styling classes for the button
     const stylingClasses: string = buttonStyle(
@@ -52,6 +52,7 @@ export default function Button({
         label,
         roundedLeft,
         roundedRight,
+        customRounded,
     ) + (className ? " " + className : "")
 
     // Props for the button/Link component
@@ -130,6 +131,7 @@ function ButtonContent({ icon, label, outlined, isIconRight }: {
  * @param label Optional: The label of the button.
  * @param roundedLeft
  * @param roundedRight
+ * @param customRounded Optional: custom styling for rounded corners.
  * @returns The styling classes for the button.
  */
 const buttonStyle = (
@@ -140,6 +142,7 @@ const buttonStyle = (
     label?: string,
     roundedLeft?: boolean,
     roundedRight?: boolean,
+    customRounded?: string
 ): string => {
     const styles: { [x: string]: string } = {
         base: "font-semibold transition duration-300 flex items-center active:scale-95",
@@ -170,6 +173,7 @@ const buttonStyle = (
     style += (isFloating) ? " " + styles.floating : ""
     style += (roundedLeft) ? " rounded-l-[2rem]" : " rounded-l-lg"
     style += (roundedRight) ? " rounded-r-[2rem]" : " rounded-r-lg"
+    style += customRounded ? " " + customRounded : ""
 
     return style
 }
@@ -207,4 +211,5 @@ type ButtonOptions = {
     isIconRight?: boolean
     roundedLeft?: boolean
     roundedRight?: boolean
+    customRounded?: string
 }
