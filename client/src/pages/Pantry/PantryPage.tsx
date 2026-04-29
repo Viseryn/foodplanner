@@ -1,6 +1,4 @@
 import Button from "@/components/ui/Buttons/Button"
-import { OuterCard } from "@/components/ui/Cards/OuterCard"
-import Spacer from "@/components/ui/Spacer"
 import { Spinner } from "@/components/ui/Spinner"
 import { AddIngredientField } from "@/components/ui/storage/AddIngredientField"
 import { DraggableItemList } from "@/components/ui/storage/DraggableItemList"
@@ -113,32 +111,29 @@ export const PantryPage = (): ReactElement => {
                 <Button
                     icon="sort_by_alpha"
                     role="secondary"
-                    roundedLeft={false}
+                    customRounded={"!rounded-l-md !rounded-br-md"}
                     onClick={handleSort}
-                    className={"h-14 w-14 flex justify-center rounded-full transition-all duration-300"}
+                    className={"h-16 w-14 flex justify-center rounded-full transition-all duration-300 mb-1"}
                 />
             </div>
-
-            <Spacer height="6" />
 
             {pantry.isLoading || state === ComponentLoadingState.LOADING ? (
                 <Spinner />
             ) : (
-                <OuterCard>
+                <>
                     <DraggableItemList storage={pantry} storageIri={PANTRY_IRI} mode={"DELETABLE"} />
 
                     {pantry.data.length > 0 &&
                         <div className="flex justify-center mt-4">
                             <Button
                                 onClick={() => handleGroupIngredients(pantry, setState)}
-                                label="Zutaten bündeln"
+                                label="Bündeln"
                                 icon="low_priority"
-                                role="tertiary"
-                                isSmall={true}
+                                role="secondary"
                             />
                         </div>
                     }
-                </OuterCard>
+                </>
             )}
         </StandardContentWrapper>
     )

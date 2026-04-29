@@ -8,6 +8,7 @@ import { ApiRequest } from "@/util/ApiRequest"
 import { byValue } from "@/util/byValue"
 import { createIngredient } from "@/util/ingredients/createIngredient"
 import { getFullIngredientName } from "@/util/ingredients/getFullIngredientName"
+import { StringBuilder } from "@/util/StringBuilder"
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd"
 import React, { ReactElement } from "react"
 
@@ -152,13 +153,15 @@ export const StorageItem = (props: StorageItemProps): ReactElement => {
     }
 
     return (
-        <div className="flex justify-between items-center gap-4 min-h-10">
+        <div className={StringBuilder.cn(
+            "flex justify-between items-center gap-4 min-h-10",
+        )}>
             <div className="flex items-center grow gap-4">
                 {mode === "CHECKABLE" ? (
                     <input
                         id={item.id.toString()}
                         type="checkbox"
-                        className="w-5 h-5 ml-2 mr-3 text-primary-100 rounded-full border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
+                        className="w-5 h-5 ml-2 mr-2 text-primary-100 rounded-full border-[#c3c8bb] dark:bg-[#43483e] dark:border-[#8d9286] focus:ring-primary-100 focus:ring-2 peer"
                         onChange={() => handleCheckboxChange(item)}
                         checked={item.checked}
                     />

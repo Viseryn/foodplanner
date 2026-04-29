@@ -1,4 +1,3 @@
-import { InnerCard } from "@/components/ui/Cards/InnerCard"
 import { EmptyStorageInfo } from "@/components/ui/storage/EmptyStorageInfo"
 import { StorageItem } from "@/components/ui/storage/StorageItem"
 import { Detached } from "@/types/api/Detached"
@@ -45,11 +44,11 @@ export const DraggableItemList = (props: DraggableItemListProps): ReactElement =
     }
 
     return (
-        <InnerCard>
+        <>
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId={"droppable"}>
                     {provided => (
-                        <div ref={provided.innerRef} {...provided.droppableProps} className={"space-y-2"}>
+                        <div ref={provided.innerRef} {...provided.droppableProps} className={"space-y-1"}>
                             {storage.data.filter(ingredient => !ingredient.checked).length === 0 &&
                                 <EmptyStorageInfo />
                             }
@@ -60,7 +59,10 @@ export const DraggableItemList = (props: DraggableItemListProps): ReactElement =
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            className={StringBuilder.cn([snapshot.isDragging, "bg-secondary-200/40 dark:bg-secondary-dark-200/40 rounded-xl"])}
+                                            className={StringBuilder.cn(
+                                                [snapshot.isDragging, "bg-secondary-200/40 dark:bg-secondary-dark-200/40 rounded-xl"],
+                                                "bg-secondary-100 dark:bg-secondary-dark-100 rounded-md last:rounded-b-3xl p-2 pl-[1.125rem]",
+                                            )}
                                         >
                                             <StorageItem
                                                 dragHandleProps={provided.dragHandleProps}
@@ -78,6 +80,6 @@ export const DraggableItemList = (props: DraggableItemListProps): ReactElement =
                     )}
                 </Droppable>
             </DragDropContext>
-        </InnerCard>
+        </>
     )
 }

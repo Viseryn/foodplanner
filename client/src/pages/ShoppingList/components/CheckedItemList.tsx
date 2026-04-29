@@ -1,6 +1,6 @@
 import IconButton from "@/components/ui/Buttons/IconButton"
 import { CollapsibleCard } from "@/components/ui/Cards/CollapsibleCard"
-import { InnerCard } from "@/components/ui/Cards/InnerCard"
+import { OuterCard } from "@/components/ui/Cards/OuterCard"
 import Spacer from "@/components/ui/Spacer"
 import { StorageItem } from "@/components/ui/storage/StorageItem"
 import { GlobalAppDataContext } from "@/context/GlobalAppDataContext"
@@ -41,7 +41,7 @@ export const CheckedItemList = (): ReactElement => {
             <Spacer height="4" />
 
             <CollapsibleCard
-                cardComponent={InnerCard}
+                cardComponent={OuterCard}
                 collapsed={checkedItemListCollapsed}
                 onCollapse={toggleCheckedItemListCollapsed}
                 heading={(

@@ -68,15 +68,16 @@ export const AddIngredientField = (props: AddIngredientFieldProps): ReactElement
 
     return (
         <div className={StringBuilder.cn(
-            roundedRight ? "rounded-full" : "rounded-l-[2rem] rounded-r-lg",
-            "font-semibold bg-secondary-100 dark:bg-secondary-dark-200 h-14 flex items-center pl-6 pr-4 flex-1",
+            roundedRight ? "" : "rounded-tl-3xl rounded-b-md rounded-tr-lg",
+            "rounded-t-3xl rounded-b-md",
+            "font-semibold bg-secondary-150 dark:bg-secondary-dark-200 h-16 flex items-center pl-6 pr-4 flex-1 mb-1",
         )}>
             <span className="material-symbols-rounded mr-2 cursor-default">
                 add
             </span>
 
             <input
-                className="bg-secondary-100 dark:bg-secondary-dark-200 placeholder-secondary-900  dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
+                className="bg-secondary-150 dark:bg-secondary-dark-200 placeholder-secondary-900  dark:placeholder-secondary-dark-900 w-full border-transparent focus:border-transparent focus:ring-0"
                 placeholder={"Zutat hinzufügen..."}
                 type="text"
                 value={inputValue}
