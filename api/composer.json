@@ -25,7 +25,7 @@
         "symfony/profiler-pack": "*",
         "symfony/property-access": "7.2.*",
         "symfony/property-info": "7.2.*",
-        "symfony/runtime": "7.2.*",
+        "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.2.*",
         "symfony/serializer": "7.2.*",
         "symfony/twig-bundle": "7.2.*",
